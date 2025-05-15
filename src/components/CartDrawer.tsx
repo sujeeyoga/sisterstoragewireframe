@@ -27,24 +27,24 @@ const CartDrawer = () => {
         <div className="flex flex-col h-full">
           {/* Drawer Header */}
           <div className="flex justify-between items-center border-b border-gray-200 p-4">
-            <h2 className="text-xl font-bold flex items-center">
-              <ShoppingBag className="mr-2 h-5 w-5" />
+            <h2 className="font-bold flex items-center">
+              <ShoppingBag className="mr-2 h-3 w-3" />
               Your Cart ({totalItems})
             </h2>
             <button 
               onClick={() => setIsOpen(false)}
               className="p-2 rounded-full hover:bg-gray-100 transition-colors"
             >
-              <X className="h-5 w-5" />
+              <X className="h-3 w-3" />
             </button>
           </div>
           
           {/* Cart Items */}
           <div className="flex-grow overflow-auto py-4 px-4">
             {items.length === 0 ? (
-              <div className="text-center py-10">
-                <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                  <ShoppingBag className="h-8 w-8 text-gray-400" />
+              <div className="text-center py-8">
+                <div className="mx-auto w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center mb-3">
+                  <ShoppingBag className="h-6 w-6 text-gray-400" />
                 </div>
                 <p className="text-gray-600 mb-4">Your cart is empty</p>
                 <Button
@@ -55,40 +55,39 @@ const CartDrawer = () => {
                 </Button>
               </div>
             ) : (
-              <ul className="space-y-4">
+              <ul className="space-y-3">
                 {items.map((item) => (
-                  <li key={item.id} className="flex items-center space-x-4 border-b border-gray-100 pb-4">
-                    <div className="w-16 h-16 rounded bg-gray-100 overflow-hidden flex-shrink-0">
-                      <img 
-                        src={item.image} 
-                        alt={item.name} 
-                        className="w-full h-full object-cover"
-                      />
+                  <li key={item.id} className="flex items-center space-x-3 border-b border-gray-100 pb-3">
+                    <div 
+                      className="w-14 h-14 rounded flex-shrink-0 flex items-center justify-center"
+                      style={{ backgroundColor: item.image.startsWith('#') ? item.image : '#9b87f5' }}
+                    >
+                      <span className="text-white font-bold text-xs">SS</span>
                     </div>
                     <div className="flex-grow">
                       <h3 className="font-medium mb-1">{item.name}</h3>
                       <p className="text-purple-600 font-semibold">${item.price.toFixed(2)}</p>
                     </div>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-1">
                       <button 
-                        className="w-6 h-6 flex items-center justify-center border border-gray-300 rounded"
+                        className="w-5 h-5 flex items-center justify-center border border-gray-300 rounded"
                         onClick={() => updateQuantity(item.id, item.quantity - 1)}
                       >
-                        <Minus className="h-3 w-3" />
+                        <Minus className="h-2 w-2" />
                       </button>
-                      <span className="w-6 text-center">{item.quantity}</span>
+                      <span className="w-5 text-center">{item.quantity}</span>
                       <button 
-                        className="w-6 h-6 flex items-center justify-center border border-gray-300 rounded"
+                        className="w-5 h-5 flex items-center justify-center border border-gray-300 rounded"
                         onClick={() => updateQuantity(item.id, item.quantity + 1)}
                       >
-                        <Plus className="h-3 w-3" />
+                        <Plus className="h-2 w-2" />
                       </button>
                     </div>
                     <button 
                       onClick={() => removeItem(item.id)}
                       className="text-gray-400 hover:text-red-500 transition-colors"
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <Trash2 className="h-3 w-3" />
                     </button>
                   </li>
                 ))}
@@ -103,7 +102,7 @@ const CartDrawer = () => {
                 <span className="text-gray-600">Subtotal</span>
                 <span className="font-semibold">${subtotal.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between mb-4">
+              <div className="flex justify-between mb-3">
                 <span className="text-gray-600">Shipping</span>
                 <span className="text-gray-600">Calculated at checkout</span>
               </div>

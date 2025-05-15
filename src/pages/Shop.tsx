@@ -16,7 +16,7 @@ const products = [
     description: "Preserve your bangles with care in our soft-touch velvet box.",
     price: 29.99,
     category: "bangles",
-    imageUrl: "https://images.unsplash.com/photo-1595408043711-455f9386b41b?q=80&w=600&auto=format&fit=crop"
+    color: "#9b87f5" // Primary Purple
   },
   {
     id: "2",
@@ -24,7 +24,7 @@ const products = [
     description: "Showcase and protect your collection with style and intention.",
     price: 42.99,
     category: "jewelry",
-    imageUrl: "https://images.unsplash.com/photo-1562714529-94d65989df68?q=80&w=600&auto=format&fit=crop"
+    color: "#7E69AB" // Secondary Purple
   },
   {
     id: "3",
@@ -32,7 +32,7 @@ const products = [
     description: "Specially designed box that honors and preserves cultural artifacts and keepsakes.",
     price: 64.99,
     category: "keepsakes",
-    imageUrl: "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=600&auto=format&fit=crop"
+    color: "#6E59A5" // Tertiary Purple
   },
   {
     id: "4",
@@ -40,7 +40,7 @@ const products = [
     description: "Versatile stackable trays that beautifully organize your bangles with a clean, minimal aesthetic.",
     price: 24.99,
     category: "bangles",
-    imageUrl: "https://images.unsplash.com/photo-1595427749888-496edd6e3981?q=80&w=600&auto=format&fit=crop"
+    color: "#D6BCFA" // Light Purple
   },
   {
     id: "5",
@@ -48,7 +48,7 @@ const products = [
     description: "Elegant tower designed to showcase your ring collection while keeping each piece separate and protected.",
     price: 24.99,
     category: "jewelry",
-    imageUrl: "https://images.unsplash.com/photo-1556707752-481d500a2c58?q=80&w=600&auto=format&fit=crop"
+    color: "#9b87f5" // Primary Purple
   },
   {
     id: "6",
@@ -56,7 +56,7 @@ const products = [
     description: "Elegant case with compartments designed to organize and protect your precious memories.",
     price: 49.99,
     category: "keepsakes",
-    imageUrl: "https://images.unsplash.com/photo-1562714529-94d65989df68?q=80&w=600&auto=format&fit=crop"
+    color: "#7E69AB" // Secondary Purple
   }
 ];
 
@@ -79,7 +79,7 @@ const Shop = () => {
       id: product.id,
       name: product.name,
       price: product.price,
-      image: product.imageUrl
+      image: product.color // Now using color as the image identifier
     });
     
     toast({
@@ -93,20 +93,20 @@ const Shop = () => {
       <Navbar />
       
       {/* Hero Section */}
-      <div className="relative pt-24 pb-12 bg-purple-50">
-        <div className="container-custom pt-10">
-          <h1 className="text-4xl md:text-5xl font-bold text-center mb-6">BUY</h1>
-          <p className="text-gray-700 text-center max-w-2xl mx-auto mb-10">
+      <div className="relative pt-24 pb-8 bg-purple-50">
+        <div className="container-custom pt-6">
+          <h1 className="font-bold text-center mb-4">BUY</h1>
+          <p className="text-gray-700 text-center max-w-2xl mx-auto mb-8">
             Discover storage that's designed for your bangles, jewelry, and keepsakes — made with the details that matter most.
           </p>
           
           {/* Categories */}
-          <div className="flex flex-wrap gap-2 justify-center mb-8">
+          <div className="flex flex-wrap gap-2 justify-center mb-6">
             {categories.map((category) => (
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category)}
-                className={`px-4 py-2 rounded-full text-sm capitalize transition-all ${
+                className={`px-3 py-1.5 rounded-full capitalize transition-all ${
                   selectedCategory === category
                     ? "bg-[#E6007E] text-white"
                     : "bg-white border border-gray-200 text-gray-700 hover:bg-purple-100"
@@ -120,29 +120,26 @@ const Shop = () => {
       </div>
       
       {/* Products Grid */}
-      <div className="bg-white py-16">
+      <div className="bg-white py-10">
         <div className="container-custom">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {filteredProducts.map((product) => (
               <div key={product.id} className="group">
                 <Link to={`/shop/${product.id}`} className="block">
-                  <div className="overflow-hidden rounded-lg bg-gray-100 mb-4 aspect-square">
-                    <img
-                      src={product.imageUrl}
-                      alt={product.name}
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
+                  <div className="rounded-lg mb-3 aspect-square transition-transform duration-300 group-hover:scale-105 flex items-center justify-center"
+                       style={{ backgroundColor: product.color }}>
+                    <span className="text-white font-bold">Sister Storage</span>
                   </div>
-                  <h3 className="text-lg font-semibold mb-1">{product.name}</h3>
-                  <p className="text-gray-600 text-sm mb-2 line-clamp-2">{product.description}</p>
+                  <h3 className="font-semibold mb-1">{product.name}</h3>
+                  <p className="text-gray-600 mb-2 line-clamp-2">{product.description}</p>
                   <div className="flex justify-between items-center">
-                    <span className="font-bold text-lg">${product.price.toFixed(2)}</span>
+                    <span className="font-bold">${product.price.toFixed(2)}</span>
                     <Button 
                       size="sm" 
                       className="bg-[#E6007E] hover:bg-black"
                       onClick={(e) => handleAddToCart(product, e)}
                     >
-                      <ShoppingBag className="h-4 w-4 mr-1" />
+                      <ShoppingBag className="h-3 w-3 mr-1" />
                       Add to Cart
                     </Button>
                   </div>
