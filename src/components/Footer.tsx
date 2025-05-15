@@ -1,7 +1,19 @@
 
-import { Facebook, Instagram, Mail, MessageSquare, Pinterest } from 'lucide-react';
+import { Facebook, Instagram, Mail, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
+
+// Custom Pinterest icon since it's not available in lucide-react
+const PinterestIcon = () => {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-pinterest">
+      <path d="M9 22c-.4-.7-.9-1.6-.9-3.2 0-1.3.9-2.6 2.5-2.6 1.2 0 2.1.7 2.1 1.9 0 1.2-.7 3-1.5 4.2"></path>
+      <path d="M9.5 9.3c0 .5.1 1 .4 1.5l1.5 6.4"></path>
+      <path d="M9.9 5.1a8 8 0 1 1-3 15.9 8 8 0 0 0 6.1-2"></path>
+      <path d="M12 2a10 10 0 0 0-7.1 17"></path>
+    </svg>
+  );
+};
 
 const Footer = () => {
   return (
@@ -22,7 +34,7 @@ const Footer = () => {
                 <Facebook className="h-5 w-5" />
               </a>
               <a href="#" className="text-gray-400 hover:text-[#E6007E] transition-colors" aria-label="Follow us on Pinterest">
-                <Pinterest className="h-5 w-5" />
+                <PinterestIcon />
               </a>
             </div>
           </div>
