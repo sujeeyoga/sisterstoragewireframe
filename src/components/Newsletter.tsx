@@ -36,7 +36,7 @@ const Newsletter = () => {
   };
 
   return (
-    <section className="bg-purple-50 py-16 md:py-20">
+    <section className="bg-white py-16 md:py-20">
       <div className="container-custom">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Stay Organized. Stay Inspired.</h2>
