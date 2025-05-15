@@ -24,7 +24,7 @@ const Hero = () => {
   return (
     <>
       <div className="relative h-screen w-full overflow-hidden">
-        {/* Background Image with Parallax Effect */}
+        {/* Background Image with Enhanced Parallax Effect */}
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{ 
@@ -41,7 +41,7 @@ const Hero = () => {
           ></div>
         </div>
         
-        {/* Content with Fade In Effect */}
+        {/* Content with Fade and Float Effect */}
         <div className="container-custom relative h-full flex flex-col justify-center items-start pt-20">
           <div 
             className="max-w-2xl"
@@ -62,6 +62,7 @@ const Hero = () => {
             <div className="flex flex-col sm:flex-row gap-4">
               <Button 
                 className="px-6 py-5 text-base w-full sm:w-auto group relative overflow-hidden transition-all duration-300"
+                onClick={() => document.getElementById('menu')?.scrollIntoView({ behavior: 'smooth' })}
               >
                 <span className="relative z-10 transition-transform group-hover:translate-x-1">Shop Now</span>
                 <span className="absolute inset-0 bg-purple-600 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"></span>
@@ -69,6 +70,7 @@ const Hero = () => {
               <Button 
                 variant="secondary" 
                 className="px-6 py-5 text-base w-full sm:w-auto group"
+                onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
               >
                 <span className="flex items-center">
                   Learn Our Story 
@@ -81,10 +83,14 @@ const Hero = () => {
         
         {/* Enhanced Scroll Indicator */}
         <div 
-          className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center"
+          className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center cursor-pointer"
           style={{
             opacity: Math.max(0, 1 - scrollPosition * 0.005)
           }}
+          onClick={() => window.scrollTo({
+            top: window.innerHeight,
+            behavior: 'smooth'
+          })}
         >
           <span className="text-white text-sm font-medium mb-2">Discover More</span>
           <div className="relative h-12 w-6 border-2 border-white rounded-full flex justify-center">
@@ -103,11 +109,11 @@ const Hero = () => {
               Our Story
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-              <div>
+              <div className="overflow-hidden rounded-lg">
                 <img 
                   src="https://images.unsplash.com/photo-1556707752-481d500a2c58?q=80&w=1080&auto=format&fit=crop" 
                   alt="Sisters working together" 
-                  className="rounded-lg shadow-xl w-full h-auto"
+                  className="rounded-lg shadow-xl w-full h-auto hover:scale-105 transition-transform duration-700"
                 />
               </div>
               <div className="space-y-4">
@@ -124,6 +130,7 @@ const Hero = () => {
                 <Button 
                   variant="secondary" 
                   className="px-6 py-5 text-base group mt-4"
+                  onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
                 >
                   <span className="flex items-center">
                     Learn More About Us
