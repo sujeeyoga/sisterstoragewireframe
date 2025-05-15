@@ -29,7 +29,7 @@ const HowItWorks = () => {
       <div className="container-custom">
         <div className="text-center max-w-lg mx-auto mb-12 md:mb-16 px-4">
           <span className="text-[#E90064] font-medium">Simple Process</span>
-          <h2 className="text-3xl md:text-5xl font-bold mt-2 mb-3">How It Works</h2>
+          <h2 className="font-bold mt-2 mb-3">How It Works</h2>
           <p className="text-gray-600">
             Transform your space in three easy steps with our beautiful storage solutions
           </p>
@@ -43,7 +43,7 @@ const HowItWorks = () => {
             >
               <div className="relative mb-6">
                 <div className="w-16 h-16 rounded-full bg-[#FFDCBD] flex items-center justify-center mb-2">
-                  <span className="text-[#FF8021] text-2xl font-bold">{step.id}</span>
+                  <span className="text-[#FF8021] font-bold">{step.id}</span>
                 </div>
                 <div className="absolute top-1/2 left-full h-0.5 bg-[#FFDCBD] w-full -translate-y-1/2 hidden md:block" 
                      style={{ display: step.id === steps.length ? 'none' : undefined }}></div>
@@ -53,10 +53,10 @@ const HowItWorks = () => {
                 className="h-48 w-full rounded-lg mb-4 flex items-center justify-center"
                 style={{ backgroundColor: step.color }}
               >
-                <span className="text-white text-3xl font-bold">Step {step.id}</span>
+                <span className="text-white font-bold">Step {step.id}</span>
               </div>
               
-              <h3 className="text-xl font-bold mb-2">{step.title}</h3>
+              <h3 className="font-bold mb-2">{step.title}</h3>
               <p className="text-gray-600">{step.description}</p>
               
               <div className="mt-4 flex items-center justify-center text-[#E90064]">

@@ -37,7 +37,7 @@ const InstagramUGC = () => {
       <div className="container-custom">
         <div className="text-center mb-10 md:mb-14">
           <span className="text-[#E90064] font-medium">Community</span>
-          <h2 className="text-3xl md:text-4xl font-bold mt-2 mb-4">Styled By Our Sisters</h2>
+          <h2 className="font-bold mt-2 mb-4">Styled By Our Sisters</h2>
           <p className="text-gray-600 max-w-xl mx-auto">
             See how our community celebrates organizing with culture, color, and love.
           </p>
@@ -51,7 +51,7 @@ const InstagramUGC = () => {
               style={{ backgroundColor: post.color }}
             >
               <div className="w-full h-full flex items-center justify-center">
-                <span className="text-white text-xl font-bold">Sister Storage</span>
+                <span className="text-white font-bold">Sister Storage</span>
               </div>
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/60 transition-all duration-300 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100">
                 <span className="text-white font-medium mb-2">@{post.username}</span>

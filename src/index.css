@@ -91,12 +91,16 @@
     @apply border-border;
   }
 
+  html {
+    font-size: 11px;
+  }
+
   body {
     @apply bg-white text-foreground font-sans leading-relaxed;
   }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply font-bold;
+    @apply font-bold text-base; /* 16px with base size of 11px */
   }
 
   button {
