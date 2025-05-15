@@ -3,10 +3,12 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Button } from "@/components/ui/button";
-import { ShoppingBag } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/components/ui/use-toast";
+import ProductImage from "@/components/product/ProductImage";
+import ProductInfo from "@/components/product/ProductInfo";
+import Breadcrumbs from "@/components/product/Breadcrumbs";
+import RelatedProducts from "@/components/product/RelatedProducts";
 
 // Sample product data (would typically come from an API)
 const products = [
@@ -68,9 +70,9 @@ const ProductDetail = () => {
         <Navbar />
         <div className="flex-grow flex items-center justify-center">
           <div className="text-center">
-            <h2 className="font-bold">Product Not Found</h2>
-            <p className="mt-2 text-gray-600">The product you're looking for doesn't exist or has been removed.</p>
-            <Button className="mt-4" onClick={() => window.history.back()}>Go Back</Button>
+            <h2 className="font-bold text-base">Product Not Found</h2>
+            <p className="mt-2 text-xs text-gray-600">The product you're looking for doesn't exist or has been removed.</p>
+            <button className="mt-4 text-xs bg-purple-600 hover:bg-purple-500 text-white px-3 py-1 rounded-md" onClick={() => window.history.back()}>Go Back</button>
           </div>
         </div>
         <Footer />
@@ -103,117 +105,21 @@ const ProductDetail = () => {
       
       <div className="pt-24 pb-10 flex-grow">
         <div className="container-custom">
-          {/* Breadcrumbs */}
-          <div className="mb-6">
-            <a href="/" className="text-gray-500 hover:text-purple-600">Home</a>
-            <span className="mx-2 text-gray-400">/</span>
-            <a href="/shop" className="text-gray-500 hover:text-purple-600">Shop</a>
-            <span className="mx-2 text-gray-400">/</span>
-            <span className="text-gray-800">{product.name}</span>
-          </div>
+          <Breadcrumbs productName={product.name} />
           
           {/* Product Details */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-            {/* Product Image Box (replaced with color) */}
-            <div 
-              className="rounded-lg flex items-center justify-center aspect-square"
-              style={{ backgroundColor: product.color || "#9b87f5" }}
-            >
-              <span className="text-white font-bold">Sister Storage</span>
-            </div>
-            
-            {/* Product Info */}
-            <div>
-              <span className="inline-block px-3 py-1 bg-purple-100 text-purple-700 rounded-full mb-2">
-                {product.category.charAt(0).toUpperCase() + product.category.slice(1)}
-              </span>
-              <h1 className="font-bold mb-2">{product.name}</h1>
-              <p className="font-semibold text-gray-800 mb-4">${product.price.toFixed(2)}</p>
-              
-              <p className="text-gray-700 mb-5">{product.description}</p>
-              
-              {/* Features */}
-              {product.features && (
-                <div className="mb-5">
-                  <h3 className="font-semibold mb-2">Features:</h3>
-                  <ul className="space-y-2">
-                    {product.features.map((feature, index) => (
-                      <li key={index} className="flex items-start">
-                        <span className="text-purple-600 mr-2 flex-shrink-0">✓</span>
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              
-              {/* Quantity Selector */}
-              <div className="mb-4">
-                <h3 className="font-semibold mb-2">Quantity:</h3>
-                <div className="flex items-center">
-                  <button 
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="w-7 h-7 flex items-center justify-center border border-gray-300 rounded-l"
-                  >
-                    -
-                  </button>
-                  <div className="w-10 h-7 flex items-center justify-center border-t border-b border-gray-300">
-                    {quantity}
-                  </div>
-                  <button 
-                    onClick={() => setQuantity(Math.min((product.stock || 10), quantity + 1))}
-                    className="w-7 h-7 flex items-center justify-center border border-gray-300 rounded-r"
-                  >
-                    +
-                  </button>
-                </div>
-              </div>
-              
-              {/* Stock Status */}
-              {product.stock && (
-                <p className="text-gray-600 mb-4">
-                  {product.stock > 5 
-                    ? `In stock (${product.stock} available)` 
-                    : product.stock > 0 
-                      ? `Low stock (only ${product.stock} left)` 
-                      : "Out of stock"}
-                </p>
-              )}
-              
-              {/* Add to Cart Button */}
-              <Button 
-                className="bg-purple-600 hover:bg-purple-500 text-white w-full py-4"
-                disabled={!product.stock}
-                onClick={handleAddToCart}
-              >
-                <ShoppingBag className="mr-2 h-3 w-3" />
-                Add to Cart
-              </Button>
-            </div>
+            <ProductImage color={product.color} />
+            <ProductInfo 
+              product={product}
+              quantity={quantity}
+              setQuantity={setQuantity}
+              onAddToCart={handleAddToCart}
+            />
           </div>
           
           {/* Related Products */}
-          {relatedProducts.length > 0 && (
-            <div>
-              <h2 className="font-bold mb-4">You May Also Like</h2>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
-                {relatedProducts.map((related) => (
-                  <div key={related.id} className="group">
-                    <a href={`/shop/${related.id}`} className="block">
-                      <div 
-                        className="rounded-lg flex items-center justify-center aspect-square mb-2 transition-transform duration-300 group-hover:scale-105"
-                        style={{ backgroundColor: related.color || "#9b87f5" }}
-                      >
-                        <span className="text-white font-bold">Sister Storage</span>
-                      </div>
-                      <h3 className="font-medium">{related.name}</h3>
-                      <p className="text-gray-800 font-semibold mt-1">${related.price.toFixed(2)}</p>
-                    </a>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+          <RelatedProducts products={relatedProducts} />
         </div>
       </div>
       
