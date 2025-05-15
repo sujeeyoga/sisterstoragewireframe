@@ -98,7 +98,7 @@ const Navbar = () => {
       {/* Mobile Menu Dropdown */}
       {isMobile && (
         <div 
-          className={`fixed inset-0 bg-gray-800 z-40 transition-transform duration-300 ease-in-out ${
+          className={`fixed inset-0 bg-white z-40 transition-transform duration-300 ease-in-out ${
             mobileMenuOpen ? 'translate-y-0' : 'translate-y-[-100%]'
           }`}
           aria-hidden={!mobileMenuOpen}
@@ -114,7 +114,7 @@ const Navbar = () => {
                 <Link 
                   key={item.name} 
                   to={item.path} 
-                  className="text-white text-lg font-medium hover:text-sister-purple transition-colors duration-300 flex items-center gap-2"
+                  className="text-[#e90064] text-lg font-medium hover:text-[#c80056] transition-colors duration-300 flex items-center gap-2"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {item.icon && <item.icon className="h-5 w-5" />}

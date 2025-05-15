@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -17,7 +16,7 @@ const products = [
     description: "Preserve your bangles with care in our soft-touch velvet box. Perfect for storing and displaying your precious collection.",
     price: 29.99,
     category: "bangles",
-    color: "#9b87f5", // Primary Purple
+    color: "#e90064", // Updated from purple to new primary color
     features: ["Soft velvet interior", "10 compartments", "Stackable design"],
     material: "Premium velvet",
     bestSeller: true,
@@ -29,7 +28,7 @@ const products = [
     description: "Showcase and protect your collection with style and intention. The glass lid allows you to easily see your pieces.",
     price: 42.99,
     category: "jewelry",
-    color: "#7E69AB", // Secondary Purple
+    color: "#c80056", // Darker shade of primary color
     features: ["Glass display lid", "Anti-tarnish lining", "Secure closure"],
     material: "Sustainable wood with glass",
     newArrival: true,
@@ -41,7 +40,7 @@ const products = [
     description: "Specially designed box that honors and preserves cultural artifacts and keepsakes with compartments for various sized items.",
     price: 64.99,
     category: "keepsakes",
-    color: "#6E59A5", // Tertiary Purple
+    color: "#a60048", // Even darker shade of primary color
     features: ["Hand-carved details", "Acid-free lining", "Custom compartments"],
     material: "Ethically sourced hardwood",
     limitedEdition: true,
@@ -53,7 +52,7 @@ const products = [
     description: "Versatile stackable trays that beautifully organize your bangles with a clean, minimal aesthetic. Perfect for dresser tops.",
     price: 24.99,
     category: "bangles",
-    color: "#D6BCFA", // Light Purple
+    color: "#ff4d8d", // Lighter shade of primary color
     features: ["Modular design", "Felt lining", "Space-efficient"],
     material: "Recycled materials",
     stock: 20
@@ -64,7 +63,7 @@ const products = [
     description: "Elegant tower designed to showcase your ring collection while keeping each piece separate and protected from scratches.",
     price: 24.99,
     category: "jewelry",
-    color: "#9b87f5", // Primary Purple
+    color: "#e90064", // Primary color
     features: ["Holds up to 12 rings", "Rotating base", "Compact design"],
     material: "Metal with velvet coating",
     stock: 12
@@ -75,7 +74,7 @@ const products = [
     description: "Elegant case with compartments designed to organize and protect your precious memories, from small keepsakes to photographs.",
     price: 49.99,
     category: "keepsakes",
-    color: "#7E69AB", // Secondary Purple
+    color: "#c80056", // Darker shade of primary color
     features: ["Archival quality", "Photo slots", "Custom dividers"],
     material: "Acid-free fabric and board",
     bestSeller: true,
@@ -130,14 +129,14 @@ const Shop = () => {
   return (
     <Layout>
       {/* Enhanced Hero Section */}
-      <div className="relative pb-10 bg-gradient-to-b from-purple-50 to-white">
+      <div className="relative pb-10 bg-gradient-to-b from-pink-50 to-white">
         <div className="container-custom pt-10">
           <div className="max-w-2xl mx-auto text-center mb-8">
             <h1 className="font-bold text-3xl mb-4">Storage with Soul</h1>
             <p className="text-gray-700 text-center mx-auto mb-6">
               Discover storage that's designed for your bangles, jewelry, and keepsakes — made with the details that matter most to your cultural heritage.
             </p>
-            <p className="text-sm text-purple-700 mb-6">
+            <p className="text-sm text-pink-700 mb-6">
               Handcrafted with love, designed with intention.
             </p>
           </div>
@@ -150,8 +149,8 @@ const Shop = () => {
                 onClick={() => setSelectedCategory(category)}
                 className={`px-4 py-2 rounded-full capitalize transition-all ${
                   selectedCategory === category
-                    ? "bg-[#9b87f5] text-white shadow-md"
-                    : "bg-white border border-gray-200 text-gray-700 hover:bg-purple-100"
+                    ? "bg-[#e90064] text-white shadow-md"
+                    : "bg-white border border-gray-200 text-gray-700 hover:bg-pink-100"
                 }`}
               >
                 {category}
@@ -210,13 +209,13 @@ const Shop = () => {
                     <ul className="mb-3">
                       {product.features.slice(0, 2).map((feature, index) => (
                         <li key={index} className="text-xs text-gray-600 flex items-center gap-1 mb-1">
-                          <Check className="h-3 w-3 text-purple-600" /> {feature}
+                          <Check className="h-3 w-3 text-pink-600" /> {feature}
                         </li>
                       ))}
                     </ul>
                     
                     <div className="flex justify-between items-center mt-4">
-                      <span className="text-xs font-medium bg-purple-100 text-purple-700 px-2 py-1 rounded-full">
+                      <span className="text-xs font-medium bg-pink-100 text-pink-700 px-2 py-1 rounded-full">
                         {product.category}
                       </span>
                       <Button 
@@ -234,7 +233,7 @@ const Shop = () => {
           </div>
           
           {/* Benefits Section */}
-          <div className="mt-16 bg-purple-50 rounded-lg p-8">
+          <div className="mt-16 bg-pink-50 rounded-lg p-8">
             <h2 className="text-2xl font-bold text-center mb-8">Why Sister Storage?</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {benefits.map((benefit, index) => (
