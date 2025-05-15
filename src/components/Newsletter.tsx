@@ -56,7 +56,7 @@ const Newsletter = () => {
             <Button 
               type="submit" 
               disabled={isLoading}
-              className="bg-[#E6007E] hover:bg-black text-white"
+              className="sm:w-auto w-full"
             >
               {isLoading ? "Signing Up..." : "Sign Up"}
             </Button>

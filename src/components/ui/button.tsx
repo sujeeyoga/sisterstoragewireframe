@@ -10,8 +10,8 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-black text-white hover:opacity-90 hover:scale-[1.03] active:scale-[0.98]",
-        secondary: "border border-black bg-white text-black hover:bg-[#F4F4F4] active:scale-[0.98]",
+        default: "bg-black text-white hover:bg-[#FF8021] hover:scale-[1.03] active:scale-[0.98]",
+        secondary: "bg-transparent text-[#E90064] border border-[#E90064] hover:bg-[#E90064] hover:text-white active:scale-[0.98]",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
@@ -21,10 +21,11 @@ const buttonVariants = cva(
         disabled: "bg-[#F4F4F4] text-[#B8B0A8] cursor-not-allowed",
       },
       size: {
-        default: "h-10 px-4 py-2",
-        sm: "h-8 rounded-md px-3 text-xs",
-        lg: "h-12 rounded-md px-8 text-base",
+        default: "h-10 px-6 py-3.5",
+        sm: "h-8 rounded-md px-4 text-xs",
+        lg: "h-12 rounded-md px-6 py-3.5 text-base",
         icon: "h-10 w-10",
+        full: "w-full h-12 px-6 py-3.5",
       },
     },
     defaultVariants: {

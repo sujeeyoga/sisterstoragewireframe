@@ -6,7 +6,7 @@ const ButtonDemonstration = () => {
     <section className="py-16 md:py-20 bg-white">
       <div className="container-custom">
         <div className="text-center max-w-lg mx-auto mb-10 md:mb-12 px-4">
-          <span className="text-purple-600 font-medium">Button System</span>
+          <span className="text-[#E90064] font-medium">Button System</span>
           <h2 className="text-3xl md:text-5xl font-bold mt-2 mb-3">Sister Storage Button System</h2>
           <p className="text-gray-600">
             Our consistent button system designed for elegance and functionality
@@ -29,6 +29,10 @@ const ButtonDemonstration = () => {
               <div>
                 <p className="text-sm text-gray-500 mb-3">Primary Large</p>
                 <Button size="lg">Large Button</Button>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500 mb-3">Primary Full Width</p>
+                <Button size="full">Full Width Button</Button>
               </div>
               <div>
                 <p className="text-sm text-gray-500 mb-3">Primary Disabled</p>
@@ -54,13 +58,17 @@ const ButtonDemonstration = () => {
                 <Button variant="secondary" size="lg">Large Button</Button>
               </div>
               <div>
+                <p className="text-sm text-gray-500 mb-3">Secondary Full Width</p>
+                <Button variant="secondary" size="full">Full Width Button</Button>
+              </div>
+              <div>
                 <p className="text-sm text-gray-500 mb-3">Secondary Disabled</p>
                 <Button variant="secondary" disabled>Disabled Button</Button>
               </div>
             </div>
           </div>
           
-          {/* Additional Variants (if needed) */}
+          {/* Button Specifications */}
           <div className="border border-gray-200 rounded-lg p-6 md:col-span-2">
             <h3 className="text-xl font-bold mb-6 pb-2 border-b border-gray-100">Button Specifications</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -69,18 +77,18 @@ const ButtonDemonstration = () => {
                 <ul className="list-disc pl-5 space-y-1 text-sm">
                   <li>Background: Black (#000000)</li>
                   <li>Text: White (#FFFFFF)</li>
-                  <li>Border: None</li>
-                  <li>Hover: Scale up 1.03x, opacity reduced to 90%</li>
+                  <li>Font: Poppins Semi-Bold, ALL CAPS</li>
+                  <li>Hover: Orange background (#FF8021)</li>
                   <li>Active: Scale compress 0.98x</li>
                 </ul>
               </div>
               <div>
                 <h4 className="font-semibold mb-2">Secondary Button Style</h4>
                 <ul className="list-disc pl-5 space-y-1 text-sm">
-                  <li>Background: White (#FFFFFF)</li>
-                  <li>Text: Black (#000000)</li>
-                  <li>Border: 1px Solid Black</li>
-                  <li>Hover: Background shifts to light gray (#F4F4F4)</li>
+                  <li>Background: Transparent</li>
+                  <li>Text: Pink (#E90064)</li>
+                  <li>Border: 1px Pink (#E90064)</li>
+                  <li>Hover: Filled pink background (#E90064) with white text</li>
                   <li>Active: Scale compress 0.98x</li>
                 </ul>
               </div>
@@ -93,11 +101,13 @@ const ButtonDemonstration = () => {
                 </ul>
               </div>
               <div>
-                <h4 className="font-semibold mb-2">Animation Settings</h4>
+                <h4 className="font-semibold mb-2">Size & Spacing Settings</h4>
                 <ul className="list-disc pl-5 space-y-1 text-sm">
-                  <li>Transition Duration: 300ms</li>
-                  <li>Easing: ease-in-out</li>
-                  <li>Font: Poppins, Semi-Bold</li>
+                  <li>Padding: 14px top/bottom, 24px left/right</li>
+                  <li>Border Radius: 4px</li>
+                  <li>Mobile: Full width option available</li>
+                  <li>Desktop: Auto width by default</li>
+                  <li>Font: Poppins Semi-Bold, ALL CAPS</li>
                 </ul>
               </div>
             </div>

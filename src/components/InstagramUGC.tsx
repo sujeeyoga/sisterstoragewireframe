@@ -36,7 +36,7 @@ const InstagramUGC = () => {
     <section className="py-16 md:py-20 bg-white">
       <div className="container-custom">
         <div className="text-center mb-10 md:mb-14">
-          <span className="text-[#E6007E] font-medium">Community</span>
+          <span className="text-[#E90064] font-medium">Community</span>
           <h2 className="text-3xl md:text-4xl font-bold mt-2 mb-4">Styled By Our Sisters</h2>
           <p className="text-gray-600 max-w-xl mx-auto">
             See how our community celebrates organizing with culture, color, and love.
@@ -65,7 +65,7 @@ const InstagramUGC = () => {
         </div>
         
         <div className="text-center mt-10">
-          <Button className="bg-[#E6007E] hover:bg-black text-white" size="lg">
+          <Button size="lg">
             <Instagram className="mr-2 h-5 w-5" />
             Follow Us on Instagram
           </Button>
