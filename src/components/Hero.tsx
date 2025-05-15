@@ -1,6 +1,6 @@
 
 import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, ChevronDown } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 const Hero = () => {
@@ -79,17 +79,17 @@ const Hero = () => {
           </div>
         </div>
         
-        {/* Scroll Indicator with enhanced bounce */}
+        {/* Enhanced Scroll Indicator */}
         <div 
-          className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center animate-bounce"
+          className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center"
           style={{
             opacity: Math.max(0, 1 - scrollPosition * 0.005)
           }}
         >
-          <span className="text-white text-sm font-medium mb-2">Discover</span>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 5V19M12 19L19 12M12 19L5 12" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
+          <span className="text-white text-sm font-medium mb-2">Discover More</span>
+          <div className="relative h-12 w-6 border-2 border-white rounded-full flex justify-center">
+            <div className="absolute top-2 w-2 h-2 bg-white rounded-full animate-bounce"></div>
+          </div>
         </div>
       </div>
 
@@ -102,6 +102,36 @@ const Hero = () => {
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-8">
               Our Story
             </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+              <div>
+                <img 
+                  src="https://images.unsplash.com/photo-1556707752-481d500a2c58?q=80&w=1080&auto=format&fit=crop" 
+                  alt="Sisters working together" 
+                  className="rounded-lg shadow-xl w-full h-auto"
+                />
+              </div>
+              <div className="space-y-4">
+                <p className="text-lg text-gray-700 leading-relaxed">
+                  Sister Storage was born from a shared frustration: beautiful homes cluttered by 
+                  unattractive storage solutions. Founded by siblings Emma and Olivia in 2020, 
+                  we set out to create storage pieces that enhance your space rather than hide away.
+                </p>
+                <p className="text-lg text-gray-700 leading-relaxed">
+                  Our designs combine aesthetics with functionality, transforming organization from a 
+                  chore to an expression of style. Every Sister Storage piece is thoughtfully crafted 
+                  to bring harmony to your space and joy to your organizing experience.
+                </p>
+                <Button 
+                  variant="secondary" 
+                  className="px-6 py-5 text-base group mt-4"
+                >
+                  <span className="flex items-center">
+                    Learn More About Us
+                    <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                  </span>
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
