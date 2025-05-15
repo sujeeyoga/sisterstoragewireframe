@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
+import Layout from "@/components/layout/Layout";
 
 // Sample blog posts
 const blogPosts = [
@@ -61,9 +61,9 @@ const Blog = () => {
     : blogPosts.filter(post => post.category === selectedCategory);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <Layout>
       {/* Hero Section */}
-      <div className="relative pt-28 pb-16 bg-purple-50">
+      <div className="relative pb-16 bg-purple-50">
         <div className="container-custom">
           <h1 className="text-4xl md:text-5xl font-bold text-center mb-4">Organization & Inspiration</h1>
           <p className="text-gray-700 text-center max-w-2xl mx-auto mb-10">
@@ -171,9 +171,7 @@ const Blog = () => {
           </div>
         </div>
       </div>
-      
-      <Footer />
-    </div>
+    </Layout>
   );
 };
 

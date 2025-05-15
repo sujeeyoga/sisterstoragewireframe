@@ -1,11 +1,10 @@
-
 import React, { useState } from "react";
-import Footer from "@/components/Footer";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ShoppingBag } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/components/ui/use-toast";
+import Layout from "@/components/layout/Layout";
 
 // Sample product data
 const products = [
@@ -88,9 +87,9 @@ const Shop = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <Layout>
       {/* Hero Section */}
-      <div className="relative pt-28 pb-8 bg-purple-50">
+      <div className="relative pb-8 bg-purple-50">
         <div className="container-custom pt-6">
           <h1 className="font-bold text-center mb-4">BUY</h1>
           <p className="text-gray-700 text-center max-w-2xl mx-auto mb-8">
@@ -146,9 +145,7 @@ const Shop = () => {
           </div>
         </div>
       </div>
-      
-      <Footer />
-    </div>
+    </Layout>
   );
 };
 

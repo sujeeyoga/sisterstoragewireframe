@@ -1,14 +1,13 @@
-
 import React from "react";
-import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import Newsletter from "@/components/Newsletter";
+import Layout from "@/components/layout/Layout";
 
 const About = () => {
   return (
-    <div className="min-h-screen flex flex-col">
+    <Layout>
       {/* Hero Section */}
-      <div className="relative pt-28 pb-20 bg-purple-50">
+      <div className="relative pb-20 bg-purple-50">
         <div className="container-custom">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="order-2 lg:order-1">
@@ -115,9 +114,7 @@ const About = () => {
       
       {/* Newsletter Section */}
       <Newsletter />
-      
-      <Footer />
-    </div>
+    </Layout>
   );
 };
 

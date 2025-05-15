@@ -1,13 +1,12 @@
-
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import Footer from "@/components/Footer";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/components/ui/use-toast";
 import ProductImage from "@/components/product/ProductImage";
 import ProductInfo from "@/components/product/ProductInfo";
 import Breadcrumbs from "@/components/product/Breadcrumbs";
 import RelatedProducts from "@/components/product/RelatedProducts";
+import Layout from "@/components/layout/Layout";
 
 // Sample product data (would typically come from an API)
 const products = [
@@ -65,16 +64,15 @@ const ProductDetail = () => {
   // Handle case where product isn't found
   if (!product) {
     return (
-      <div className="min-h-screen flex flex-col">
-        <div className="flex-grow flex items-center justify-center pt-28">
+      <Layout>
+        <div className="flex-grow flex items-center justify-center">
           <div className="text-center">
             <h2 className="font-bold text-base">Product Not Found</h2>
             <p className="mt-2 text-xs text-gray-600">The product you're looking for doesn't exist or has been removed.</p>
             <button className="mt-4 text-xs bg-purple-600 hover:bg-purple-500 text-white px-3 py-1 rounded-md" onClick={() => window.history.back()}>Go Back</button>
           </div>
         </div>
-        <Footer />
-      </div>
+      </Layout>
     );
   }
   
@@ -98,8 +96,8 @@ const ProductDetail = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <div className="pt-28 pb-10 flex-grow">
+    <Layout>
+      <div className="pb-10">
         <div className="container-custom">
           <Breadcrumbs productName={product.name} />
           
@@ -118,9 +116,7 @@ const ProductDetail = () => {
           <RelatedProducts products={relatedProducts} />
         </div>
       </div>
-      
-      <Footer />
-    </div>
+    </Layout>
   );
 };
 
