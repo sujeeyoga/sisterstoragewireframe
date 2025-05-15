@@ -3,6 +3,7 @@ import React from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useLocation } from "react-router-dom";
+import SaleBanner from "../SaleBanner";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -20,6 +21,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
+      <SaleBanner />
       <main className="flex-grow pt-28">
         {children}
       </main>

@@ -3,7 +3,6 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, ChevronDown, ShoppingBag } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import SaleBanner from './SaleBanner';
 
 const Hero = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
@@ -94,9 +93,6 @@ const Hero = () => {
 
       {/* Story Highlight Section */}
       <div className="py-16 md:py-20 bg-white">
-        {/* Spring Summer Sale Banner - Added here in the white section */}
-        <SaleBanner />
-
         <div className="container-custom">
           <div 
             className={`transition-all duration-700 transform ${storyVisible ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'}`}
