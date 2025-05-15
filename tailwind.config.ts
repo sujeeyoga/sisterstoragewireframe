@@ -145,7 +145,8 @@ export default {
 			},
 			fontFamily: {
 				sans: ['Inter', 'sans-serif'],
-				display: ['Montserrat', 'sans-serif']
+				display: ['Montserrat', 'sans-serif'],
+				poppins: ['Poppins', 'sans-serif'],
 			}
 		}
 	},

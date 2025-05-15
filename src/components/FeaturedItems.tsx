@@ -1,9 +1,7 @@
-
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
 import { ShoppingBag } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 // Mock data for our storage items
 const menuCategories = [
@@ -148,9 +146,7 @@ const FeaturedItems = () => {
                         <span className="text-purple-600 font-bold">{item.price}</span>
                       </div>
                       <p className="text-gray-600 text-sm mb-4 line-clamp-2 h-10">{item.description}</p>
-                      <Button 
-                        className="w-full bg-purple-600 hover:bg-purple-700 text-white flex items-center justify-center gap-2"
-                      >
+                      <Button className="w-full flex items-center justify-center gap-2">
                         <ShoppingBag className="h-4 w-4" />
                         Add to Cart
                       </Button>
@@ -164,8 +160,8 @@ const FeaturedItems = () => {
         
         <div className="text-center mt-10 md:mt-12">
           <Button 
-            variant="outline" 
-            className="border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white px-6 py-5 text-base w-full sm:w-auto max-w-xs mx-auto"
+            variant="secondary" 
+            className="px-6 py-5 text-base w-full sm:w-auto max-w-xs mx-auto"
           >
             View All Collections
           </Button>

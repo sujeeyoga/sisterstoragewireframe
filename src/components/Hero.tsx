@@ -29,10 +29,10 @@ const Hero = () => {
             Our thoughtfully designed storage solutions bring both beauty and functionality to your space, transforming chaos into elegance with every box, tray, and organizer.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
-            <Button className="bg-purple-600 hover:bg-white hover:text-purple-600 text-white px-6 py-5 text-base w-full sm:w-auto transition-colors">
+            <Button className="px-6 py-5 text-base w-full sm:w-auto">
               Explore Storage Solutions
             </Button>
-            <Button variant="outline" className="border-white text-white hover:bg-white/10 px-6 py-5 text-base w-full sm:w-auto">
+            <Button variant="secondary" className="px-6 py-5 text-base w-full sm:w-auto">
               Learn Our Story <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </div>
