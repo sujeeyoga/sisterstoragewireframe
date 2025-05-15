@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import Footer from "@/components/Footer";
 import { Link } from "react-router-dom";
@@ -89,7 +90,7 @@ const Shop = () => {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Hero Section */}
-      <div className="relative pt-24 pb-8 bg-purple-50">
+      <div className="relative pt-28 pb-8 bg-purple-50">
         <div className="container-custom pt-6">
           <h1 className="font-bold text-center mb-4">BUY</h1>
           <p className="text-gray-700 text-center max-w-2xl mx-auto mb-8">

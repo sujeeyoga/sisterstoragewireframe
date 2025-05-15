@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import Footer from "@/components/Footer";
@@ -65,7 +66,7 @@ const ProductDetail = () => {
   if (!product) {
     return (
       <div className="min-h-screen flex flex-col">
-        <div className="flex-grow flex items-center justify-center pt-24">
+        <div className="flex-grow flex items-center justify-center pt-28">
           <div className="text-center">
             <h2 className="font-bold text-base">Product Not Found</h2>
             <p className="mt-2 text-xs text-gray-600">The product you're looking for doesn't exist or has been removed.</p>
@@ -98,7 +99,7 @@ const ProductDetail = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <div className="pt-24 pb-10 flex-grow">
+      <div className="pt-28 pb-10 flex-grow">
         <div className="container-custom">
           <Breadcrumbs productName={product.name} />
           
