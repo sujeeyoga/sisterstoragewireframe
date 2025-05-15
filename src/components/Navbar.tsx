@@ -25,6 +25,20 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMobile) {
+      if (mobileMenuOpen) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = '';
+      }
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileMenuOpen, isMobile]);
+
   return (
     <header 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -68,8 +82,9 @@ const Navbar = () => {
         {/* Mobile Menu Toggle */}
         {isMobile && (
           <button 
-            className="p-1.5 text-white focus:outline-none"
+            className="p-1.5 text-white focus:outline-none z-50"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle mobile menu"
           >
             {mobileMenuOpen ? (
               <X className="h-5 w-5" />
@@ -83,39 +98,42 @@ const Navbar = () => {
       {/* Mobile Menu Dropdown */}
       {isMobile && (
         <div 
-          className={`fixed inset-0 bg-gray-800 z-40 pt-20 px-4 transition-transform duration-300 ease-in-out ${
-            mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+          className={`fixed inset-0 bg-gray-800 z-40 transition-transform duration-300 ease-in-out ${
+            mobileMenuOpen ? 'translate-y-0' : 'translate-y-[-100%]'
           }`}
+          aria-hidden={!mobileMenuOpen}
         >
-          <nav className="flex flex-col space-y-5 items-center">
-            {[
-              { name: 'US SISTERS', path: '/about' },
-              { name: 'BUY', path: '/shop', icon: ShoppingBag },
-              { name: 'GIFT', path: '#gift', icon: Gift },
-              { name: 'CONTACT', path: '#contact', icon: Mail }
-            ].map((item) => (
-              <Link 
-                key={item.name} 
-                to={item.path} 
-                className="text-white hover:text-purple-300 transition-colors duration-300 flex items-center gap-1.5"
-                onClick={() => setMobileMenuOpen(false)}
+          <div className="h-full flex flex-col pt-20 px-6">
+            <nav className="flex flex-col space-y-6 items-center mt-8">
+              {[
+                { name: 'US SISTERS', path: '/about' },
+                { name: 'BUY', path: '/shop', icon: ShoppingBag },
+                { name: 'GIFT', path: '#gift', icon: Gift },
+                { name: 'CONTACT', path: '#contact', icon: Mail }
+              ].map((item) => (
+                <Link 
+                  key={item.name} 
+                  to={item.path} 
+                  className="text-white text-lg font-medium hover:text-sister-purple transition-colors duration-300 flex items-center gap-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {item.icon && <item.icon className="h-5 w-5" />}
+                  {item.name}
+                </Link>
+              ))}
+              <Button 
+                className="w-full mt-4" 
+                size="lg"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  setCartOpen(true);
+                }}
               >
-                {item.icon && <item.icon className="h-4 w-4" />}
-                {item.name}
-              </Link>
-            ))}
-            <Button 
-              className="w-full mt-2" 
-              size="sm"
-              onClick={() => {
-                setMobileMenuOpen(false);
-                setCartOpen(true);
-              }}
-            >
-              <ShoppingBag className="mr-1 h-3 w-3" />
-              Cart ({totalItems})
-            </Button>
-          </nav>
+                <ShoppingBag className="mr-2 h-4 w-4" />
+                Cart ({totalItems})
+              </Button>
+            </nav>
+          </div>
         </div>
       )}
     </header>
