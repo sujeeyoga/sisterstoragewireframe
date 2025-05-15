@@ -5,6 +5,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { ShoppingBag } from "lucide-react";
+import { useCart } from "@/contexts/CartContext";
+import { useToast } from "@/components/ui/use-toast";
 
 // Sample product data (would typically come from an API)
 const products = [
@@ -53,6 +55,8 @@ const products = [
 const ProductDetail = () => {
   const { productId } = useParams<{ productId: string }>();
   const [quantity, setQuantity] = useState(1);
+  const { addItem } = useCart();
+  const { toast } = useToast();
   
   // Find the product based on the URL parameter
   const product = products.find(p => p.id === productId);
@@ -78,6 +82,20 @@ const ProductDetail = () => {
   const relatedProducts = product.relatedProducts 
     ? products.filter(p => product.relatedProducts?.includes(p.id))
     : [];
+
+  const handleAddToCart = () => {
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.imageUrl
+    });
+    
+    toast({
+      title: "Added to cart",
+      description: `${quantity} × ${product.name} added to your cart`,
+    });
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -167,6 +185,7 @@ const ProductDetail = () => {
               <Button 
                 className="bg-purple-600 hover:bg-purple-500 text-white w-full py-6 text-base"
                 disabled={!product.stock}
+                onClick={handleAddToCart}
               >
                 <ShoppingBag className="mr-2 h-5 w-5" />
                 Add to Cart

@@ -1,7 +1,11 @@
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
 import { ShoppingBag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useCart } from '@/contexts/CartContext';
+import { useToast } from '@/components/ui/use-toast';
+import { Link } from 'react-router-dom';
 
 // Mock data for our storage items
 const menuCategories = [
@@ -13,97 +17,114 @@ const menuCategories = [
 const menuItems = {
   boxes: [
     {
-      id: 1,
+      id: "box1",
       name: 'Velvet Bangle Organizer',
       description: 'Elegant, durable velvet organizer perfect for preserving your precious bangles and bracelets',
-      price: '$29.99',
+      price: 29.99,
       image: 'https://images.unsplash.com/photo-1595409825750-7b55f0c7b361?q=80&w=800&auto=format&fit=crop'
     },
     {
-      id: 2,
+      id: "box2",
       name: 'Glass Lid Storage Box',
       description: 'Beautiful display box with glass lid perfect for showcasing your favorite accessories while keeping them dust-free',
-      price: '$34.99',
+      price: 34.99,
       image: 'https://images.unsplash.com/photo-1581783342308-f792dbdd27c5?q=80&w=800&auto=format&fit=crop'
     },
     {
-      id: 3,
+      id: "box3",
       name: 'Stackable Fabric Bins',
       description: 'Versatile fabric storage bins that beautifully stack to maximize your space with a clean, minimal aesthetic',
-      price: '$24.99',
+      price: 24.99,
       image: 'https://images.unsplash.com/photo-1585909695284-32d2985ac9c0?q=80&w=800&auto=format&fit=crop'
     },
     {
-      id: 4,
+      id: "box4",
       name: 'Minimalist Desk Organizer',
       description: 'Sleek desk organizer with multiple compartments to keep your workspace tidy and aesthetically pleasing',
-      price: '$19.99',
+      price: 19.99,
       image: 'https://images.unsplash.com/photo-1591129841117-3adfd313e34f?q=80&w=800&auto=format&fit=crop'
     },
   ],
   jewelry: [
     {
-      id: 5,
+      id: "jewelry1",
       name: 'Ring Display Tower',
       description: 'Vertical ring organizer designed to showcase your collection while keeping each piece separate and protected',
-      price: '$22.99',
+      price: 22.99,
       image: 'https://images.unsplash.com/photo-1635767798638-3665c677a227?q=80&w=800&auto=format&fit=crop'
     },
     {
-      id: 6,
+      id: "jewelry2",
       name: 'Earring Storage Case',
       description: 'Multi-compartment earring organizer perfect for studs, hoops, and dangly earrings with clear display',
-      price: '$26.99',
+      price: 26.99,
       image: 'https://images.unsplash.com/photo-1619119069152-a2b331eb392a?q=80&w=800&auto=format&fit=crop'
     },
     {
-      id: 7,
+      id: "jewelry3",
       name: 'Necklace Hanger Frame',
       description: 'Beautiful frame with hooks to hang your necklaces tangle-free while creating a stunning wall display',
-      price: '$32.99',
+      price: 32.99,
       image: 'https://images.unsplash.com/photo-1543294001-f7cd5d7fb516?q=80&w=800&auto=format&fit=crop'
     },
     {
-      id: 8,
+      id: "jewelry4",
       name: 'Watch Display Box',
       description: 'Elegant watch organizer with padded slots to protect your timepieces while keeping them beautifully displayed',
-      price: '$39.99',
+      price: 39.99,
       image: 'https://images.unsplash.com/photo-1587836374828-4dbafa94cf0e?q=80&w=800&auto=format&fit=crop'
     },
   ],
   sets: [
     {
-      id: 9,
+      id: "set1",
       name: 'Complete Dresser Set',
       description: 'Comprehensive matching storage set for your dresser, including jewelry, accessory, and makeup organizers',
-      price: '$79.99',
+      price: 79.99,
       image: 'https://images.unsplash.com/photo-1591129841117-3adfd313e34f?q=80&w=800&auto=format&fit=crop'
     },
     {
-      id: 10,
+      id: "set2",
       name: 'Closet System Bundle',
       description: 'Transform your closet with our coordinated set of boxes, bins, and hangers for a cohesive organized space',
-      price: '$89.99',
+      price: 89.99,
       image: 'https://images.unsplash.com/photo-1595408043711-455f9386b41b?q=80&w=800&auto=format&fit=crop'
     },
     {
-      id: 11,
+      id: "set3",
       name: 'Bathroom Counter Kit',
       description: 'Set of stylish containers and trays for organizing your bathroom essentials into an aesthetically pleasing display',
-      price: '$64.99',
+      price: 64.99,
       image: 'https://images.unsplash.com/photo-1595052428850-404c2026c1fe?q=80&w=800&auto=format&fit=crop'
     },
     {
-      id: 12,
+      id: "set4",
       name: 'Office Storage Collection',
       description: 'Coordinated desk organizers, file holders, and stationery containers to enhance your productivity and workspace beauty',
-      price: '$74.99',
+      price: 74.99,
       image: 'https://images.unsplash.com/photo-1554232456-8727aae0cfa4?q=80&w=800&auto=format&fit=crop'
     },
   ],
 };
 
 const FeaturedItems = () => {
+  const { addItem } = useCart();
+  const { toast } = useToast();
+  
+  const handleAddToCart = (item: { id: string; name: string; price: number; image: string }) => {
+    addItem({
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      image: item.image
+    });
+    
+    toast({
+      title: "Added to cart",
+      description: `${item.name} added to your cart`,
+    });
+  };
+
   return (
     <section id="menu" className="py-16 md:py-20 bg-white">
       <div className="container-custom">
@@ -143,10 +164,13 @@ const FeaturedItems = () => {
                     <CardContent className="p-5 md:p-6">
                       <div className="flex justify-between items-start mb-2">
                         <h3 className="text-lg md:text-xl font-semibold">{item.name}</h3>
-                        <span className="text-purple-600 font-bold">{item.price}</span>
+                        <span className="text-purple-600 font-bold">${item.price.toFixed(2)}</span>
                       </div>
                       <p className="text-gray-600 text-sm mb-4 line-clamp-2 h-10">{item.description}</p>
-                      <Button className="w-full flex items-center justify-center gap-2">
+                      <Button 
+                        className="w-full flex items-center justify-center gap-2"
+                        onClick={() => handleAddToCart(item)}
+                      >
                         <ShoppingBag className="h-4 w-4" />
                         Add to Cart
                       </Button>
@@ -162,8 +186,11 @@ const FeaturedItems = () => {
           <Button 
             variant="secondary" 
             className="px-6 py-5 text-base w-full sm:w-auto max-w-xs mx-auto"
+            asChild
           >
-            View All Collections
+            <Link to="/shop">
+              View All Collections
+            </Link>
           </Button>
         </div>
       </div>

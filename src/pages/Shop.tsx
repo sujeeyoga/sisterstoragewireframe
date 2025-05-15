@@ -5,6 +5,8 @@ import Footer from "@/components/Footer";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ShoppingBag } from "lucide-react";
+import { useCart } from "@/contexts/CartContext";
+import { useToast } from "@/components/ui/use-toast";
 
 // Sample product data
 const products = [
@@ -62,10 +64,29 @@ const categories = ["all", "bathroom", "kitchen", "living", "office", "closet", 
 
 const Shop = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const { addItem } = useCart();
+  const { toast } = useToast();
   
   const filteredProducts = selectedCategory === "all" 
     ? products 
     : products.filter(product => product.category === selectedCategory);
+
+  const handleAddToCart = (product: typeof products[0], e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.imageUrl
+    });
+    
+    toast({
+      title: "Added to cart",
+      description: `${product.name} added to your cart`,
+    });
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -116,7 +137,11 @@ const Shop = () => {
                   <p className="text-gray-600 text-sm mb-2 line-clamp-2">{product.description}</p>
                   <div className="flex justify-between items-center">
                     <span className="font-bold text-lg">${product.price.toFixed(2)}</span>
-                    <Button size="sm" className="bg-purple-600 hover:bg-purple-500">
+                    <Button 
+                      size="sm" 
+                      className="bg-purple-600 hover:bg-purple-500"
+                      onClick={(e) => handleAddToCart(product, e)}
+                    >
                       <ShoppingBag className="h-4 w-4 mr-1" />
                       Add to Cart
                     </Button>

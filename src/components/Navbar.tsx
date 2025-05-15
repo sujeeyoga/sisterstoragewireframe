@@ -4,11 +4,13 @@ import { Menu, X, ShoppingBag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Link } from 'react-router-dom';
+import { useCart } from '@/contexts/CartContext';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isMobile = useIsMobile();
+  const { totalItems, setIsOpen: setCartOpen } = useCart();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -55,9 +57,10 @@ const Navbar = () => {
             <Button 
               className="bg-purple-600 hover:bg-purple-500 text-white" 
               size="sm"
+              onClick={() => setCartOpen(true)}
             >
               <ShoppingBag className="mr-2 h-4 w-4" />
-              Cart (0)
+              Cart ({totalItems})
             </Button>
           </nav>
         )}
@@ -103,9 +106,13 @@ const Navbar = () => {
             <Button 
               className="bg-purple-600 hover:bg-purple-500 text-white w-full mt-4" 
               size="lg"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                setCartOpen(true);
+              }}
             >
               <ShoppingBag className="mr-2 h-5 w-5" />
-              Cart (0)
+              Cart ({totalItems})
             </Button>
           </nav>
         </div>
