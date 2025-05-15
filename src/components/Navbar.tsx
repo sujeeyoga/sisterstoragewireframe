@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Menu, X, ShoppingBag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -25,33 +26,38 @@ const Navbar = () => {
   return (
     <header 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-ramen-black/90 backdrop-blur-md shadow-lg py-3' : 'bg-transparent py-5'
+        isScrolled ? 'bg-gray-800/90 backdrop-blur-md shadow-lg py-3' : 'bg-transparent py-5'
       }`}
     >
       <div className="container-custom flex items-center justify-between">
         {/* Logo */}
-        <a href="/" className="relative z-10">
-          <h1 className="text-ramen-white text-2xl font-bold">RAMEN BAE</h1>
-        </a>
+        <Link to="/" className="relative z-10">
+          <h1 className="text-white text-2xl font-bold">SISTER STORAGE</h1>
+        </Link>
 
         {/* Desktop Menu */}
         {!isMobile && (
           <nav className="hidden md:flex items-center space-x-8">
-            {['Menu', 'About', 'Locations', 'Order Online'].map((item) => (
-              <a 
-                key={item} 
-                href={`#${item.toLowerCase()}`} 
-                className="text-ramen-white hover:text-ramen-red transition-colors duration-300 text-sm font-medium"
+            {[
+              { name: 'Shop', path: '/shop' },
+              { name: 'About', path: '/about' }, 
+              { name: 'Blog', path: '/blog' },
+              { name: 'Contact', path: '#contact' }
+            ].map((item) => (
+              <Link 
+                key={item.name} 
+                to={item.path.startsWith('#') ? item.path : item.path} 
+                className="text-white hover:text-purple-300 transition-colors duration-300 text-sm font-medium"
               >
-                {item}
-              </a>
+                {item.name}
+              </Link>
             ))}
             <Button 
-              className="bg-ramen-red hover:bg-ramen-red/90 text-ramen-white" 
+              className="bg-purple-600 hover:bg-purple-500 text-white" 
               size="sm"
             >
               <ShoppingBag className="mr-2 h-4 w-4" />
-              Order Now
+              Cart (0)
             </Button>
           </nav>
         )}
@@ -59,7 +65,7 @@ const Navbar = () => {
         {/* Mobile Menu Toggle */}
         {isMobile && (
           <button 
-            className="p-2 text-ramen-white focus:outline-none"
+            className="p-2 text-white focus:outline-none"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? (
@@ -74,27 +80,32 @@ const Navbar = () => {
       {/* Mobile Menu Dropdown */}
       {isMobile && (
         <div 
-          className={`fixed inset-0 bg-ramen-black z-40 pt-24 px-4 transition-transform duration-300 ease-in-out ${
+          className={`fixed inset-0 bg-gray-800 z-40 pt-24 px-4 transition-transform duration-300 ease-in-out ${
             mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
           }`}
         >
           <nav className="flex flex-col space-y-6 items-center">
-            {['Menu', 'About', 'Locations', 'Order Online'].map((item) => (
-              <a 
-                key={item} 
-                href={`#${item.toLowerCase()}`} 
-                className="text-ramen-white hover:text-ramen-red transition-colors duration-300 text-xl font-medium"
+            {[
+              { name: 'Shop', path: '/shop' },
+              { name: 'About', path: '/about' }, 
+              { name: 'Blog', path: '/blog' },
+              { name: 'Contact', path: '#contact' }
+            ].map((item) => (
+              <Link 
+                key={item.name} 
+                to={item.path.startsWith('#') ? item.path : item.path} 
+                className="text-white hover:text-purple-300 transition-colors duration-300 text-xl font-medium"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                {item}
-              </a>
+                {item.name}
+              </Link>
             ))}
             <Button 
-              className="bg-ramen-red hover:bg-ramen-red/90 text-ramen-white w-full mt-4" 
+              className="bg-purple-600 hover:bg-purple-500 text-white w-full mt-4" 
               size="lg"
             >
               <ShoppingBag className="mr-2 h-5 w-5" />
-              Order Now
+              Cart (0)
             </Button>
           </nav>
         </div>
