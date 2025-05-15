@@ -54,9 +54,10 @@ const Hero = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Button 
-              className="px-6 py-5 text-base w-full sm:w-auto group transition-all duration-300"
+              className="px-6 py-5 text-base w-full sm:w-auto group relative overflow-hidden transition-all duration-300"
             >
-              <span className="relative z-10 transition-transform group-hover:translate-x-1">Explore Storage Solutions</span>
+              <span className="relative z-10 transition-transform group-hover:translate-x-1">Shop Now</span>
+              <span className="absolute inset-0 bg-purple-600 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"></span>
             </Button>
             <Button 
               variant="secondary" 
