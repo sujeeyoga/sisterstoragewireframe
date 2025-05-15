@@ -34,13 +34,14 @@ const Hero = () => {
         >
         </div>
         
-        {/* Content with Fade and Float Effect */}
+        {/* Content with Fade and Float Effect - Now with solid colors */}
         <div className="container-custom relative h-full flex flex-col justify-center items-center md:items-start pt-20">
           <div 
             className="max-w-2xl text-center md:text-left"
             style={{
               transform: `translateY(${Math.min(0, -20 + scrollPosition * 0.1)}px)`,
-              opacity: Math.max(0.2, 1 - scrollPosition * 0.002)
+              // Removed opacity transition, using display or visibility instead
+              display: scrollPosition > 500 ? 'none' : 'block'
             }}
           >
             <span className="inline-block px-4 py-1 mb-5 text-sm font-medium bg-white text-[#E90064] rounded-full animate-fade-in">
@@ -49,7 +50,7 @@ const Hero = () => {
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
               Culture Without Clutter.
             </h1>
-            <h3 className="text-xl md:text-2xl text-white/90 mb-6">
+            <h3 className="text-xl md:text-2xl text-gray-200 mb-6">
               Designed by us — for us.
             </h3>
             <div className="flex flex-col sm:flex-row gap-4 mb-6">
@@ -64,18 +65,19 @@ const Hero = () => {
                 </Link>
               </Button>
             </div>
-            <p className="text-sm md:text-base text-white/90 max-w-lg">
+            <p className="text-sm md:text-base text-gray-200 max-w-lg">
               Made by us, for us... By sisters, for sisters.<br />
               Clutter never had a place in our culture.
             </p>
           </div>
         </div>
         
-        {/* Enhanced Scroll Indicator */}
+        {/* Enhanced Scroll Indicator - Now with solid colors */}
         <div 
           className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center cursor-pointer"
           style={{
-            opacity: Math.max(0, 1 - scrollPosition * 0.005)
+            // Replace opacity transition with display
+            display: scrollPosition > 200 ? 'none' : 'flex'
           }}
           onClick={() => window.scrollTo({
             top: window.innerHeight,

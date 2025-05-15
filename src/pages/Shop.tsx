@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -128,8 +129,8 @@ const Shop = () => {
 
   return (
     <Layout>
-      {/* Enhanced Hero Section */}
-      <div className="relative pb-10 bg-gradient-to-b from-pink-50 to-white">
+      {/* Enhanced Hero Section - Replace gradient with solid color */}
+      <div className="relative pb-10 bg-pink-50">
         <div className="container-custom pt-10">
           <div className="max-w-2xl mx-auto text-center mb-8">
             <h1 className="font-bold text-3xl mb-4">Storage with Soul</h1>
