@@ -36,12 +36,12 @@ const Newsletter = () => {
   };
 
   return (
-    <section className="bg-purple-50 py-16">
+    <section className="bg-purple-50 py-16 md:py-20">
       <div className="container-custom">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Stay Organized & Inspired</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Stay Organized. Stay Inspired.</h2>
           <p className="text-gray-700 mb-8 max-w-xl mx-auto">
-            Subscribe to our newsletter for organization tips, exclusive offers, and first access to new collections.
+            Join our list for exclusive drops, inspiration, and promotions made for our sisters.
           </p>
           
           <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
@@ -56,9 +56,9 @@ const Newsletter = () => {
             <Button 
               type="submit" 
               disabled={isLoading}
-              className="bg-purple-600 hover:bg-purple-500 text-white"
+              className="bg-[#E6007E] hover:bg-black text-white"
             >
-              {isLoading ? "Subscribing..." : "Subscribe"}
+              {isLoading ? "Signing Up..." : "Sign Up"}
             </Button>
           </form>
         </div>

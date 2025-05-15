@@ -3,6 +3,7 @@ import React from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
+import Newsletter from "@/components/Newsletter";
 
 const About = () => {
   return (
@@ -14,15 +15,15 @@ const About = () => {
         <div className="container-custom">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="order-2 lg:order-1">
-              <span className="text-purple-600 font-medium">Our Story</span>
-              <h1 className="text-4xl md:text-5xl font-bold mt-2 mb-6">Sisters with a Vision</h1>
+              <span className="text-[#E6007E] font-medium">Our Story</span>
+              <h1 className="text-4xl md:text-5xl font-bold mt-2 mb-6">By Sisters, For Sisters</h1>
               <p className="text-gray-700 mb-6 leading-relaxed">
-                Sister Storage was founded in 2020 by siblings Emma and Olivia Wilson, who were frustrated by the lack of 
-                storage solutions that could match their home aesthetics while remaining practical.
+                Sister Storage was created for the women who celebrate their culture boldly, 
+                live beautifully, and organize powerfully. We believe in honoring our traditions 
+                while designing for our modern lives.
               </p>
-              <p className="text-gray-700 mb-6 leading-relaxed">
-                What began as handmade storage boxes for their own homes quickly grew into a thriving business as friends, 
-                family, and eventually customers fell in love with their thoughtfully designed pieces that balance beauty and function.
+              <p className="text-gray-700 mb-6 leading-relaxed font-medium italic">
+                "Designed with love, built for everyday beauty."
               </p>
             </div>
             <div className="order-1 lg:order-2 overflow-hidden rounded-lg">
@@ -43,8 +44,8 @@ const About = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
-                title: "Thoughtful Design",
-                description: "Every piece we create is thoughtfully designed to enhance your space while solving organization challenges.",
+                title: "Cultural Celebration",
+                description: "Every piece we create celebrates and honors our cultural treasures and traditions.",
                 icon: "✨"
               },
               {
@@ -71,31 +72,31 @@ const About = () => {
       {/* Team Section */}
       <div className="py-20 bg-gray-50">
         <div className="container-custom">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Meet Our Team</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Meet Our Sisters</h2>
           <p className="text-gray-700 text-center max-w-2xl mx-auto mb-12">
-            The talented individuals who bring Sister Storage to life.
+            The talented sisters who bring Sister Storage to life.
           </p>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
               {
-                name: "Emma Wilson",
+                name: "Priya Shah",
                 role: "Co-Founder & Creative Director",
                 image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=600&auto=format&fit=crop"
               },
               {
-                name: "Olivia Wilson",
+                name: "Divya Shah",
                 role: "Co-Founder & Operations Director",
                 image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=600&auto=format&fit=crop"
               },
               {
-                name: "James Chen",
-                role: "Product Development Manager",
+                name: "Meera Patel",
+                role: "Product Development Lead",
                 image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=600&auto=format&fit=crop"
               },
               {
-                name: "Sophia Rodriguez",
-                role: "Customer Experience Lead",
+                name: "Anisha Joshi",
+                role: "Community Manager",
                 image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=600&auto=format&fit=crop"
               }
             ].map((member, index) => (
@@ -115,21 +116,8 @@ const About = () => {
         </div>
       </div>
       
-      {/* Join Us CTA */}
-      <div className="py-16 bg-purple-100">
-        <div className="container-custom text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">Join Our Journey</h2>
-          <p className="text-gray-700 max-w-2xl mx-auto mb-8">
-            We're always looking for talented individuals who are passionate about beautiful organization to join our team.
-          </p>
-          <Button 
-            className="bg-purple-600 hover:bg-purple-500 text-white px-8 py-6 text-lg"
-            size="lg"
-          >
-            View Open Positions
-          </Button>
-        </div>
-      </div>
+      {/* Newsletter Section */}
+      <Newsletter />
       
       <Footer />
     </div>

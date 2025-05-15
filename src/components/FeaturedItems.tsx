@@ -9,38 +9,38 @@ import { Link } from 'react-router-dom';
 
 // Mock data for our storage items
 const menuCategories = [
-  { id: 'boxes', label: 'Storage Boxes' },
+  { id: 'bangles', label: 'Bangle Storage' },
   { id: 'jewelry', label: 'Jewelry Storage' },
-  { id: 'sets', label: 'Storage Sets' },
+  { id: 'keepsakes', label: 'Keepsake Storage' },
 ];
 
 const menuItems = {
-  boxes: [
+  bangles: [
     {
       id: "box1",
       name: 'Velvet Bangle Organizer',
-      description: 'Elegant, durable velvet organizer perfect for preserving your precious bangles and bracelets',
+      description: 'Preserve your bangles with care in our soft-touch velvet box.',
       price: 29.99,
       image: 'https://images.unsplash.com/photo-1595409825750-7b55f0c7b361?q=80&w=800&auto=format&fit=crop'
     },
     {
       id: "box2",
-      name: 'Glass Lid Storage Box',
-      description: 'Beautiful display box with glass lid perfect for showcasing your favorite accessories while keeping them dust-free',
+      name: 'Glass Lid Bangle Box',
+      description: 'Beautiful display box with glass lid perfect for showcasing your bangles while keeping them dust-free',
       price: 34.99,
       image: 'https://images.unsplash.com/photo-1581783342308-f792dbdd27c5?q=80&w=800&auto=format&fit=crop'
     },
     {
       id: "box3",
-      name: 'Stackable Fabric Bins',
-      description: 'Versatile fabric storage bins that beautifully stack to maximize your space with a clean, minimal aesthetic',
+      name: 'Stackable Bangle Trays',
+      description: 'Versatile stackable trays that beautifully organize your bangles with a clean, minimal aesthetic',
       price: 24.99,
       image: 'https://images.unsplash.com/photo-1585909695284-32d2985ac9c0?q=80&w=800&auto=format&fit=crop'
     },
     {
       id: "box4",
-      name: 'Minimalist Desk Organizer',
-      description: 'Sleek desk organizer with multiple compartments to keep your workspace tidy and aesthetically pleasing',
+      name: 'Travel Bangle Case',
+      description: 'Elegant travel case designed to keep your bangles safe and organized while on the go',
       price: 19.99,
       image: 'https://images.unsplash.com/photo-1591129841117-3adfd313e34f?q=80&w=800&auto=format&fit=crop'
     },
@@ -48,9 +48,9 @@ const menuItems = {
   jewelry: [
     {
       id: "jewelry1",
-      name: 'Ring Display Tower',
-      description: 'Vertical ring organizer designed to showcase your collection while keeping each piece separate and protected',
-      price: 22.99,
+      name: 'Glass Lid Jewelry Box',
+      description: 'Showcase and protect your collection with style and intention.',
+      price: 42.99,
       image: 'https://images.unsplash.com/photo-1635767798638-3665c677a227?q=80&w=800&auto=format&fit=crop'
     },
     {
@@ -69,39 +69,39 @@ const menuItems = {
     },
     {
       id: "jewelry4",
-      name: 'Watch Display Box',
-      description: 'Elegant watch organizer with padded slots to protect your timepieces while keeping them beautifully displayed',
-      price: 39.99,
+      name: 'Ring Display Tower',
+      description: 'Elegant tower designed to showcase your ring collection while keeping each piece separate and protected',
+      price: 24.99,
       image: 'https://images.unsplash.com/photo-1587836374828-4dbafa94cf0e?q=80&w=800&auto=format&fit=crop'
     },
   ],
-  sets: [
+  keepsakes: [
     {
       id: "set1",
-      name: 'Complete Dresser Set',
-      description: 'Comprehensive matching storage set for your dresser, including jewelry, accessory, and makeup organizers',
-      price: 79.99,
+      name: 'Heirloom Storage Box',
+      description: 'Beautifully crafted box designed to preserve your most treasured cultural heirlooms',
+      price: 59.99,
       image: 'https://images.unsplash.com/photo-1591129841117-3adfd313e34f?q=80&w=800&auto=format&fit=crop'
     },
     {
       id: "set2",
-      name: 'Closet System Bundle',
-      description: 'Transform your closet with our coordinated set of boxes, bins, and hangers for a cohesive organized space',
-      price: 89.99,
+      name: 'Memory Collection Case',
+      description: 'Elegant case with compartments designed to organize and protect your precious memories',
+      price: 49.99,
       image: 'https://images.unsplash.com/photo-1595408043711-455f9386b41b?q=80&w=800&auto=format&fit=crop'
     },
     {
       id: "set3",
-      name: 'Bathroom Counter Kit',
-      description: 'Set of stylish containers and trays for organizing your bathroom essentials into an aesthetically pleasing display',
+      name: 'Cultural Keepsake Box',
+      description: 'Specially designed box that honors and preserves cultural artifacts and keepsakes',
       price: 64.99,
       image: 'https://images.unsplash.com/photo-1595052428850-404c2026c1fe?q=80&w=800&auto=format&fit=crop'
     },
     {
       id: "set4",
-      name: 'Office Storage Collection',
-      description: 'Coordinated desk organizers, file holders, and stationery containers to enhance your productivity and workspace beauty',
-      price: 74.99,
+      name: 'Celebration Memory Box',
+      description: 'Beautiful storage box designed to preserve mementos from special cultural celebrations',
+      price: 54.99,
       image: 'https://images.unsplash.com/photo-1554232456-8727aae0cfa4?q=80&w=800&auto=format&fit=crop'
     },
   ],
@@ -126,23 +126,23 @@ const FeaturedItems = () => {
   };
 
   return (
-    <section id="menu" className="py-16 md:py-20 bg-white">
+    <section id="menu" className="py-16 md:py-20 lg:py-24 bg-white">
       <div className="container-custom">
         <div className="text-center max-w-lg mx-auto mb-10 md:mb-12 px-4">
-          <span className="text-purple-600 font-medium">Find Your Match</span>
+          <span className="text-[#E6007E] font-medium">Find Your Match</span>
           <h2 className="text-3xl md:text-5xl font-bold mt-2 mb-3">Featured Collections</h2>
           <p className="text-gray-600">
-            Discover stylish storage solutions designed to bring beauty and organization to every corner of your life
+            Discover storage that's designed for your bangles, jewelry, and keepsakes — made with the details that matter most.
           </p>
         </div>
         
-        <Tabs defaultValue="boxes" className="w-full">
+        <Tabs defaultValue="bangles" className="w-full">
           <TabsList className="mx-auto flex justify-center mb-8 md:mb-10 bg-transparent border-b border-gray-200 overflow-x-auto no-scrollbar">
             {menuCategories.map((category) => (
               <TabsTrigger 
                 key={category.id} 
                 value={category.id}
-                className="data-[state=active]:border-b-2 data-[state=active]:border-purple-500 data-[state=active]:text-purple-600 px-4 md:px-6 py-3 text-base md:text-lg bg-transparent whitespace-nowrap"
+                className="data-[state=active]:border-b-2 data-[state=active]:border-[#E6007E] data-[state=active]:text-[#E6007E] px-4 md:px-6 py-3 text-base md:text-lg bg-transparent whitespace-nowrap"
               >
                 {category.label}
               </TabsTrigger>
@@ -164,11 +164,11 @@ const FeaturedItems = () => {
                     <CardContent className="p-5 md:p-6">
                       <div className="flex justify-between items-start mb-2">
                         <h3 className="text-lg md:text-xl font-semibold">{item.name}</h3>
-                        <span className="text-purple-600 font-bold">${item.price.toFixed(2)}</span>
+                        <span className="text-[#E6007E] font-bold">${item.price.toFixed(2)}</span>
                       </div>
                       <p className="text-gray-600 text-sm mb-4 line-clamp-2 h-10">{item.description}</p>
                       <Button 
-                        className="w-full flex items-center justify-center gap-2"
+                        className="w-full flex items-center justify-center gap-2 bg-[#E6007E] hover:bg-black"
                         onClick={() => handleAddToCart(item)}
                       >
                         <ShoppingBag className="h-4 w-4" />
@@ -185,7 +185,7 @@ const FeaturedItems = () => {
         <div className="text-center mt-10 md:mt-12">
           <Button 
             variant="secondary" 
-            className="px-6 py-5 text-base w-full sm:w-auto max-w-xs mx-auto"
+            className="px-6 py-5 text-base w-full sm:w-auto max-w-xs mx-auto hover:bg-[#E6007E] hover:text-white hover:border-[#E6007E]"
             asChild
           >
             <Link to="/shop">

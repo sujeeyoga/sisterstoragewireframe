@@ -8,18 +8,18 @@ import Locations from "@/components/Locations";
 import Testimonials from "@/components/Testimonials";
 import Footer from "@/components/Footer";
 import Newsletter from "@/components/Newsletter";
-import ButtonDemonstration from "@/components/ButtonDemonstration";
+import InstagramUGC from "@/components/InstagramUGC";
 
 const Index = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <Hero />
-      <ButtonDemonstration />
       <FeaturedItems />
       <HowItWorks />
       <About />
       <Testimonials />
+      <InstagramUGC />
       <Newsletter />
       <Locations />
       <Footer />

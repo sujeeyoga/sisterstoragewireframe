@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { Menu, X, ShoppingBag } from 'lucide-react';
+import { Menu, X, ShoppingBag, Gift, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Link } from 'react-router-dom';
@@ -41,21 +41,22 @@ const Navbar = () => {
         {!isMobile && (
           <nav className="hidden md:flex items-center space-x-8">
             {[
-              { name: 'Shop', path: '/shop' },
-              { name: 'About', path: '/about' }, 
-              { name: 'Blog', path: '/blog' },
-              { name: 'Contact', path: '#contact' }
+              { name: 'US SISTERS', path: '/about' },
+              { name: 'BUY', path: '/shop', icon: ShoppingBag },
+              { name: 'GIFT', path: '#gift', icon: Gift },
+              { name: 'CONTACT', path: '#contact', icon: Mail }
             ].map((item) => (
               <Link 
                 key={item.name} 
-                to={item.path.startsWith('#') ? item.path : item.path} 
-                className="text-white hover:text-purple-300 transition-colors duration-300 text-sm font-medium"
+                to={item.path}
+                className={`text-white hover:bg-black hover:text-white transition-colors duration-300 text-sm font-medium px-4 py-2 rounded-md ${item.icon ? 'flex items-center gap-2' : ''}`}
               >
+                {item.icon && <item.icon className="h-4 w-4" />}
                 {item.name}
               </Link>
             ))}
             <Button 
-              className="bg-purple-600 hover:bg-purple-500 text-white" 
+              className="bg-sister-purple hover:bg-black text-white" 
               size="sm"
               onClick={() => setCartOpen(true)}
             >
@@ -89,22 +90,23 @@ const Navbar = () => {
         >
           <nav className="flex flex-col space-y-6 items-center">
             {[
-              { name: 'Shop', path: '/shop' },
-              { name: 'About', path: '/about' }, 
-              { name: 'Blog', path: '/blog' },
-              { name: 'Contact', path: '#contact' }
+              { name: 'US SISTERS', path: '/about' },
+              { name: 'BUY', path: '/shop', icon: ShoppingBag },
+              { name: 'GIFT', path: '#gift', icon: Gift },
+              { name: 'CONTACT', path: '#contact', icon: Mail }
             ].map((item) => (
               <Link 
                 key={item.name} 
-                to={item.path.startsWith('#') ? item.path : item.path} 
-                className="text-white hover:text-purple-300 transition-colors duration-300 text-xl font-medium"
+                to={item.path} 
+                className="text-white hover:text-purple-300 transition-colors duration-300 text-xl font-medium flex items-center gap-2"
                 onClick={() => setMobileMenuOpen(false)}
               >
+                {item.icon && <item.icon className="h-5 w-5" />}
                 {item.name}
               </Link>
             ))}
             <Button 
-              className="bg-purple-600 hover:bg-purple-500 text-white w-full mt-4" 
+              className="bg-sister-purple hover:bg-black text-white w-full mt-4" 
               size="lg"
               onClick={() => {
                 setMobileMenuOpen(false);

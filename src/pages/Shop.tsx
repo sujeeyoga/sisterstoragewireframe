@@ -12,55 +12,55 @@ import { useToast } from "@/components/ui/use-toast";
 const products = [
   {
     id: "1",
-    name: "Bamboo Storage Box",
-    description: "Elegant bamboo storage box with lid for bathroom essentials.",
-    price: 35.99,
-    category: "bathroom",
+    name: "Velvet Bangle Organizer",
+    description: "Preserve your bangles with care in our soft-touch velvet box.",
+    price: 29.99,
+    category: "bangles",
     imageUrl: "https://images.unsplash.com/photo-1595408043711-455f9386b41b?q=80&w=600&auto=format&fit=crop"
   },
   {
     id: "2",
-    name: "Fabric Closet Organizer",
-    description: "Soft fabric organizer for clothes and accessories.",
-    price: 29.99,
-    category: "closet",
+    name: "Glass Lid Jewelry Box",
+    description: "Showcase and protect your collection with style and intention.",
+    price: 42.99,
+    category: "jewelry",
     imageUrl: "https://images.unsplash.com/photo-1562714529-94d65989df68?q=80&w=600&auto=format&fit=crop"
   },
   {
     id: "3",
-    name: "Kitchen Drawer Dividers",
-    description: "Expandable bamboo dividers for kitchen utensils.",
-    price: 24.99,
-    category: "kitchen",
+    name: "Cultural Keepsake Box",
+    description: "Specially designed box that honors and preserves cultural artifacts and keepsakes.",
+    price: 64.99,
+    category: "keepsakes",
     imageUrl: "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=600&auto=format&fit=crop"
   },
   {
     id: "4",
-    name: "Decorative Wicker Basket",
-    description: "Handwoven wicker basket for stylish storage.",
-    price: 42.99,
-    category: "living",
+    name: "Stackable Bangle Trays",
+    description: "Versatile stackable trays that beautifully organize your bangles with a clean, minimal aesthetic.",
+    price: 24.99,
+    category: "bangles",
     imageUrl: "https://images.unsplash.com/photo-1595427749888-496edd6e3981?q=80&w=600&auto=format&fit=crop"
   },
   {
     id: "5",
-    name: "Desk Organizer Set",
-    description: "Complete desk organization solution with multiple compartments.",
-    price: 49.99,
-    category: "office",
+    name: "Ring Display Tower",
+    description: "Elegant tower designed to showcase your ring collection while keeping each piece separate and protected.",
+    price: 24.99,
+    category: "jewelry",
     imageUrl: "https://images.unsplash.com/photo-1556707752-481d500a2c58?q=80&w=600&auto=format&fit=crop"
   },
   {
     id: "6",
-    name: "Jewelry Storage Box",
-    description: "Multi-layer jewelry organizer with mirror.",
-    price: 58.99,
-    category: "accessories",
+    name: "Memory Collection Case",
+    description: "Elegant case with compartments designed to organize and protect your precious memories.",
+    price: 49.99,
+    category: "keepsakes",
     imageUrl: "https://images.unsplash.com/photo-1562714529-94d65989df68?q=80&w=600&auto=format&fit=crop"
   }
 ];
 
-const categories = ["all", "bathroom", "kitchen", "living", "office", "closet", "accessories"];
+const categories = ["all", "bangles", "jewelry", "keepsakes"];
 
 const Shop = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -95,9 +95,9 @@ const Shop = () => {
       {/* Hero Section */}
       <div className="relative pt-24 pb-12 bg-purple-50">
         <div className="container-custom pt-10">
-          <h1 className="text-4xl md:text-5xl font-bold text-center mb-6">Shop Our Collection</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-center mb-6">BUY</h1>
           <p className="text-gray-700 text-center max-w-2xl mx-auto mb-10">
-            Browse our curated selection of beautifully designed storage solutions that bring both function and style to your space.
+            Discover storage that's designed for your bangles, jewelry, and keepsakes — made with the details that matter most.
           </p>
           
           {/* Categories */}
@@ -108,7 +108,7 @@ const Shop = () => {
                 onClick={() => setSelectedCategory(category)}
                 className={`px-4 py-2 rounded-full text-sm capitalize transition-all ${
                   selectedCategory === category
-                    ? "bg-purple-600 text-white"
+                    ? "bg-[#E6007E] text-white"
                     : "bg-white border border-gray-200 text-gray-700 hover:bg-purple-100"
                 }`}
               >
@@ -139,7 +139,7 @@ const Shop = () => {
                     <span className="font-bold text-lg">${product.price.toFixed(2)}</span>
                     <Button 
                       size="sm" 
-                      className="bg-purple-600 hover:bg-purple-500"
+                      className="bg-[#E6007E] hover:bg-black"
                       onClick={(e) => handleAddToCart(product, e)}
                     >
                       <ShoppingBag className="h-4 w-4 mr-1" />
