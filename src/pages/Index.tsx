@@ -1,5 +1,4 @@
 
-import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import FeaturedItems from "@/components/FeaturedItems";
 import About from "@/components/About";
@@ -13,7 +12,6 @@ import InstagramUGC from "@/components/InstagramUGC";
 const Index = () => {
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar />
       <Hero />
       <FeaturedItems />
       <HowItWorks />

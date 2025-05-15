@@ -1,6 +1,4 @@
-
 import React, { useState } from "react";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -90,8 +88,6 @@ const Shop = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar />
-      
       {/* Hero Section */}
       <div className="relative pt-24 pb-8 bg-purple-50">
         <div className="container-custom pt-6">
