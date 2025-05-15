@@ -144,8 +144,8 @@ export default {
 				'fade-up': 'fade-up 0.5s ease-out'
 			},
 			fontFamily: {
-				sans: ['Inter', 'sans-serif'],
-				display: ['Montserrat', 'sans-serif'],
+				sans: ['Poppins', 'sans-serif'],
+				display: ['Poppins', 'sans-serif'],
 				poppins: ['Poppins', 'sans-serif'],
 			}
 		}
