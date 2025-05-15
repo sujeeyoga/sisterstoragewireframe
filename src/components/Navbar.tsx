@@ -1,9 +1,9 @@
 
 import { useState, useEffect } from 'react';
-import { Menu, X, ShoppingBag, Gift, Mail } from 'lucide-react';
+import { Menu, X, ShoppingBag, Gift, Mail, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
 
 const Navbar = () => {
@@ -11,6 +11,7 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isMobile = useIsMobile();
   const { totalItems, setIsOpen: setCartOpen } = useCart();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -39,6 +40,10 @@ const Navbar = () => {
     };
   }, [mobileMenuOpen, isMobile]);
 
+  const handleBack = () => {
+    navigate(-1);
+  };
+
   return (
     <header 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -46,6 +51,17 @@ const Navbar = () => {
       }`}
     >
       <div className="container-custom flex items-center justify-between">
+        {/* Back Button (only on mobile) */}
+        {isMobile && (
+          <button
+            onClick={handleBack}
+            className="mr-2 p-1.5 text-white focus:outline-none"
+            aria-label="Go back"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </button>
+        )}
+
         {/* Logo */}
         <Link to="/" className="relative z-10">
           <h1 className="text-white font-bold">SISTER STORAGE</h1>
@@ -95,11 +111,11 @@ const Navbar = () => {
         )}
       </div>
 
-      {/* Mobile Menu Dropdown */}
+      {/* Mobile Menu Slide-in from left */}
       {isMobile && (
         <div 
           className={`fixed inset-0 bg-white z-40 transition-transform duration-300 ease-in-out ${
-            mobileMenuOpen ? 'translate-y-0' : 'translate-y-[-100%]'
+            mobileMenuOpen ? 'translate-x-0' : 'translate-x-[-100%]'
           }`}
           aria-hidden={!mobileMenuOpen}
         >
