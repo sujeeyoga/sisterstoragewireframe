@@ -21,8 +21,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <SaleBanner />
-      <main className="flex-grow pt-28">
+      <div className="mt-16 md:mt-20">
+        <SaleBanner />
+      </div>
+      <main className="flex-grow pt-10">
         {children}
       </main>
       <Footer />
