@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { Menu, X, ShoppingBag, Gift, Mail, ArrowLeft } from 'lucide-react';
+import { Menu, X, ShoppingBag, Gift, Mail, ArrowLeft, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Link, useNavigate } from 'react-router-dom';
@@ -71,6 +71,7 @@ const Navbar = () => {
         {!isMobile && (
           <nav className="hidden md:flex items-center space-x-6">
             {[
+              { name: 'HOME', path: '/', icon: Home },
               { name: 'US SISTERS', path: '/about' },
               { name: 'BUY', path: '/shop', icon: ShoppingBag },
               { name: 'GIFT', path: '#gift', icon: Gift },
@@ -122,6 +123,7 @@ const Navbar = () => {
           <div className="h-full flex flex-col pt-20 px-6">
             <nav className="flex flex-col space-y-6 items-center mt-8">
               {[
+                { name: 'HOME', path: '/', icon: Home },
                 { name: 'US SISTERS', path: '/about' },
                 { name: 'BUY', path: '/shop', icon: ShoppingBag },
                 { name: 'GIFT', path: '#gift', icon: Gift },
