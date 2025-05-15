@@ -1,5 +1,5 @@
 
-import { Facebook, Instagram, Mail, MessageSquare } from 'lucide-react';
+import { Facebook, Instagram, Mail, MessageSquare, Truck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 
@@ -59,24 +59,25 @@ const Footer = () => {
             </ul>
           </div>
           
-          {/* Opening Hours */}
+          {/* Delivery Hours (previously Store Hours) */}
           <div>
-            <h3 className="font-semibold mb-3 text-[#E6007E]">Store Hours</h3>
+            <h3 className="font-semibold mb-3 text-[#E6007E]">Delivery Hours</h3>
             <ul className="space-y-1.5">
               <li className="flex justify-between">
                 <span className="text-gray-400">Monday-Friday</span>
-                <span className="text-white font-medium">10:00 - 19:00</span>
+                <span className="text-white font-medium">8:00 - 20:00</span>
               </li>
               <li className="flex justify-between">
                 <span className="text-gray-400">Saturday</span>
-                <span className="text-white font-medium">10:00 - 18:00</span>
+                <span className="text-white font-medium">9:00 - 18:00</span>
               </li>
               <li className="flex justify-between">
                 <span className="text-gray-400">Sunday</span>
-                <span className="text-white font-medium">11:00 - 17:00</span>
+                <span className="text-white font-medium">10:00 - 16:00</span>
               </li>
-              <li className="pt-1.5 text-gray-400">
-                <span>Virtual consultations available 24/7</span>
+              <li className="pt-1.5 text-gray-400 flex items-center">
+                <Truck className="h-3 w-3 mr-1.5" />
+                <span>Package tracking available 24/7</span>
               </li>
             </ul>
           </div>

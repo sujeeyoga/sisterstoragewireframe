@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { Menu, X, ShoppingBag, Gift, Mail, ArrowLeft, Home } from 'lucide-react';
+import { Menu, X, ShoppingBag, Gift, Mail, ArrowLeft, Home, Package } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Link, useNavigate } from 'react-router-dom';
@@ -74,7 +74,7 @@ const Navbar = () => {
               { name: 'HOME', path: '/', icon: Home },
               { name: 'US SISTERS', path: '/about' },
               { name: 'BUY', path: '/shop', icon: ShoppingBag },
-              { name: 'GIFT', path: '#gift', icon: Gift },
+              { name: 'SHIPPING', path: '#delivery', icon: Package },
               { name: 'CONTACT', path: '#contact', icon: Mail }
             ].map((item) => (
               <Link 
@@ -126,7 +126,7 @@ const Navbar = () => {
                 { name: 'HOME', path: '/', icon: Home },
                 { name: 'US SISTERS', path: '/about' },
                 { name: 'BUY', path: '/shop', icon: ShoppingBag },
-                { name: 'GIFT', path: '#gift', icon: Gift },
+                { name: 'SHIPPING', path: '#delivery', icon: Package },
                 { name: 'CONTACT', path: '#contact', icon: Mail }
               ].map((item) => (
                 <Link 
