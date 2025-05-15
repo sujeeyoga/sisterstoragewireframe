@@ -21,7 +21,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <div className="mt-12 md:mt-16">
+      {/* Remove margin and position the banner to eliminate white space */}
+      <div className="relative top-[-1px]">
         <SaleBanner />
       </div>
       <main className="flex-grow pt-10">
