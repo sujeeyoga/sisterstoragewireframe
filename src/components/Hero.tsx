@@ -24,22 +24,14 @@ const Hero = () => {
 
   return (
     <>
-      <div className="relative h-screen w-full overflow-hidden bg-[#E6007E]">
-        {/* Background Image with Enhanced Parallax Effect */}
+      <div className="relative h-screen w-full overflow-hidden bg-[#E90064]">
+        {/* Solid Color Background Instead of Image */}
         <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          className="absolute inset-0"
           style={{ 
-            backgroundImage: 'url("https://images.unsplash.com/photo-1595408043711-455f9386b41b?q=80&w=1920&auto=format&fit=crop")', 
-            backgroundPosition: `50% ${50 + scrollPosition * 0.05}%`,
-            transition: 'background-position 0.1s ease-out'
+            backgroundColor: '#E90064',
           }}
         >
-          <div 
-            className="absolute inset-0 bg-[#E6007E]/80"
-            style={{
-              opacity: Math.max(0.7, 1 - scrollPosition * 0.001)
-            }}
-          ></div>
         </div>
         
         {/* Content with Fade and Float Effect */}
@@ -51,7 +43,7 @@ const Hero = () => {
               opacity: Math.max(0.2, 1 - scrollPosition * 0.002)
             }}
           >
-            <span className="inline-block px-4 py-1 mb-5 text-sm font-medium bg-white text-[#E6007E] rounded-full animate-fade-in">
+            <span className="inline-block px-4 py-1 mb-5 text-sm font-medium bg-white text-[#E90064] rounded-full animate-fade-in">
               Beautifully Organized
             </span>
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
@@ -107,12 +99,8 @@ const Hero = () => {
               By Sisters, For Sisters
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-              <div className="overflow-hidden rounded-lg">
-                <img 
-                  src="https://images.unsplash.com/photo-1556707752-481d500a2c58?q=80&w=1080&auto=format&fit=crop" 
-                  alt="Sisters working together" 
-                  className="rounded-lg shadow-xl w-full h-auto hover:scale-105 transition-transform duration-700"
-                />
+              <div className="rounded-lg bg-[#FF8021] h-64 flex items-center justify-center">
+                <span className="text-white text-3xl font-bold">Sister Storage</span>
               </div>
               <div className="space-y-4">
                 <p className="text-lg text-gray-700 leading-relaxed">

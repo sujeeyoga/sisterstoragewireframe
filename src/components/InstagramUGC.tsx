@@ -7,25 +7,25 @@ import { Button } from '@/components/ui/button';
 const instagramPosts = [
   {
     id: 1,
-    image: "https://images.unsplash.com/photo-1595409825750-7b55f0c7b361?q=80&w=600&auto=format&fit=crop",
+    color: "#E90064",
     username: "priya_organized",
     likes: 456
   },
   {
     id: 2,
-    image: "https://images.unsplash.com/photo-1581783342308-f792dbdd27c5?q=80&w=600&auto=format&fit=crop",
+    color: "#FF8021",
     username: "meera_styles",
     likes: 389
   },
   {
     id: 3,
-    image: "https://images.unsplash.com/photo-1585909695284-32d2985ac9c0?q=80&w=600&auto=format&fit=crop",
+    color: "#FFDCBD",
     username: "anjali_decor",
     likes: 512
   },
   {
     id: 4,
-    image: "https://images.unsplash.com/photo-1635767798638-3665c677a227?q=80&w=600&auto=format&fit=crop",
+    color: "#FE5FA2",
     username: "rani_jewels",
     likes: 347
   }
@@ -45,12 +45,14 @@ const InstagramUGC = () => {
         
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
           {instagramPosts.map((post) => (
-            <div key={post.id} className="relative group overflow-hidden rounded-lg aspect-square">
-              <img 
-                src={post.image} 
-                alt={`Instagram post by ${post.username}`}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-              />
+            <div 
+              key={post.id} 
+              className="relative group overflow-hidden rounded-lg aspect-square"
+              style={{ backgroundColor: post.color }}
+            >
+              <div className="w-full h-full flex items-center justify-center">
+                <span className="text-white text-xl font-bold">Sister Storage</span>
+              </div>
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/60 transition-all duration-300 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100">
                 <span className="text-white font-medium mb-2">@{post.username}</span>
                 <div className="flex items-center space-x-2">

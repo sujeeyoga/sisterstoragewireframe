@@ -7,19 +7,19 @@ const steps = [
     id: 1,
     title: "Choose Your Box",
     description: "Start with a style that suits your needs and your space.",
-    image: "https://images.unsplash.com/photo-1577401239170-897942555fb3?q=80&w=600&auto=format&fit=crop"
+    color: "#E90064"
   },
   {
     id: 2,
     title: "Customize Your Interior",
     description: "Select interiors that protect and showcase your pieces perfectly.",
-    image: "https://images.unsplash.com/photo-1489274495757-95c7c837b101?q=80&w=600&auto=format&fit=crop"
+    color: "#FF8021"
   },
   {
     id: 3,
     title: "Enjoy a Clutter-Free Life",
     description: "Let your everyday feel a little lighter, calmer, and more beautiful.",
-    image: "https://images.unsplash.com/photo-1587142198902-6599e97263bd?q=80&w=600&auto=format&fit=crop"
+    color: "#FFDCBD"
   }
 ];
 
@@ -49,12 +49,11 @@ const HowItWorks = () => {
                      style={{ display: step.id === steps.length ? 'none' : undefined }}></div>
               </div>
               
-              <div className="h-48 w-full overflow-hidden rounded-lg mb-4">
-                <img 
-                  src={step.image} 
-                  alt={`Step ${step.id}: ${step.title}`}
-                  className="w-full h-full object-cover"
-                />
+              <div 
+                className="h-48 w-full rounded-lg mb-4 flex items-center justify-center"
+                style={{ backgroundColor: step.color }}
+              >
+                <span className="text-white text-3xl font-bold">Step {step.id}</span>
               </div>
               
               <h3 className="text-xl font-bold mb-2">{step.title}</h3>
