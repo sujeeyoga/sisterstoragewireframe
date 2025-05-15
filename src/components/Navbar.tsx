@@ -28,18 +28,18 @@ const Navbar = () => {
   return (
     <header 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-gray-800/90 backdrop-blur-md shadow-lg py-3' : 'bg-transparent py-5'
+        isScrolled ? 'bg-gray-800/90 backdrop-blur-md shadow-lg py-2' : 'bg-transparent py-4'
       }`}
     >
       <div className="container-custom flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="relative z-10">
-          <h1 className="text-white text-2xl font-bold">SISTER STORAGE</h1>
+          <h1 className="text-white font-bold">SISTER STORAGE</h1>
         </Link>
 
         {/* Desktop Menu */}
         {!isMobile && (
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden md:flex items-center space-x-6">
             {[
               { name: 'US SISTERS', path: '/about' },
               { name: 'BUY', path: '/shop', icon: ShoppingBag },
@@ -49,18 +49,17 @@ const Navbar = () => {
               <Link 
                 key={item.name} 
                 to={item.path}
-                className={`text-white hover:bg-black hover:text-white transition-colors duration-300 text-sm font-medium px-4 py-2 rounded-md ${item.icon ? 'flex items-center gap-2' : ''}`}
+                className={`text-white hover:bg-black hover:text-white transition-colors duration-300 px-3 py-1.5 rounded-md ${item.icon ? 'flex items-center gap-1' : ''}`}
               >
-                {item.icon && <item.icon className="h-4 w-4" />}
+                {item.icon && <item.icon className="h-3 w-3" />}
                 {item.name}
               </Link>
             ))}
             <Button 
-              className="bg-sister-purple hover:bg-black text-white" 
               size="sm"
               onClick={() => setCartOpen(true)}
             >
-              <ShoppingBag className="mr-2 h-4 w-4" />
+              <ShoppingBag className="mr-1 h-3 w-3" />
               Cart ({totalItems})
             </Button>
           </nav>
@@ -69,13 +68,13 @@ const Navbar = () => {
         {/* Mobile Menu Toggle */}
         {isMobile && (
           <button 
-            className="p-2 text-white focus:outline-none"
+            className="p-1.5 text-white focus:outline-none"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? (
-              <X className="h-6 w-6" />
+              <X className="h-5 w-5" />
             ) : (
-              <Menu className="h-6 w-6" />
+              <Menu className="h-5 w-5" />
             )}
           </button>
         )}
@@ -84,11 +83,11 @@ const Navbar = () => {
       {/* Mobile Menu Dropdown */}
       {isMobile && (
         <div 
-          className={`fixed inset-0 bg-gray-800 z-40 pt-24 px-4 transition-transform duration-300 ease-in-out ${
+          className={`fixed inset-0 bg-gray-800 z-40 pt-20 px-4 transition-transform duration-300 ease-in-out ${
             mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
           }`}
         >
-          <nav className="flex flex-col space-y-6 items-center">
+          <nav className="flex flex-col space-y-5 items-center">
             {[
               { name: 'US SISTERS', path: '/about' },
               { name: 'BUY', path: '/shop', icon: ShoppingBag },
@@ -98,22 +97,22 @@ const Navbar = () => {
               <Link 
                 key={item.name} 
                 to={item.path} 
-                className="text-white hover:text-purple-300 transition-colors duration-300 text-xl font-medium flex items-center gap-2"
+                className="text-white hover:text-purple-300 transition-colors duration-300 flex items-center gap-1.5"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                {item.icon && <item.icon className="h-5 w-5" />}
+                {item.icon && <item.icon className="h-4 w-4" />}
                 {item.name}
               </Link>
             ))}
             <Button 
-              className="bg-sister-purple hover:bg-black text-white w-full mt-4" 
-              size="lg"
+              className="w-full mt-2" 
+              size="sm"
               onClick={() => {
                 setMobileMenuOpen(false);
                 setCartOpen(true);
               }}
             >
-              <ShoppingBag className="mr-2 h-5 w-5" />
+              <ShoppingBag className="mr-1 h-3 w-3" />
               Cart ({totalItems})
             </Button>
           </nav>

@@ -33,11 +33,11 @@ const instagramPosts = [
 
 const InstagramUGC = () => {
   return (
-    <section className="py-16 md:py-20 bg-white">
+    <section className="py-14 md:py-18 bg-white">
       <div className="container-custom">
-        <div className="text-center mb-10 md:mb-14">
+        <div className="text-center mb-8 md:mb-12">
           <span className="text-[#E90064] font-medium">Community</span>
-          <h2 className="font-bold mt-2 mb-4">Styled By Our Sisters</h2>
+          <h2 className="font-bold mt-2 mb-3">Styled By Our Sisters</h2>
           <p className="text-gray-600 max-w-xl mx-auto">
             See how our community celebrates organizing with culture, color, and love.
           </p>
@@ -56,19 +56,19 @@ const InstagramUGC = () => {
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/60 transition-all duration-300 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100">
                 <span className="text-white font-medium mb-2">@{post.username}</span>
                 <div className="flex items-center space-x-2">
-                  <svg className="w-4 h-4 text-white fill-current" viewBox="0 0 24 24">
+                  <svg className="w-3 h-3 text-white fill-current" viewBox="0 0 24 24">
                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                   </svg>
-                  <span className="text-white text-sm">{post.likes}</span>
+                  <span className="text-white">{post.likes}</span>
                 </div>
               </div>
             </div>
           ))}
         </div>
         
-        <div className="text-center mt-10">
-          <Button size="lg">
-            <Instagram className="mr-2 h-5 w-5" />
+        <div className="text-center mt-8">
+          <Button>
+            <Instagram className="mr-1 h-3 w-3" />
             Follow Us on Instagram
           </Button>
         </div>
