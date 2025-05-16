@@ -1,8 +1,9 @@
+
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import Layout from "@/components/layout/Layout";
 
-// Sample blog posts
+// Sample blog posts with colors based on categories
 const blogPosts = [
   {
     id: "1",
@@ -11,7 +12,7 @@ const blogPosts = [
     author: "Emma Wilson",
     date: "May 12, 2025",
     category: "Organization Tips",
-    imageUrl: "https://images.unsplash.com/photo-1595408043711-455f9386b41b?q=80&w=800&auto=format&fit=crop"
+    color: "#E90064" // Primary Pink for Organization Tips
   },
   {
     id: "2",
@@ -20,7 +21,7 @@ const blogPosts = [
     author: "Olivia Wilson",
     date: "May 5, 2025",
     category: "Wellness",
-    imageUrl: "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=800&auto=format&fit=crop"
+    color: "#9b87f5" // Purple for Wellness
   },
   {
     id: "3",
@@ -29,7 +30,7 @@ const blogPosts = [
     author: "James Chen",
     date: "April 28, 2025",
     category: "Small Spaces",
-    imageUrl: "https://images.unsplash.com/photo-1595427749888-496edd6e3981?q=80&w=800&auto=format&fit=crop"
+    color: "#E6007E" // Secondary Pink for Small Spaces
   },
   {
     id: "4",
@@ -38,7 +39,7 @@ const blogPosts = [
     author: "Sophia Rodriguez",
     date: "April 22, 2025",
     category: "Sustainability",
-    imageUrl: "https://images.unsplash.com/photo-1556707752-481d500a2c58?q=80&w=800&auto=format&fit=crop"
+    color: "#7E69AB" // Secondary Purple for Sustainability
   },
   {
     id: "5",
@@ -47,7 +48,7 @@ const blogPosts = [
     author: "Emma Wilson",
     date: "April 15, 2025",
     category: "Organization Tips",
-    imageUrl: "https://images.unsplash.com/photo-1562714529-94d65989df68?q=80&w=800&auto=format&fit=crop"
+    color: "#E90064" // Primary Pink for Organization Tips
   }
 ];
 
@@ -97,11 +98,12 @@ const Blog = () => {
             <div className="mb-16">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                 <div className="overflow-hidden rounded-lg">
-                  <img 
-                    src={filteredPosts[0].imageUrl} 
-                    alt={filteredPosts[0].title} 
-                    className="w-full h-auto rounded-lg shadow-lg hover:scale-105 transition-transform duration-500"
-                  />
+                  <div 
+                    style={{ backgroundColor: filteredPosts[0].color }} 
+                    className="w-full aspect-video rounded-lg shadow-lg hover:scale-105 transition-transform duration-500 flex items-center justify-center"
+                  >
+                    <span className="text-white text-lg font-bold">Sister Storage</span>
+                  </div>
                 </div>
                 <div className="space-y-4">
                   <span className="inline-block px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium">
@@ -127,11 +129,12 @@ const Blog = () => {
             {filteredPosts.slice(1).map((post) => (
               <div key={post.id} className="border border-gray-100 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                 <div className="overflow-hidden h-48">
-                  <img 
-                    src={post.imageUrl} 
-                    alt={post.title} 
-                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-                  />
+                  <div 
+                    style={{ backgroundColor: post.color }} 
+                    className="w-full h-full flex items-center justify-center hover:scale-105 transition-transform duration-500"
+                  >
+                    <span className="text-white text-sm font-bold">Sister Storage</span>
+                  </div>
                 </div>
                 <div className="p-6">
                   <span className="inline-block px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium mb-3">
