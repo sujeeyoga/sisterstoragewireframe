@@ -3,6 +3,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import BlogPostCard from "./BlogPostCard";
+import { Link } from "react-router-dom";
 
 interface BlogPost {
   id: string;
@@ -68,8 +69,8 @@ const BlogPosts = ({ posts, difficultyColors }: BlogPostsProps) => {
                     By {posts[0].author} • {posts[0].date}
                   </div>
                 </div>
-                <Button className="bg-[#E90064] hover:bg-[#FE5FA4] text-white mt-2">
-                  Read Article
+                <Button className="bg-[#E90064] hover:bg-[#FE5FA4] text-white mt-2" asChild>
+                  <Link to={`/blog/${posts[0].id}`}>Read Article</Link>
                 </Button>
               </div>
             </div>
@@ -114,7 +115,9 @@ const BlogPosts = ({ posts, difficultyColors }: BlogPostsProps) => {
                     </div>
                     <h3 className="text-xl font-bold mb-2">{post.title}</h3>
                     <p className="text-gray-700 text-sm mb-4 line-clamp-2">{post.excerpt}</p>
-                    <Button variant="secondary" size="sm">Read More</Button>
+                    <Button variant="secondary" size="sm" asChild>
+                      <Link to={`/blog/${post.id}`}>Read More</Link>
+                    </Button>
                   </div>
                 </div>
               ))}
@@ -141,7 +144,9 @@ const BlogPosts = ({ posts, difficultyColors }: BlogPostsProps) => {
                     </span>
                     <h3 className="text-xl font-bold mb-2">{post.title}</h3>
                     <p className="text-gray-700 text-sm mb-4 line-clamp-2">{post.excerpt}</p>
-                    <Button variant="secondary" size="sm">Read More</Button>
+                    <Button variant="secondary" size="sm" asChild>
+                      <Link to={`/blog/${post.id}`}>Read More</Link>
+                    </Button>
                   </div>
                 </div>
               ))}
@@ -163,7 +168,9 @@ const BlogPosts = ({ posts, difficultyColors }: BlogPostsProps) => {
                   </div>
                   <p className="text-gray-700 text-sm mb-4 line-clamp-2 text-center">{post.excerpt}</p>
                   <div className="text-center">
-                    <Button variant="secondary" size="sm">Read More</Button>
+                    <Button variant="secondary" size="sm" asChild>
+                      <Link to={`/blog/${post.id}`}>Read More</Link>
+                    </Button>
                   </div>
                 </div>
               ))}

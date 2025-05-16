@@ -2,6 +2,7 @@
 import { Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ScrollFadeContainer from './ui/scroll-fade-container';
+import { Link } from 'react-router-dom';
 
 const steps = [
   {
@@ -77,8 +78,8 @@ const HowItWorks = () => {
         
         <ScrollFadeContainer scrollFadeDirection="both" threshold={0.3} duration={0.8} delay={0.4}>
           <div className="text-center mt-12">
-            <Button variant="secondary" size="lg">
-              Learn More About Our Process
+            <Button variant="secondary" size="lg" asChild>
+              <Link to="/about">Learn More About Our Process</Link>
             </Button>
           </div>
         </ScrollFadeContainer>

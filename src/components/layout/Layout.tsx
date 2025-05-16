@@ -29,6 +29,27 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     };
   }, [location.pathname]);
 
+  // Handle smooth scrolling for anchor links
+  useEffect(() => {
+    // Check if the location contains a hash
+    if (location.hash) {
+      // Get the element to scroll to
+      const element = document.querySelector(location.hash);
+      if (element) {
+        // Wait a bit for the page to render
+        setTimeout(() => {
+          element.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+          });
+        }, 100);
+      }
+    } else {
+      // Scroll to top when changing pages
+      window.scrollTo(0, 0);
+    }
+  }, [location]);
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />

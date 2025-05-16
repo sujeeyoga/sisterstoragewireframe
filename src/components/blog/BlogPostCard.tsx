@@ -1,6 +1,7 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 interface BlogPost {
   id: string;
@@ -57,7 +58,9 @@ const BlogPostCard = ({ post, difficultyColors }: BlogPostCardProps) => {
           <div className="text-xs text-gray-600">
             By {post.author} • {post.date}
           </div>
-          <Button variant="secondary" size="sm">Read More</Button>
+          <Button variant="secondary" size="sm" asChild>
+            <Link to={`/blog/${post.id}`}>Read More</Link>
+          </Button>
         </div>
       </div>
     </div>

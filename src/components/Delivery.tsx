@@ -1,6 +1,7 @@
 
 import { Truck, Package, Clock, ArrowRight, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 
 const deliveryZones = [
   {
@@ -11,7 +12,8 @@ const deliveryZones = [
     phone: '(212) 555-8765',
     hours: 'Mon-Sat: 9:00 AM - 7:00 PM, Sun: 10:00 AM - 5:00 PM',
     color: '#E90064',
-    description: 'Fast delivery service to all major East Coast cities with real-time tracking and package protection.'
+    description: 'Fast delivery service to all major East Coast cities with real-time tracking and package protection.',
+    trackingUrl: '/tracking/east-coast'
   },
   {
     id: 2,
@@ -21,7 +23,8 @@ const deliveryZones = [
     phone: '(310) 555-2301',
     hours: 'Mon-Sun: 9:00 AM - 8:00 PM',
     color: '#FF8021',
-    description: 'Reliable delivery service to West Coast metropolitan areas with signature confirmation and special handling options.'
+    description: 'Reliable delivery service to West Coast metropolitan areas with signature confirmation and special handling options.',
+    trackingUrl: '/tracking/west-coast'
   },
   {
     id: 3,
@@ -31,7 +34,8 @@ const deliveryZones = [
     phone: '(312) 555-6437',
     hours: 'Mon-Sat: 8:00 AM - 9:00 PM, Sun: 10:00 AM - 6:00 PM',
     color: '#FFDCBD',
-    description: 'Premium nationwide shipping with insurance coverage, climate-controlled transport, and specialized packaging for delicate items.'
+    description: 'Premium nationwide shipping with insurance coverage, climate-controlled transport, and specialized packaging for delicate items.',
+    trackingUrl: '/tracking/nationwide'
   }
 ];
 
@@ -82,15 +86,21 @@ const Delivery = () => {
                 <div className="flex flex-col sm:flex-row gap-3">
                   <Button 
                     className="flex-1 bg-black hover:bg-[#FF8021] text-white flex items-center justify-center gap-1"
+                    asChild
                   >
-                    Delivery Info
-                    <ArrowRight className="h-4 w-4" />
+                    <Link to={`/delivery/${zone.id}`}>
+                      Delivery Info
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
                   </Button>
                   <Button 
                     variant="outline" 
                     className="flex-1 border-black text-black hover:bg-black hover:text-white"
+                    asChild
                   >
-                    Track Package
+                    <Link to={zone.trackingUrl}>
+                      Track Package
+                    </Link>
                   </Button>
                 </div>
               </div>

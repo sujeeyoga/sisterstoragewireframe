@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { Instagram } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -67,9 +66,11 @@ const InstagramUGC = () => {
         </div>
         
         <div className="text-center mt-8">
-          <Button>
-            <Instagram className="mr-1 h-3 w-3" />
-            Follow Us on Instagram
+          <Button asChild>
+            <a href="https://www.instagram.com/sisterstorage" target="_blank" rel="noopener noreferrer">
+              <Instagram className="mr-1 h-3 w-3" />
+              Follow Us on Instagram
+            </a>
           </Button>
         </div>
       </div>
