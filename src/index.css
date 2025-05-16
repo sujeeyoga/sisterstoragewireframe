@@ -1,4 +1,3 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
 @tailwind base;
@@ -125,6 +124,17 @@
   button {
     @apply font-semibold uppercase;
   }
+
+  /* Improve animation performance */
+  .animate-breath-fade-up,
+  .animate-breath-fade-up-1,
+  .animate-breath-fade-up-2,
+  .animate-breath-fade-up-3,
+  .animate-breath-fade-up-4,
+  .animate-breath-fade-up-5 {
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+  }
 }
 
 /* Replace transparent hero-gradient with solid colors */
@@ -200,9 +210,10 @@
     animation: marquee 30s linear infinite;
     will-change: transform;
   }
+}
 
-  /* Sister Storage brand colors utility classes */
-  .bg-brand-pink {
+/* Sister Storage brand colors utility classes */
+.bg-brand-pink {
     background-color: #E90064;
   }
   .bg-brand-orange {
@@ -244,5 +255,17 @@
   }
   .text-brand-gold {
     color: #FFA51E;
+  }
+
+/* Respect user preference for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+    transition-delay: 0ms !important;
   }
 }

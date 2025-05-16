@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useLocation } from "react-router-dom";
@@ -17,6 +17,17 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const isDetailPage = () => {
     return location.pathname.includes('/shop/') || location.pathname.includes('/blog/');
   };
+
+  // Add a class to the body when the component mounts
+  useEffect(() => {
+    // Add animated state to body when page loads
+    document.body.classList.add('animate-fade-in');
+    
+    // Remove animation class when component unmounts
+    return () => {
+      document.body.classList.remove('animate-fade-in');
+    };
+  }, [location.pathname]);
 
   return (
     <div className="min-h-screen flex flex-col">
