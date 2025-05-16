@@ -1,3 +1,4 @@
+
 import { useEffect, useRef, useState } from 'react';
 
 type AnimationType = 'breath-fade-up' | 'breath-fade-up-1' | 'breath-fade-up-2' | 'breath-fade-up-3' | 'breath-fade-up-4' | 'breath-fade-up-5';
@@ -7,6 +8,7 @@ interface UseAnimatedTextProps {
   rootMargin?: string;
   animation?: AnimationType;
   words?: boolean;
+  duration?: number; // Added duration parameter
 }
 
 export const useAnimatedText = ({
@@ -14,6 +16,7 @@ export const useAnimatedText = ({
   rootMargin = '0px',
   animation = 'breath-fade-up',
   words = false,
+  duration = 1.5, // Default to a slower 1.5s duration
 }: UseAnimatedTextProps = {}) => {
   const ref = useRef<HTMLElement | null>(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -67,18 +70,54 @@ export const useAnimatedText = ({
         <span
           key={i}
           className={`inline-block ${animation}-${(i % 5) + 1}`}
-          style={{ animationDelay: `${i * 0.08}s` }}
+          style={{ 
+            animationDelay: `${i * 0.1}s`,
+            animationDuration: `${duration}s`
+          }}
         >
           {word}&nbsp;
         </span>
       ));
     } else {
       // Apply animation to the whole text
-      return <span className={`inline-block animate-${animation}`}>{text}</span>;
+      return <span 
+        className={`inline-block animate-${animation}`}
+        style={{ animationDuration: `${duration}s` }}
+      >
+        {text}
+      </span>;
     }
   };
 
-  return { ref, isVisible, renderAnimatedText };
+  // Add containerRef for container animations
+  const containerRef = useRef<HTMLElement | null>(null);
+  
+  // Function to apply animation class to container
+  const applyAnimationToContainer = (children: React.ReactNode) => {
+    if (prefersReducedMotion) {
+      return <>{children}</>;
+    }
+
+    const animationClass = `animate-${animation}`;
+    
+    return (
+      <div 
+        ref={containerRef as React.RefObject<HTMLDivElement>} 
+        className={isVisible ? animationClass : 'opacity-0'}
+        style={{ animationDuration: `${duration}s` }}
+      >
+        {children}
+      </div>
+    );
+  };
+
+  return { 
+    ref, 
+    isVisible, 
+    renderAnimatedText,
+    applyAnimationToContainer,
+    containerRef
+  };
 };
 
 export default useAnimatedText;

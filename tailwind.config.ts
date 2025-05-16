@@ -144,11 +144,11 @@ export default {
 					'0%': { opacity: '0', transform: 'translateY(20px)' },
 					'100%': { opacity: '1', transform: 'translateY(0)' }
 				},
-				// New breath-fade-up animation keyframes
+				// Updated breath-fade-up animation keyframes with slower timing
 				'breath-fade-up': {
 					'0%': { 
 						opacity: '0', 
-						transform: 'translateY(20px) scale(0.95)' 
+						transform: 'translateY(30px) scale(0.95)' 
 					},
 					'60%': { 
 						opacity: '1', 
@@ -163,7 +163,7 @@ export default {
 				'breath-fade-up-1': {
 					'0%': { 
 						opacity: '0', 
-						transform: 'translateY(20px) scale(0.95)' 
+						transform: 'translateY(30px) scale(0.95)' 
 					},
 					'60%': { 
 						opacity: '1', 
@@ -177,7 +177,7 @@ export default {
 				'breath-fade-up-2': {
 					'0%': { 
 						opacity: '0', 
-						transform: 'translateY(20px) scale(0.95)' 
+						transform: 'translateY(30px) scale(0.95)' 
 					},
 					'60%': { 
 						opacity: '1', 
@@ -191,7 +191,35 @@ export default {
 				'breath-fade-up-3': {
 					'0%': { 
 						opacity: '0', 
-						transform: 'translateY(20px) scale(0.95)' 
+						transform: 'translateY(30px) scale(0.95)' 
+					},
+					'60%': { 
+						opacity: '1', 
+						transform: 'translateY(0) scale(1.02)' 
+					},
+					'100%': { 
+						opacity: '1', 
+						transform: 'translateY(0) scale(1)' 
+					}
+				},
+				'breath-fade-up-4': {
+					'0%': { 
+						opacity: '0', 
+						transform: 'translateY(30px) scale(0.95)' 
+					},
+					'60%': { 
+						opacity: '1', 
+						transform: 'translateY(0) scale(1.02)' 
+					},
+					'100%': { 
+						opacity: '1', 
+						transform: 'translateY(0) scale(1)' 
+					}
+				},
+				'breath-fade-up-5': {
+					'0%': { 
+						opacity: '0', 
+						transform: 'translateY(30px) scale(0.95)' 
 					},
 					'60%': { 
 						opacity: '1', 
@@ -208,13 +236,13 @@ export default {
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'fade-in': 'fade-in 0.5s ease-out',
 				'fade-up': 'fade-up 0.5s ease-out',
-				// New breath animations
-				'breath-fade-up': 'breath-fade-up 1s cubic-bezier(0.16, 1, 0.3, 1)',
-				'breath-fade-up-1': 'breath-fade-up-1 1s cubic-bezier(0.16, 1, 0.3, 1)',
-				'breath-fade-up-2': 'breath-fade-up-2 1s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both',
-				'breath-fade-up-3': 'breath-fade-up-3 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both',
-				'breath-fade-up-4': 'breath-fade-up 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both',
-				'breath-fade-up-5': 'breath-fade-up 1s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both',
+				// Updated breath animations with longer duration
+				'breath-fade-up': 'breath-fade-up 1.5s cubic-bezier(0.16, 1, 0.3, 1)',
+				'breath-fade-up-1': 'breath-fade-up-1 1.5s cubic-bezier(0.16, 1, 0.3, 1)',
+				'breath-fade-up-2': 'breath-fade-up-2 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both',
+				'breath-fade-up-3': 'breath-fade-up-3 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both',
+				'breath-fade-up-4': 'breath-fade-up 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0.45s both',
+				'breath-fade-up-5': 'breath-fade-up 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0.6s both',
 			},
 			fontFamily: {
 				sans: ['Poppins', 'sans-serif'],
