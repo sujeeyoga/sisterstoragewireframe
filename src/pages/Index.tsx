@@ -14,25 +14,25 @@ const Index = () => {
   return (
     <Layout>
       <Hero />
-      <ScrollFadeContainer scrollFadeDirection="both" threshold={0.1} duration={1}>
+      <ScrollFadeContainer scrollFadeDirection="both" threshold={0.05} duration={1.2} rootMargin="-50px 0px">
         <FeaturedItems />
       </ScrollFadeContainer>
-      <ScrollFadeContainer scrollFadeDirection="both" threshold={0.1} duration={1} delay={0.1}>
+      <ScrollFadeContainer scrollFadeDirection="both" threshold={0.05} duration={1.2} delay={0.1} rootMargin="-50px 0px">
         <HowItWorks />
       </ScrollFadeContainer>
-      <ScrollFadeContainer scrollFadeDirection="both" threshold={0.1} duration={1} delay={0.2}>
+      <ScrollFadeContainer scrollFadeDirection="both" threshold={0.05} duration={1.2} delay={0.2} rootMargin="-50px 0px">
         <About />
       </ScrollFadeContainer>
-      <ScrollFadeContainer scrollFadeDirection="both" threshold={0.1} duration={1} delay={0.1}>
+      <ScrollFadeContainer scrollFadeDirection="both" threshold={0.05} duration={1.2} delay={0.1} rootMargin="-50px 0px">
         <Testimonials />
       </ScrollFadeContainer>
-      <ScrollFadeContainer scrollFadeDirection="both" threshold={0.1} duration={1} delay={0.2}>
+      <ScrollFadeContainer scrollFadeDirection="both" threshold={0.05} duration={1.2} delay={0.2} rootMargin="-50px 0px">
         <InstagramUGC />
       </ScrollFadeContainer>
-      <ScrollFadeContainer scrollFadeDirection="both" threshold={0.1} duration={1} delay={0.1}>
+      <ScrollFadeContainer scrollFadeDirection="both" threshold={0.05} duration={1.2} delay={0.1} rootMargin="-50px 0px">
         <Newsletter />
       </ScrollFadeContainer>
-      <ScrollFadeContainer scrollFadeDirection="both" threshold={0.1} duration={1}>
+      <ScrollFadeContainer scrollFadeDirection="both" threshold={0.05} duration={1.2} rootMargin="-50px 0px">
         <Delivery />
       </ScrollFadeContainer>
     </Layout>

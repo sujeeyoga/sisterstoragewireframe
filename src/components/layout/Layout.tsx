@@ -4,7 +4,6 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useLocation } from "react-router-dom";
 import SaleBanner from "../SaleBanner";
-import ScrollFadeContainer from "../ui/scroll-fade-container";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -30,29 +29,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     };
   }, [location.pathname]);
 
-  // Apply scroll animations to main content by wrapping children
-  const scrollAnimatedChildren = React.Children.map(children, (child, index) => {
-    if (!React.isValidElement(child)) return child;
-    
-    return (
-      <ScrollFadeContainer
-        scrollFadeDirection="both"
-        threshold={0.1}
-        delay={index * 0.1}
-        duration={0.8}
-        className="mb-8"
-      >
-        {child}
-      </ScrollFadeContainer>
-    );
-  });
-
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <SaleBanner />
       <main className="flex-grow pt-16">
-        {scrollAnimatedChildren}
+        {children}
       </main>
       <Footer />
     </div>

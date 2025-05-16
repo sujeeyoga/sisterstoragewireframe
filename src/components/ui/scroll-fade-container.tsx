@@ -26,7 +26,7 @@ export const ScrollFadeContainer = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [hasAnimated, setHasAnimated] = useState(false);
-  const { direction, isScrolling } = useScrollDirection(5);
+  const { direction } = useScrollDirection(5);
   
   // Return if user prefers reduced motion
   const prefersReducedMotion = typeof window !== 'undefined' 
@@ -36,28 +36,42 @@ export const ScrollFadeContainer = ({
   useEffect(() => {
     if (!containerRef.current || prefersReducedMotion) return;
     
+    let animationFrameId: number | null = null;
+    let debounceTimer: NodeJS.Timeout | null = null;
+    
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          // Determine if the element is entering or exiting the viewport
-          if (entry.isIntersecting) {
-            if (!hasAnimated || scrollFadeDirection === 'both') {
-              setIsVisible(true);
-              if (scrollFadeDirection !== 'both') {
-                setHasAnimated(true);
+          // Clear any pending animation frames to prevent stacking
+          if (animationFrameId) cancelAnimationFrame(animationFrameId);
+          if (debounceTimer) clearTimeout(debounceTimer);
+          
+          // Debounce the visibility change with a small delay
+          debounceTimer = setTimeout(() => {
+            // Use requestAnimationFrame to sync with the browser's repaint cycle
+            animationFrameId = requestAnimationFrame(() => {
+              if (entry.isIntersecting) {
+                if (!hasAnimated || scrollFadeDirection === 'both') {
+                  setIsVisible(true);
+                  if (scrollFadeDirection !== 'both') {
+                    setHasAnimated(true);
+                  }
+                }
+              } else {
+                // Only hide elements when scroll direction matches
+                if (scrollFadeDirection === 'both' || 
+                   (scrollFadeDirection === 'up' && direction === 'up') ||
+                   (scrollFadeDirection === 'down' && direction === 'down')) {
+                  setIsVisible(false);
+                }
               }
-            }
-          } else {
-            // Only hide elements when scrolling in the opposite direction if 'both' mode is on
-            if (scrollFadeDirection === 'both' && isScrolling) {
-              setIsVisible(false);
-            }
-          }
+            });
+          }, 50); // Small debounce to prevent rapid toggling
         });
       },
       { 
-        threshold,
-        rootMargin,
+        threshold: threshold,
+        rootMargin: rootMargin,
       }
     );
 
@@ -67,16 +81,11 @@ export const ScrollFadeContainer = ({
       if (containerRef.current) {
         observer.unobserve(containerRef.current);
       }
+      // Clean up timers and animation frames
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+      if (debounceTimer) clearTimeout(debounceTimer);
     };
-  }, [threshold, hasAnimated, direction, isScrolling, rootMargin, scrollFadeDirection]);
-
-  // Determine whether to animate based on scroll direction
-  const shouldAnimate = () => {
-    if (scrollFadeDirection === 'both') return true;
-    if (scrollFadeDirection === 'up' && direction === 'up') return true;
-    if (scrollFadeDirection === 'down' && direction === 'down') return true;
-    return false;
-  };
+  }, [threshold, hasAnimated, direction, rootMargin, scrollFadeDirection]);
 
   // Return content immediately without animation for users who prefer reduced motion
   if (prefersReducedMotion) {
@@ -90,14 +99,14 @@ export const ScrollFadeContainer = ({
   return (
     <div
       ref={containerRef}
-      className={`transition-opacity duration-500 ${className} ${
-        isVisible && shouldAnimate()
-          ? 'animate-scroll-fade-in'
-          : isVisible ? 'opacity-100' : 'opacity-0'
-      }`}
+      className={`${className}`}
       style={{ 
-        animationDuration: `${duration}s`,
-        animationDelay: delay ? `${delay}s` : undefined
+        opacity: isVisible ? 1 : 0,
+        transform: isVisible ? 'translateY(0) scale(1)' : 'translateY(20px) scale(0.98)',
+        transition: `opacity ${duration * 1.5}s cubic-bezier(0.16, 1, 0.3, 1), 
+                    transform ${duration * 1.2}s cubic-bezier(0.16, 1, 0.3, 1)`,
+        transitionDelay: delay ? `${delay}s` : undefined,
+        willChange: 'opacity, transform'
       }}
       id={id}
     >

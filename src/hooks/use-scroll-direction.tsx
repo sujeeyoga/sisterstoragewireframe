@@ -25,6 +25,7 @@ export const useScrollDirection = (
     let scrollTimeout: NodeJS.Timeout;
     let lastScrollY = window.pageYOffset;
     let ticking = false;
+    let animationFrameId: number | null = null;
 
     const updateScrollDirection = () => {
       const scrollY = window.pageYOffset;
@@ -55,7 +56,11 @@ export const useScrollDirection = (
 
     const handleScroll = () => {
       if (!ticking) {
-        window.requestAnimationFrame(updateScrollDirection);
+        // Cancel any existing animation frame to prevent stacking
+        if (animationFrameId) cancelAnimationFrame(animationFrameId);
+        
+        // Request a new animation frame
+        animationFrameId = window.requestAnimationFrame(updateScrollDirection);
         ticking = true;
       }
       
@@ -68,11 +73,12 @@ export const useScrollDirection = (
       }, 200);
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     
     return () => {
       window.removeEventListener('scroll', handleScroll);
       clearTimeout(scrollTimeout);
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
     };
   }, [threshold, scrollState.direction]);
 
