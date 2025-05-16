@@ -4,7 +4,7 @@ import { BadgePercent } from 'lucide-react';
 
 const SaleBanner = () => {
   return (
-    <div className="w-full bg-[#FF8021] overflow-hidden py-3 relative z-10">
+    <div className="w-full bg-[#FF8021] overflow-hidden py-3 relative z-10 sticky top-16">
       <div className="flex whitespace-nowrap animate-marquee" style={{ animationDuration: '30s' }}>
         {/* Repeat the content multiple times to create a seamless scroll effect */}
         {[...Array(10)].map((_, index) => (
