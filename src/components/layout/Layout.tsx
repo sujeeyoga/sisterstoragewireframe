@@ -1,4 +1,3 @@
-
 import React, { useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -12,7 +11,7 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
-  const { direction, isAtTop, position } = useScrollDirection(10);
+  const { isAtTop, position } = useScrollDirection(10);
   
   // Function to check if the current page is a blog post or product detail
   // These pages might need special handling in the future
@@ -63,9 +62,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <div className="min-h-screen flex flex-col">
       <div 
-        className={`header-container fixed top-0 left-0 right-0 z-50 transition-transform duration-300 ${
-          !isAtTop && direction === 'down' ? '-translate-y-full' : 'translate-y-0'
-        }`}
+        className="header-container fixed top-0 left-0 right-0 z-50 transition-all duration-300"
       >
         <Navbar isScrolled={position > 20} />
         <SaleBanner />
