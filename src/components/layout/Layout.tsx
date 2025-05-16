@@ -20,9 +20,24 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const headerShrinkFactor = Math.min(1, Math.max(0.95, 1 - (position / 300)));
   const headerShadowOpacity = Math.min(0.15, (position / 200));
   
-  // Calculate header visibility transform for mobile
+  // Calculate header visibility transform for mobile with gradual reappearing
   const shouldHideHeader = isMobile && direction === 'down' && position > 150 && !isAtTop;
-  const headerVisibilityTransform = shouldHideHeader ? 'translateY(-100%)' : 'translateY(0)';
+  
+  // For gradual reappearing effect when scrolling up
+  let headerTranslateY = 0;
+  if (isMobile) {
+    if (direction === 'down' && position > 150 && !isAtTop) {
+      // Hide header when scrolling down
+      headerTranslateY = -100;
+    } else if (direction === 'up' && !isAtTop) {
+      // Gradually reveal header based on scroll position when scrolling up
+      // This creates a "following" effect as you scroll up
+      const progress = Math.min(1, position / 300);
+      headerTranslateY = Math.max(-100 + (progress * 100), -100);
+    }
+  }
+  
+  const headerVisibilityTransform = `translateY(${headerTranslateY}%)`;
 
   // Function to check if the current page is a blog post or product detail
   // These pages might need special handling in the future
