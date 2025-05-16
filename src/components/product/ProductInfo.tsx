@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { ShoppingBag } from "lucide-react";
+import { ShoppingBag, CreditCard } from "lucide-react";
 import ProductFeatures from "./ProductFeatures";
 import QuantitySelector from "./QuantitySelector";
 
@@ -18,9 +18,10 @@ interface ProductInfoProps {
   quantity: number;
   setQuantity: (quantity: number) => void;
   onAddToCart: () => void;
+  onBuyNow: () => void;
 }
 
-const ProductInfo = ({ product, quantity, setQuantity, onAddToCart }: ProductInfoProps) => {
+const ProductInfo = ({ product, quantity, setQuantity, onAddToCart, onBuyNow }: ProductInfoProps) => {
   return (
     <div>
       <span className="inline-block px-3 py-1 bg-purple-100 text-purple-700 rounded-full mb-2 text-xs">
@@ -50,15 +51,30 @@ const ProductInfo = ({ product, quantity, setQuantity, onAddToCart }: ProductInf
         </p>
       )}
       
-      {/* Add to Cart Button */}
-      <Button 
-        className="bg-purple-600 hover:bg-purple-500 text-white w-full py-4"
-        disabled={!product.stock}
-        onClick={onAddToCart}
-      >
-        <ShoppingBag className="mr-2 h-3 w-3" />
-        Add to Cart
-      </Button>
+      {/* Buttons Container */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-2">
+        {/* Add to Cart Button */}
+        <Button 
+          variant="default"
+          className="w-full py-4"
+          disabled={!product.stock}
+          onClick={onAddToCart}
+        >
+          <ShoppingBag className="h-3 w-3" />
+          Add to Cart
+        </Button>
+
+        {/* Buy Now Button */}
+        <Button 
+          variant="secondary"
+          className="w-full py-4"
+          disabled={!product.stock}
+          onClick={onBuyNow}
+        >
+          <CreditCard className="h-3 w-3" />
+          Buy Now
+        </Button>
+      </div>
     </div>
   );
 };

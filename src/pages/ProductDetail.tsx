@@ -1,5 +1,6 @@
+
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/components/ui/use-toast";
 import ProductImage from "@/components/product/ProductImage";
@@ -55,8 +56,9 @@ const products = [
 const ProductDetail = () => {
   const { productId } = useParams<{ productId: string }>();
   const [quantity, setQuantity] = useState(1);
-  const { addItem } = useCart();
+  const { addItem, setIsOpen } = useCart();
   const { toast } = useToast();
+  const navigate = useNavigate();
   
   // Find the product based on the URL parameter
   const product = products.find(p => p.id === productId);
@@ -95,6 +97,23 @@ const ProductDetail = () => {
     });
   };
 
+  const handleBuyNow = () => {
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.color
+    });
+    
+    toast({
+      title: "Processing purchase",
+      description: `${quantity} × ${product.name} added to your cart`,
+    });
+    
+    // Open cart drawer and redirect to checkout in the future
+    setIsOpen(true);
+  };
+
   return (
     <Layout>
       <div className="pb-10">
@@ -109,6 +128,7 @@ const ProductDetail = () => {
               quantity={quantity}
               setQuantity={setQuantity}
               onAddToCart={handleAddToCart}
+              onBuyNow={handleBuyNow}
             />
           </div>
           
