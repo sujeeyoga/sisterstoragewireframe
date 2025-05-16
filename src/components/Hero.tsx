@@ -1,6 +1,6 @@
 
 import { Button } from '@/components/ui/button';
-import { ArrowRight, ChevronDown, ShoppingBag } from 'lucide-react';
+import { ArrowRight, ShoppingBag } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -34,14 +34,14 @@ const Hero = () => {
         >
         </div>
         
-        {/* Content with Fade and Float Effect - Now with solid colors */}
+        {/* Content with Fixed Position - No Movement */}
         <div className="container-custom relative h-full flex flex-col justify-center items-center md:items-start pt-20">
           <div 
             className="max-w-2xl text-center md:text-left"
             style={{
-              transform: `translateY(${Math.min(0, -20 + scrollPosition * 0.1)}px)`,
-              // Removed opacity transition, using display or visibility instead
-              display: scrollPosition > 500 ? 'none' : 'block'
+              // Remove the transform that was causing the text to move
+              opacity: scrollPosition > 500 ? 0 : 1,
+              transition: 'opacity 0.3s ease-out'
             }}
           >
             <span className="inline-block px-4 py-1 mb-5 text-sm font-medium bg-white text-[#E90064] rounded-full animate-fade-in">
@@ -72,12 +72,12 @@ const Hero = () => {
           </div>
         </div>
         
-        {/* Enhanced Scroll Indicator - Now with solid colors */}
+        {/* Enhanced Scroll Indicator - Fixed Position */}
         <div 
           className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center cursor-pointer"
           style={{
-            // Replace opacity transition with display
-            display: scrollPosition > 200 ? 'none' : 'flex'
+            opacity: scrollPosition > 200 ? 0 : 1,
+            transition: 'opacity 0.3s ease-out'
           }}
           onClick={() => window.scrollTo({
             top: window.innerHeight,
