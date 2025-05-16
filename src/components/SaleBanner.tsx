@@ -17,7 +17,7 @@ const SaleBanner = () => {
 
   return (
     <div 
-      className="w-full bg-white overflow-hidden py-3 relative z-10 sticky top-16"
+      className="w-full bg-white overflow-hidden py-3 relative z-10"
       style={{
         opacity: isVisible ? 1 : 0,
         transition: 'opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1)',
