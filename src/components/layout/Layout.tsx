@@ -4,7 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useLocation } from "react-router-dom";
 import SaleBanner from "../SaleBanner";
-import AnimatedText from "../ui/animated-text";
+import ScrollFadeContainer from "../ui/scroll-fade-container";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -30,20 +30,20 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     };
   }, [location.pathname]);
 
-  // Apply section animations to main content by wrapping children
-  const animatedChildren = React.Children.map(children, (child, index) => {
+  // Apply scroll animations to main content by wrapping children
+  const scrollAnimatedChildren = React.Children.map(children, (child, index) => {
     if (!React.isValidElement(child)) return child;
     
     return (
-      <AnimatedText
-        as="div"
-        container={true}
-        animation={`breath-fade-up-${(index % 5) + 1}` as any}
-        delay={index * 150}
-        duration={2} // Slower animation for sections
+      <ScrollFadeContainer
+        scrollFadeDirection="both"
+        threshold={0.1}
+        delay={index * 0.1}
+        duration={0.8}
+        className="mb-8"
       >
         {child}
-      </AnimatedText>
+      </ScrollFadeContainer>
     );
   });
 
@@ -52,7 +52,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <Navbar />
       <SaleBanner />
       <main className="flex-grow pt-16">
-        {animatedChildren}
+        {scrollAnimatedChildren}
       </main>
       <Footer />
     </div>

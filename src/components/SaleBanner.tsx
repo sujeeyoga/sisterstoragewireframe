@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { BadgePercent } from 'lucide-react';
 import AnimatedText from './ui/animated-text';
+import ScrollFadeContainer from './ui/scroll-fade-container';
 
 const SaleBanner = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -16,12 +17,17 @@ const SaleBanner = () => {
   }, []);
 
   return (
-    <div 
-      className={`w-full bg-white overflow-hidden py-3 relative z-10 sticky top-16 transition-opacity duration-700 ${
-        isVisible ? 'opacity-100' : 'opacity-0'
-      }`}
+    <ScrollFadeContainer 
+      className={`w-full bg-white overflow-hidden py-3 relative z-10 sticky top-16 transition-opacity duration-700`}
+      scrollFadeDirection="down"
+      threshold={0}
     >
-      <div className="flex whitespace-nowrap animate-marquee" style={{ animationDuration: '20s' }}>
+      <div 
+        className={`flex whitespace-nowrap animate-marquee transition-opacity duration-700 ${
+          isVisible ? 'opacity-100' : 'opacity-0'
+        }`}
+        style={{ animationDuration: '20s' }}
+      >
         {/* Repeat the content multiple times to create a seamless scroll effect */}
         {[...Array(10)].map((_, index) => (
           <div 
@@ -39,7 +45,7 @@ const SaleBanner = () => {
           </div>
         ))}
       </div>
-    </div>
+    </ScrollFadeContainer>
   );
 };
 
