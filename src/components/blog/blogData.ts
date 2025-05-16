@@ -54,7 +54,7 @@ export const collections = [
   {
     id: "home-drawer",
     title: "Home Is a Drawer",
-    description: "What "home" means when you're always making one.",
+    description: 'What "home" means when you\'re always making one.',
     color: "#FFDCBD", // brandPeach
     slug: "home-is-a-drawer",
     textDark: true // Flag to use dark text on light background
