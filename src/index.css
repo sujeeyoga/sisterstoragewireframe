@@ -16,7 +16,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 10%;
 
-    --primary: 336 100% 45%; /* Changed from 270 86% 67% to #e90064 in HSL */
+    --primary: 336 100% 45%; /* #e90064 in HSL */
     --primary-foreground: 0 0% 100%;
 
     --secondary: 262 32% 54%;
@@ -45,6 +45,15 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 336 100% 45%; /* Updated to match new primary color */
+
+    /* Sister Storage Brand Colors */
+    --brand-pink: 336 100% 45%; /* #E90064 */
+    --brand-orange: 22 100% 56%; /* #FF8021 */
+    --brand-black: 0 0% 0%; /* #000000 */
+    --brand-gray: 0 0% 96%; /* #F4F4F4 */
+    --brand-peach: 30 100% 87%; /* #FFDCBD */
+    --brand-light-pink: 338 99% 69%; /* #FE5FA4 */
+    --brand-gold: 36 100% 56%; /* #FFA51E */
   }
 
   .dark {
@@ -57,7 +66,7 @@
     --popover: 0 0% 15%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 336 100% 45%; /* Changed from 270 86% 67% to #e90064 in HSL */
+    --primary: 336 100% 45%; /* #e90064 in HSL */
     --primary-foreground: 0 0% 100%;
 
     --secondary: 262 32% 54%;
@@ -84,6 +93,15 @@
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 336 100% 45%; /* Updated to match new primary color */
+
+    /* Sister Storage Brand Colors */
+    --brand-pink: 336 100% 45%; /* #E90064 */
+    --brand-orange: 22 100% 56%; /* #FF8021 */
+    --brand-black: 0 0% 0%; /* #000000 */
+    --brand-gray: 0 0% 96%; /* #F4F4F4 */
+    --brand-peach: 30 100% 87%; /* #FFDCBD */
+    --brand-light-pink: 338 99% 69%; /* #FE5FA4 */
+    --brand-gold: 36 100% 56%; /* #FFA51E */
   }
 }
 
@@ -180,5 +198,50 @@
   
   .animate-marquee {
     animation: marquee 20s linear infinite;
+  }
+
+  /* Sister Storage brand colors utility classes */
+  .bg-brand-pink {
+    background-color: #E90064;
+  }
+  .bg-brand-orange {
+    background-color: #FF8021;
+  }
+  .bg-brand-black {
+    background-color: #000000;
+  }
+  .bg-brand-gray {
+    background-color: #F4F4F4;
+  }
+  .bg-brand-peach {
+    background-color: #FFDCBD;
+  }
+  .bg-brand-light-pink {
+    background-color: #FE5FA4;
+  }
+  .bg-brand-gold {
+    background-color: #FFA51E;
+  }
+  
+  .text-brand-pink {
+    color: #E90064;
+  }
+  .text-brand-orange {
+    color: #FF8021;
+  }
+  .text-brand-black {
+    color: #000000;
+  }
+  .text-brand-gray {
+    color: #F4F4F4;
+  }
+  .text-brand-peach {
+    color: #FFDCBD;
+  }
+  .text-brand-light-pink {
+    color: #FE5FA4;
+  }
+  .text-brand-gold {
+    color: #FFA51E;
   }
 }

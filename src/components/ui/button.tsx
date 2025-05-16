@@ -19,6 +19,11 @@ const buttonVariants = cva(
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
         disabled: "bg-[#F4F4F4] text-[#B8B0A8] cursor-not-allowed",
+        // New brand variants
+        pink: "bg-[#E90064] text-white hover:bg-[#FE5FA4] hover:scale-[1.03] active:scale-[0.98]",
+        orange: "bg-[#FF8021] text-white hover:bg-[#FFA51E] hover:scale-[1.03] active:scale-[0.98]",
+        peach: "bg-[#FFDCBD] text-gray-800 hover:bg-[#FFCBA4] hover:scale-[1.03] active:scale-[0.98]",
+        gold: "bg-[#FFA51E] text-white hover:bg-[#FFB84D] hover:scale-[1.03] active:scale-[0.98]",
       },
       size: {
         default: "h-7 px-4 py-2",

@@ -1,9 +1,9 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import Layout from "@/components/layout/Layout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 // Expanded blog posts with additional brand colors
 const blogPosts = [
@@ -147,6 +147,82 @@ const blogPosts = [
   }
 ];
 
+// New themed collections with brand colors
+const collections = [
+  {
+    id: "bangle-archives",
+    title: "Bangle Archives",
+    description: "The stories behind the sets we'll never throw out.",
+    color: "#FF8021", // brandOrange
+    slug: "bangle-archives"
+  },
+  {
+    id: "velvet-drawer",
+    title: "Velvet Drawer Diaries",
+    description: "Inside the rituals and routines that bring us calm.",
+    color: "#FE5FA4", // brandLightPink
+    slug: "velvet-drawer-diaries"
+  },
+  {
+    id: "brown-girl-hacks",
+    title: "Brown Girl Hacks",
+    description: "South Asian organizing, done our way.",
+    color: "#FFDCBD", // brandPeach
+    slug: "brown-girl-hacks"
+  },
+  {
+    id: "stacked-styled",
+    title: "Stacked & Styled",
+    description: "How to wear, layer, and show off your bangle game.",
+    color: "#FFA51E", // brandGold
+    slug: "stacked-styled"
+  },
+  {
+    id: "ammas-shelf",
+    title: "From Amma's Shelf",
+    description: "Lessons, memories, and passed-down wisdom.",
+    color: "#FF8021", // brandOrange
+    slug: "ammas-shelf"
+  },
+  {
+    id: "gifts",
+    title: "Gifts That Hit",
+    description: "What to give when you actually care.",
+    color: "#E90064", // brandPink
+    slug: "gifts-that-hit"
+  },
+  {
+    id: "clutter-left",
+    title: "Clutter We Left Behind",
+    description: "What we stopped holding onto — and why.",
+    color: "#F4F4F4", // brandGray
+    slug: "clutter-left-behind",
+    textDark: true // Flag to use dark text on light background
+  },
+  {
+    id: "home-drawer",
+    title: "Home Is a Drawer",
+    description: "What "home" means when you're always making one.",
+    color: "#FFDCBD", // brandPeach
+    slug: "home-is-a-drawer",
+    textDark: true // Flag to use dark text on light background
+  },
+  {
+    id: "signal-boost",
+    title: "Sister Signal Boost",
+    description: "Spotlighting sisters doing beautiful things.",
+    color: "#FFA51E", // brandGold
+    slug: "sister-signal-boost"
+  },
+  {
+    id: "made-look",
+    title: "Made You Look",
+    description: "Behind the designs, materials, and tiny details we obsessed over.",
+    color: "#FE5FA4", // brandLightPink
+    slug: "made-you-look"
+  }
+];
+
 const categories = [
   "All", 
   "Organization Tips", 
@@ -158,8 +234,16 @@ const categories = [
   "Kids' Rooms",
   "Office Organization",
   "Travel & Packing",
-  "Seasonal Decor"
+  "Seasonal Decor",
+  "Collections" // Added new category for collections
 ];
+
+// Add collection names to categories
+collections.forEach(collection => {
+  if (!categories.includes(collection.title)) {
+    categories.push(collection.title);
+  }
+});
 
 // Difficulty level colors
 const difficultyColors = {
@@ -170,6 +254,7 @@ const difficultyColors = {
 
 const Blog = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [showAllCollections, setShowAllCollections] = useState(false);
   
   const filteredPosts = selectedCategory === "All" 
     ? blogPosts 
@@ -180,11 +265,14 @@ const Blog = () => {
   const trendingPosts = blogPosts.filter(post => post.trending);
   const editorsPickPosts = blogPosts.filter(post => post.editorsPick);
   const mostSharedPosts = blogPosts.filter(post => post.mostShared);
+  
+  // Determine which collections to display
+  const displayedCollections = showAllCollections ? collections : collections.slice(0, 6);
 
   return (
     <Layout>
       {/* Hero Section */}
-      <div className="relative pb-16 bg-purple-50">
+      <div className="relative pb-16 bg-[#F4F4F4]">
         <div className="container-custom">
           <h1 className="text-4xl md:text-5xl font-bold text-center mb-4">Organization & Inspiration</h1>
           <p className="text-gray-700 text-center max-w-2xl mx-auto mb-10">
@@ -193,49 +281,116 @@ const Blog = () => {
           
           {/* Categories */}
           <div className="flex flex-wrap gap-3 justify-center mb-8">
-            {categories.map((category) => (
+            {categories.filter(cat => cat !== "Collections" && !collections.map(c => c.title).includes(cat)).map((category) => (
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category)}
                 className={`px-4 py-2 rounded-full text-sm transition-all ${
                   selectedCategory === category
-                    ? "bg-purple-600 text-white"
-                    : "bg-white border border-gray-200 text-gray-700 hover:bg-purple-100"
+                    ? "bg-[#E90064] text-white"
+                    : "bg-white border border-gray-200 text-gray-700 hover:bg-[#FE5FA4] hover:text-white hover:border-[#FE5FA4]"
                 }`}
               >
                 {category}
               </button>
             ))}
           </div>
+        </div>
+      </div>
+
+      {/* Collections Section */}
+      <div className="bg-white py-16 border-b border-gray-100">
+        <div className="container-custom">
+          <h2 className="text-3xl font-bold text-center mb-3">Sister Collections</h2>
+          <p className="text-gray-600 text-center max-w-2xl mx-auto mb-10">
+            Explore our culturally inspired collections, featuring stories and organization tips that celebrate our heritage.
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 mb-8">
+            {displayedCollections.map((collection) => (
+              <div 
+                key={collection.id}
+                className="rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 hover:translate-y-[-5px] cursor-pointer"
+                onClick={() => setSelectedCategory(collection.title)}
+              >
+                <div 
+                  style={{ backgroundColor: collection.color }} 
+                  className="p-8 flex flex-col justify-between h-48"
+                >
+                  <h3 className={`text-xl font-bold ${collection.textDark ? "text-gray-800" : "text-white"}`}>
+                    {collection.title}
+                  </h3>
+                  <p className={`text-sm mt-2 ${collection.textDark ? "text-gray-700" : "text-white"}`}>
+                    {collection.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
           
-          {/* Featured Categories Section */}
-          <div className="mt-12 mb-6">
-            <h2 className="text-2xl font-bold text-center mb-6">Explore Topics</h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-              {categories.filter(cat => cat !== "All").map((category) => {
-                // Find a post with this category to get the color
-                const categoryPost = blogPosts.find(post => post.category === category);
-                const color = categoryPost ? categoryPost.color : "#9b87f5";
-                
-                return (
-                  <div 
-                    key={category}
-                    onClick={() => setSelectedCategory(category)}
-                    className="cursor-pointer"
-                  >
-                    <div 
-                      style={{ backgroundColor: color }} 
-                      className="h-24 rounded-lg mb-2 flex items-center justify-center shadow-sm hover:shadow-md transition-all hover:scale-105"
-                    >
-                      <span className="text-white font-medium text-sm text-center px-2">{category}</span>
+          {collections.length > 6 && (
+            <div className="text-center">
+              <Button 
+                onClick={() => setShowAllCollections(!showAllCollections)}
+                variant="secondary"
+                className="inline-flex items-center gap-2"
+              >
+                {showAllCollections ? (
+                  <>
+                    Show Less <ChevronUp className="h-4 w-4" />
+                  </>
+                ) : (
+                  <>
+                    Show All Collections <ChevronDown className="h-4 w-4" />
+                  </>
+                )}
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Featured Collection Story */}
+      {selectedCategory !== "All" && collections.find(c => c.title === selectedCategory) && (
+        <div className="bg-[#F4F4F4] py-12">
+          <div className="container-custom">
+            <div className="flex flex-col md:flex-row gap-8">
+              <div className="w-full md:w-1/3">
+                {(() => {
+                  const collection = collections.find(c => c.title === selectedCategory);
+                  return collection ? (
+                    <div className="rounded-lg overflow-hidden">
+                      <div 
+                        style={{ backgroundColor: collection.color }} 
+                        className="aspect-square flex flex-col items-center justify-center p-8 text-center"
+                      >
+                        <h2 className={`text-3xl font-bold mb-4 ${collection.textDark ? "text-gray-800" : "text-white"}`}>
+                          {collection.title}
+                        </h2>
+                        <p className={`${collection.textDark ? "text-gray-700" : "text-white"}`}>
+                          {collection.description}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
+                  ) : null;
+                })()}
+              </div>
+              <div className="w-full md:w-2/3">
+                <h3 className="text-2xl font-bold mb-3">Featured Stories</h3>
+                <p className="text-gray-600 mb-6">
+                  Explore our curated collection of articles, tips, and stories related to {selectedCategory}.
+                </p>
+                <Button 
+                  onClick={() => setSelectedCategory("All")} 
+                  className="bg-[#E90064] hover:bg-[#FE5FA4]"
+                >
+                  Back to All Categories
+                </Button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
       
       {/* Blog Posts */}
       <div className="bg-white py-16">
@@ -254,7 +409,7 @@ const Blog = () => {
                 </div>
                 <div className="space-y-4">
                   <div className="flex items-center gap-2">
-                    <span className="inline-block px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium">
+                    <span className="inline-block px-3 py-1 bg-[#FE5FA4] text-white rounded-full text-sm font-medium">
                       {filteredPosts[0].category}
                     </span>
                     <span 
@@ -274,7 +429,7 @@ const Blog = () => {
                       By {filteredPosts[0].author} • {filteredPosts[0].date}
                     </div>
                   </div>
-                  <Button className="bg-purple-600 hover:bg-purple-500 text-white mt-2">
+                  <Button className="bg-[#E90064] hover:bg-[#FE5FA4] text-white mt-2">
                     Read Article
                   </Button>
                 </div>
@@ -284,7 +439,7 @@ const Blog = () => {
           
           {/* Tabs for different content sections */}
           <Tabs defaultValue="all" className="mb-12">
-            <TabsList className="mb-8 w-full max-w-md mx-auto flex justify-between bg-gray-100">
+            <TabsList className="mb-8 w-full max-w-md mx-auto flex justify-between bg-[#F4F4F4]">
               <TabsTrigger value="all">All Posts</TabsTrigger>
               <TabsTrigger value="trending">Trending</TabsTrigger>
               <TabsTrigger value="editorsPick">Editor's Picks</TabsTrigger>
@@ -305,7 +460,7 @@ const Blog = () => {
                     </div>
                     <div className="p-6">
                       <div className="flex items-center justify-between mb-3">
-                        <span className="inline-block px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
+                        <span className="inline-block px-3 py-1 bg-[#FE5FA4] text-white rounded-full text-xs font-medium">
                           {post.category}
                         </span>
                         <div className="flex items-center gap-2">
@@ -348,10 +503,10 @@ const Blog = () => {
                     </div>
                     <div className="p-6">
                       <div className="flex items-center gap-2 mb-3">
-                        <span className="inline-block px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
+                        <span className="inline-block px-3 py-1 bg-[#FE5FA4] text-white rounded-full text-xs font-medium">
                           {post.category}
                         </span>
-                        <span className="text-xs bg-red-500 text-white px-2 py-0.5 rounded-full">Trending</span>
+                        <span className="text-xs bg-[#E90064] text-white px-2 py-0.5 rounded-full">Trending</span>
                       </div>
                       <h3 className="text-xl font-bold mb-2">{post.title}</h3>
                       <p className="text-gray-700 text-sm mb-4 line-clamp-2">{post.excerpt}</p>
@@ -377,7 +532,7 @@ const Blog = () => {
                       </div>
                     </div>
                     <div className="p-6">
-                      <span className="inline-block px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium mb-3">
+                      <span className="inline-block px-3 py-1 bg-[#FE5FA4] text-white rounded-full text-xs font-medium mb-3">
                         {post.category}
                       </span>
                       <h3 className="text-xl font-bold mb-2">{post.title}</h3>
@@ -398,7 +553,7 @@ const Blog = () => {
                     </div>
                     <h3 className="text-xl font-bold mb-2 text-center">{post.title}</h3>
                     <div className="flex justify-center mb-4">
-                      <span className="inline-block px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
+                      <span className="inline-block px-3 py-1 bg-[#FE5FA4] text-white rounded-full text-xs font-medium">
                         {post.category}
                       </span>
                     </div>
@@ -416,16 +571,19 @@ const Blog = () => {
           <div className="py-12">
             <h2 className="text-2xl font-bold mb-6">Popular Tags</h2>
             <div className="flex flex-wrap gap-2">
-              {Array.from(new Set(blogPosts.map(post => post.category))).map((category) => {
-                // Find a post with this category to get the color
+              {Array.from(new Set([...blogPosts.map(post => post.category), ...collections.map(c => c.title)])).map((category) => {
+                // Find a post with this category to get the color or use collection color
                 const categoryPost = blogPosts.find(post => post.category === category);
-                const color = categoryPost ? categoryPost.color : "#9b87f5";
+                const categoryCollection = collections.find(c => c.title === category);
+                const color = categoryCollection ? categoryCollection.color : 
+                              categoryPost ? categoryPost.color : "#E90064";
+                const textDark = categoryCollection?.textDark;
                 
                 return (
                   <span
                     key={category}
-                    style={{ backgroundColor: color, color: "white" }}
-                    className="px-4 py-2 rounded-full text-sm font-medium cursor-pointer"
+                    style={{ backgroundColor: color }}
+                    className={`px-4 py-2 rounded-full text-sm font-medium cursor-pointer ${textDark ? "text-gray-800" : "text-white"}`}
                     onClick={() => setSelectedCategory(category)}
                   >
                     {category}
@@ -438,9 +596,9 @@ const Blog = () => {
       </div>
       
       {/* Newsletter Section */}
-      <div className="py-16 bg-purple-50">
+      <div className="py-16 bg-[#FFDCBD]">
         <div className="container-custom max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-4">Get Organization Tips Delivered</h2>
+          <h2 className="text-3xl font-bold mb-4 text-gray-800">Get Organization Tips Delivered</h2>
           <p className="text-gray-700 mb-6">
             Join our newsletter to receive monthly organization tips, exclusive offers, and early access to new products.
           </p>
@@ -448,9 +606,9 @@ const Blog = () => {
             <input 
               type="email" 
               placeholder="Your email address" 
-              className="px-4 py-3 rounded-md border border-gray-300 flex-grow focus:outline-none focus:ring-2 focus:ring-purple-400"
+              className="px-4 py-3 rounded-md border border-gray-300 flex-grow focus:outline-none focus:ring-2 focus:ring-[#E90064]"
             />
-            <Button className="bg-purple-600 hover:bg-purple-500 text-white">
+            <Button className="bg-[#E90064] hover:bg-[#FE5FA4] text-white">
               Subscribe
             </Button>
           </div>

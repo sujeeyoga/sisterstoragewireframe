@@ -104,6 +104,14 @@ export default {
 					'soft-gray': '#F1F0FB',
 					'charcoal': '#403E43',
 					'white': '#FFFFFF',
+					// New Sister Storage brand colors
+					'pink': '#E90064',
+					'orange': '#FF8021',
+					'black': '#000000',
+					'gray': '#F4F4F4',
+					'peach': '#FFDCBD',
+					'light-pink': '#FE5FA4',
+					'gold': '#FFA51E',
 				}
 			},
 			borderRadius: {
