@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Menu, X, ShoppingBag, Gift, Mail, ArrowLeft, Home, Package } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -7,14 +6,19 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
 
 interface NavbarProps {
-  isScrolled?: boolean;
+  position?: number;
 }
 
-const Navbar = ({ isScrolled = false }: NavbarProps) => {
+const Navbar = ({ position = 0 }: NavbarProps) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isMobile = useIsMobile();
   const { totalItems, setIsOpen: setCartOpen } = useCart();
   const navigate = useNavigate();
+  
+  // Calculate scroll-based styling
+  const isScrolled = position > 20;
+  const scrollProgress = Math.min(1, position / 100);
+  const bgOpacity = Math.min(0.95, 0.7 + (scrollProgress * 0.25));
 
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
@@ -37,8 +41,12 @@ const Navbar = ({ isScrolled = false }: NavbarProps) => {
   return (
     <header 
       className={`w-full transition-all duration-300 ${
-        isScrolled ? 'bg-gray-800 shadow-lg py-2' : 'bg-[#E90064] py-4'
+        isScrolled ? 'py-2' : 'py-4'
       }`}
+      style={{
+        backgroundColor: `rgba(28, 25, 35, ${bgOpacity})`,
+        backdropFilter: `blur(${scrollProgress * 8}px)`,
+      }}
     >
       <div className="container-custom flex items-center justify-between">
         {/* Back Button (only on mobile) */}
@@ -54,7 +62,15 @@ const Navbar = ({ isScrolled = false }: NavbarProps) => {
 
         {/* Logo */}
         <Link to="/" className="relative z-10">
-          <h1 className="text-white font-bold">SISTER STORAGE</h1>
+          <h1 
+            className="text-white font-bold transition-all duration-300"
+            style={{ 
+              transform: `scale(${isScrolled ? 0.95 : 1})`,
+              letterSpacing: `${isScrolled ? '0' : '0.5px'}`
+            }}
+          >
+            SISTER STORAGE
+          </h1>
         </Link>
 
         {/* Desktop Menu */}

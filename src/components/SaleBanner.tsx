@@ -3,8 +3,17 @@ import React, { useEffect, useState } from 'react';
 import { BadgePercent } from 'lucide-react';
 import AnimatedText from './ui/animated-text';
 
-const SaleBanner = () => {
+interface SaleBannerProps {
+  position?: number;
+}
+
+const SaleBanner = ({ position = 0 }: SaleBannerProps) => {
   const [isVisible, setIsVisible] = useState(false);
+  
+  // Calculate scroll-based styling
+  const scrollProgress = Math.min(1, position / 150);
+  const bannerHeight = Math.max(30, 48 - (scrollProgress * 18)); // Shrink from 48px to 30px
+  const bannerOpacity = Math.max(0.85, 1 - (scrollProgress * 0.15));
 
   useEffect(() => {
     // Add a small delay before showing the banner
@@ -17,14 +26,16 @@ const SaleBanner = () => {
 
   return (
     <div 
-      className="w-full bg-white overflow-hidden py-3 relative z-10"
+      className="w-full bg-white overflow-hidden relative z-10"
       style={{
-        opacity: isVisible ? 1 : 0,
-        transition: 'opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1)',
+        opacity: isVisible ? bannerOpacity : 0,
+        height: `${bannerHeight}px`,
+        transition: 'opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), height 0.3s ease',
+        transform: `scale(${1 - (scrollProgress * 0.05)})`,
       }}
     >
       <div 
-        className="flex whitespace-nowrap animate-marquee"
+        className="flex whitespace-nowrap animate-marquee h-full items-center"
         style={{ 
           animationDuration: '30s',
           willChange: 'transform'

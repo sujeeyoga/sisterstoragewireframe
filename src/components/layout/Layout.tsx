@@ -1,3 +1,4 @@
+
 import React, { useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -12,6 +13,10 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
   const { isAtTop, position } = useScrollDirection(10);
+  
+  // Calculate header transform and effects based on scroll position
+  const headerShrinkFactor = Math.min(1, Math.max(0.95, 1 - (position / 300)));
+  const headerShadowOpacity = Math.min(0.15, (position / 200));
   
   // Function to check if the current page is a blog post or product detail
   // These pages might need special handling in the future
@@ -63,9 +68,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     <div className="min-h-screen flex flex-col">
       <div 
         className="header-container fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+        style={{
+          transform: `scale(${headerShrinkFactor})`,
+          transformOrigin: 'top center',
+          boxShadow: `0 4px 20px rgba(0,0,0,${headerShadowOpacity})`,
+        }}
       >
-        <Navbar isScrolled={position > 20} />
-        <SaleBanner />
+        <Navbar position={position} />
+        <SaleBanner position={position} />
       </div>
       <main className="flex-grow pt-32">
         {children}
