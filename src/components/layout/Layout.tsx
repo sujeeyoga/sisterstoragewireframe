@@ -23,9 +23,17 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     // Add animated state to body when page loads
     document.body.classList.add('animate-fade-in');
     
+    // Pinterest-style layout needs additional styling
+    if (location.pathname === '/shop') {
+      document.body.classList.add('pinterest-layout');
+    } else {
+      document.body.classList.remove('pinterest-layout');
+    }
+    
     // Remove animation class when component unmounts
     return () => {
       document.body.classList.remove('animate-fade-in');
+      document.body.classList.remove('pinterest-layout');
     };
   }, [location.pathname]);
 

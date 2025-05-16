@@ -22,10 +22,16 @@ const Shop = () => {
         categories={categories}
       />
       
-      {/* Products Grid */}
+      {/* Products Grid - Pinterest Style */}
       <div className="bg-white py-12">
         <div className="container-custom">
           <ProductsGrid products={filteredProducts} />
+          
+          <div className="mt-10 flex justify-center">
+            <button className="px-6 py-2 border border-gray-300 rounded-full text-gray-600 hover:bg-gray-100 transition-colors">
+              Load more
+            </button>
+          </div>
           
           <BenefitsSection benefits={benefits} />
           
