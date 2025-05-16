@@ -5,29 +5,16 @@ import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
-import useScrollDirection from '@/hooks/use-scroll-direction';
 
-const Navbar = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
+interface NavbarProps {
+  isScrolled?: boolean;
+}
+
+const Navbar = ({ isScrolled = false }: NavbarProps) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isMobile = useIsMobile();
   const { totalItems, setIsOpen: setCartOpen } = useCart();
   const navigate = useNavigate();
-  const { position } = useScrollDirection();
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (position > 20) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
-    };
-
-    handleScroll(); // Initial check
-    
-    return () => {};
-  }, [position]);
 
   // Prevent body scroll when mobile menu is open
   useEffect(() => {

@@ -12,7 +12,7 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
-  const { direction, isAtTop } = useScrollDirection(10);
+  const { direction, isAtTop, position } = useScrollDirection(10);
   
   // Function to check if the current page is a blog post or product detail
   // These pages might need special handling in the future
@@ -62,10 +62,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <div className={`header-container transition-transform duration-300 fixed top-0 left-0 right-0 z-50 ${
-        !isAtTop && direction === 'down' ? '-translate-y-full' : 'translate-y-0'
-      }`}>
-        <Navbar />
+      <div 
+        className={`header-container fixed top-0 left-0 right-0 z-50 transition-transform duration-300 ${
+          !isAtTop && direction === 'down' ? '-translate-y-full' : 'translate-y-0'
+        }`}
+      >
+        <Navbar isScrolled={position > 20} />
         <SaleBanner />
       </div>
       <main className="flex-grow pt-32">
