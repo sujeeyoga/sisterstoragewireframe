@@ -16,7 +16,7 @@ const SaleBanner = () => {
             <span className="font-semibold text-white uppercase">
               Spring Summer Sale - 20% Off Storewide
             </span>
-            <span className="mx-3 text-white">✦</span>
+            <span className="mx-3 text-black">✦</span>
           </div>
         ))}
       </div>
