@@ -7,20 +7,20 @@ import { Link } from 'react-router-dom';
 const steps = [
   {
     id: 1,
-    title: "Choose Your Box",
-    description: "Start with a style that suits your needs and your space.",
+    title: "Bangles, But Make It Organized",
+    description: "Slide, snap, and go. It's that easy.",
     color: "#E90064"
   },
   {
     id: 2,
-    title: "Customize Your Interior",
-    description: "Select interiors that protect and showcase your pieces perfectly.",
+    title: "No More Ziplocks",
+    description: "Your bangles deserve better. We made it happen.",
     color: "#FF8021"
   },
   {
     id: 3,
-    title: "Enjoy a Clutter-Free Life",
-    description: "Let your everyday feel a little lighter, calmer, and more beautiful.",
+    title: "Stack. Seal. Style.",
+    description: "The easiest way to keep your bangles in check.",
     color: "#FFDCBD"
   }
 ];
