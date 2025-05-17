@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Menu, X, ShoppingBag, Gift, Mail, ArrowLeft, Home, Package } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -44,7 +45,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
         isScrolled ? 'py-2' : 'py-4'
       }`}
       style={{
-        backgroundColor: `rgba(28, 25, 35, ${bgOpacity})`,
+        backgroundColor: '#000000',
         backdropFilter: `blur(${scrollProgress * 8}px)`,
       }}
     >
