@@ -1,6 +1,6 @@
 
 import { Button } from '@/components/ui/button';
-import { ArrowRight, ShoppingBag } from 'lucide-react';
+import { ArrowRight, ShoppingBag, ArrowDown } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import AnimatedText from '@/components/ui/animated-text';
@@ -106,8 +106,8 @@ const Hero = () => {
           })}
         >
           <span className="text-white text-sm font-medium mb-2">Discover More</span>
-          <div className="relative h-12 w-6 border-2 border-white rounded-full flex justify-center">
-            <div className="absolute top-2 w-2 h-2 bg-white rounded-full animate-bounce"></div>
+          <div className="flex items-center justify-center">
+            <ArrowDown className="h-8 w-8 text-white animate-bounce" />
           </div>
         </div>
       </div>
