@@ -1,4 +1,3 @@
-
 import { Button } from '@/components/ui/button';
 import { ArrowRight, ShoppingBag, ArrowDown } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -128,7 +127,7 @@ const Hero = () => {
             </AnimatedText>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-              <div className="rounded-lg bg-[#FF8021] h-64 flex items-center justify-center">
+              <div className="bg-[#FF8021] h-64 flex items-center justify-center">
                 <span className="text-white text-3xl font-bold">Sister Storage</span>
               </div>
               <div className="space-y-4">
