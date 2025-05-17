@@ -1,3 +1,4 @@
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
 import { ShoppingBag } from 'lucide-react';
@@ -150,17 +151,17 @@ const FeaturedItems = () => {
           
           {Object.entries(menuItems).map(([category, items]) => (
             <TabsContent key={category} value={category} className="mt-0">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6">
+              <div className="grid grid-cols-2 gap-4 md:gap-6">
                 {items.map((item) => (
-                  <Card key={item.id} className="overflow-hidden border-none shadow-lg hover:shadow-xl transition-shadow duration-300 w-full max-w-[350px] mx-auto">
-                    <div className="aspect-video w-full overflow-hidden">
+                  <Card key={item.id} className="overflow-hidden border-none shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <div className="w-full overflow-hidden">
                       <img 
                         src={item.image} 
                         alt={item.name} 
-                        className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                        className="w-full h-auto object-cover transition-transform duration-500 hover:scale-105"
                       />
                     </div>
-                    <CardContent className="p-5 md:p-6">
+                    <CardContent className="p-4 md:p-6">
                       <div className="flex justify-between items-start mb-2">
                         <h3 className="text-lg md:text-xl font-semibold">{item.name}</h3>
                         <span className="text-[#E6007E] font-bold">${item.price.toFixed(2)}</span>
