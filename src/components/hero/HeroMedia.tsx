@@ -20,8 +20,8 @@ const HeroMedia = () => {
     <>
       {/* Hero Image - slides in from left then fades out */}
       <img
-        src="/lovable-uploads/97e7d7c7-5536-4d18-9887-90897337430d.png"
-        alt="Two sisters organizing traditional clothing and jewelry together"
+        src="https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-27-scaled.jpg"
+        alt="Sister Storage lifestyle home organization scene showcasing beautiful storage solutions"
         className={`absolute inset-0 w-full h-full object-cover z-10 animate-slide-in-left transition-opacity duration-1000 ${
           fadeOutImage ? 'opacity-0' : 'opacity-100'
         }`}
