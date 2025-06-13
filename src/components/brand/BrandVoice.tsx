@@ -1,4 +1,3 @@
-
 import { SisterBrand } from '@/config/sister-brand.config';
 import AnimatedText from '@/components/ui/animated-text';
 import MobileGallery from './MobileGallery';
@@ -46,6 +45,34 @@ const BrandVoice = () => {
       alt: 'Organized desk setup',
       link: '/brand/content/desk-organization',
       title: 'Desk Organization'
+    },
+    {
+      id: 7,
+      src: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=400&h=450&fit=crop',
+      alt: 'Modern technology workspace',
+      link: '/brand/content/tech-organization',
+      title: 'Tech Organization'
+    },
+    {
+      id: 8,
+      src: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&h=600&fit=crop',
+      alt: 'Organized systems and processes',
+      link: '/brand/content/system-design',
+      title: 'System Design'
+    },
+    {
+      id: 9,
+      src: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&h=500&fit=crop',
+      alt: 'Digital workspace management',
+      link: '/brand/content/digital-workspace',
+      title: 'Digital Workspace'
+    },
+    {
+      id: 10,
+      src: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&h=450&fit=crop',
+      alt: 'Productive work environment',
+      link: '/brand/content/productivity-spaces',
+      title: 'Productivity Spaces'
     }
   ];
 
