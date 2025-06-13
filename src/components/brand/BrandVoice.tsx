@@ -1,4 +1,3 @@
-
 import { SisterBrand } from '@/config/sister-brand.config';
 import AnimatedText from '@/components/ui/animated-text';
 import { Link } from 'react-router-dom';
@@ -117,9 +116,9 @@ const BrandVoice = () => {
               >
                 <Link 
                   to={image.link}
-                  className="group block overflow-hidden rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+                  className="group block mb-3"
                 >
-                  <div className="relative overflow-hidden rounded-lg">
+                  <div className="relative overflow-hidden rounded-lg shadow-lg transition-shadow duration-300 group-hover:shadow-2xl">
                     <img
                       src={image.src}
                       alt={image.alt}
