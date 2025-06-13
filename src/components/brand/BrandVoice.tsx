@@ -1,3 +1,4 @@
+
 import { SisterBrand } from '@/config/sister-brand.config';
 import AnimatedText from '@/components/ui/animated-text';
 import { Link } from 'react-router-dom';
@@ -51,8 +52,8 @@ const BrandVoice = () => {
   const animationNames = ['breath-fade-up-1', 'breath-fade-up-2', 'breath-fade-up-3', 'breath-fade-up-4', 'breath-fade-up-5'] as const;
 
   return (
-    <section className="bg-black text-white min-h-screen flex flex-col items-center justify-center px-6 py-16">
-      <div className="container-custom text-center">
+    <div className="min-h-screen flex flex-col items-center justify-center text-center text-white">
+      <div className="max-w-6xl mx-auto">
         <AnimatedText
           as="h2"
           className="text-3xl md:text-4xl font-bold mb-8 font-poppins"
@@ -67,6 +68,7 @@ const BrandVoice = () => {
         >
           {SisterBrand.brandVoice.mission}
         </AnimatedText>
+        
         <div className="grid grid-cols-12 gap-8 mb-16">
           <div className="col-span-12 max-w-3xl mx-auto space-y-8">
             <AnimatedText
@@ -136,7 +138,7 @@ const BrandVoice = () => {
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 

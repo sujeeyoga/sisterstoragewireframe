@@ -1,6 +1,8 @@
 
 import { Routes, Route } from "react-router-dom";
 import BrandLayout from "@/components/layout/BrandLayout";
+import Section from "@/components/layout/Section";
+import EnhancedScrollFade from "@/components/ui/enhanced-scroll-fade";
 import BrandHeader from "@/components/brand/BrandHeader";
 import BrandColors from "@/components/brand/BrandColors";
 import BrandTypography from "@/components/brand/BrandTypography";
@@ -13,12 +15,41 @@ const BrandMain = () => {
   return (
     <BrandLayout>
       <div className="font-poppins">
-        <BrandHeader />
-        <BrandColors />
-        <BrandTypography />
-        <BrandComponents />
-        <BrandApplications />
-        <BrandVoice />
+        <EnhancedScrollFade preset="subtle" once={true}>
+          <Section spacing="xl" width="full" background="brand-pink" as="div">
+            <BrandHeader />
+          </Section>
+        </EnhancedScrollFade>
+        
+        <EnhancedScrollFade preset="subtle" delay={0.1} once={true}>
+          <Section spacing="lg" width="contained" background="white">
+            <BrandColors />
+          </Section>
+        </EnhancedScrollFade>
+        
+        <EnhancedScrollFade preset="subtle" delay={0.2} once={true}>
+          <Section spacing="lg" width="contained" background="gray">
+            <BrandTypography />
+          </Section>
+        </EnhancedScrollFade>
+        
+        <EnhancedScrollFade preset="subtle" delay={0.1} once={true}>
+          <Section spacing="lg" width="contained" background="white">
+            <BrandComponents />
+          </Section>
+        </EnhancedScrollFade>
+        
+        <EnhancedScrollFade preset="subtle" delay={0.2} once={true}>
+          <Section spacing="lg" width="contained" background="gray">
+            <BrandApplications />
+          </Section>
+        </EnhancedScrollFade>
+        
+        <EnhancedScrollFade preset="subtle" delay={0.1} once={true}>
+          <Section spacing="xl" width="full" background="dark">
+            <BrandVoice />
+          </Section>
+        </EnhancedScrollFade>
       </div>
     </BrandLayout>
   );

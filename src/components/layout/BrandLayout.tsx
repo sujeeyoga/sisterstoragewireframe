@@ -10,8 +10,10 @@ const BrandLayout: React.FC<BrandLayoutProps> = ({ children }) => {
   return (
     <BaseLayout 
       variant="brand" 
-      showFooter={false}
+      showFooter={true}
       showSaleBanner={false}
+      spacing="none"
+      background="white"
       pageId="brand"
     >
       {children}

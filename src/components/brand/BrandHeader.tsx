@@ -5,8 +5,8 @@ import AnimatedText from '@/components/ui/animated-text';
 
 const BrandHeader = () => {
   return (
-    <section className="bg-[#E90064] text-white min-h-screen flex items-center justify-center px-6 py-16">
-      <div className="container-custom text-center">
+    <div className="min-h-screen flex items-center justify-center text-center text-white">
+      <div className="max-w-4xl mx-auto">
         <AnimatedText
           as="h1"
           className="text-5xl md:text-7xl font-bold mb-8 font-poppins"
@@ -42,7 +42,7 @@ const BrandHeader = () => {
           ))}
         </AnimatedText>
       </div>
-    </section>
+    </div>
   );
 };
 
