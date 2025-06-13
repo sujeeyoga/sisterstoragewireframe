@@ -1,5 +1,6 @@
 
-import Layout from "@/components/layout/Layout";
+import BaseLayout from "@/components/layout/BaseLayout";
+import Section from "@/components/layout/Section";
 import Hero from "@/components/Hero";
 import FeaturedItems from "@/components/FeaturedItems";
 import About from "@/components/About";
@@ -8,34 +9,55 @@ import Delivery from "@/components/Delivery";
 import Testimonials from "@/components/Testimonials";
 import Newsletter from "@/components/Newsletter";
 import InstagramUGC from "@/components/InstagramUGC";
-import ScrollFadeContainer from "@/components/ui/scroll-fade-container";
+import EnhancedScrollFade from "@/components/ui/enhanced-scroll-fade";
 
 const Index = () => {
   return (
-    <Layout>
+    <BaseLayout variant="standard" pageId="home">
       <Hero />
-      <ScrollFadeContainer scrollFadeDirection="both" threshold={0.05} duration={1.2} rootMargin="-50px 0px">
-        <FeaturedItems />
-      </ScrollFadeContainer>
-      <ScrollFadeContainer scrollFadeDirection="both" threshold={0.05} duration={1.2} delay={0.1} rootMargin="-50px 0px">
-        <HowItWorks />
-      </ScrollFadeContainer>
-      <ScrollFadeContainer scrollFadeDirection="both" threshold={0.05} duration={1.2} delay={0.2} rootMargin="-50px 0px">
-        <About />
-      </ScrollFadeContainer>
-      <ScrollFadeContainer scrollFadeDirection="both" threshold={0.05} duration={1.2} delay={0.1} rootMargin="-50px 0px">
-        <Testimonials />
-      </ScrollFadeContainer>
-      <ScrollFadeContainer scrollFadeDirection="both" threshold={0.05} duration={1.2} delay={0.2} rootMargin="-50px 0px">
-        <InstagramUGC />
-      </ScrollFadeContainer>
-      <ScrollFadeContainer scrollFadeDirection="both" threshold={0.05} duration={1.2} delay={0.1} rootMargin="-50px 0px">
-        <Newsletter />
-      </ScrollFadeContainer>
-      <ScrollFadeContainer scrollFadeDirection="both" threshold={0.05} duration={1.2} rootMargin="-50px 0px">
-        <Delivery />
-      </ScrollFadeContainer>
-    </Layout>
+      
+      <EnhancedScrollFade preset="medium" once={true}>
+        <Section spacing="md" width="contained">
+          <FeaturedItems />
+        </Section>
+      </EnhancedScrollFade>
+      
+      <EnhancedScrollFade preset="medium" delay={0.1} once={true}>
+        <Section spacing="lg" width="contained">
+          <HowItWorks />
+        </Section>
+      </EnhancedScrollFade>
+      
+      <EnhancedScrollFade preset="subtle" delay={0.2} once={true}>
+        <Section spacing="md" width="contained" background="gray">
+          <About />
+        </Section>
+      </EnhancedScrollFade>
+      
+      <EnhancedScrollFade preset="medium" delay={0.1} once={true}>
+        <Section spacing="lg" width="contained">
+          <Testimonials />
+        </Section>
+      </EnhancedScrollFade>
+      
+      <EnhancedScrollFade preset="subtle" delay={0.2} once={true}>
+        <Section spacing="md" width="full">
+          <InstagramUGC />
+        </Section>
+      </EnhancedScrollFade>
+      
+      <EnhancedScrollFade preset="medium" delay={0.1} once={true}>
+        <Section spacing="lg" width="contained" background="brand-pink">
+          <Newsletter />
+        </Section>
+      </EnhancedScrollFade>
+      
+      <EnhancedScrollFade preset="subtle" once={true}>
+        <Section spacing="xl" width="contained">
+          <Delivery />
+        </Section>
+      </EnhancedScrollFade>
+    </BaseLayout>
   );
 };
 
