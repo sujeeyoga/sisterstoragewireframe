@@ -1,17 +1,27 @@
 
+import { SisterBrand } from '@/config/sister-brand.config';
 import AnimatedText from '@/components/ui/animated-text';
 
 const BrandTypography = () => {
   return (
-    <section className="py-16 px-6 bg-gray-50">
+    <section className="bg-gray-50 min-h-screen flex items-center justify-center px-6">
       <div className="container-custom">
-        <AnimatedText
-          as="h2"
-          className="text-3xl md:text-4xl font-bold text-center mb-12 font-poppins"
-          animation="breath-fade-up"
-        >
-          Typography — Poppins
-        </AnimatedText>
+        <div className="text-center mb-12">
+          <AnimatedText
+            as="h2"
+            className="text-3xl md:text-4xl font-bold mb-4 font-poppins"
+            animation="breath-fade-up"
+          >
+            Typography — Poppins
+          </AnimatedText>
+          <AnimatedText
+            as="p"
+            className="text-lg font-thin text-gray-600 font-poppins"
+            animation="breath-fade-up-2"
+          >
+            {SisterBrand.brandVoice.mission}
+          </AnimatedText>
+        </div>
         <div className="max-w-4xl mx-auto space-y-8">
           <div className="bg-white p-8 shadow-sm" style={{ borderRadius: '0px' }}>
             <p className="text-xs text-gray-500 uppercase tracking-wide mb-2 font-poppins">Display / Hero</p>

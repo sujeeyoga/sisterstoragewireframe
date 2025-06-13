@@ -5,7 +5,7 @@ import AnimatedText from '@/components/ui/animated-text';
 
 const BrandHeader = () => {
   return (
-    <section className="bg-[#E90064] text-white py-20 px-6">
+    <section className="bg-[#E90064] text-white min-h-screen flex items-center justify-center px-6">
       <div className="container-custom text-center">
         <AnimatedText
           as="h1"
@@ -14,6 +14,13 @@ const BrandHeader = () => {
           words
         >
           Sister Storage Brand Guide
+        </AnimatedText>
+        <AnimatedText
+          as="p"
+          className="text-lg md:text-xl font-thin mb-8 max-w-2xl mx-auto font-poppins"
+          animation="breath-fade-up-2"
+        >
+          {SisterBrand.brandVoice.mission}
         </AnimatedText>
         <AnimatedText
           as="p"

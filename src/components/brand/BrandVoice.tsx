@@ -4,14 +4,21 @@ import AnimatedText from '@/components/ui/animated-text';
 
 const BrandVoice = () => {
   return (
-    <section className="py-16 px-6 bg-black text-white">
+    <section className="bg-black text-white min-h-screen flex items-center justify-center px-6">
       <div className="container-custom text-center">
         <AnimatedText
           as="h2"
-          className="text-3xl md:text-4xl font-bold mb-8 font-poppins"
+          className="text-3xl md:text-4xl font-bold mb-6 font-poppins"
           animation="breath-fade-up"
         >
           Our Voice
+        </AnimatedText>
+        <AnimatedText
+          as="p"
+          className="text-lg font-thin mb-8 font-poppins"
+          animation="breath-fade-up-2"
+        >
+          {SisterBrand.brandVoice.mission}
         </AnimatedText>
         <div className="max-w-3xl mx-auto space-y-6">
           <AnimatedText
@@ -35,7 +42,7 @@ const BrandVoice = () => {
               className="text-lg font-poppins"
               animation="breath-fade-up-4"
             >
-              {SisterBrand.brandVoice.mission}
+              Our visual identity celebrates the beauty of organized living while honoring our cultural heritage. Every color, every curve, every choice reflects our mission.
             </AnimatedText>
           </div>
         </div>

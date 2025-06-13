@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { SisterBrand } from '@/config/sister-brand.config';
 import { Card, CardContent } from '@/components/ui/card';
@@ -27,15 +26,24 @@ const BrandColors = () => {
   ];
 
   return (
-    <section className="py-16 px-6 bg-white">
+    <section className="bg-white min-h-screen flex items-center justify-center px-6">
       <div className="container-custom">
-        <AnimatedText
-          as="h2"
-          className="text-3xl md:text-4xl font-bold text-center mb-12 font-poppins"
-          animation="breath-fade-up"
-        >
-          Brand Colors
-        </AnimatedText>
+        <div className="text-center mb-12">
+          <AnimatedText
+            as="h2"
+            className="text-3xl md:text-4xl font-bold mb-4 font-poppins"
+            animation="breath-fade-up"
+          >
+            Brand Colors
+          </AnimatedText>
+          <AnimatedText
+            as="p"
+            className="text-lg font-thin text-gray-600 font-poppins"
+            animation="breath-fade-up-2"
+          >
+            {SisterBrand.brandVoice.mission}
+          </AnimatedText>
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {colorPairs.map((pair, index) => (
             <Card key={index} className="overflow-hidden hover:shadow-lg transition-shadow" style={{ borderRadius: '0px' }}>

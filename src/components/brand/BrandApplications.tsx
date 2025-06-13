@@ -1,19 +1,29 @@
 
 import { Card } from '@/components/ui/card';
 import { Mail, Package, Heart } from 'lucide-react';
+import { SisterBrand } from '@/config/sister-brand.config';
 import AnimatedText from '@/components/ui/animated-text';
 
 const BrandApplications = () => {
   return (
-    <section className="py-16 px-6 bg-[#F4F4F4]">
+    <section className="bg-[#F4F4F4] min-h-screen flex items-center justify-center px-6">
       <div className="container-custom">
-        <AnimatedText
-          as="h2"
-          className="text-3xl md:text-4xl font-bold text-center mb-12 font-poppins"
-          animation="breath-fade-up"
-        >
-          Brand Applications
-        </AnimatedText>
+        <div className="text-center mb-12">
+          <AnimatedText
+            as="h2"
+            className="text-3xl md:text-4xl font-bold mb-4 font-poppins"
+            animation="breath-fade-up"
+          >
+            Brand Applications
+          </AnimatedText>
+          <AnimatedText
+            as="p"
+            className="text-lg font-thin text-gray-600 font-poppins"
+            animation="breath-fade-up-2"
+          >
+            {SisterBrand.brandVoice.mission}
+          </AnimatedText>
+        </div>
         
         <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
           <Card className="p-6 text-center" style={{ borderRadius: '0px' }}>

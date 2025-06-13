@@ -1,5 +1,5 @@
 
-import Layout from "@/components/layout/Layout";
+import BrandLayout from "@/components/layout/BrandLayout";
 import BrandHeader from "@/components/brand/BrandHeader";
 import BrandColors from "@/components/brand/BrandColors";
 import BrandTypography from "@/components/brand/BrandTypography";
@@ -9,8 +9,8 @@ import BrandVoice from "@/components/brand/BrandVoice";
 
 const Brand = () => {
   return (
-    <Layout>
-      <div className="min-h-screen font-poppins">
+    <BrandLayout>
+      <div className="font-poppins">
         <BrandHeader />
         <BrandColors />
         <BrandTypography />
@@ -18,7 +18,7 @@ const Brand = () => {
         <BrandApplications />
         <BrandVoice />
       </div>
-    </Layout>
+    </BrandLayout>
   );
 };
 
