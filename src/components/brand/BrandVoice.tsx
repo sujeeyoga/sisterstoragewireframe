@@ -9,45 +9,47 @@ const BrandVoice = () => {
       id: 1,
       src: 'https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=400&h=500&fit=crop',
       alt: 'Organized workspace with laptop',
-      link: '/content/workspace-organization',
+      link: '/brand/content/workspace-organization',
       title: 'Workspace Organization'
     },
     {
       id: 2,
       src: 'https://images.unsplash.com/photo-1721322800607-8c38375eef04?w=400&h=600&fit=crop',
       alt: 'Modern living room design',
-      link: '/content/living-spaces',
+      link: '/brand/content/living-spaces',
       title: 'Living Spaces'
     },
     {
       id: 3,
       src: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=450&fit=crop',
       alt: 'Woman organizing with laptop',
-      link: '/content/digital-organization',
+      link: '/brand/content/digital-organization',
       title: 'Digital Organization'
     },
     {
       id: 4,
       src: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&h=550&fit=crop',
       alt: 'Collaborative workspace',
-      link: '/content/collaborative-spaces',
+      link: '/brand/content/collaborative-spaces',
       title: 'Collaborative Spaces'
     },
     {
       id: 5,
       src: 'https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b?w=400&h=400&fit=crop',
       alt: 'Creative inspiration',
-      link: '/content/creative-inspiration',
+      link: '/brand/content/creative-inspiration',
       title: 'Creative Inspiration'
     },
     {
       id: 6,
       src: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400&h=500&fit=crop',
       alt: 'Organized desk setup',
-      link: '/content/desk-organization',
+      link: '/brand/content/desk-organization',
       title: 'Desk Organization'
     }
   ];
+
+  const animationNames = ['breath-fade-up-1', 'breath-fade-up-2', 'breath-fade-up-3', 'breath-fade-up-4', 'breath-fade-up-5'] as const;
 
   return (
     <section className="bg-black text-white min-h-screen flex flex-col items-center justify-center px-6 py-16">
@@ -110,7 +112,7 @@ const BrandVoice = () => {
                 key={image.id}
                 as="div"
                 className={`masonry-item break-inside-avoid animate-fade-in`}
-                animation={`breath-fade-up-${((index % 5) + 1)}`}
+                animation={animationNames[index % animationNames.length]}
                 container
               >
                 <Link 
