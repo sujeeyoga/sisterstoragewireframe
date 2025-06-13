@@ -75,8 +75,55 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
         </Link>
 
         {/* Desktop Menu */}
-        {!isMobile && (
-          <nav className="hidden md:flex items-center space-x-6">
+        <nav className="hidden md:flex items-center space-x-6">
+          {[
+            { name: 'HOME', path: '/', icon: Home },
+            { name: 'US SISTERS', path: '/about' },
+            { name: 'BUY', path: '/shop', icon: ShoppingBag },
+            { name: 'SHIPPING', path: '#delivery', icon: Package },
+            { name: 'CONTACT', path: '#contact', icon: Mail }
+          ].map((item) => (
+            <Link 
+              key={item.name} 
+              to={item.path}
+              className={`text-white hover:bg-black hover:text-white transition-colors duration-300 px-3 py-1.5 rounded-md ${item.icon ? 'flex items-center gap-1' : ''}`}
+            >
+              {item.icon && <item.icon className="h-3 w-3" />}
+              {item.name}
+            </Link>
+          ))}
+          <Button 
+            size="sm"
+            onClick={() => setCartOpen(true)}
+          >
+            <ShoppingBag className="mr-1 h-3 w-3" />
+            Cart ({totalItems})
+          </Button>
+        </nav>
+
+        {/* Mobile Menu Toggle */}
+        <button 
+          className="md:hidden p-1.5 text-white focus:outline-none z-50"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label="Toggle mobile menu"
+        >
+          {mobileMenuOpen ? (
+            <X className="h-5 w-5" />
+          ) : (
+            <Menu className="h-5 w-5" />
+          )}
+        </button>
+      </div>
+
+      {/* Mobile Menu Slide-in from left */}
+      <div 
+        className={`md:hidden fixed inset-0 bg-white z-40 transform transition-transform duration-300 ease-in-out ${
+          mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+        aria-hidden={!mobileMenuOpen}
+      >
+        <div className="h-full flex flex-col pt-20 px-6">
+          <nav className="flex flex-col space-y-6 items-center mt-8">
             {[
               { name: 'HOME', path: '/', icon: Home },
               { name: 'US SISTERS', path: '/about' },
@@ -86,81 +133,28 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
             ].map((item) => (
               <Link 
                 key={item.name} 
-                to={item.path}
-                className={`text-white hover:bg-black hover:text-white transition-colors duration-300 px-3 py-1.5 rounded-md ${item.icon ? 'flex items-center gap-1' : ''}`}
+                to={item.path} 
+                className="text-[#e90064] text-lg font-medium hover:text-[#c80056] transition-colors duration-300 flex items-center gap-2"
+                onClick={() => setMobileMenuOpen(false)}
               >
-                {item.icon && <item.icon className="h-3 w-3" />}
+                {item.icon && <item.icon className="h-5 w-5" />}
                 {item.name}
               </Link>
             ))}
             <Button 
-              size="sm"
-              onClick={() => setCartOpen(true)}
+              className="w-full mt-4" 
+              size="lg"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                setCartOpen(true);
+              }}
             >
-              <ShoppingBag className="mr-1 h-3 w-3" />
+              <ShoppingBag className="mr-2 h-4 w-4" />
               Cart ({totalItems})
             </Button>
           </nav>
-        )}
-
-        {/* Mobile Menu Toggle */}
-        {isMobile && (
-          <button 
-            className="p-1.5 text-white focus:outline-none z-50"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle mobile menu"
-          >
-            {mobileMenuOpen ? (
-              <X className="h-5 w-5" />
-            ) : (
-              <Menu className="h-5 w-5" />
-            )}
-          </button>
-        )}
-      </div>
-
-      {/* Mobile Menu Slide-in from left */}
-      {isMobile && (
-        <div 
-          className={`fixed inset-0 bg-white z-40 transition-transform duration-300 ease-in-out ${
-            mobileMenuOpen ? 'translate-x-0' : 'translate-x-[-100%]'
-          }`}
-          aria-hidden={!mobileMenuOpen}
-        >
-          <div className="h-full flex flex-col pt-20 px-6">
-            <nav className="flex flex-col space-y-6 items-center mt-8">
-              {[
-                { name: 'HOME', path: '/', icon: Home },
-                { name: 'US SISTERS', path: '/about' },
-                { name: 'BUY', path: '/shop', icon: ShoppingBag },
-                { name: 'SHIPPING', path: '#delivery', icon: Package },
-                { name: 'CONTACT', path: '#contact', icon: Mail }
-              ].map((item) => (
-                <Link 
-                  key={item.name} 
-                  to={item.path} 
-                  className="text-[#e90064] text-lg font-medium hover:text-[#c80056] transition-colors duration-300 flex items-center gap-2"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {item.icon && <item.icon className="h-5 w-5" />}
-                  {item.name}
-                </Link>
-              ))}
-              <Button 
-                className="w-full mt-4" 
-                size="lg"
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  setCartOpen(true);
-                }}
-              >
-                <ShoppingBag className="mr-2 h-4 w-4" />
-                Cart ({totalItems})
-              </Button>
-            </nav>
-          </div>
         </div>
-      )}
+      </div>
     </header>
   );
 };
