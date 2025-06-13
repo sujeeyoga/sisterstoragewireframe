@@ -106,12 +106,12 @@ const BrandVoice = () => {
           >
             Inspiration Gallery
           </AnimatedText>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 masonry-grid pinterest-layout">
+          <div className="columns-1 md:columns-2 lg:columns-3 gap-3 space-y-3">
             {gridImages.map((image, index) => (
               <AnimatedText
                 key={image.id}
                 as="div"
-                className={`masonry-item break-inside-avoid animate-fade-in`}
+                className="break-inside-avoid mb-3 animate-fade-in"
                 animation={animationNames[index % animationNames.length]}
                 container
               >
