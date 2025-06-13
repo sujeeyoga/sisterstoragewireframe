@@ -7,11 +7,12 @@ const ThemeShowcase = () => {
   const renderThemeSection = (
     title: string,
     theme: keyof typeof themeExamples,
-    examples: any[]
+    examples: any[],
+    sectionBg?: string
   ) => (
-    <div>
-      <h4 className="font-semibold mb-4 font-poppins text-sm uppercase tracking-wide">{title}</h4>
-      <div className="grid md:grid-cols-2 gap-4">
+    <div className={`p-6 rounded-lg ${sectionBg || ''}`}>
+      <h4 className="font-semibold mb-6 font-poppins text-sm uppercase tracking-wide">{title}</h4>
+      <div className="grid md:grid-cols-2 gap-6">
         {examples.map((example, index) => (
           <ThemeCard
             key={index}
@@ -31,13 +32,23 @@ const ThemeShowcase = () => {
       <CardHeader>
         <CardTitle className="font-poppins">Systematic Theme Components</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-8">
-        {renderThemeSection('Promotional Theme', 'promotion', themeExamples.promotion)}
-        {renderThemeSection('Action Theme', 'action', themeExamples.action)}
-        {renderThemeSection('Neutral Theme', 'neutral', themeExamples.neutral)}
-        {renderThemeSection('Testimonial Theme', 'testimonial', themeExamples.testimonial)}
-        {renderThemeSection('Success Theme', 'success', themeExamples.success)}
-        {renderThemeSection('Informational Theme', 'info', themeExamples.info)}
+      <CardContent className="space-y-12">
+        {renderThemeSection('Promotional Theme', 'promotion', themeExamples.promotion, 'bg-pink-50/30')}
+        
+        <div className="border-t border-gray-100"></div>
+        {renderThemeSection('Action Theme', 'action', themeExamples.action, 'bg-orange-50/30')}
+        
+        <div className="border-t border-gray-100"></div>
+        {renderThemeSection('Neutral Theme', 'neutral', themeExamples.neutral, 'bg-gray-50/30')}
+        
+        <div className="border-t border-gray-100"></div>
+        {renderThemeSection('Testimonial Theme', 'testimonial', themeExamples.testimonial, 'bg-amber-50/30')}
+        
+        <div className="border-t border-gray-100"></div>
+        {renderThemeSection('Success Theme', 'success', themeExamples.success, 'bg-green-50/30')}
+        
+        <div className="border-t border-gray-100"></div>
+        {renderThemeSection('Informational Theme', 'info', themeExamples.info, 'bg-blue-50/30')}
       </CardContent>
     </Card>
   );

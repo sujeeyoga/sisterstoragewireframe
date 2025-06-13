@@ -34,21 +34,21 @@ const themeConfig = {
   },
   testimonial: {
     backgrounds: ['#FFDCBD', '#FDE1D3'],
-    iconColors: ['#FDE1D3', '#FFDCBD'],
+    iconColors: ['#FF8021', '#E90064'],
     icons: [Star, Star],
-    textColor: 'text-gray-800'
+    textColor: 'text-black/90'
   },
   success: {
     backgrounds: ['#F2FCE2', '#FEF7CD'],
-    iconColors: ['#FEF7CD', '#F2FCE2'],
+    iconColors: ['#4ADE80', '#FFA51E'],
     icons: [CheckCircle, Heart],
-    textColor: 'text-gray-800'
+    textColor: 'text-black/90'
   },
   info: {
     backgrounds: ['#FFDEE2', '#D3E4FD'],
-    iconColors: ['#D3E4FD', '#FFDEE2'],
+    iconColors: ['#E90064', '#3B82F6'],
     icons: [Info, CheckCircle],
-    textColor: 'text-gray-800'
+    textColor: 'text-black/90'
   }
 };
 
@@ -67,18 +67,18 @@ const ThemeCard: React.FC<ThemeCardProps> = ({
 
   if (theme === 'testimonial') {
     return (
-      <Card className="p-4" style={{ borderRadius: '0px', backgroundColor }}>
-        <div className="space-y-3">
+      <Card className="p-6 md:p-8" style={{ borderRadius: '0px', backgroundColor }}>
+        <div className="space-y-4">
           <div className="flex items-center gap-1">
             {[...Array(5)].map((_, i) => (
-              <Star key={i} className="h-4 w-4 fill-current" style={{ color: iconColor }} />
+              <Star key={i} className="w-6 h-6 stroke-[1.5] fill-current" style={{ color: iconColor }} />
             ))}
           </div>
-          <p className="text-sm italic font-poppins" style={{ color: config.textColor === 'text-white' ? '#FFFFFF' : '#374151' }}>
+          <p className="text-sm italic font-poppins" style={{ color: config.textColor === 'text-white' ? '#FFFFFF' : 'rgba(0, 0, 0, 0.9)' }}>
             {description}
           </p>
           {author && (
-            <p className="text-xs font-semibold font-poppins" style={{ color: config.textColor === 'text-white' ? '#D1D5DB' : '#6B7280' }}>
+            <p className="text-xs font-semibold font-poppins" style={{ color: config.textColor === 'text-white' ? '#D1D5DB' : 'rgba(0, 0, 0, 0.7)' }}>
               — {author}
             </p>
           )}
@@ -88,21 +88,23 @@ const ThemeCard: React.FC<ThemeCardProps> = ({
   }
 
   return (
-    <Card className="p-4" style={{ borderRadius: '0px', backgroundColor }}>
-      <div className="space-y-3">
+    <Card className="p-6 md:p-8" style={{ borderRadius: '0px', backgroundColor }}>
+      <div className="space-y-4">
         <div className="flex items-center gap-2">
-          <IconComponent className="h-5 w-5" style={{ color: iconColor }} />
-          <h3 className="font-bold text-lg font-poppins" style={{ color: config.textColor === 'text-white' ? '#FFFFFF' : '#374151' }}>
+          <IconComponent className="w-6 h-6 stroke-[1.5]" style={{ color: iconColor }} />
+          <h3 className="font-bold text-lg font-poppins" style={{ color: config.textColor === 'text-white' ? '#FFFFFF' : 'rgba(0, 0, 0, 0.9)' }}>
             {title}
           </h3>
         </div>
-        <p className="text-sm font-poppins opacity-90" style={{ color: config.textColor === 'text-white' ? '#FFFFFF' : '#6B7280' }}>
+        <p className="text-sm font-poppins" style={{ color: config.textColor === 'text-white' ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0, 0, 0, 0.75)' }}>
           {description}
         </p>
         {buttonLabel && (
-          <Button size="sm" variant={buttonVariant} className="font-poppins" style={{ borderRadius: '0px' }}>
-            {buttonLabel}
-          </Button>
+          <div className="pt-2">
+            <Button size="sm" variant={buttonVariant} className="font-poppins" style={{ borderRadius: '0px' }}>
+              {buttonLabel}
+            </Button>
+          </div>
         )}
       </div>
     </Card>
