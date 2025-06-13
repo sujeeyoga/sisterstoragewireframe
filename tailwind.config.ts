@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -250,6 +249,23 @@ export default {
 						opacity: '0', 
 						transform: 'translateY(-30px) scale(0.95)' 
 					}
+				},
+				// New hero image/video transition animations
+				'slide-in-left': {
+					'0%': { 
+						transform: 'translateX(-100%)' 
+					},
+					'100%': { 
+						transform: 'translateX(0)' 
+					}
+				},
+				'fade-out-smooth': {
+					'0%': { 
+						opacity: '1' 
+					},
+					'100%': { 
+						opacity: '0' 
+					}
 				}
 			},
 			animation: {
@@ -267,6 +283,9 @@ export default {
 				// Scroll-triggered animations
 				'scroll-fade-in': 'scroll-fade-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
 				'scroll-fade-out': 'scroll-fade-out 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+				// New hero animations
+				'slide-in-left': 'slide-in-left 2s ease-out forwards',
+				'fade-out-smooth': 'fade-out-smooth 1s ease-out forwards',
 			},
 			fontFamily: {
 				sans: ['Poppins', 'sans-serif'],

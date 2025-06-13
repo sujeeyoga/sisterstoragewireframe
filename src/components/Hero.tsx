@@ -1,3 +1,4 @@
+
 import { Button } from '@/components/ui/button';
 import { ArrowRight, ShoppingBag, ArrowDown } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -7,6 +8,10 @@ import AnimatedText from '@/components/ui/animated-text';
 const Hero = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const [storyVisible, setStoryVisible] = useState(false);
+  
+  // New state for image/video transition
+  const [showVideo, setShowVideo] = useState(false);
+  const [fadeOutImage, setFadeOutImage] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -22,20 +27,53 @@ const Hero = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Image to video transition effect
+  useEffect(() => {
+    const fadeTimer = setTimeout(() => setFadeOutImage(true), 5000);
+    const videoTimer = setTimeout(() => setShowVideo(true), 6000);
+    
+    return () => {
+      clearTimeout(fadeTimer);
+      clearTimeout(videoTimer);
+    };
+  }, []);
+
   return (
     <>
       <div className="relative h-screen w-full overflow-hidden bg-[#E90064]">
-        {/* Solid Color Background Instead of Image */}
+        {/* Hero Image - slides in from left then fades out */}
+        <img
+          src="https://images.unsplash.com/photo-1649972904349-6e44c42644a7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80"
+          alt="Sister Storage Hero"
+          className={`absolute inset-0 w-full h-full object-cover z-10 animate-slide-in-left transition-opacity duration-1000 ${
+            fadeOutImage ? 'opacity-0' : 'opacity-100'
+          }`}
+        />
+
+        {/* Video - appears behind image after fade */}
+        {showVideo && (
+          <video
+            className="absolute inset-0 w-full h-full object-cover z-0"
+            autoPlay
+            muted
+            loop
+            playsInline
+          >
+            <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        )}
+
+        {/* Solid Color Background Fallback */}
         <div 
-          className="absolute inset-0"
+          className="absolute inset-0 z-0"
           style={{ 
             backgroundColor: '#E90064',
           }}
-        >
-        </div>
+        />
         
         {/* Content with Fixed Position - No Movement */}
-        <div className="container-custom relative h-full flex flex-col justify-center items-center md:items-start pt-20">
+        <div className="container-custom relative h-full flex flex-col justify-center items-center md:items-start pt-20 z-20">
           <div 
             className="max-w-2xl text-center md:text-left"
             style={{
@@ -94,7 +132,7 @@ const Hero = () => {
         
         {/* Enhanced Scroll Indicator - Fixed Position */}
         <div 
-          className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center cursor-pointer animate-breath-fade-up-5"
+          className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center cursor-pointer animate-breath-fade-up-5 z-20"
           style={{
             opacity: scrollPosition > 200 ? 0 : 1,
             transition: 'opacity 0.3s ease-out'
