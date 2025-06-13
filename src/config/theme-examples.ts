@@ -1,4 +1,3 @@
-
 export const buttonExamples = {
   primary: [
     {
@@ -132,6 +131,30 @@ export const themeExamples = {
       title: "SIZE GUIDE",
       description: "Find the perfect storage size for your space.",
       buttonLabel: "SIZE GUIDE →",
+    },
+  ],
+  white: [
+    {
+      title: "CLEAN DESIGN",
+      description: "Minimalist storage solutions that blend seamlessly with any décor.",
+      buttonLabel: "SHOP MINIMAL →",
+    },
+    {
+      title: "PREMIUM QUALITY",
+      description: "Crafted with attention to detail for lasting beauty and function.",
+      buttonLabel: "LEARN MORE →",
+    },
+  ],
+  gray: [
+    {
+      title: "SUPPORT CENTER",
+      description: "Get help with assembly, maintenance, and product questions.",
+      buttonLabel: "GET HELP →",
+    },
+    {
+      title: "INSTALLATION GUIDE",
+      description: "Step-by-step instructions for setting up your storage system.",
+      buttonLabel: "VIEW GUIDE →",
     },
   ],
 };

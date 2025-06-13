@@ -9,7 +9,7 @@ interface ThemeCardProps {
   description: string;
   buttonLabel?: string;
   buttonVariant?: 'default' | 'primary-inverse' | 'secondary' | 'outline' | 'pink' | 'orange' | 'gold' | 'peach';
-  theme: 'promotion' | 'action' | 'neutral' | 'testimonial' | 'success' | 'info';
+  theme: 'promotion' | 'action' | 'neutral' | 'testimonial' | 'success' | 'info' | 'white' | 'gray';
   author?: string;
 }
 
@@ -49,6 +49,18 @@ const themeConfig = {
     iconColors: ['#E90064', '#3B82F6'],
     icons: [Info, CheckCircle],
     textColor: 'text-black/90'
+  },
+  white: {
+    backgrounds: ['#FFFFFF', '#FFFFFF'],
+    iconColors: ['#1F2937', '#1F2937'],
+    icons: [Info, Package],
+    textColor: 'text-gray-800'
+  },
+  gray: {
+    backgrounds: ['#F4F4F4', '#F4F4F4'],
+    iconColors: ['#1F2937', '#1F2937'],
+    icons: [CheckCircle, Info],
+    textColor: 'text-gray-800'
   }
 };
 
@@ -65,20 +77,27 @@ const ThemeCard: React.FC<ThemeCardProps> = ({
   const backgroundColor = config.backgrounds[0];
   const iconColor = config.iconColors[0];
 
+  // Add border for white cards to provide definition
+  const cardStyle = {
+    borderRadius: '0px',
+    backgroundColor,
+    ...(theme === 'white' && { border: '1px solid #E5E7EB' })
+  };
+
   if (theme === 'testimonial') {
     return (
-      <Card className="p-6 md:p-8" style={{ borderRadius: '0px', backgroundColor }}>
+      <Card className="p-6 md:p-8" style={cardStyle}>
         <div className="space-y-4">
           <div className="flex items-center gap-1">
             {[...Array(5)].map((_, i) => (
               <Star key={i} className="w-6 h-6 stroke-[1.5] fill-current" style={{ color: iconColor }} />
             ))}
           </div>
-          <p className="text-sm italic font-poppins" style={{ color: config.textColor === 'text-white' ? '#FFFFFF' : 'rgba(0, 0, 0, 0.9)' }}>
+          <p className="text-sm italic font-poppins" style={{ color: config.textColor === 'text-white' ? '#FFFFFF' : '#1F2937' }}>
             {description}
           </p>
           {author && (
-            <p className="text-xs font-semibold font-poppins" style={{ color: config.textColor === 'text-white' ? '#D1D5DB' : 'rgba(0, 0, 0, 0.7)' }}>
+            <p className="text-xs font-semibold font-poppins" style={{ color: config.textColor === 'text-white' ? '#D1D5DB' : '#6B7280' }}>
               — {author}
             </p>
           )}
@@ -88,15 +107,15 @@ const ThemeCard: React.FC<ThemeCardProps> = ({
   }
 
   return (
-    <Card className="p-6 md:p-8" style={{ borderRadius: '0px', backgroundColor }}>
+    <Card className="p-6 md:p-8" style={cardStyle}>
       <div className="space-y-4">
         <div className="flex items-center gap-2">
           <IconComponent className="w-6 h-6 stroke-[1.5]" style={{ color: iconColor }} />
-          <h3 className="font-bold text-lg font-poppins" style={{ color: config.textColor === 'text-white' ? '#FFFFFF' : 'rgba(0, 0, 0, 0.9)' }}>
+          <h3 className="font-bold text-lg font-poppins" style={{ color: config.textColor === 'text-white' ? '#FFFFFF' : '#1F2937' }}>
             {title}
           </h3>
         </div>
-        <p className="text-sm font-poppins" style={{ color: config.textColor === 'text-white' ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0, 0, 0, 0.75)' }}>
+        <p className="text-sm font-poppins" style={{ color: config.textColor === 'text-white' ? 'rgba(255, 255, 255, 0.9)' : '#4B5563' }}>
           {description}
         </p>
         {buttonLabel && (
