@@ -27,12 +27,26 @@ const BrandComponents = () => {
                 <Button className="bg-black text-white hover:bg-[#FF8021] px-6 py-3 font-semibold font-poppins" style={{ borderRadius: '0px' }}>
                   Primary Button
                 </Button>
+                <Button variant="primary-inverse" className="px-6 py-3 font-semibold font-poppins" style={{ borderRadius: '0px' }}>
+                  Primary Inverse
+                </Button>
                 <Button variant="secondary" className="border-[#E90064] text-[#E90064] hover:bg-[#E90064] px-6 py-3 font-semibold font-poppins" style={{ borderRadius: '0px' }}>
                   Secondary Button
                 </Button>
                 <Button variant="outline" className="border-black text-black hover:bg-black px-6 py-3 font-semibold font-poppins" style={{ borderRadius: '0px' }}>
                   Outline Button
                 </Button>
+              </div>
+              
+              {/* Usage Guidelines */}
+              <div className="mt-6 p-4 bg-gray-50" style={{ borderRadius: '0px' }}>
+                <h4 className="font-semibold mb-2 text-sm font-poppins">Usage Guidelines:</h4>
+                <ul className="text-sm space-y-1 font-poppins text-gray-700">
+                  <li><strong>Primary (Black):</strong> Use on light backgrounds for main actions</li>
+                  <li><strong>Primary Inverse (White):</strong> Use on dark backgrounds or colored sections</li>
+                  <li><strong>Secondary (Pink):</strong> Use for complementary actions</li>
+                  <li><strong>Outline:</strong> Use for less prominent actions</li>
+                </ul>
               </div>
             </CardContent>
           </Card>

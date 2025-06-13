@@ -60,6 +60,15 @@ export const SisterBrand = {
       hover: '#FF8021',
       borderRadius: '0px',
     },
+    'primary-inverse': {
+      bg: '#FFFFFF',
+      color: '#000000',
+      border: '1px solid #000000',
+      hover: '#FF8021',
+      hoverColor: '#FFFFFF',
+      hoverBorder: '#FF8021',
+      borderRadius: '0px',
+    },
     secondary: {
       bg: 'transparent',
       color: '#E90064',
