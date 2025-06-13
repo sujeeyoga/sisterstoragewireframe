@@ -1,7 +1,7 @@
 
 import { SisterBrand } from '@/config/sister-brand.config';
 import AnimatedText from '@/components/ui/animated-text';
-import { Link } from 'react-router-dom';
+import MobileGallery from './MobileGallery';
 
 const BrandVoice = () => {
   const gridImages = [
@@ -48,8 +48,6 @@ const BrandVoice = () => {
       title: 'Desk Organization'
     }
   ];
-
-  const animationNames = ['breath-fade-up-1', 'breath-fade-up-2', 'breath-fade-up-3', 'breath-fade-up-4', 'breath-fade-up-5'] as const;
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center text-center text-white">
@@ -98,7 +96,7 @@ const BrandVoice = () => {
           </div>
         </div>
 
-        {/* Masonry Image Grid */}
+        {/* Mobile-First Gallery */}
         <div className="w-full">
           <AnimatedText
             as="h3"
@@ -107,35 +105,7 @@ const BrandVoice = () => {
           >
             Inspiration Gallery
           </AnimatedText>
-          <div className="columns-1 md:columns-2 lg:columns-3 gap-3 space-y-3">
-            {gridImages.map((image, index) => (
-              <AnimatedText
-                key={image.id}
-                as="div"
-                className="break-inside-avoid mb-3 animate-fade-in"
-                animation={animationNames[index % animationNames.length]}
-                container
-              >
-                <Link 
-                  to={image.link}
-                  className="group block mb-3"
-                >
-                  <div className="relative overflow-hidden rounded-lg shadow-lg transition-shadow duration-300 group-hover:shadow-2xl">
-                    <img
-                      src={image.src}
-                      alt={image.alt}
-                      className="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-110"
-                      loading="lazy"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    <div className="absolute bottom-4 left-4 right-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <h4 className="text-sm font-semibold font-poppins">{image.title}</h4>
-                    </div>
-                  </div>
-                </Link>
-              </AnimatedText>
-            ))}
-          </div>
+          <MobileGallery items={gridImages} />
         </div>
       </div>
     </div>
