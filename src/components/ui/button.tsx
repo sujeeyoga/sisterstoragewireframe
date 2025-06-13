@@ -59,6 +59,23 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const buttonVariant = disabled ? "disabled" : variant;
     
     const Comp = asChild ? Slot : "button"
+    
+    // If using asChild, we cannot have iconLeft or iconRight as they would create multiple children
+    // In this case, the child component should handle its own icons
+    if (asChild) {
+      return (
+        <Comp
+          className={cn(buttonVariants({ variant: buttonVariant, size, className }))}
+          ref={ref}
+          disabled={disabled}
+          {...props}
+        >
+          {children}
+        </Comp>
+      )
+    }
+    
+    // Normal button with potential icons
     return (
       <Comp
         className={cn(buttonVariants({ variant: buttonVariant, size, className }))}
