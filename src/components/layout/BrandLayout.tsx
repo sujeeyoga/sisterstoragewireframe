@@ -44,7 +44,7 @@ const BrandLayout: React.FC<BrandLayoutProps> = ({ children }) => {
       {/* Fixed Navigation Arrow */}
       <Link
         to="/"
-        className="fixed top-6 left-6 z-50 w-12 h-12 bg-white text-black hover:bg-[#E90064] hover:text-white border border-gray-200 hover:border-[#E90064] flex items-center justify-center transition-all duration-300 ease-in-out hover:scale-110 shadow-lg"
+        className="fixed top-6 left-6 z-50 w-12 h-12 bg-white/10 backdrop-blur-sm text-white hover:bg-white hover:text-black border border-white/20 hover:border-white flex items-center justify-center transition-all duration-300 ease-in-out hover:scale-110 shadow-lg"
         style={{ borderRadius: '0px' }}
         aria-label="Back to home page"
       >
