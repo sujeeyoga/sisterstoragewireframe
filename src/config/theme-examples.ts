@@ -100,11 +100,13 @@ export const themeExamples = {
     {
       title: "Priya S.",
       description: "Beautiful storage that celebrates my culture while keeping my home organized.",
+      buttonLabel: "",
       author: "Priya S.",
     },
     {
       title: "Zara M.",
       description: "Finally, storage solutions that understand my lifestyle and heritage.",
+      buttonLabel: "",
       author: "Zara M.",
     },
   ],

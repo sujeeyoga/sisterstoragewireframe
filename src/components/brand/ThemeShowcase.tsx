@@ -7,7 +7,7 @@ const ThemeShowcase = () => {
   const renderThemeSection = (
     title: string,
     theme: keyof typeof themeExamples,
-    examples: typeof themeExamples.promotion
+    examples: any[]
   ) => (
     <div>
       <h4 className="font-semibold mb-4 font-poppins text-sm uppercase tracking-wide">{title}</h4>

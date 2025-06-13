@@ -12,7 +12,7 @@ const iconMap = {
 };
 
 const ButtonShowcase = () => {
-  const renderButtonGroup = (title: string, buttons: typeof buttonExamples.primary) => (
+  const renderButtonGroup = (title: string, buttons: any[]) => (
     <div>
       <h4 className="font-semibold mb-4 font-poppins text-sm uppercase tracking-wide">{title}</h4>
       <div className="flex flex-wrap gap-4">
