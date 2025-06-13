@@ -43,8 +43,8 @@ const Hero = () => {
       <div className="relative h-screen w-full overflow-hidden bg-[#E90064]">
         {/* Hero Image - slides in from left then fades out */}
         <img
-          src="https://images.unsplash.com/photo-1649972904349-6e44c42644a7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80"
-          alt="Sister Storage Hero"
+          src="/lovable-uploads/97e7d7c7-5536-4d18-9887-90897337430d.png"
+          alt="Two sisters organizing traditional clothing and jewelry together"
           className={`absolute inset-0 w-full h-full object-cover z-10 animate-slide-in-left transition-opacity duration-1000 ${
             fadeOutImage ? 'opacity-0' : 'opacity-100'
           }`}
