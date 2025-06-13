@@ -1,3 +1,4 @@
+
 export const SisterBrand = {
   colors: {
     // Primary brand colors
@@ -90,6 +91,6 @@ export const SisterBrand = {
     personality: ['Bold', 'Cultural', 'Organized', 'Modern', 'Empowering'],
     tone: 'Confident yet approachable, celebrating cultural identity while embracing modern living',
     tagline: 'Culture Without Clutter',
-    mission: 'Culture Without Clutter',
+    mission: 'Designed by us — for us.',
   }
 };

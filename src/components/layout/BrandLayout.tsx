@@ -1,7 +1,6 @@
 
 import React, { useEffect } from "react";
-import { useLocation, Link } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { useLocation } from "react-router-dom";
 
 interface BrandLayoutProps {
   children: React.ReactNode;
@@ -41,16 +40,6 @@ const BrandLayout: React.FC<BrandLayoutProps> = ({ children }) => {
 
   return (
     <div className="min-h-screen">
-      {/* Fixed Navigation Arrow */}
-      <Link
-        to="/"
-        className="fixed top-6 left-6 z-50 w-12 h-12 bg-white/10 backdrop-blur-sm text-white hover:bg-white hover:text-black border border-white/20 hover:border-white flex items-center justify-center transition-all duration-300 ease-in-out hover:scale-110 shadow-lg"
-        style={{ borderRadius: '0px' }}
-        aria-label="Back to home page"
-      >
-        <ArrowLeft className="h-5 w-5" />
-      </Link>
-      
       <main>
         {children}
       </main>

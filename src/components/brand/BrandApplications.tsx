@@ -6,12 +6,12 @@ import AnimatedText from '@/components/ui/animated-text';
 
 const BrandApplications = () => {
   return (
-    <section className="bg-[#F4F4F4] min-h-screen flex items-center justify-center px-6 py-16">
+    <section className="bg-[#F4F4F4] min-h-screen flex items-center justify-center px-6">
       <div className="container-custom">
-        <div className="text-center mb-16">
+        <div className="text-center mb-12">
           <AnimatedText
             as="h2"
-            className="text-3xl md:text-4xl font-bold mb-8 font-poppins"
+            className="text-3xl md:text-4xl font-bold mb-4 font-poppins"
             animation="breath-fade-up"
           >
             Brand Applications
@@ -25,33 +25,33 @@ const BrandApplications = () => {
           </AnimatedText>
         </div>
         
-        <div className="grid grid-cols-12 gap-6">
-          <Card className="col-span-12 md:col-span-4 p-8 text-center" style={{ borderRadius: '0px' }}>
-            <div className="w-16 h-16 bg-[#E90064] mx-auto mb-6 flex items-center justify-center" style={{ borderRadius: '0px' }}>
+        <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          <Card className="p-6 text-center" style={{ borderRadius: '0px' }}>
+            <div className="w-16 h-16 bg-[#E90064] mx-auto mb-4 flex items-center justify-center" style={{ borderRadius: '0px' }}>
               <Mail className="h-8 w-8 text-white" />
             </div>
-            <h3 className="font-bold mb-4 font-poppins text-lg">Digital Communications</h3>
-            <p className="text-sm text-gray-600 font-poppins leading-relaxed">
+            <h3 className="font-bold mb-2 font-poppins">Digital Communications</h3>
+            <p className="text-sm text-gray-600 font-poppins">
               Email campaigns, social media, and website design following our bold, cultural aesthetic.
             </p>
           </Card>
 
-          <Card className="col-span-12 md:col-span-4 p-8 text-center" style={{ borderRadius: '0px' }}>
-            <div className="w-16 h-16 bg-[#FF8021] mx-auto mb-6 flex items-center justify-center" style={{ borderRadius: '0px' }}>
+          <Card className="p-6 text-center" style={{ borderRadius: '0px' }}>
+            <div className="w-16 h-16 bg-[#FF8021] mx-auto mb-4 flex items-center justify-center" style={{ borderRadius: '0px' }}>
               <Package className="h-8 w-8 text-white" />
             </div>
-            <h3 className="font-bold mb-4 font-poppins text-lg">Product Packaging</h3>
-            <p className="text-sm text-gray-600 font-poppins leading-relaxed">
+            <h3 className="font-bold mb-2 font-poppins">Product Packaging</h3>
+            <p className="text-sm text-gray-600 font-poppins">
               Clean, minimal packaging with bold brand colors and zero-radius design elements.
             </p>
           </Card>
 
-          <Card className="col-span-12 md:col-span-4 p-8 text-center" style={{ borderRadius: '0px' }}>
-            <div className="w-16 h-16 bg-[#FFA51E] mx-auto mb-6 flex items-center justify-center" style={{ borderRadius: '0px' }}>
+          <Card className="p-6 text-center" style={{ borderRadius: '0px' }}>
+            <div className="w-16 h-16 bg-[#FFA51E] mx-auto mb-4 flex items-center justify-center" style={{ borderRadius: '0px' }}>
               <Heart className="h-8 w-8 text-white" />
             </div>
-            <h3 className="font-bold mb-4 font-poppins text-lg">Brand Experience</h3>
-            <p className="text-sm text-gray-600 font-poppins leading-relaxed">
+            <h3 className="font-bold mb-2 font-poppins">Brand Experience</h3>
+            <p className="text-sm text-gray-600 font-poppins">
               Every touchpoint reflects our commitment to cultural celebration and organized living.
             </p>
           </Card>
