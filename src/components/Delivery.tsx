@@ -84,24 +84,26 @@ const Delivery = () => {
                 </div>
                 
                 <div className="flex flex-col sm:flex-row gap-3">
-                  <Button 
-                    className="flex-1 bg-black hover:bg-[#FF8021] text-white flex items-center justify-center gap-1"
-                    asChild
+                  <Link 
+                    to={`/delivery/${zone.id}`}
+                    className="flex-1"
                   >
-                    <Link to={`/delivery/${zone.id}`}>
+                    <Button className="w-full bg-black hover:bg-[#FF8021] text-white flex items-center justify-center gap-1">
                       Delivery Info
                       <ArrowRight className="h-4 w-4" />
-                    </Link>
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    className="flex-1 border-black text-black hover:bg-black hover:text-white"
-                    asChild
+                    </Button>
+                  </Link>
+                  <Link 
+                    to={zone.trackingUrl}
+                    className="flex-1"
                   >
-                    <Link to={zone.trackingUrl}>
+                    <Button 
+                      variant="outline" 
+                      className="w-full border-black text-black hover:bg-black hover:text-white"
+                    >
                       Track Package
-                    </Link>
-                  </Button>
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </div>
