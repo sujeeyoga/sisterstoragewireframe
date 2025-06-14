@@ -1,4 +1,3 @@
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
 import { ShoppingBag } from 'lucide-react';
@@ -21,7 +20,7 @@ const menuItems = {
       name: 'Velvet Bangle Organizer',
       description: 'Preserve your bangles with care in our soft-touch velvet box.',
       price: 29.99,
-      image: 'https://images.unsplash.com/photo-1595409825750-7b55f0c7b361?q=80&w=800&auto=format&fit=crop'
+      image: 'https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-31-scaled.jpg'
     },
     {
       id: "box2",
@@ -157,7 +156,7 @@ const FeaturedItems = () => {
                     <div className="w-full overflow-hidden">
                       <img 
                         src={item.image} 
-                        alt={item.name} 
+                        alt={item.id === 'box1' ? 'Sister Storage velvet bangle organizer showcasing elegant jewelry storage solutions' : item.name}
                         className="w-full h-auto object-cover transition-transform duration-500 hover:scale-105"
                       />
                     </div>
