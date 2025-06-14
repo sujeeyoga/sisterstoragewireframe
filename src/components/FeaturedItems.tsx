@@ -41,7 +41,7 @@ const menuItems = {
       name: 'Travel Bangle Case',
       description: 'Elegant travel case designed to keep your bangles safe and organized while on the go',
       price: 19.99,
-      image: 'https://images.unsplash.com/photo-1591129841117-3adfd313e34f?q=80&w=800&auto=format&fit=crop'
+      image: 'https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-37-scaled.jpg'
     },
   ],
   jewelry: [
@@ -156,7 +156,7 @@ const FeaturedItems = () => {
                     <div className="w-full overflow-hidden">
                       <img 
                         src={item.image} 
-                        alt={['Velvet Bangle Organizer', 'Glass Lid Bangle Box', 'Glass Lid Jewelry Box', 'Stackable Bangle Trays'].includes(item.name) ? `Sister Storage ${item.name.toLowerCase()} showcasing elegant jewelry storage solutions` : item.name}
+                        alt={['Velvet Bangle Organizer', 'Glass Lid Bangle Box', 'Glass Lid Jewelry Box', 'Stackable Bangle Trays', 'Travel Bangle Case'].includes(item.name) ? `Sister Storage ${item.name.toLowerCase()} showcasing elegant jewelry storage solutions` : item.name}
                         className="w-full h-auto object-cover transition-transform duration-500 hover:scale-105"
                       />
                     </div>
