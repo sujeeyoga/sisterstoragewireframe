@@ -43,9 +43,18 @@ const HeroContent = ({ scrollPosition }: HeroContentProps) => {
           Designed by us — for us.
         </AnimatedText>
         
+        {/* Image Container above the button */}
+        <div className="mb-6 animate-breath-fade-up-4">
+          <img
+            src="https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-43-scaled.jpg"
+            alt="Sister Storage lifestyle home organization showcasing elegant storage solutions"
+            className="w-full max-w-md mx-auto md:mx-0 rounded-lg shadow-lg object-cover h-48"
+          />
+        </div>
+        
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
           <Button 
-            className="px-6 py-5 text-base w-full sm:w-auto group relative overflow-hidden transition-all duration-300 animate-breath-fade-up-4"
+            className="px-6 py-5 text-base w-full sm:w-auto group relative overflow-hidden transition-all duration-300 animate-breath-fade-up-5"
             asChild
           >
             <Link to="/shop" className="flex items-center justify-center gap-2">
