@@ -1,3 +1,4 @@
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
 import { ShoppingBag } from 'lucide-react';
@@ -57,21 +58,21 @@ const menuItems = {
       name: 'Earring Storage Case',
       description: 'Multi-compartment earring organizer perfect for studs, hoops, and dangly earrings with clear display',
       price: 26.99,
-      image: 'https://images.unsplash.com/photo-1619119069152-a2b331eb392a?q=80&w=800&auto=format&fit=crop'
+      image: 'https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-68-scaled.jpg'
     },
     {
       id: "jewelry3",
       name: 'Necklace Hanger Frame',
       description: 'Beautiful frame with hooks to hang your necklaces tangle-free while creating a stunning wall display',
       price: 32.99,
-      image: 'https://images.unsplash.com/photo-1543294001-f7cd5d7fb516?q=80&w=800&auto=format&fit=crop'
+      image: 'https://sisterstorage.com/wp-content/uploads/2025/05/basg45-scaled.jpeg'
     },
     {
       id: "jewelry4",
       name: 'Ring Display Tower',
       description: 'Elegant tower designed to showcase your ring collection while keeping each piece separate and protected',
       price: 24.99,
-      image: 'https://images.unsplash.com/photo-1587836374828-4dbafa94cf0e?q=80&w=800&auto=format&fit=crop'
+      image: 'https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-51-scaled.jpg'
     },
   ],
   keepsakes: [
@@ -80,28 +81,28 @@ const menuItems = {
       name: 'Heirloom Storage Box',
       description: 'Beautifully crafted box designed to preserve your most treasured cultural heirlooms',
       price: 59.99,
-      image: 'https://images.unsplash.com/photo-1591129841117-3adfd313e34f?q=80&w=800&auto=format&fit=crop'
+      image: 'https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-13-scaled.jpg'
     },
     {
       id: "set2",
       name: 'Memory Collection Case',
       description: 'Elegant case with compartments designed to organize and protect your precious memories',
       price: 49.99,
-      image: 'https://images.unsplash.com/photo-1595408043711-455f9386b41b?q=80&w=800&auto=format&fit=crop'
+      image: 'https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-72-scaled.jpg'
     },
     {
       id: "set3",
       name: 'Cultural Keepsake Box',
       description: 'Specially designed box that honors and preserves cultural artifacts and keepsakes',
       price: 64.99,
-      image: 'https://images.unsplash.com/photo-1595052428850-404c2026c1fe?q=80&w=800&auto=format&fit=crop'
+      image: 'https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-65-scaled.jpg'
     },
     {
       id: "set4",
       name: 'Celebration Memory Box',
       description: 'Beautiful storage box designed to preserve mementos from special cultural celebrations',
       price: 54.99,
-      image: 'https://images.unsplash.com/photo-1554232456-8727aae0cfa4?q=80&w=800&auto=format&fit=crop'
+      image: 'https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-58-scaled.jpg'
     },
   ],
 };
@@ -156,7 +157,7 @@ const FeaturedItems = () => {
                     <div className="w-full overflow-hidden">
                       <img 
                         src={item.image} 
-                        alt={['Velvet Bangle Organizer', 'Glass Lid Bangle Box', 'Glass Lid Jewelry Box', 'Stackable Bangle Trays', 'Travel Bangle Case'].includes(item.name) ? `Sister Storage ${item.name.toLowerCase()} showcasing elegant jewelry storage solutions` : item.name}
+                        alt={`Sister Storage ${item.name.toLowerCase()} showcasing elegant jewelry storage solutions`}
                         className="w-full h-auto object-cover transition-transform duration-500 hover:scale-105"
                       />
                     </div>
