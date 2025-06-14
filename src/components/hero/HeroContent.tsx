@@ -47,8 +47,8 @@ const HeroContent = ({ scrollPosition }: HeroContentProps) => {
       {/* Full-width edge-to-edge image */}
       <div className="w-full mb-6 animate-breath-fade-up-4">
         <img
-          src="https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-43-scaled.jpg"
-          alt="Sister Storage lifestyle home organization showcasing elegant storage solutions"
+          src="https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-31-scaled.jpg"
+          alt="Sister Storage velvet bangle organization showcasing elegant jewelry storage solutions"
           className="w-full object-cover h-48 md:h-64"
         />
       </div>
