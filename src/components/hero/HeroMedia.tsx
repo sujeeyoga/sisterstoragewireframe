@@ -25,37 +25,49 @@ const HeroMedia = () => {
   return (
     <>
       {/* First Hero Image - slides in from left then fades out */}
-      <img
-        src="https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-27-scaled.jpg"
-        alt="Sister Storage lifestyle home organization scene showcasing beautiful storage solutions"
-        className={`absolute inset-0 w-full h-full object-cover z-10 animate-slide-in-left transition-opacity duration-1000 ${
-          fadeOutImage ? 'opacity-0' : 'opacity-100'
-        }`}
-      />
+      <div className="absolute inset-0 z-10">
+        <img
+          src="https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-27-scaled.jpg"
+          alt="Sister Storage lifestyle home organization scene showcasing beautiful storage solutions"
+          className={`absolute inset-0 w-full h-full object-cover animate-slide-in-left transition-opacity duration-1000 ${
+            fadeOutImage ? 'opacity-0' : 'opacity-100'
+          }`}
+        />
+        {/* Enhanced gradient overlay for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/30" />
+      </div>
 
       {/* Second Hero Image - appears after first image fades */}
       {showSecondImage && (
-        <img
-          src="https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-43-scaled.jpg"
-          alt="Sister Storage lifestyle home organization showcasing elegant storage solutions"
-          className={`absolute inset-0 w-full h-full object-cover z-10 transition-opacity duration-1000 ${
-            fadeOutSecondImage ? 'opacity-0' : 'opacity-100'
-          }`}
-        />
+        <div className="absolute inset-0 z-10">
+          <img
+            src="https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-43-scaled.jpg"
+            alt="Sister Storage lifestyle home organization showcasing elegant storage solutions"
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
+              fadeOutSecondImage ? 'opacity-0' : 'opacity-100'
+            }`}
+          />
+          {/* Enhanced gradient overlay for text readability */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/30" />
+        </div>
       )}
 
       {/* Video - appears behind images after both fade */}
       {showVideo && (
-        <video
-          className="absolute inset-0 w-full h-full object-cover z-0"
-          autoPlay
-          muted
-          loop
-          playsInline
-        >
-          <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
+        <div className="absolute inset-0 z-0">
+          <video
+            className="absolute inset-0 w-full h-full object-cover"
+            autoPlay
+            muted
+            loop
+            playsInline
+          >
+            <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+          {/* Enhanced gradient overlay for text readability */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/30" />
+        </div>
       )}
 
       {/* Solid Color Background Fallback */}

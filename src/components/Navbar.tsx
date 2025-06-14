@@ -16,10 +16,11 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
   const { totalItems, setIsOpen: setCartOpen } = useCart();
   const navigate = useNavigate();
   
-  // Calculate scroll-based styling
+  // Calculate scroll-based styling with enhanced backdrop for hero section
   const isScrolled = position > 20;
   const scrollProgress = Math.min(1, position / 100);
-  const bgOpacity = Math.min(0.95, 0.7 + (scrollProgress * 0.25));
+  const bgOpacity = Math.min(0.98, 0.85 + (scrollProgress * 0.13)); // Increased opacity for better readability
+  const backdropBlur = Math.min(12, 4 + (scrollProgress * 8)); // Progressive blur for readability
 
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
@@ -44,9 +45,10 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
       <header 
         className={`w-full transition-all duration-300 ${
           isScrolled ? 'py-2' : 'py-4'
-        } bg-black rounded-b-lg shadow-md mx-4 mt-2`}
+        } rounded-b-lg shadow-lg mx-4 mt-2`}
         style={{
-          backdropFilter: `blur(${scrollProgress * 8}px)`,
+          backgroundColor: `rgba(0, 0, 0, ${bgOpacity})`,
+          backdropFilter: `blur(${backdropBlur}px)`,
           maxWidth: 'calc(100% - 2rem)',
         }}
       >
@@ -55,7 +57,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
           {isMobile && (
             <button
               onClick={handleBack}
-              className="mr-2 p-1.5 text-white focus:outline-none"
+              className="mr-2 p-1.5 text-white focus:outline-none hover:bg-white/10 rounded transition-colors"
               aria-label="Go back"
             >
               <ArrowLeft className="h-5 w-5" />
@@ -65,22 +67,22 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
           {/* Logo */}
           <Link to="/" className="relative z-10">
             <h1 
-              className="text-white font-bold transition-all duration-300"
+              className="text-white font-bold transition-all duration-300 drop-shadow-lg"
               style={{ 
                 transform: `scale(${isScrolled ? 0.95 : 1})`,
-                letterSpacing: `${isScrolled ? '0' : '0.5px'}`
+                letterSpacing: `${isScrolled ? '0' : '0.5px'}`,
+                textShadow: '0 2px 4px rgba(0,0,0,0.5)'
               }}
             >
               SISTER STORAGE
             </h1>
           </Link>
 
-          {/* Desktop Menu */}
+          {/* Desktop Menu - Removed BUY button to eliminate duplication */}
           <nav className="hidden md:flex items-center space-x-6">
             {[
               { name: 'HOME', path: '/', icon: Home },
               { name: 'US SISTERS', path: '/about' },
-              { name: 'BUY', path: '/shop', icon: ShoppingBag },
               { name: 'SHIPPING', path: '#delivery', icon: Package },
               { name: 'CONTACT', path: '#contact', icon: Mail }
             ].map((item) => (
@@ -88,14 +90,18 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
                 key={item.name} 
                 to={item.path}
                 className={`text-white hover:bg-pink-500 hover:text-white transition-colors duration-300 px-3 py-1.5 rounded-md ${item.icon ? 'flex items-center gap-1' : ''}`}
+                style={{ textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}
               >
                 {item.icon && <item.icon className="h-3 w-3" />}
                 {item.name}
               </Link>
             ))}
+            
+            {/* Prominent Cart Button */}
             <Button 
               size="sm"
               onClick={() => setCartOpen(true)}
+              className="bg-white text-black hover:bg-pink-500 hover:text-white border-2 border-white hover:border-pink-500 font-semibold shadow-lg"
             >
               <ShoppingBag className="mr-1 h-3 w-3" />
               Cart ({totalItems})
@@ -104,9 +110,10 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
 
           {/* Mobile Menu Toggle */}
           <button 
-            className="md:hidden p-1.5 text-white focus:outline-none z-50"
+            className="md:hidden p-1.5 text-white focus:outline-none z-50 hover:bg-white/10 rounded transition-colors"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle mobile menu"
+            style={{ textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}
           >
             {mobileMenuOpen ? (
               <X className="h-5 w-5" />
@@ -132,7 +139,6 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
             {[
               { name: 'HOME', path: '/', icon: Home },
               { name: 'US SISTERS', path: '/about' },
-              { name: 'BUY', path: '/shop', icon: ShoppingBag },
               { name: 'SHIPPING', path: '#delivery', icon: Package },
               { name: 'CONTACT', path: '#contact', icon: Mail }
             ].map((item) => (
@@ -146,6 +152,8 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
                 {item.name}
               </Link>
             ))}
+            
+            {/* Mobile Cart Button */}
             <Button 
               className="w-full mt-4" 
               size="lg"
