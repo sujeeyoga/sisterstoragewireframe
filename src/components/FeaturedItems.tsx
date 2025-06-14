@@ -27,7 +27,7 @@ const menuItems = {
       name: 'Glass Lid Bangle Box',
       description: 'Beautiful display box with glass lid perfect for showcasing your bangles while keeping them dust-free',
       price: 34.99,
-      image: 'https://images.unsplash.com/photo-1581783342308-f792dbdd27c5?q=80&w=800&auto=format&fit=crop'
+      image: 'https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-23-scaled.jpg'
     },
     {
       id: "box3",
@@ -50,7 +50,7 @@ const menuItems = {
       name: 'Glass Lid Jewelry Box',
       description: 'Showcase and protect your collection with style and intention.',
       price: 42.99,
-      image: 'https://images.unsplash.com/photo-1635767798638-3665c677a227?q=80&w=800&auto=format&fit=crop'
+      image: 'https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-23-scaled.jpg'
     },
     {
       id: "jewelry2",
@@ -156,7 +156,7 @@ const FeaturedItems = () => {
                     <div className="w-full overflow-hidden">
                       <img 
                         src={item.image} 
-                        alt={item.name === 'Velvet Bangle Organizer' ? 'Sister Storage velvet bangle organizer showcasing elegant jewelry storage solutions' : item.name}
+                        alt={['Velvet Bangle Organizer', 'Glass Lid Bangle Box', 'Glass Lid Jewelry Box'].includes(item.name) ? `Sister Storage ${item.name.toLowerCase()} showcasing elegant jewelry storage solutions` : item.name}
                         className="w-full h-auto object-cover transition-transform duration-500 hover:scale-105"
                       />
                     </div>
