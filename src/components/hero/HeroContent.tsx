@@ -20,7 +20,7 @@ const HeroContent = ({ scrollPosition }: HeroContentProps) => {
       >
         <AnimatedText
           as="span"
-          className="inline-block px-6 py-3 mb-8 text-sm font-bold bg-white text-[#E90064] rounded-full shadow-xl"
+          className="inline-block px-6 py-3 mb-8 text-sm font-bold bg-white text-[#E90064] rounded-full"
           animation="breath-fade-up-1"
         >
           Beautifully Organized
@@ -32,10 +32,6 @@ const HeroContent = ({ scrollPosition }: HeroContentProps) => {
           className="text-6xl md:text-8xl lg:text-9xl font-black text-white mb-10 leading-tight tracking-tight"
           animation="breath-fade-up-2"
           words
-          style={{ 
-            textShadow: '0 6px 12px rgba(0,0,0,0.9), 0 2px 4px rgba(0,0,0,0.8)',
-            filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.7))'
-          }}
         >
           CULTURE / WITHOUT CLUTTER.
         </AnimatedText>
@@ -44,7 +40,6 @@ const HeroContent = ({ scrollPosition }: HeroContentProps) => {
           as="h3"
           className="text-2xl md:text-4xl text-white mb-12 font-semibold"
           animation="breath-fade-up-3"
-          style={{ textShadow: '0 4px 8px rgba(0,0,0,0.9)' }}
         >
           Designed by us — for us.
         </AnimatedText>
@@ -60,7 +55,7 @@ const HeroContent = ({ scrollPosition }: HeroContentProps) => {
         {/* Single prominent CTA button */}
         <div className="flex flex-col sm:flex-row gap-6 mb-12">
           <Button 
-            className="px-10 py-8 text-xl w-full sm:w-auto group relative overflow-hidden transition-all duration-300 animate-breath-fade-up-4 bg-white text-black hover:bg-[#E90064] hover:text-white border-4 border-white hover:border-[#E90064] shadow-2xl font-black"
+            className="px-10 py-8 text-xl w-full sm:w-auto group relative overflow-hidden transition-all duration-300 animate-breath-fade-up-4 bg-white text-black hover:bg-[#E90064] hover:text-white border-4 border-white hover:border-[#E90064] font-black"
             asChild
           >
             <Link to="/shop" className="flex items-center justify-center gap-4">
@@ -75,7 +70,6 @@ const HeroContent = ({ scrollPosition }: HeroContentProps) => {
           as="p"
           className="text-lg md:text-xl text-white max-w-2xl leading-relaxed font-medium"
           animation="breath-fade-up-5"
-          style={{ textShadow: '0 3px 6px rgba(0,0,0,0.9)' }}
         >
           Made by us, for us... By sisters, for sisters.<br />
           Clutter never had a place in our culture.
