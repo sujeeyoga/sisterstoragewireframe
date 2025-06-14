@@ -156,7 +156,7 @@ const FeaturedItems = () => {
                     <div className="w-full overflow-hidden">
                       <img 
                         src={item.image} 
-                        alt={item.id === 'box1' ? 'Sister Storage velvet bangle organizer showcasing elegant jewelry storage solutions' : item.name}
+                        alt={item.name === 'Velvet Bangle Organizer' ? 'Sister Storage velvet bangle organizer showcasing elegant jewelry storage solutions' : item.name}
                         className="w-full h-auto object-cover transition-transform duration-500 hover:scale-105"
                       />
                     </div>
