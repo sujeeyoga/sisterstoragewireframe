@@ -34,7 +34,7 @@ const menuItems = {
       name: 'Stackable Bangle Trays',
       description: 'Versatile stackable trays that beautifully organize your bangles with a clean, minimal aesthetic',
       price: 24.99,
-      image: 'https://images.unsplash.com/photo-1585909695284-32d2985ac9c0?q=80&w=800&auto=format&fit=crop'
+      image: '/lovable-uploads/f929ebb2-13f9-447a-808e-079b32684e10.png'
     },
     {
       id: "box4",
@@ -156,7 +156,7 @@ const FeaturedItems = () => {
                     <div className="w-full overflow-hidden">
                       <img 
                         src={item.image} 
-                        alt={['Velvet Bangle Organizer', 'Glass Lid Bangle Box', 'Glass Lid Jewelry Box'].includes(item.name) ? `Sister Storage ${item.name.toLowerCase()} showcasing elegant jewelry storage solutions` : item.name}
+                        alt={['Velvet Bangle Organizer', 'Glass Lid Bangle Box', 'Glass Lid Jewelry Box', 'Stackable Bangle Trays'].includes(item.name) ? `Sister Storage ${item.name.toLowerCase()} showcasing elegant jewelry storage solutions` : item.name}
                         className="w-full h-auto object-cover transition-transform duration-500 hover:scale-105"
                       />
                     </div>
