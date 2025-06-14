@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { Menu, X, ShoppingBag, Gift, Mail, ArrowLeft, Home, Package } from 'lucide-react';
+import { Menu, X, ShoppingBag, Mail, ArrowLeft, Home, Package } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Link, useNavigate } from 'react-router-dom';
@@ -19,8 +19,8 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
   // Calculate scroll-based styling with enhanced backdrop for hero section
   const isScrolled = position > 20;
   const scrollProgress = Math.min(1, position / 100);
-  const bgOpacity = Math.min(0.98, 0.85 + (scrollProgress * 0.13)); // Increased opacity for better readability
-  const backdropBlur = Math.min(12, 4 + (scrollProgress * 8)); // Progressive blur for readability
+  const bgOpacity = Math.min(0.95, 0.80 + (scrollProgress * 0.15));
+  const backdropBlur = Math.min(16, 6 + (scrollProgress * 10));
 
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
@@ -67,18 +67,18 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
           {/* Logo */}
           <Link to="/" className="relative z-10">
             <h1 
-              className="text-white font-bold transition-all duration-300 drop-shadow-lg"
+              className="text-white font-bold transition-all duration-300"
               style={{ 
                 transform: `scale(${isScrolled ? 0.95 : 1})`,
                 letterSpacing: `${isScrolled ? '0' : '0.5px'}`,
-                textShadow: '0 2px 4px rgba(0,0,0,0.5)'
+                textShadow: '0 2px 8px rgba(0,0,0,0.8)'
               }}
             >
               SISTER STORAGE
             </h1>
           </Link>
 
-          {/* Desktop Menu - Removed BUY button to eliminate duplication */}
+          {/* Desktop Menu - Removed BUY button, enhanced cart */}
           <nav className="hidden md:flex items-center space-x-6">
             {[
               { name: 'HOME', path: '/', icon: Home },
@@ -89,22 +89,22 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
               <Link 
                 key={item.name} 
                 to={item.path}
-                className={`text-white hover:bg-pink-500 hover:text-white transition-colors duration-300 px-3 py-1.5 rounded-md ${item.icon ? 'flex items-center gap-1' : ''}`}
-                style={{ textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}
+                className={`text-white hover:bg-pink-500 hover:text-white transition-colors duration-300 px-3 py-2 rounded-md font-medium ${item.icon ? 'flex items-center gap-2' : ''}`}
+                style={{ textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}
               >
-                {item.icon && <item.icon className="h-3 w-3" />}
+                {item.icon && <item.icon className="h-4 w-4" />}
                 {item.name}
               </Link>
             ))}
             
-            {/* Prominent Cart Button */}
+            {/* Enhanced Cart Button */}
             <Button 
-              size="sm"
+              size="lg"
               onClick={() => setCartOpen(true)}
-              className="bg-white text-black hover:bg-pink-500 hover:text-white border-2 border-white hover:border-pink-500 font-semibold shadow-lg"
+              className="bg-white text-black hover:bg-pink-500 hover:text-white border-2 border-white hover:border-pink-500 font-bold shadow-xl px-6 py-3 transition-all duration-300"
             >
-              <ShoppingBag className="mr-1 h-3 w-3" />
-              Cart ({totalItems})
+              <ShoppingBag className="mr-2 h-5 w-5" />
+              CART ({totalItems})
             </Button>
           </nav>
 
@@ -113,12 +113,12 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
             className="md:hidden p-1.5 text-white focus:outline-none z-50 hover:bg-white/10 rounded transition-colors"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle mobile menu"
-            style={{ textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}
+            style={{ textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}
           >
             {mobileMenuOpen ? (
-              <X className="h-5 w-5" />
+              <X className="h-6 w-6" />
             ) : (
-              <Menu className="h-5 w-5" />
+              <Menu className="h-6 w-6" />
             )}
           </button>
         </div>
@@ -163,7 +163,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
               }}
             >
               <ShoppingBag className="mr-2 h-4 w-4" />
-              Cart ({totalItems})
+              CART ({totalItems})
             </Button>
           </nav>
         </div>

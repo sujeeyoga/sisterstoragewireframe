@@ -11,17 +11,8 @@ interface HeroContentProps {
 const HeroContent = ({ scrollPosition }: HeroContentProps) => {
   return (
     <div className="container-custom relative h-full flex flex-col justify-center items-center md:items-start pt-20 z-20">
-      {/* Enhanced backdrop for text readability */}
       <div 
-        className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-transparent rounded-lg"
-        style={{
-          opacity: scrollPosition > 500 ? 0 : 1,
-          transition: 'opacity 0.3s ease-out'
-        }}
-      />
-      
-      <div 
-        className="max-w-2xl text-center md:text-left relative z-10"
+        className="max-w-3xl text-center md:text-left relative z-10"
         style={{
           opacity: scrollPosition > 500 ? 0 : 1,
           transition: 'opacity 0.3s ease-out'
@@ -29,21 +20,21 @@ const HeroContent = ({ scrollPosition }: HeroContentProps) => {
       >
         <AnimatedText
           as="span"
-          className="inline-block px-4 py-2 mb-6 text-sm font-medium bg-white text-[#E90064] rounded-full shadow-lg"
+          className="inline-block px-6 py-3 mb-8 text-sm font-bold bg-white text-[#E90064] rounded-full shadow-xl"
           animation="breath-fade-up-1"
         >
           Beautifully Organized
         </AnimatedText>
         
-        {/* Improved line breaking and visual hierarchy */}
+        {/* Improved line breaking and enhanced visual hierarchy */}
         <AnimatedText
           as="h1"
-          className="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-8 leading-tight"
+          className="text-6xl md:text-8xl lg:text-9xl font-black text-white mb-10 leading-tight tracking-tight"
           animation="breath-fade-up-2"
           words
           style={{ 
-            textShadow: '0 4px 8px rgba(0,0,0,0.7)',
-            filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))'
+            textShadow: '0 6px 12px rgba(0,0,0,0.9), 0 2px 4px rgba(0,0,0,0.8)',
+            filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.7))'
           }}
         >
           CULTURE / WITHOUT CLUTTER.
@@ -51,29 +42,29 @@ const HeroContent = ({ scrollPosition }: HeroContentProps) => {
         
         <AnimatedText
           as="h3"
-          className="text-xl md:text-3xl text-gray-100 mb-8 font-medium"
+          className="text-2xl md:text-4xl text-white mb-12 font-semibold"
           animation="breath-fade-up-3"
-          style={{ textShadow: '0 2px 4px rgba(0,0,0,0.7)' }}
+          style={{ textShadow: '0 4px 8px rgba(0,0,0,0.9)' }}
         >
           Designed by us — for us.
         </AnimatedText>
       </div>
       
       <div 
-        className="max-w-2xl text-center md:text-left relative z-10"
+        className="max-w-3xl text-center md:text-left relative z-10"
         style={{
           opacity: scrollPosition > 500 ? 0 : 1,
           transition: 'opacity 0.3s ease-out'
         }}
       >
-        {/* Single prominent CTA button - removed duplication */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-8">
+        {/* Single prominent CTA button */}
+        <div className="flex flex-col sm:flex-row gap-6 mb-12">
           <Button 
-            className="px-8 py-6 text-lg w-full sm:w-auto group relative overflow-hidden transition-all duration-300 animate-breath-fade-up-4 bg-white text-black hover:bg-[#E90064] hover:text-white border-2 border-white hover:border-[#E90064] shadow-xl font-bold"
+            className="px-10 py-8 text-xl w-full sm:w-auto group relative overflow-hidden transition-all duration-300 animate-breath-fade-up-4 bg-white text-black hover:bg-[#E90064] hover:text-white border-4 border-white hover:border-[#E90064] shadow-2xl font-black"
             asChild
           >
-            <Link to="/shop" className="flex items-center justify-center gap-3">
-              <ShoppingBag className="h-6 w-6" />
+            <Link to="/shop" className="flex items-center justify-center gap-4">
+              <ShoppingBag className="h-7 w-7" />
               <span className="relative z-10 transition-transform group-hover:translate-x-1">SHOP NOW</span>
               <span className="absolute inset-0 bg-[#E90064] translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"></span>
             </Link>
@@ -82,9 +73,9 @@ const HeroContent = ({ scrollPosition }: HeroContentProps) => {
         
         <AnimatedText
           as="p"
-          className="text-base md:text-lg text-gray-100 max-w-lg leading-relaxed"
+          className="text-lg md:text-xl text-white max-w-2xl leading-relaxed font-medium"
           animation="breath-fade-up-5"
-          style={{ textShadow: '0 2px 4px rgba(0,0,0,0.7)' }}
+          style={{ textShadow: '0 3px 6px rgba(0,0,0,0.9)' }}
         >
           Made by us, for us... By sisters, for sisters.<br />
           Clutter never had a place in our culture.

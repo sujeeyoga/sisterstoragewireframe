@@ -33,8 +33,6 @@ const HeroMedia = () => {
             fadeOutImage ? 'opacity-0' : 'opacity-100'
           }`}
         />
-        {/* Enhanced gradient overlay for text readability */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/30" />
       </div>
 
       {/* Second Hero Image - appears after first image fades */}
@@ -47,8 +45,6 @@ const HeroMedia = () => {
               fadeOutSecondImage ? 'opacity-0' : 'opacity-100'
             }`}
           />
-          {/* Enhanced gradient overlay for text readability */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/30" />
         </div>
       )}
 
@@ -64,9 +60,7 @@ const HeroMedia = () => {
           >
             <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4" />
             Your browser does not support the video tag.
-          </video>
-          {/* Enhanced gradient overlay for text readability */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/30" />
+          </source>
         </div>
       )}
 
