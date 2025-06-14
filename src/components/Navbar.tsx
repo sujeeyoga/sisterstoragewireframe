@@ -40,80 +40,85 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
   };
 
   return (
-    <header 
-      className={`w-full transition-all duration-300 ${
-        isScrolled ? 'py-2' : 'py-4'
-      }`}
-      style={{
-        backgroundColor: '#000000',
-        backdropFilter: `blur(${scrollProgress * 8}px)`,
-      }}
-    >
-      <div className="container-custom flex items-center justify-between">
-        {/* Back Button (only on mobile) */}
-        {isMobile && (
-          <button
-            onClick={handleBack}
-            className="mr-2 p-1.5 text-white focus:outline-none"
-            aria-label="Go back"
-          >
-            <ArrowLeft className="h-5 w-5" />
-          </button>
-        )}
-
-        {/* Logo */}
-        <Link to="/" className="relative z-10">
-          <h1 
-            className="text-white font-bold transition-all duration-300"
-            style={{ 
-              transform: `scale(${isScrolled ? 0.95 : 1})`,
-              letterSpacing: `${isScrolled ? '0' : '0.5px'}`
-            }}
-          >
-            SISTER STORAGE
-          </h1>
-        </Link>
-
-        {/* Desktop Menu */}
-        <nav className="hidden md:flex items-center space-x-6">
-          {[
-            { name: 'HOME', path: '/', icon: Home },
-            { name: 'US SISTERS', path: '/about' },
-            { name: 'BUY', path: '/shop', icon: ShoppingBag },
-            { name: 'SHIPPING', path: '#delivery', icon: Package },
-            { name: 'CONTACT', path: '#contact', icon: Mail }
-          ].map((item) => (
-            <Link 
-              key={item.name} 
-              to={item.path}
-              className={`text-white hover:bg-black hover:text-white transition-colors duration-300 px-3 py-1.5 rounded-md ${item.icon ? 'flex items-center gap-1' : ''}`}
+    <>
+      <header 
+        className={`w-full transition-all duration-300 ${
+          isScrolled ? 'py-2' : 'py-4'
+        } bg-black rounded-b-lg shadow-md mx-4 mt-2`}
+        style={{
+          backdropFilter: `blur(${scrollProgress * 8}px)`,
+          maxWidth: 'calc(100% - 2rem)',
+        }}
+      >
+        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+          {/* Back Button (only on mobile) */}
+          {isMobile && (
+            <button
+              onClick={handleBack}
+              className="mr-2 p-1.5 text-white focus:outline-none"
+              aria-label="Go back"
             >
-              {item.icon && <item.icon className="h-3 w-3" />}
-              {item.name}
-            </Link>
-          ))}
-          <Button 
-            size="sm"
-            onClick={() => setCartOpen(true)}
-          >
-            <ShoppingBag className="mr-1 h-3 w-3" />
-            Cart ({totalItems})
-          </Button>
-        </nav>
-
-        {/* Mobile Menu Toggle */}
-        <button 
-          className="md:hidden p-1.5 text-white focus:outline-none z-50"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          aria-label="Toggle mobile menu"
-        >
-          {mobileMenuOpen ? (
-            <X className="h-5 w-5" />
-          ) : (
-            <Menu className="h-5 w-5" />
+              <ArrowLeft className="h-5 w-5" />
+            </button>
           )}
-        </button>
-      </div>
+
+          {/* Logo */}
+          <Link to="/" className="relative z-10">
+            <h1 
+              className="text-white font-bold transition-all duration-300"
+              style={{ 
+                transform: `scale(${isScrolled ? 0.95 : 1})`,
+                letterSpacing: `${isScrolled ? '0' : '0.5px'}`
+              }}
+            >
+              SISTER STORAGE
+            </h1>
+          </Link>
+
+          {/* Desktop Menu */}
+          <nav className="hidden md:flex items-center space-x-6">
+            {[
+              { name: 'HOME', path: '/', icon: Home },
+              { name: 'US SISTERS', path: '/about' },
+              { name: 'BUY', path: '/shop', icon: ShoppingBag },
+              { name: 'SHIPPING', path: '#delivery', icon: Package },
+              { name: 'CONTACT', path: '#contact', icon: Mail }
+            ].map((item) => (
+              <Link 
+                key={item.name} 
+                to={item.path}
+                className={`text-white hover:bg-pink-500 hover:text-white transition-colors duration-300 px-3 py-1.5 rounded-md ${item.icon ? 'flex items-center gap-1' : ''}`}
+              >
+                {item.icon && <item.icon className="h-3 w-3" />}
+                {item.name}
+              </Link>
+            ))}
+            <Button 
+              size="sm"
+              onClick={() => setCartOpen(true)}
+            >
+              <ShoppingBag className="mr-1 h-3 w-3" />
+              Cart ({totalItems})
+            </Button>
+          </nav>
+
+          {/* Mobile Menu Toggle */}
+          <button 
+            className="md:hidden p-1.5 text-white focus:outline-none z-50"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle mobile menu"
+          >
+            {mobileMenuOpen ? (
+              <X className="h-5 w-5" />
+            ) : (
+              <Menu className="h-5 w-5" />
+            )}
+          </button>
+        </div>
+      </header>
+
+      {/* Visual transition border */}
+      <div className="border-b border-pink-500 mx-4" style={{ maxWidth: 'calc(100% - 2rem)' }} />
 
       {/* Mobile Menu Slide-in from left */}
       <div 
@@ -155,7 +160,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
           </nav>
         </div>
       </div>
-    </header>
+    </>
   );
 };
 
