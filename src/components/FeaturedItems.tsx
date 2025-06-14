@@ -34,7 +34,7 @@ const menuItems = {
       name: 'Stackable Bangle Trays',
       description: 'Versatile stackable trays that beautifully organize your bangles with a clean, minimal aesthetic',
       price: 24.99,
-      image: '/lovable-uploads/f929ebb2-13f9-447a-808e-079b32684e10.png'
+      image: 'https://sisterstorage.com/wp-content/uploads/2025/06/IMG_6572.jpeg'
     },
     {
       id: "box4",
