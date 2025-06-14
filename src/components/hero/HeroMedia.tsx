@@ -4,21 +4,27 @@ import { useEffect, useState } from 'react';
 const HeroMedia = () => {
   const [showVideo, setShowVideo] = useState(false);
   const [fadeOutImage, setFadeOutImage] = useState(false);
+  const [showSecondImage, setShowSecondImage] = useState(false);
+  const [fadeOutSecondImage, setFadeOutSecondImage] = useState(false);
 
-  // Image to video transition effect
+  // Three-stage transition effect: Image 1 → Image 2 → Video
   useEffect(() => {
-    const fadeTimer = setTimeout(() => setFadeOutImage(true), 5000);
-    const videoTimer = setTimeout(() => setShowVideo(true), 6000);
+    const fadeFirstTimer = setTimeout(() => setFadeOutImage(true), 5000);
+    const showSecondTimer = setTimeout(() => setShowSecondImage(true), 5500);
+    const fadeSecondTimer = setTimeout(() => setFadeOutSecondImage(true), 10000);
+    const videoTimer = setTimeout(() => setShowVideo(true), 10500);
     
     return () => {
-      clearTimeout(fadeTimer);
+      clearTimeout(fadeFirstTimer);
+      clearTimeout(showSecondTimer);
+      clearTimeout(fadeSecondTimer);
       clearTimeout(videoTimer);
     };
   }, []);
 
   return (
     <>
-      {/* Hero Image - slides in from left then fades out */}
+      {/* First Hero Image - slides in from left then fades out */}
       <img
         src="https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-27-scaled.jpg"
         alt="Sister Storage lifestyle home organization scene showcasing beautiful storage solutions"
@@ -27,7 +33,18 @@ const HeroMedia = () => {
         }`}
       />
 
-      {/* Video - appears behind image after fade */}
+      {/* Second Hero Image - appears after first image fades */}
+      {showSecondImage && (
+        <img
+          src="https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-43-scaled.jpg"
+          alt="Sister Storage lifestyle home organization showcasing elegant storage solutions"
+          className={`absolute inset-0 w-full h-full object-cover z-10 transition-opacity duration-1000 ${
+            fadeOutSecondImage ? 'opacity-0' : 'opacity-100'
+          }`}
+        />
+      )}
+
+      {/* Video - appears behind images after both fade */}
       {showVideo && (
         <video
           className="absolute inset-0 w-full h-full object-cover z-0"
