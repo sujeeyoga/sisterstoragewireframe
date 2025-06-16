@@ -43,7 +43,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
   return (
     <>
       <header 
-        className={`w-full transition-all duration-300 ${
+        className={`w-full transition-all duration-300 z-50 relative ${
           isScrolled ? 'py-2' : 'py-4'
         } rounded-b-lg shadow-lg mx-4 mt-2`}
         style={{
@@ -108,7 +108,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
 
           {/* Mobile Menu Toggle */}
           <button 
-            className="md:hidden p-1.5 text-black focus:outline-none z-50 hover:bg-black/10 rounded transition-colors"
+            className="md:hidden p-1.5 text-black focus:outline-none z-60 relative hover:bg-black/10 rounded transition-colors"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle mobile menu"
           >
@@ -122,17 +122,21 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
       </header>
 
       {/* Visual transition border */}
-      <div className="border-b border-pink-500 mx-4" style={{ maxWidth: 'calc(100% - 2rem)' }} />
+      <div className="border-b border-pink-500 mx-4 relative z-40" style={{ maxWidth: 'calc(100% - 2rem)' }} />
 
-      {/* Mobile Menu Slide-in from left */}
+      {/* Mobile Menu Slide-in from left with proper background and z-index */}
       <div 
-        className={`md:hidden fixed inset-0 bg-white z-40 transform transition-transform duration-300 ease-in-out ${
+        className={`md:hidden fixed inset-0 z-60 transform transition-all duration-300 ease-in-out ${
           mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
         aria-hidden={!mobileMenuOpen}
       >
-        <div className="h-full flex flex-col pt-20 px-6">
-          <nav className="flex flex-col space-y-6 items-center mt-8">
+        {/* Backdrop blur overlay */}
+        <div className="absolute inset-0 bg-white/98 backdrop-blur-md shadow-2xl border-r border-gray-200"></div>
+        
+        {/* Menu content */}
+        <div className="relative h-full flex flex-col pt-28 px-8">
+          <nav className="flex flex-col space-y-8 items-center mt-8">
             {[
               { name: 'HOME', path: '/', icon: Home },
               { name: 'US SISTERS', path: '/about' },
@@ -142,24 +146,24 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
               <Link 
                 key={item.name} 
                 to={item.path} 
-                className="text-[#e90064] text-lg font-medium hover:text-[#c80056] transition-colors duration-300 flex items-center gap-2"
+                className="text-[#E90064] text-xl font-bold hover:text-[#c80056] hover:bg-[#E90064]/10 transition-all duration-300 flex items-center gap-3 px-6 py-3 rounded-lg w-full max-w-xs text-center justify-center"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                {item.icon && <item.icon className="h-5 w-5" />}
+                {item.icon && <item.icon className="h-6 w-6" />}
                 {item.name}
               </Link>
             ))}
             
             {/* Mobile Cart Button */}
             <Button 
-              className="w-full mt-4" 
+              className="w-full max-w-xs mt-6 bg-[#E90064] hover:bg-[#c80056] text-white font-bold text-lg py-4" 
               size="lg"
               onClick={() => {
                 setMobileMenuOpen(false);
                 setCartOpen(true);
               }}
             >
-              <ShoppingBag className="mr-2 h-4 w-4" />
+              <ShoppingBag className="mr-3 h-5 w-5" />
               CART ({totalItems})
             </Button>
           </nav>
