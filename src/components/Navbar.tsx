@@ -47,7 +47,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
           isScrolled ? 'py-2' : 'py-4'
         } rounded-b-lg shadow-lg mx-4 mt-2`}
         style={{
-          backgroundColor: `rgba(0, 0, 0, ${bgOpacity})`,
+          backgroundColor: `rgba(255, 255, 255, ${bgOpacity})`,
           backdropFilter: `blur(${backdropBlur}px)`,
           maxWidth: 'calc(100% - 2rem)',
         }}
@@ -57,7 +57,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
           {isMobile && (
             <button
               onClick={handleBack}
-              className="mr-2 p-1.5 text-white focus:outline-none hover:bg-white/10 rounded transition-colors"
+              className="mr-2 p-1.5 text-black focus:outline-none hover:bg-black/10 rounded transition-colors"
               aria-label="Go back"
             >
               <ArrowLeft className="h-5 w-5" />
@@ -67,11 +67,10 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
           {/* Logo */}
           <Link to="/" className="relative z-10">
             <h1 
-              className="text-white font-bold transition-all duration-300"
+              className="text-[#E90064] font-bold transition-all duration-300"
               style={{ 
                 transform: `scale(${isScrolled ? 0.95 : 1})`,
-                letterSpacing: `${isScrolled ? '0' : '0.5px'}`,
-                textShadow: '0 2px 8px rgba(0,0,0,0.8)'
+                letterSpacing: `${isScrolled ? '0' : '0.5px'}`
               }}
             >
               SISTER STORAGE
@@ -89,8 +88,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
               <Link 
                 key={item.name} 
                 to={item.path}
-                className={`text-white hover:bg-pink-500 hover:text-white transition-colors duration-300 px-3 py-2 rounded-md font-medium ${item.icon ? 'flex items-center gap-2' : ''}`}
-                style={{ textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}
+                className={`text-black hover:bg-pink-500 hover:text-white transition-colors duration-300 px-3 py-2 rounded-md font-medium ${item.icon ? 'flex items-center gap-2' : ''}`}
               >
                 {item.icon && <item.icon className="h-4 w-4" />}
                 {item.name}
@@ -101,7 +99,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
             <Button 
               size="lg"
               onClick={() => setCartOpen(true)}
-              className="bg-white text-black hover:bg-pink-500 hover:text-white border-2 border-white hover:border-pink-500 font-bold shadow-xl px-6 py-3 transition-all duration-300"
+              className="bg-black text-white hover:bg-pink-500 hover:text-white border-2 border-black hover:border-pink-500 font-bold px-6 py-3 transition-all duration-300"
             >
               <ShoppingBag className="mr-2 h-5 w-5" />
               CART ({totalItems})
@@ -110,10 +108,9 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
 
           {/* Mobile Menu Toggle */}
           <button 
-            className="md:hidden p-1.5 text-white focus:outline-none z-50 hover:bg-white/10 rounded transition-colors"
+            className="md:hidden p-1.5 text-black focus:outline-none z-50 hover:bg-black/10 rounded transition-colors"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle mobile menu"
-            style={{ textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}
           >
             {mobileMenuOpen ? (
               <X className="h-6 w-6" />
