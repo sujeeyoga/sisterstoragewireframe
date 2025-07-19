@@ -26,7 +26,7 @@ const Hero = () => {
   return (
     <>
       <div className="relative h-screen w-full overflow-hidden bg-[#E90064]">
-        <div className="container-custom relative h-full flex flex-col lg:flex-row items-center justify-between pt-16 lg:pt-20 z-20 gap-8 lg:gap-0">
+        <div className="container-custom relative h-full flex flex-col lg:flex-row items-center justify-between pt-20 lg:pt-24 z-20 gap-12 lg:gap-8">
           {/* Hero Image with White Container - Above title on mobile, beside on desktop */}
           <div className="flex-1 flex justify-center lg:justify-end items-center px-4 lg:px-8 order-1 lg:order-2 animate-fade-in" style={{ animationDelay: '0.3s' }}>
             <div className="bg-white rounded-3xl p-6 lg:p-10 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.3)] w-full transform hover:scale-[1.02] transition-all duration-500 ease-out hover:shadow-[0_35px_60px_-12px_rgba(0,0,0,0.4)]">
