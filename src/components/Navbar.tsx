@@ -77,33 +77,34 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
             </h1>
           </Link>
 
-          {/* Desktop Menu - Removed BUY button, enhanced cart */}
+          {/* Desktop Menu */}
           <nav className="hidden md:flex items-center space-x-6">
             {[
               { name: 'HOME', path: '/', icon: Home },
-              { name: 'US SISTERS', path: '/about' },
+              { name: 'ABOUT US', path: '/about' },
               { name: 'SHIPPING', path: '#delivery', icon: Package },
-              { name: 'CONTACT', path: '#contact', icon: Mail }
+              { name: 'SHOPPING CART', path: '#', icon: ShoppingBag, onClick: () => setCartOpen(true) }
             ].map((item) => (
-              <Link 
-                key={item.name} 
-                to={item.path}
-                className={`text-black hover:bg-pink-500 hover:text-white transition-colors duration-300 px-3 py-2 rounded-md font-medium ${item.icon ? 'flex items-center gap-2' : ''}`}
-              >
-                {item.icon && <item.icon className="h-4 w-4" />}
-                {item.name}
-              </Link>
+              item.onClick ? (
+                <button
+                  key={item.name}
+                  onClick={item.onClick}
+                  className={`text-black hover:bg-pink-500 hover:text-white transition-colors duration-300 px-3 py-2 rounded-md font-medium ${item.icon ? 'flex items-center gap-2' : ''}`}
+                >
+                  {item.icon && <item.icon className="h-4 w-4" />}
+                  {item.name} ({totalItems})
+                </button>
+              ) : (
+                <Link 
+                  key={item.name} 
+                  to={item.path}
+                  className={`text-black hover:bg-pink-500 hover:text-white transition-colors duration-300 px-3 py-2 rounded-md font-medium ${item.icon ? 'flex items-center gap-2' : ''}`}
+                >
+                  {item.icon && <item.icon className="h-4 w-4" />}
+                  {item.name}
+                </Link>
+              )
             ))}
-            
-            {/* Enhanced Cart Button */}
-            <Button 
-              size="lg"
-              onClick={() => setCartOpen(true)}
-              className="bg-black text-white hover:bg-pink-500 hover:text-white border-2 border-black hover:border-pink-500 font-bold px-6 py-3 transition-all duration-300"
-            >
-              <ShoppingBag className="mr-2 h-5 w-5" />
-              CART ({totalItems})
-            </Button>
           </nav>
 
           {/* Mobile Menu Toggle */}
@@ -139,33 +140,31 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
           <nav className="flex flex-col space-y-8 items-center mt-8">
             {[
               { name: 'HOME', path: '/', icon: Home },
-              { name: 'US SISTERS', path: '/about' },
+              { name: 'ABOUT US', path: '/about' },
               { name: 'SHIPPING', path: '#delivery', icon: Package },
-              { name: 'CONTACT', path: '#contact', icon: Mail }
+              { name: 'SHOPPING CART', path: '#', icon: ShoppingBag, onClick: () => { setMobileMenuOpen(false); setCartOpen(true); } }
             ].map((item) => (
-              <Link 
-                key={item.name} 
-                to={item.path} 
-                className="text-[#E90064] text-xl font-bold hover:text-[#c80056] hover:bg-[#E90064]/10 transition-all duration-300 flex items-center gap-3 px-6 py-3 rounded-lg w-full max-w-xs text-center justify-center"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {item.icon && <item.icon className="h-6 w-6" />}
-                {item.name}
-              </Link>
+              item.onClick ? (
+                <button
+                  key={item.name}
+                  onClick={item.onClick}
+                  className="text-[#E90064] text-xl font-bold hover:text-[#c80056] hover:bg-[#E90064]/10 transition-all duration-300 flex items-center gap-3 px-6 py-3 rounded-lg w-full max-w-xs text-center justify-center"
+                >
+                  {item.icon && <item.icon className="h-6 w-6" />}
+                  {item.name} ({totalItems})
+                </button>
+              ) : (
+                <Link 
+                  key={item.name} 
+                  to={item.path} 
+                  className="text-[#E90064] text-xl font-bold hover:text-[#c80056] hover:bg-[#E90064]/10 transition-all duration-300 flex items-center gap-3 px-6 py-3 rounded-lg w-full max-w-xs text-center justify-center"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {item.icon && <item.icon className="h-6 w-6" />}
+                  {item.name}
+                </Link>
+              )
             ))}
-            
-            {/* Mobile Cart Button */}
-            <Button 
-              className="w-full max-w-xs mt-6 bg-[#E90064] hover:bg-[#c80056] text-white font-bold text-lg py-4" 
-              size="lg"
-              onClick={() => {
-                setMobileMenuOpen(false);
-                setCartOpen(true);
-              }}
-            >
-              <ShoppingBag className="mr-3 h-5 w-5" />
-              CART ({totalItems})
-            </Button>
           </nav>
         </div>
       </div>
