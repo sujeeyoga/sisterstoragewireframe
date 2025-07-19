@@ -3,11 +3,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import AnimatedText from '@/components/ui/animated-text';
 
-interface StorySectionProps {
-  storyVisible: boolean;
-}
-
-const StorySection = ({ storyVisible }: StorySectionProps) => {
+const StorySection = () => {
   const scrollToAbout = () => {
     document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -15,9 +11,7 @@ const StorySection = ({ storyVisible }: StorySectionProps) => {
   return (
     <div className="py-16 md:py-20 bg-white">
       <div className="container-custom">
-        <div 
-          className={`transition-all duration-700 transform ${storyVisible ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'}`}
-        >
+        <div>
           <AnimatedText
             as="h2"
             className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-8"
