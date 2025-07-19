@@ -2,7 +2,7 @@
 import BaseLayout from "@/components/layout/BaseLayout";
 import Section from "@/components/layout/Section";
 import Hero from "@/components/Hero";
-import FeaturedItems from "@/components/FeaturedItems";
+import BestSeller from "@/components/BestSeller";
 import About from "@/components/About";
 import HowItWorks from "@/components/HowItWorks";
 import Delivery from "@/components/Delivery";
@@ -18,7 +18,7 @@ const Index = () => {
       
       <EnhancedScrollFade preset="medium" once={true}>
         <Section spacing="md" width="contained">
-          <FeaturedItems />
+          <BestSeller />
         </Section>
       </EnhancedScrollFade>
       
