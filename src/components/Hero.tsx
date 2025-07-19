@@ -29,7 +29,7 @@ const Hero = () => {
         <div className="container-custom relative h-full flex flex-col lg:flex-row items-center justify-between pt-16 lg:pt-20 z-20 gap-8 lg:gap-0">
           {/* Hero Image with White Container - Above title on mobile, beside on desktop */}
           <div className="flex-1 flex justify-center lg:justify-end items-center px-4 lg:px-8 order-1 lg:order-2 animate-fade-in" style={{ animationDelay: '0.3s' }}>
-            <div className="bg-white rounded-3xl p-6 lg:p-10 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.3)] max-w-sm lg:max-w-md w-full transform hover:scale-[1.02] transition-all duration-500 ease-out hover:shadow-[0_35px_60px_-12px_rgba(0,0,0,0.4)]">
+            <div className="bg-white rounded-3xl p-6 lg:p-10 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.3)] w-full transform hover:scale-[1.02] transition-all duration-500 ease-out hover:shadow-[0_35px_60px_-12px_rgba(0,0,0,0.4)]">
               <div className="aspect-square overflow-hidden rounded-2xl mb-6 lg:mb-8 shadow-lg relative group">
                 <img
                   src="https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-27-scaled.jpg"
