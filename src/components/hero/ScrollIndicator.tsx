@@ -22,7 +22,7 @@ const ScrollIndicator = ({ scrollPosition }: ScrollIndicatorProps) => {
       }}
       onClick={handleScrollDown}
     >
-      <span className="text-white text-sm font-medium mb-2">Discover More</span>
+      <span className="text-white text-base md:text-sm font-medium mb-2">Discover More</span>
       <div className="flex items-center justify-center">
         <ArrowDown className="h-8 w-8 text-white animate-bounce" />
       </div>
