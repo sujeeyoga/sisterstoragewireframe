@@ -27,13 +27,8 @@ const Hero = () => {
     <>
       <div className="relative h-screen w-full overflow-hidden bg-[#E90064]">
         <div className="container-custom relative h-full flex flex-col lg:flex-row items-center justify-between pt-20 z-20">
-          {/* Left Side - Hero Content */}
-          <div className="flex-1 flex flex-col justify-center items-center lg:items-start mb-8 lg:mb-0">
-            <HeroContent scrollPosition={scrollPosition} />
-          </div>
-          
-          {/* Right Side - Hero Image with White Container */}
-          <div className="flex-1 flex justify-center lg:justify-end items-center px-4 lg:px-8">
+          {/* Hero Image with White Container - Above title on mobile */}
+          <div className="flex-1 flex justify-center lg:justify-end items-center px-4 lg:px-8 mb-8 lg:mb-0 order-1 lg:order-2">
             <div className="bg-white rounded-2xl p-8 shadow-2xl max-w-md w-full animate-fade-in">
               <div className="aspect-square overflow-hidden rounded-xl mb-6">
                 <img
@@ -49,6 +44,11 @@ const Hero = () => {
                 </p>
               </div>
             </div>
+          </div>
+          
+          {/* Hero Content - Below image on mobile */}
+          <div className="flex-1 flex flex-col justify-center items-center lg:items-start order-2 lg:order-1">
+            <HeroContent scrollPosition={scrollPosition} />
           </div>
         </div>
         
