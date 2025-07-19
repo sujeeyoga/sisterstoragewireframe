@@ -15,7 +15,7 @@ const ScrollIndicator = ({ scrollPosition }: ScrollIndicatorProps) => {
 
   return (
     <div 
-      className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center cursor-pointer animate-breath-fade-up-5 z-20"
+      className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex flex-col items-center cursor-pointer animate-breath-fade-up-5 z-20"
       style={{
         opacity: scrollPosition > 200 ? 0 : 1,
         transition: 'opacity 0.3s ease-out'
