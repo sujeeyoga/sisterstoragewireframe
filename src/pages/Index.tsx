@@ -14,6 +14,17 @@ import EnhancedScrollFade from "@/components/ui/enhanced-scroll-fade";
 const Index = () => {
   return (
     <BaseLayout variant="standard" pageId="home">
+      {/* Culture Banner */}
+      <div className="w-full bg-background py-4 lg:py-6">
+        <div className="w-full px-4">
+          <h1 className="text-2xl lg:text-4xl xl:text-5xl font-black text-foreground text-center tracking-tight leading-tight font-poppins">
+            CULTURE / WITHOUT CLUTTER.
+            <br />
+            <span className="text-primary">DESIGNED BY US — FOR US.</span>
+          </h1>
+        </div>
+      </div>
+      
       <Hero />
       
       <EnhancedScrollFade preset="medium" once={true}>
