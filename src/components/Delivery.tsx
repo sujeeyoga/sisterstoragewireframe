@@ -3,39 +3,28 @@ import { Truck, Package, Clock, ArrowRight, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 
-const deliveryZones = [
+const shippingZones = [
   {
     id: 1,
-    name: 'East Coast Express',
-    areas: 'New York, Boston, Philadelphia, Washington D.C.',
-    timing: '1-2 Business Days',
-    phone: '(212) 555-8765',
-    hours: 'Mon-Sat: 9:00 AM - 7:00 PM, Sun: 10:00 AM - 5:00 PM',
+    name: 'Canada',
+    flag: '🇨🇦',
+    shipping: 'FREE SHIPPING',
+    condition: 'All orders',
+    timing: '2-5 Business Days',
     color: '#E90064',
-    description: 'Fast delivery service to all major East Coast cities with real-time tracking and package protection.',
-    trackingUrl: '/tracking/east-coast'
+    description: 'Free shipping across Canada on all orders. Express delivery available for select metropolitan areas.',
+    features: ['Free shipping', 'Tracking included', 'Insurance coverage']
   },
   {
     id: 2,
-    name: 'West Coast Standard',
-    areas: 'Los Angeles, San Francisco, Seattle, Portland',
-    timing: '1-3 Business Days',
-    phone: '(310) 555-2301',
-    hours: 'Mon-Sun: 9:00 AM - 8:00 PM',
+    name: 'United States',
+    flag: '🇺🇸',
+    shipping: 'FREE SHIPPING',
+    condition: 'Orders over $250',
+    timing: '3-7 Business Days',
     color: '#FF8021',
-    description: 'Reliable delivery service to West Coast metropolitan areas with signature confirmation and special handling options.',
-    trackingUrl: '/tracking/west-coast'
-  },
-  {
-    id: 3,
-    name: 'Nationwide Premium',
-    areas: 'All 50 States including Hawaii and Alaska',
-    timing: '2-4 Business Days',
-    phone: '(312) 555-6437',
-    hours: 'Mon-Sat: 8:00 AM - 9:00 PM, Sun: 10:00 AM - 6:00 PM',
-    color: '#FFDCBD',
-    description: 'Premium nationwide shipping with insurance coverage, climate-controlled transport, and specialized packaging for delicate items.',
-    trackingUrl: '/tracking/nationwide'
+    description: 'Free shipping to all US states on orders over $250. Standard shipping rates apply for orders under $250.',
+    features: ['Free over $250', 'Tracking included', 'Signature delivery']
   }
 ];
 
@@ -45,69 +34,57 @@ const Delivery = () => {
       <div className="container-custom">
         <div className="text-center max-w-lg mx-auto mb-10 md:mb-12 px-4">
           <span className="text-[#E90064] font-medium">Shipping Info</span>
-          <h2 className="text-3xl md:text-5xl font-bold mt-2 mb-3">Our Delivery Service</h2>
+          <h2 className="text-3xl md:text-5xl font-bold mt-2 mb-3">Free Shipping Policy</h2>
           <p className="text-gray-600">
-            We deliver your beautifully crafted storage solutions directly to your doorstep with care and precision
+            Enjoy free shipping across North America with our sister-friendly delivery options
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 px-4 md:px-0">
-          {deliveryZones.map((zone) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-4 md:px-0 max-w-4xl mx-auto">
+          {shippingZones.map((zone) => (
             <div 
               key={zone.id} 
-              className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100 w-full max-w-[350px] mx-auto"
+              className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100"
             >
               <div 
-                className="h-48 flex items-center justify-center"
+                className="h-32 flex items-center justify-center flex-col"
                 style={{ backgroundColor: zone.color }}
               >
-                <Package className="h-12 w-12 text-white mb-2" />
-                <span className="text-white text-3xl font-bold ml-3">{zone.name}</span>
+                <span className="text-6xl mb-2">{zone.flag}</span>
+                <span className="text-white text-2xl font-bold">{zone.name}</span>
               </div>
-              <div className="p-5 md:p-6">
-                <h3 className="text-xl md:text-2xl font-bold mb-3">{zone.name}</h3>
-                <p className="text-gray-600 text-sm mb-4">{zone.description}</p>
-                
-                <div className="space-y-3 mb-5">
-                  <div className="flex items-start">
-                    <Truck className="h-5 w-5 text-[#E90064] mr-3 mt-0.5 flex-shrink-0" />
-                    <span className="text-gray-700 text-sm">{zone.areas}</span>
-                  </div>
-                  <div className="flex items-start">
-                    <Clock className="h-5 w-5 text-[#E90064] mr-3 mt-0.5 flex-shrink-0" />
-                    <span className="text-gray-700 text-sm">{zone.timing}</span>
-                  </div>
-                  <div className="flex items-start">
-                    <Phone className="h-5 w-5 text-[#E90064] mr-3 mt-0.5 flex-shrink-0" />
-                    <span className="text-gray-700 text-sm">{zone.phone} (Customer Support)</span>
-                  </div>
+              <div className="p-6">
+                <div className="text-center mb-4">
+                  <h3 className="text-2xl font-bold text-[#E90064] mb-1">{zone.shipping}</h3>
+                  <p className="text-lg text-gray-700">{zone.condition}</p>
                 </div>
                 
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <Link 
-                    to={`/delivery/${zone.id}`}
-                    className="flex-1"
-                  >
-                    <Button className="w-full bg-black hover:bg-[#FF8021] text-white flex items-center justify-center gap-1">
-                      Delivery Info
-                      <ArrowRight className="h-4 w-4" />
-                    </Button>
-                  </Link>
-                  <Link 
-                    to={zone.trackingUrl}
-                    className="flex-1"
-                  >
-                    <Button 
-                      variant="outline" 
-                      className="w-full border-black text-black hover:bg-black hover:text-white"
-                    >
-                      Track Package
-                    </Button>
-                  </Link>
+                <p className="text-gray-600 text-sm mb-4 text-center">{zone.description}</p>
+                
+                <div className="space-y-3 mb-5">
+                  <div className="flex items-center justify-center">
+                    <Clock className="h-5 w-5 text-[#E90064] mr-3" />
+                    <span className="text-gray-700 text-sm font-medium">{zone.timing}</span>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  {zone.features.map((feature, index) => (
+                    <div key={index} className="flex items-center">
+                      <Package className="h-4 w-4 text-[#E90064] mr-3 flex-shrink-0" />
+                      <span className="text-gray-700 text-sm">{feature}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="text-center mt-12 px-4">
+          <p className="text-gray-600 text-sm">
+            * Standard shipping rates apply for US orders under $250. Contact us for international shipping options.
+          </p>
         </div>
       </div>
     </section>
