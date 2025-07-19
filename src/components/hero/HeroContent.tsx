@@ -21,7 +21,7 @@ const HeroContent = ({ scrollPosition }: HeroContentProps) => {
       
       <AnimatedText
         as="h1"
-        className="text-4xl md:text-6xl lg:text-7xl font-black text-white mb-8 leading-tight tracking-tight"
+        className="text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-black text-white mb-4 leading-none tracking-tight"
         animation="breath-fade-up-2"
         words
       >
@@ -29,11 +29,11 @@ const HeroContent = ({ scrollPosition }: HeroContentProps) => {
       </AnimatedText>
       
       <AnimatedText
-        as="h3"
-        className="text-xl md:text-2xl lg:text-3xl text-white mb-8 font-semibold"
+        as="h2"
+        className="text-3xl md:text-5xl lg:text-6xl xl:text-7xl text-white mb-8 font-black leading-none tracking-tight"
         animation="breath-fade-up-3"
       >
-        Designed by us — for us.
+        DESIGNED BY US — FOR US.
       </AnimatedText>
 
       <div className="flex flex-col sm:flex-row gap-6 mb-8">
