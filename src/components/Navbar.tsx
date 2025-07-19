@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Menu, X, ShoppingBag, Mail, ArrowLeft, Home, Package } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -66,15 +65,14 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
 
           {/* Logo */}
           <Link to="/" className="relative z-10">
-            <h1 
-              className="text-[#E90064] font-bold transition-all duration-300"
+            <img 
+              src="/lovable-uploads/b9a60acc-e198-4ab8-9feb-e341a8d341d0.png"
+              alt="Sister Storage - Elegant jewelry and keepsake storage solutions"
+              className="h-8 md:h-10 w-auto transition-all duration-300"
               style={{ 
                 transform: `scale(${isScrolled ? 0.95 : 1})`,
-                letterSpacing: `${isScrolled ? '0' : '0.5px'}`
               }}
-            >
-              SISTER STORAGE
-            </h1>
+            />
           </Link>
 
           {/* Desktop Menu */}
