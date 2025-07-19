@@ -26,8 +26,32 @@ const Hero = () => {
   return (
     <>
       <div className="relative h-screen w-full overflow-hidden bg-[#E90064]">
-        <HeroMedia />
-        <HeroContent scrollPosition={scrollPosition} />
+        <div className="container-custom relative h-full flex flex-col lg:flex-row items-center justify-between pt-20 z-20">
+          {/* Left Side - Hero Content */}
+          <div className="flex-1 flex flex-col justify-center items-center lg:items-start mb-8 lg:mb-0">
+            <HeroContent scrollPosition={scrollPosition} />
+          </div>
+          
+          {/* Right Side - Hero Image with White Container */}
+          <div className="flex-1 flex justify-center lg:justify-end items-center px-4 lg:px-8">
+            <div className="bg-white rounded-2xl p-8 shadow-2xl max-w-md w-full animate-fade-in">
+              <div className="aspect-square overflow-hidden rounded-xl mb-6">
+                <img
+                  src="https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-27-scaled.jpg"
+                  alt="Sister Storage lifestyle organization"
+                  className="w-full h-full object-cover hover-scale"
+                />
+              </div>
+              <div className="text-center">
+                <h3 className="text-2xl font-bold text-[#E90064] mb-2">Beautiful Organization</h3>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  Transform your space with our thoughtfully designed storage solutions. Made by sisters, for sisters.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
         <ScrollIndicator scrollPosition={scrollPosition} />
       </div>
       
