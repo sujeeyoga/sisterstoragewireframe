@@ -56,7 +56,7 @@ const HeroContent = ({ scrollPosition }: HeroContentProps) => {
       >
         Made by us, for us... By sisters, for sisters.<br />
         Clutter never had a place in our culture.
-      </p>
+      </AnimatedText>
     </div>
   );
 };
