@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
+import Logo from '@/components/ui/Logo';
 
 interface NavbarProps {
   position?: number;
@@ -64,16 +65,11 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
           )}
 
           {/* Logo */}
-          <Link to="/" className="relative z-10">
-            <img 
-              src="/lovable-uploads/b9a60acc-e198-4ab8-9feb-e341a8d341d0.png"
-              alt="Sister Storage - Elegant jewelry and keepsake storage solutions"
-              className="h-8 md:h-10 w-auto transition-all duration-300"
-              style={{ 
-                transform: `scale(${isScrolled ? 0.95 : 1})`,
-              }}
-            />
-          </Link>
+          <Logo 
+            size="md" 
+            scrolled={isScrolled}
+            className="animate-fade-in"
+          />
 
           {/* Desktop Menu */}
           <nav className="hidden md:flex items-center space-x-6">
