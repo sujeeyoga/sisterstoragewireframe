@@ -18,6 +18,12 @@ const Index = () => {
     <BaseLayout variant="standard" pageId="home">
       <Hero />
       
+      <EnhancedScrollFade preset="medium" delay={0.1} once={true}>
+        <Section spacing="md" width="contained">
+          <FeaturedGrid />
+        </Section>
+      </EnhancedScrollFade>
+      
       <EnhancedScrollFade preset="medium" once={true}>
         <Section spacing="md" width="contained">
           <BestSeller />
@@ -43,12 +49,6 @@ const Index = () => {
       <EnhancedScrollFade preset="medium" delay={0.1} once={true}>
         <Section spacing="lg" width="contained">
           <Testimonials />
-        </Section>
-      </EnhancedScrollFade>
-      
-      <EnhancedScrollFade preset="medium" delay={0.1} once={true}>
-        <Section spacing="md" width="contained">
-          <FeaturedGrid />
         </Section>
       </EnhancedScrollFade>
       

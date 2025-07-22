@@ -20,12 +20,6 @@ const gridItems = [
     image: "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=800&q=80",
     title: "Flowing Solutions",
     description: "Seamless storage systems"
-  },
-  {
-    id: 4,
-    image: "https://images.unsplash.com/photo-1458668383970-8ddd3927deed?auto=format&fit=crop&w=800&q=80",
-    title: "Peak Performance",
-    description: "Reach new heights of organization"
   }
 ];
 
@@ -40,7 +34,7 @@ const FeaturedGrid = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
           {gridItems.map((item) => (
             <Card 
               key={item.id} 
