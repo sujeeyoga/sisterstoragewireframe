@@ -10,8 +10,8 @@ const ParallaxContainer = () => {
   }, []);
 
   return (
-    <div className="relative h-[100vh] overflow-hidden -mt-1">
-      {/* Parallax Background Image - anchored to flow seamlessly */}
+    <div className="relative h-[100vh] overflow-hidden">
+      {/* Parallax Background Image - seamless connection */}
       <div 
         className="absolute inset-0 w-full h-[120%] bg-cover bg-center bg-no-repeat"
         style={{
