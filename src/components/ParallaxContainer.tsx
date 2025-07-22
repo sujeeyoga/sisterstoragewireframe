@@ -1,86 +1,146 @@
 
-import React from 'react';
-import { useParallaxScroll } from '@/hooks/use-parallax-scroll';
+import React, { useState } from 'react';
+import { useOptimizedParallax } from '@/hooks/use-optimized-parallax';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const ParallaxContainer = () => {
   const isMobile = useIsMobile();
+  const [imageError, setImageError] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
   
-  // Reduce parallax effect on mobile for better performance
-  const mainParallaxSpeed = isMobile ? 0.15 : 0.4;
-  const secondaryParallaxSpeed = isMobile ? 0.08 : 0.25;
+  // More noticeable mobile parallax speeds
+  const mainParallaxSpeed = isMobile ? 0.3 : 0.5;
+  const overlayParallaxSpeed = isMobile ? 0.15 : 0.3;
   
-  const { ref: mainRef, offset: mainOffset } = useParallaxScroll({
+  const { 
+    ref: mainRef, 
+    offset: mainOffset, 
+    isVisible,
+    prefersReducedMotion 
+  } = useOptimizedParallax({
     speed: mainParallaxSpeed,
     threshold: 0.1
   });
   
-  const { ref: overlayRef, offset: overlayOffset } = useParallaxScroll({
-    speed: secondaryParallaxSpeed,
+  const { offset: overlayOffset } = useOptimizedParallax({
+    speed: overlayParallaxSpeed,
     threshold: 0.1
   });
 
+  // Handle image loading
+  const handleImageLoad = () => {
+    setImageLoaded(true);
+  };
+
+  const handleImageError = () => {
+    setImageError(true);
+  };
+
   // Calculate responsive height
-  const containerHeight = isMobile ? 'h-[70vh]' : 'h-[90vh]';
+  const containerHeight = isMobile ? 'h-[80vh]' : 'h-screen';
 
   return (
     <section 
       ref={mainRef}
-      className={`relative ${containerHeight} overflow-hidden w-full -mt-16`}
+      className={`relative ${containerHeight} overflow-hidden w-full`}
       aria-label="Parallax showcase section"
       style={{
-        marginTop: '-4rem' // Overlap with hero for seamless transition
+        marginTop: '0' // Remove conflicting margins
       }}
     >
-      {/* Main Parallax Background Layer */}
+      {/* Background Layer with Parallax Effect */}
       <div 
-        className="absolute inset-0 w-full h-[120%]"
+        className="absolute inset-0 w-full h-[120%] bg-[#E90064]"
         style={{
-          transform: `translateY(${mainOffset}px) translate3d(0, 0, 0)`,
-          willChange: 'transform'
+          transform: prefersReducedMotion 
+            ? 'translateY(0) translate3d(0, 0, 0)' 
+            : `translateY(${mainOffset}px) translate3d(0, 0, 0)`,
+          willChange: prefersReducedMotion ? 'auto' : 'transform'
         }}
       >
-        <picture>
-          <source 
-            srcSet="https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-43-scaled.webp" 
-            type="image/webp" 
-          />
-          <img
-            src="https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-43-scaled.jpg"
-            alt="Elegant storage solutions in a beautifully organized space"
-            className="w-full h-full object-cover"
-            loading="lazy"
-            decoding="async"
-          />
-        </picture>
+        {/* Loading State */}
+        {!imageLoaded && !imageError && (
+          <div className="absolute inset-0 bg-[#E90064] animate-pulse flex items-center justify-center">
+            <div className="text-white text-lg font-medium">Loading...</div>
+          </div>
+        )}
+
+        {/* Main Image */}
+        {!imageError && (
+          <picture>
+            <source 
+              srcSet="https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-43-scaled.webp" 
+              type="image/webp" 
+            />
+            <img
+              src="https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-43-scaled.jpg"
+              alt="Elegant storage solutions in a beautifully organized space"
+              className={`w-full h-full object-cover transition-opacity duration-500 ${
+                imageLoaded ? 'opacity-100' : 'opacity-0'
+              }`}
+              loading="lazy"
+              decoding="async"
+              onLoad={handleImageLoad}
+              onError={handleImageError}
+            />
+          </picture>
+        )}
+
+        {/* Fallback for image error */}
+        {imageError && (
+          <div className="absolute inset-0 bg-gradient-to-br from-[#E90064] to-[#B8004D] flex items-center justify-center">
+            <div className="text-white text-center">
+              <h3 className="text-2xl font-bold mb-2">Sister Storage</h3>
+              <p className="text-lg opacity-90">Beautiful Organization</p>
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Secondary Parallax Overlay Layer */}
+      {/* Overlay Layer with Secondary Parallax */}
       <div 
-        ref={overlayRef}
-        className="absolute inset-0"
+        className="absolute inset-0 z-10"
         style={{
-          transform: `translateY(${overlayOffset}px) translate3d(0, 0, 0)`,
-          willChange: 'transform'
+          transform: prefersReducedMotion 
+            ? 'translateY(0) translate3d(0, 0, 0)' 
+            : `translateY(${overlayOffset}px) translate3d(0, 0, 0)`,
+          willChange: prefersReducedMotion ? 'auto' : 'transform'
         }}
       >
-        <div className="w-full h-full bg-gradient-to-b from-[#E90064]/20 via-black/10 to-black/30" />
+        <div className="w-full h-full bg-gradient-to-b from-[#E90064]/30 via-black/20 to-black/40" />
       </div>
       
-      {/* Static Content Overlay */}
-      <div className="relative z-10 h-full flex items-center justify-center">
-        <div className="text-center text-white max-w-3xl mx-auto px-6">
-          <h2 className="text-4xl md:text-6xl font-black mb-6 leading-tight tracking-tight">
+      {/* Content Overlay */}
+      <div className="relative z-20 h-full flex items-center justify-center px-6">
+        <div className="text-center text-white max-w-4xl mx-auto">
+          <h2 
+            className="text-4xl md:text-6xl lg:text-7xl font-black mb-6 leading-tight tracking-tight drop-shadow-lg"
+            style={{
+              textShadow: '2px 2px 4px rgba(0,0,0,0.5)'
+            }}
+          >
             STORAGE THAT SPEAKS TO YOUR SOUL
           </h2>
-          <p className="text-xl md:text-2xl font-medium opacity-90 leading-relaxed">
+          <p 
+            className="text-xl md:text-2xl lg:text-3xl font-medium opacity-95 leading-relaxed drop-shadow-md"
+            style={{
+              textShadow: '1px 1px 2px rgba(0,0,0,0.5)'
+            }}
+          >
             Every piece designed with intention, crafted with love
           </p>
         </div>
       </div>
 
-      {/* Bottom fade for seamless transition */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white via-white/90 to-transparent z-20" />
+      {/* Smooth transition gradient at bottom */}
+      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white via-white/80 to-transparent z-30 pointer-events-none" />
+      
+      {/* Performance indicator for debugging (only in development) */}
+      {process.env.NODE_ENV === 'development' && isVisible && (
+        <div className="absolute top-4 left-4 bg-black/50 text-white px-2 py-1 text-xs rounded z-40">
+          Parallax Active | Offset: {Math.round(mainOffset)}px
+        </div>
+      )}
     </section>
   );
 };

@@ -1,3 +1,4 @@
+
 import { useEffect, useRef, useState, useCallback } from 'react';
 
 interface IntersectionObserverOptions {
@@ -23,6 +24,7 @@ export const useIntersectionObserver = <T extends HTMLElement = HTMLDivElement>(
   skip = false
 }: IntersectionObserverOptions = {}): IntersectionObserverReturn<T> => {
   const ref = useRef<T>(null);
+  const observerRef = useRef<IntersectionObserver>();
   const [isIntersecting, setIsIntersecting] = useState(false);
   const [hasIntersected, setHasIntersected] = useState(false);
   const [entry, setEntry] = useState<IntersectionObserverEntry | null>(null);
@@ -40,28 +42,34 @@ export const useIntersectionObserver = <T extends HTMLElement = HTMLDivElement>(
   useEffect(() => {
     if (skip || !ref.current) return;
 
-    const observer = new IntersectionObserver(handleIntersection, {
+    // Clean up existing observer
+    if (observerRef.current) {
+      observerRef.current.disconnect();
+    }
+
+    // Create new observer
+    observerRef.current = new IntersectionObserver(handleIntersection, {
       threshold,
       rootMargin,
       root
     });
 
     const currentElement = ref.current;
-    observer.observe(currentElement);
+    observerRef.current.observe(currentElement);
 
     return () => {
-      if (currentElement) {
-        observer.unobserve(currentElement);
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+        observerRef.current = undefined;
       }
-      observer.disconnect();
     };
   }, [threshold, rootMargin, root, skip, handleIntersection]);
 
-  // Cleanup if triggerOnce and already intersected
+  // Handle triggerOnce cleanup
   useEffect(() => {
-    if (triggerOnce && hasIntersected && ref.current) {
-      const observer = new IntersectionObserver(() => {});
-      observer.disconnect();
+    if (triggerOnce && hasIntersected && observerRef.current) {
+      observerRef.current.disconnect();
+      observerRef.current = undefined;
     }
   }, [triggerOnce, hasIntersected]);
 

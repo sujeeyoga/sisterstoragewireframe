@@ -7,9 +7,14 @@ import { useOptimizedScroll } from '@/hooks/use-optimized-scroll';
 const Hero = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
 
-  // Use optimized scroll hook
+  // Check for reduced motion preference
+  const prefersReducedMotion = typeof window !== 'undefined' 
+    ? window.matchMedia('(prefers-reduced-motion: reduce)').matches 
+    : false;
+
+  // Use optimized scroll hook only if motion is allowed
   useOptimizedScroll({
-    onScroll: setScrollPosition,
+    onScroll: prefersReducedMotion ? () => {} : setScrollPosition,
     throttle: 16,
     passive: true
   });
@@ -47,8 +52,8 @@ const Hero = () => {
       
       <ScrollIndicator scrollPosition={scrollPosition} />
       
-      {/* Bottom gradient for seamless transition to parallax */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-transparent via-[#E90064]/80 to-[#E90064] z-10 pointer-events-none" />
+      {/* Enhanced bottom gradient for seamless transition to parallax */}
+      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[#E90064] via-[#E90064]/95 to-transparent z-10 pointer-events-none" />
     </section>
   );
 };
