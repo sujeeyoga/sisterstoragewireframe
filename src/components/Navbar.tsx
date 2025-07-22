@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
-import Logo from '@/components/ui/Logo';
+import EnhancedLogo from '@/components/ui/enhanced-logo';
 
 interface NavbarProps {
   position?: number;
@@ -65,10 +65,11 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
           )}
 
           {/* Logo */}
-          <Logo 
+          <EnhancedLogo 
             size="md" 
             scrolled={isScrolled}
             className="animate-fade-in"
+            loading="eager"
           />
 
           {/* Desktop Menu */}

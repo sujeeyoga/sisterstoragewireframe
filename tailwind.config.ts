@@ -273,13 +273,17 @@ export default {
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'fade-in': 'fade-in 0.5s ease-out',
 				'fade-up': 'fade-up 0.5s ease-out',
-				// Updated breath animations with longer duration
-				'breath-fade-up': 'breath-fade-up 1.5s cubic-bezier(0.16, 1, 0.3, 1)',
-				'breath-fade-up-1': 'breath-fade-up-1 1.5s cubic-bezier(0.16, 1, 0.3, 1)',
-				'breath-fade-up-2': 'breath-fade-up-2 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both',
-				'breath-fade-up-3': 'breath-fade-up-3 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both',
-				'breath-fade-up-4': 'breath-fade-up 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0.45s both',
-				'breath-fade-up-5': 'breath-fade-up 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0.6s both',
+				// Pixel-perfect breath animations with precise timing
+				'breath-fade-up': 'breath-fade-up 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+				'breath-fade-up-1': 'breath-fade-up-1 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+				'breath-fade-up-2': 'breath-fade-up-2 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+				'breath-fade-up-3': 'breath-fade-up-3 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+				'breath-fade-up-4': 'breath-fade-up-4 2.0s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+				'breath-fade-up-5': 'breath-fade-up-5 2.2s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+				// Performance-optimized animations
+				'scale-bounce': 'scale-bounce 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
+				'slide-in-elegant': 'slide-in-elegant 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+				'marquee': 'marquee 30s linear infinite',
 				// Scroll-triggered animations
 				'scroll-fade-in': 'scroll-fade-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
 				'scroll-fade-out': 'scroll-fade-out 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards',
