@@ -10,6 +10,7 @@ import Delivery from "@/components/Delivery";
 import Testimonials from "@/components/Testimonials";
 import Newsletter from "@/components/Newsletter";
 import InstagramUGC from "@/components/InstagramUGC";
+import FeaturedGrid from "@/components/FeaturedGrid";
 import EnhancedScrollFade from "@/components/ui/enhanced-scroll-fade";
 
 const Index = () => {
@@ -42,6 +43,12 @@ const Index = () => {
       <EnhancedScrollFade preset="medium" delay={0.1} once={true}>
         <Section spacing="lg" width="contained">
           <Testimonials />
+        </Section>
+      </EnhancedScrollFade>
+      
+      <EnhancedScrollFade preset="medium" delay={0.1} once={true}>
+        <Section spacing="md" width="contained">
+          <FeaturedGrid />
         </Section>
       </EnhancedScrollFade>
       
