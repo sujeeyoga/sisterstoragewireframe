@@ -1,22 +1,21 @@
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import HeroContent from './hero/HeroContent';
 import ScrollIndicator from './hero/ScrollIndicator';
+import { useOptimizedScroll } from '@/hooks/use-optimized-scroll';
 
 const Hero = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrollPosition(window.scrollY);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  // Use optimized scroll hook
+  useOptimizedScroll({
+    onScroll: setScrollPosition,
+    throttle: 16,
+    passive: true
+  });
 
   return (
-    <div className="relative h-screen w-full overflow-hidden bg-[#E90064]">
+    <section className="relative h-screen w-full overflow-hidden bg-[#E90064]" aria-label="Hero section">
       <div className="container-custom relative h-full flex flex-col lg:flex-row items-center justify-between pt-20 lg:pt-24 z-20 gap-12 lg:gap-8">
         {/* Hero Image with White Container - Above title on mobile, beside on desktop */}
         <div className="flex-1 flex justify-center lg:justify-end items-center px-4 lg:px-8 order-1 lg:order-2 animate-fade-in" style={{ animationDelay: '0.3s' }}>
@@ -26,6 +25,8 @@ const Hero = () => {
                 src="https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-27-scaled.jpg"
                 alt="Sister Storage lifestyle organization"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                loading="eager"
+                decoding="async"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </div>
@@ -45,7 +46,10 @@ const Hero = () => {
       </div>
       
       <ScrollIndicator scrollPosition={scrollPosition} />
-    </div>
+      
+      {/* Bottom gradient for seamless transition to parallax */}
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-transparent via-[#E90064]/80 to-[#E90064] z-10 pointer-events-none" />
+    </section>
   );
 };
 
