@@ -31,9 +31,9 @@ const ParallaxContainer = () => {
   const containerHeight = isMobile ? 'h-[70vh]' : 'h-[100vh]';
 
   return (
-    <div 
+    <section 
       ref={mainRef}
-      className={`relative ${containerHeight} overflow-hidden w-full`}
+      className={`relative ${containerHeight} overflow-hidden w-full py-0 my-0`}
     >
       {/* Main Parallax Background Layer */}
       <div 
@@ -74,7 +74,7 @@ const ParallaxContainer = () => {
 
       {/* Bottom fade for seamless transition */}
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white via-white/80 to-transparent z-20" />
-    </div>
+    </section>
   );
 };
 
