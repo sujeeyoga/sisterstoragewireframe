@@ -8,21 +8,21 @@ interface IntersectionObserverOptions {
   skip?: boolean;
 }
 
-interface IntersectionObserverReturn {
-  ref: React.RefObject<HTMLElement>;
+interface IntersectionObserverReturn<T extends HTMLElement = HTMLElement> {
+  ref: React.RefObject<T>;
   isIntersecting: boolean;
   hasIntersected: boolean;
   entry: IntersectionObserverEntry | null;
 }
 
-export const useIntersectionObserver = ({
+export const useIntersectionObserver = <T extends HTMLElement = HTMLDivElement>({
   threshold = 0.1,
   rootMargin = '0px',
   root = null,
   triggerOnce = true,
   skip = false
-}: IntersectionObserverOptions = {}): IntersectionObserverReturn => {
-  const ref = useRef<HTMLElement>(null);
+}: IntersectionObserverOptions = {}): IntersectionObserverReturn<T> => {
+  const ref = useRef<T>(null);
   const [isIntersecting, setIsIntersecting] = useState(false);
   const [hasIntersected, setHasIntersected] = useState(false);
   const [entry, setEntry] = useState<IntersectionObserverEntry | null>(null);
