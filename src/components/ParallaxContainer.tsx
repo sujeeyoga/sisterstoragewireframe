@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import banglesImage from '@/assets/bangles-top-view.jpg';
 
 const ParallaxContainer = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -15,7 +14,7 @@ const ParallaxContainer = () => {
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `url(${banglesImage})`,
+          backgroundImage: 'url(https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-27-scaled.jpg)',
           transform: `translateY(${scrollY * 0.5}px)`,
         }}
       />
