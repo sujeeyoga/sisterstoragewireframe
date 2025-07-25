@@ -1,6 +1,7 @@
 import React from 'react';
 import { HeroGalleryDemo1, HeroGalleryDemo2, HeroGalleryDemo3 } from '@/components/hero/HeroGalleryDemo';
 import { Gallery4 } from '@/components/ui/gallery4';
+import { BentoGridGalleryDemo } from '@/components/ui/bento-gallery-demo';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -36,6 +37,11 @@ const HeroGalleryDemoPage = () => {
       {/* Customer Stories Gallery */}
       <section className="relative bg-background pt-20 pb-10">
         <Gallery4 />
+      </section>
+      
+      {/* Interactive Bento Gallery */}
+      <section className="relative bg-background py-10">
+        <BentoGridGalleryDemo />
       </section>
       
       {/* Footer Navigation */}
