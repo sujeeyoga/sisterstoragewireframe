@@ -19,17 +19,17 @@ const HeroGalleryDemoPage = () => {
       </div>
 
       {/* Demo 1 - Default Layout */}
-      <section className="relative">
+      <section className="relative z-10 overflow-hidden" style={{ contain: "layout style paint" }}>
         <HeroGalleryDemo1 />
       </section>
       
       {/* Demo 2 - Four Cells */}
-      <section className="relative">
+      <section className="relative z-20 overflow-hidden" style={{ contain: "layout style paint" }}>
         <HeroGalleryDemo2 />
       </section>
       
       {/* Demo 3 - Three Cells */}
-      <section className="relative">
+      <section className="relative z-30 overflow-hidden" style={{ contain: "layout style paint" }}>
         <HeroGalleryDemo3 />
       </section>
       

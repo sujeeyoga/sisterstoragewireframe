@@ -66,12 +66,17 @@ const ContainerScroll = ({
   const scrollRef = React.useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({
     target: scrollRef,
+    offset: ["start start", "end start"]
   })
   return (
     <ContainerScrollContext.Provider value={{ scrollYProgress }}>
       <div
         ref={scrollRef}
-        className={cn("relative min-h-screen w-full", className)}
+        className={cn("relative h-[350vh] w-full overflow-hidden", className)}
+        style={{
+          willChange: "transform",
+          contain: "layout style paint"
+        }}
         {...props}
       >
         {children}
@@ -115,21 +120,29 @@ BentoCell.displayName = "BentoCell"
 const ContainerScale = React.forwardRef<HTMLDivElement, HTMLMotionProps<"div">>(
   ({ className, style, ...props }, ref) => {
     const { scrollYProgress } = useContainerScrollContext()
-    const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
-    const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0])
+    const opacity = useTransform(scrollYProgress, [0, 0.6], [1, 0])
+    const scale = useTransform(scrollYProgress, [0, 0.6], [1, 0])
 
     const position = useTransform(scrollYProgress, (pos) =>
-      pos >= 0.7 ? "absolute" : "fixed"
+      pos >= 0.6 ? "absolute" : "fixed"
     )
+    
+    const visibility = useTransform(scrollYProgress, (pos) =>
+      pos >= 0.8 ? "hidden" : "visible"
+    )
+
     return (
       <motion.div
         ref={ref}
-        className={cn("left-1/2 top-1/2 size-fit z-20 pointer-events-none", className)}
+        className={cn("left-1/2 top-1/2 size-fit z-30 pointer-events-none", className)}
         style={{
           translate: "-50% -50%",
           scale,
           position,
           opacity,
+          visibility,
+          willChange: "transform, opacity",
+          contain: "layout style paint",
           ...style,
         }}
         {...props}
