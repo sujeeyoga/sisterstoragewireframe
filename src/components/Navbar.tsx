@@ -47,8 +47,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
           isScrolled ? 'py-2' : 'py-4'
         }`}
         style={{
-          backgroundColor: `rgba(255, 255, 255, ${bgOpacity})`,
-          backdropFilter: `blur(${backdropBlur}px)`,
+          backgroundColor: '#ffffff',
         }}
       >
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
@@ -126,8 +125,8 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
         }`}
         aria-hidden={!mobileMenuOpen}
       >
-        {/* Backdrop blur overlay */}
-        <div className="absolute inset-0 bg-white/98 backdrop-blur-md shadow-2xl border-r border-gray-200"></div>
+        {/* Backdrop overlay */}
+        <div className="absolute inset-0 bg-white shadow-2xl border-r border-gray-200"></div>
         
         {/* Menu content */}
         <div className="relative h-full flex flex-col pt-28 px-8">
