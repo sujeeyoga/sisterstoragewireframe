@@ -1,5 +1,6 @@
 import React from 'react';
 import { HeroGalleryDemo1, HeroGalleryDemo2, HeroGalleryDemo3 } from '@/components/hero/HeroGalleryDemo';
+import { Gallery4 } from '@/components/ui/gallery4';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -25,6 +26,9 @@ const HeroGalleryDemoPage = () => {
       
       {/* Demo 3 - Three Cells */}
       <HeroGalleryDemo3 />
+      
+      {/* Customer Stories Gallery */}
+      <Gallery4 />
       
       {/* Footer Navigation */}
       <div className="bg-background py-12 px-6 text-center">
