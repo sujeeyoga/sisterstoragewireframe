@@ -7,9 +7,9 @@ import { Link } from 'react-router-dom';
 
 const HeroGalleryDemoPage = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="bg-background">
       {/* Navigation */}
-      <div className="fixed top-4 left-4 z-50">
+      <div className="fixed top-4 left-4 z-[100] backdrop-blur-sm bg-background/80 rounded-lg p-1">
         <Link to="/">
           <Button variant="outline" size="sm" className="gap-2">
             <ArrowLeft className="h-4 w-4" />
@@ -19,19 +19,27 @@ const HeroGalleryDemoPage = () => {
       </div>
 
       {/* Demo 1 - Default Layout */}
-      <HeroGalleryDemo1 />
+      <section className="relative">
+        <HeroGalleryDemo1 />
+      </section>
       
       {/* Demo 2 - Four Cells */}
-      <HeroGalleryDemo2 />
+      <section className="relative">
+        <HeroGalleryDemo2 />
+      </section>
       
       {/* Demo 3 - Three Cells */}
-      <HeroGalleryDemo3 />
+      <section className="relative">
+        <HeroGalleryDemo3 />
+      </section>
       
       {/* Customer Stories Gallery */}
-      <Gallery4 />
+      <section className="relative bg-background pt-20 pb-10">
+        <Gallery4 />
+      </section>
       
       {/* Footer Navigation */}
-      <div className="bg-background py-12 px-6 text-center">
+      <section className="relative bg-background py-12 px-6 text-center">
         <h2 className="text-2xl font-bold mb-4">Hero Gallery Animation Demos</h2>
         <p className="text-muted-foreground mb-6">
           Scroll through each section to see the different animation styles in action.
@@ -44,7 +52,7 @@ const HeroGalleryDemoPage = () => {
             <Button variant="outline">Shop Collection</Button>
           </Link>
         </div>
-      </div>
+      </section>
     </div>
   );
 };

@@ -119,12 +119,12 @@ const ContainerScale = React.forwardRef<HTMLDivElement, HTMLMotionProps<"div">>(
     const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0])
 
     const position = useTransform(scrollYProgress, (pos) =>
-      pos >= 0.6 ? "absolute" : "fixed"
+      pos >= 0.7 ? "absolute" : "fixed"
     )
     return (
       <motion.div
         ref={ref}
-        className={cn("left-1/2 top-1/2  size-fit", className)}
+        className={cn("left-1/2 top-1/2 size-fit z-20 pointer-events-none", className)}
         style={{
           translate: "-50% -50%",
           scale,

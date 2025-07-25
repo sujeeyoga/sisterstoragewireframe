@@ -100,7 +100,7 @@ const Gallery4 = ({
   }, [carouselApi]);
 
   return (
-    <section className="py-32 bg-background">
+    <section className="py-16 bg-background">
       <div className="container mx-auto">
         <div className="mb-8 flex items-end justify-between md:mb-14 lg:mb-16">
           <div className="flex flex-col gap-4">
