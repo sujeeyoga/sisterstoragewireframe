@@ -45,11 +45,10 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
       <header 
         className={`w-full transition-all duration-300 z-50 relative ${
           isScrolled ? 'py-2' : 'py-4'
-        } rounded-b-lg shadow-lg mx-4 mt-2`}
+        }`}
         style={{
           backgroundColor: `rgba(255, 255, 255, ${bgOpacity})`,
           backdropFilter: `blur(${backdropBlur}px)`,
-          maxWidth: 'calc(100% - 2rem)',
         }}
       >
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
@@ -118,7 +117,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
       </header>
 
       {/* Visual transition border */}
-      <div className="border-b border-pink-500 mx-4 relative z-40" style={{ maxWidth: 'calc(100% - 2rem)' }} />
+      <div className="border-b border-pink-500 w-full relative z-40" />
 
       {/* Mobile Menu Slide-in from left with proper background and z-index */}
       <div 
