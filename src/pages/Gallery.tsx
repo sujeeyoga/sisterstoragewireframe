@@ -4,20 +4,49 @@ import Section from '@/components/layout/Section';
 import { products } from '@/data/products';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'motion/react';
 
 const Gallery = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [itemsToShow, setItemsToShow] = useState(5);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Get first 5 products for gallery display
-  const galleryItems = products.slice(0, 5);
+  // Create expanded gallery items (duplicate products for demo)
+  const expandedProducts = [
+    ...products,
+    ...products.map(p => ({ ...p, id: `${p.id}_dup`, name: `${p.name} Collection` })),
+    ...products.slice(0, 3).map(p => ({ ...p, id: `${p.id}_ext`, name: `${p.name} Premium` }))
+  ];
 
   const filteredItems = selectedCategory === 'all' 
-    ? galleryItems 
-    : galleryItems.filter(product => product.category === selectedCategory);
+    ? expandedProducts.slice(0, itemsToShow)
+    : expandedProducts.filter(product => product.category === selectedCategory).slice(0, itemsToShow);
+
+  const hasMoreItems = (selectedCategory === 'all' ? expandedProducts.length : expandedProducts.filter(product => product.category === selectedCategory).length) > itemsToShow;
 
   const categories = ['all', 'bangles', 'jewelry', 'keepsakes'];
+
+  const loadMore = async () => {
+    setIsLoading(true);
+    // Simulate loading delay
+    await new Promise(resolve => setTimeout(resolve, 500));
+    setItemsToShow(prev => prev + 5);
+    setIsLoading(false);
+  };
+
+  const getGridClass = (index: number) => {
+    const position = index % 5;
+    const gridClasses = [
+      'col-span-1 row-span-1', // box1
+      'col-span-1 row-span-1', // box2  
+      'col-span-1 row-span-1', // box3
+      'col-span-2 row-span-1', // box4
+      'col-span-1 row-span-1', // box5
+    ];
+    return gridClasses[position];
+  };
 
   return (
     <BaseLayout variant="standard" pageId="gallery" spacing="normal">
@@ -62,30 +91,22 @@ const Gallery = () => {
 
         {/* Gallery Grid */}
         <motion.div 
-          className="gallery-grid grid grid-cols-3 grid-rows-2 gap-2.5 max-w-[1364px] mx-auto"
-          style={{ height: '410px' }}
+          className="gallery-grid grid grid-cols-3 gap-2.5 max-w-[1364px] mx-auto"
+          style={{ gridTemplateRows: `repeat(${Math.ceil(filteredItems.length / 5) * 2}, 200px)` }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          <AnimatePresence mode="wait">
+          <AnimatePresence>
             {filteredItems.map((product, index) => {
-              const gridClasses = [
-                'col-span-1 row-span-1', // box1
-                'col-span-1 row-span-1', // box2  
-                'col-span-1 row-span-1', // box3
-                'col-span-2 row-span-1', // box4
-                'col-span-1 row-span-1', // box5
-              ];
-
               return (
                 <motion.div
                   key={`${selectedCategory}-${product.id}`}
-                  className={`${gridClasses[index]} relative overflow-hidden rounded-md group cursor-pointer`}
+                  className={`${getGridClass(index)} relative overflow-hidden rounded-md group cursor-pointer`}
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  transition={{ duration: 0.5, delay: (index % 5) * 0.1 }}
                   whileHover={{ scale: 1.02 }}
                 >
                   <Dialog>
@@ -206,6 +227,32 @@ const Gallery = () => {
             })}
           </AnimatePresence>
         </motion.div>
+
+        {/* Load More Button */}
+        {hasMoreItems && (
+          <motion.div 
+            className="flex justify-center mt-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Button 
+              onClick={loadMore}
+              disabled={isLoading}
+              className="px-8 py-3 text-base"
+              variant="outline"
+            >
+              {isLoading ? (
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                  Loading...
+                </div>
+              ) : (
+                `Load More Photos (${(selectedCategory === 'all' ? expandedProducts.length : expandedProducts.filter(product => product.category === selectedCategory).length) - itemsToShow} remaining)`
+              )}
+            </Button>
+          </motion.div>
+        )}
 
         {/* Mobile Responsive Grid */}
         <style>{`
