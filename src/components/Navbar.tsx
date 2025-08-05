@@ -74,6 +74,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
           <nav className="hidden md:flex items-center space-x-6">
             {[
               { name: 'HOME', path: '/', icon: Home },
+              { name: 'GALLERY', path: '/gallery' },
               { name: 'ABOUT US', path: '/about' },
               { name: 'SHIPPING', path: '#delivery', icon: Package },
               { name: 'SHOPPING CART', path: '#', icon: ShoppingBag, onClick: () => setCartOpen(true) }
@@ -133,6 +134,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
           <nav className="flex flex-col space-y-8 items-center mt-8">
             {[
               { name: 'HOME', path: '/', icon: Home },
+              { name: 'GALLERY', path: '/gallery' },
               { name: 'ABOUT US', path: '/about' },
               { name: 'SHIPPING', path: '#delivery', icon: Package },
               { name: 'SHOPPING CART', path: '#', icon: ShoppingBag, onClick: () => { setMobileMenuOpen(false); setCartOpen(true); } }
