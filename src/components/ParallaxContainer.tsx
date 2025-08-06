@@ -51,12 +51,6 @@ const ParallaxContainer = () => {
       {/* Background Layer with Parallax Effect */}
       <div 
         className="absolute inset-0 w-full h-[120%] bg-[#E90064]"
-        style={{
-          transform: prefersReducedMotion 
-            ? 'translateY(0) translate3d(0, 0, 0)' 
-            : `translateY(${mainOffset}px) translate3d(0, 0, 0)`,
-          willChange: prefersReducedMotion ? 'auto' : 'transform'
-        }}
       >
         {/* Loading State */}
         {!imageLoaded && !imageError && (
@@ -91,16 +85,8 @@ const ParallaxContainer = () => {
         )}
       </div>
 
-      {/* Overlay Layer with Secondary Parallax */}
-      <div 
-        className="absolute inset-0 z-10"
-        style={{
-          transform: prefersReducedMotion 
-            ? 'translateY(0) translate3d(0, 0, 0)' 
-            : `translateY(${overlayOffset}px) translate3d(0, 0, 0)`,
-          willChange: prefersReducedMotion ? 'auto' : 'transform'
-        }}
-      >
+      {/* Overlay Layer */}
+      <div className="absolute inset-0 z-10">
         <div className="w-full h-full bg-gradient-to-b from-[#E90064]/30 via-black/20 to-black/40" />
       </div>
       
