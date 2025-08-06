@@ -50,7 +50,7 @@ const ParallaxContainer = () => {
     >
       {/* Background Layer with Parallax Effect */}
       <div 
-        className="absolute inset-0 w-full h-[120%] bg-[#E90064]"
+        className="absolute inset-0 w-full h-full bg-[#E90064]"
       >
         {/* Loading State */}
         {!imageLoaded && !imageError && (
@@ -115,12 +115,6 @@ const ParallaxContainer = () => {
       {/* Smooth transition gradient at bottom */}
       <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white via-white/80 to-transparent z-30 pointer-events-none" />
       
-      {/* Performance indicator for debugging (only in development) */}
-      {process.env.NODE_ENV === 'development' && isVisible && (
-        <div className="absolute top-4 left-4 bg-black/50 text-white px-2 py-1 text-xs rounded z-40">
-          Parallax Active | Offset: {Math.round(mainOffset)}px
-        </div>
-      )}
     </section>
   );
 };
