@@ -67,23 +67,17 @@ const ParallaxContainer = () => {
 
         {/* Main Image */}
         {!imageError && (
-          <picture>
-            <source 
-              srcSet="https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-27-scaled.webp" 
-              type="image/webp" 
-            />
-            <img
-              src="https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-27-scaled.jpg"
-              alt="Sister Storage lifestyle organization"
-              className={`w-full h-full object-cover transition-opacity duration-500 ${
-                imageLoaded ? 'opacity-100' : 'opacity-0'
-              }`}
-              loading="lazy"
-              decoding="async"
-              onLoad={handleImageLoad}
-              onError={handleImageError}
-            />
-          </picture>
+          <img
+            src="/lovable-uploads/e9628188-8ef0-426b-9858-08b2848fd690.png"
+            alt="Lifestyle image showing hands holding phone with social media interface"
+            className={`w-full h-full object-cover transition-opacity duration-500 ${
+              imageLoaded ? 'opacity-100' : 'opacity-0'
+            }`}
+            loading="lazy"
+            decoding="async"
+            onLoad={handleImageLoad}
+            onError={handleImageError}
+          />
         )}
 
         {/* Fallback for image error */}
