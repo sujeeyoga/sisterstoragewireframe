@@ -27,46 +27,7 @@ const gridItems = [
   
   // Row 6
   { id: 13, image: "/lovable-uploads/3e91b1f2-e5b6-4cee-a7b7-806a5815546b.png", title: "Casual Vibes", span: "normal" },
-  { id: 14, image: "/lovable-uploads/56a20345-d9f3-47ac-a645-23d19194af78.png", title: "Digital Gallery", span: "normal" },
-  
-  // Row 7
-  { id: 15, image: "/lovable-uploads/f9cf4a8d-2f00-4b1f-bbb3-4322491012ad.png", title: "Mobile Moments", span: "horizontal" },
-  { id: 16, image: "/lovable-uploads/e1ae51b5-7916-4137-825e-7f197dff06a3.png", title: "Handpicked Collection", span: "normal" },
-  
-  // Row 8
-  { id: 17, image: "/lovable-uploads/8620f7af-c089-458c-bef9-78d6cd77f04e.png", title: "Organizing Beauty", span: "normal" },
-  { id: 18, image: "/lovable-uploads/ce6528ec-56be-4176-919f-4285946c18b2.png", title: "Heritage Pieces", span: "vertical" },
-  { id: 19, image: "/lovable-uploads/160b5d30-ba2c-4e66-8423-c4a6288d1af0.png", title: "Sisterhood", span: "normal" },
-  
-  // Row 9
-  { id: 20, image: "/lovable-uploads/c6544fac-3f2f-4a6a-a01e-5ca149720fcb.png", title: "Together Time", span: "normal" },
-  { id: 21, image: "/lovable-uploads/0e5fe1c0-12f8-439f-94d5-ec1da8ca09c8.png", title: "Pizza & Bangles", span: "normal" },
-  
-  // Row 10
-  { id: 22, image: "/lovable-uploads/c44d4b5c-0104-4077-99dd-904d87ec4d8b.png", title: "Closet Inspiration", span: "horizontal" },
-  { id: 23, image: "/lovable-uploads/3e91b1f2-e5b6-4cee-a7b7-806a5815546b.png", title: "Wine & Style", span: "normal" },
-  
-  // Row 11
-  { id: 24, image: "/lovable-uploads/56a20345-d9f3-47ac-a645-23d19194af78.png", title: "Feed Goals", span: "normal" },
-  { id: 25, image: "/lovable-uploads/f9cf4a8d-2f00-4b1f-bbb3-4322491012ad.png", title: "Content Creation", span: "vertical" },
-  { id: 26, image: "/lovable-uploads/e1ae51b5-7916-4137-825e-7f197dff06a3.png", title: "Treasure Hunt", span: "normal" },
-  
-  // Row 12
-  { id: 27, image: "/lovable-uploads/8620f7af-c089-458c-bef9-78d6cd77f04e.png", title: "Mindful Moments", span: "normal" },
-  { id: 28, image: "/lovable-uploads/ce6528ec-56be-4176-919f-4285946c18b2.png", title: "Color Coordination", span: "normal" },
-  
-  // Row 13
-  { id: 29, image: "/lovable-uploads/160b5d30-ba2c-4e66-8423-c4a6288d1af0.png", title: "Friendship Goals", span: "horizontal" },
-  { id: 30, image: "/lovable-uploads/c6544fac-3f2f-4a6a-a01e-5ca149720fcb.png", title: "Happy Moments", span: "normal" },
-  
-  // Row 14
-  { id: 31, image: "/lovable-uploads/0e5fe1c0-12f8-439f-94d5-ec1da8ca09c8.png", title: "Perfect Pairs", span: "normal" },
-  { id: 32, image: "/lovable-uploads/c44d4b5c-0104-4077-99dd-904d87ec4d8b.png", title: "Style Sessions", span: "vertical" },
-  { id: 33, image: "/lovable-uploads/3e91b1f2-e5b6-4cee-a7b7-806a5815546b.png", title: "Celebration Time", span: "normal" },
-  
-  // Row 15
-  { id: 34, image: "/lovable-uploads/56a20345-d9f3-47ac-a645-23d19194af78.png", title: "Story Worth Telling", span: "normal" },
-  { id: 35, image: "/lovable-uploads/f9cf4a8d-2f00-4b1f-bbb3-4322491012ad.png", title: "Memories Made", span: "normal" }
+  { id: 14, image: "/lovable-uploads/56a20345-d9f3-47ac-a645-23d19194af78.png", title: "Digital Gallery", span: "normal" }
 ];
 
 const FeaturedGrid = () => {
