@@ -8,7 +8,7 @@ const gridItems = [
   { id: 2, image: "/lovable-uploads/c44d4b5c-0104-4077-99dd-904d87ec4d8b.png", title: "Jewelry Organization", span: "normal" },
   
   // Row 2
-  { id: 3, image: "/lovable-uploads/3e91b1f2-e5b6-4cee-a7b7-806a5815546b.png", title: "Sister Collection", span: "horizontal" },
+  { id: 3, image: "/lovable-uploads/e9628188-8ef0-426b-9858-08b2848fd690.png", title: "Sister Collection", span: "horizontal" },
   
   // Row 3
   { id: 4, image: "/lovable-uploads/56a20345-d9f3-47ac-a645-23d19194af78.png", title: "Instagram Inspiration", span: "vertical" },
