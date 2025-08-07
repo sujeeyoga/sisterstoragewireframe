@@ -32,7 +32,7 @@ const FeaturedGrid = () => {
     <section className="py-12 md:py-16">
       <div className="container-custom">
         <div className="text-center mb-8 md:mb-12">
-          <h2 className="font-bold mb-4">Featured Collections</h2>
+          <h2 className="text-6xl md:text-8xl lg:text-9xl font-thin font-poppins tracking-wide mb-4 uppercase">Featured Collections</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
             Discover our curated selection of storage solutions designed for the modern sister.
           </p>
