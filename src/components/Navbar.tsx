@@ -44,13 +44,13 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
     <>
       <header 
         className={`w-full transition-all duration-300 z-50 relative ${
-          isScrolled ? 'py-2' : 'py-4'
+          isScrolled ? 'py-1' : 'py-2'
         }`}
         style={{
           backgroundColor: '#ffffff',
         }}
       >
-        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 flex items-center justify-between">
           {/* Back Button (only on mobile) */}
           {isMobile && (
             <button
@@ -71,7 +71,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
           />
 
           {/* Desktop Menu */}
-          <nav className="hidden md:flex items-center space-x-6">
+          <nav className="hidden md:flex items-center space-x-4">
             {[
               { name: 'HOME', path: '/', icon: Home },
               { name: 'GALLERY', path: '/gallery' },
@@ -83,7 +83,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
                 <button
                   key={item.name}
                   onClick={item.onClick}
-                  className={`text-black hover:bg-pink-500 hover:text-white transition-colors duration-300 px-3 py-2 rounded-md font-medium ${item.icon ? 'flex items-center gap-2' : ''}`}
+                   className={`text-black hover:bg-pink-500 hover:text-white transition-colors duration-300 px-2 py-1 rounded-md font-medium ${item.icon ? 'flex items-center gap-1' : ''}`}
                 >
                   {item.icon && <item.icon className="h-4 w-4" />}
                   {item.name} ({totalItems})
@@ -92,7 +92,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
                 <Link 
                   key={item.name} 
                   to={item.path}
-                  className={`text-black hover:bg-pink-500 hover:text-white transition-colors duration-300 px-3 py-2 rounded-md font-medium ${item.icon ? 'flex items-center gap-2' : ''}`}
+                  className={`text-black hover:bg-pink-500 hover:text-white transition-colors duration-300 px-2 py-1 rounded-md font-medium ${item.icon ? 'flex items-center gap-1' : ''}`}
                 >
                   {item.icon && <item.icon className="h-4 w-4" />}
                   {item.name}
