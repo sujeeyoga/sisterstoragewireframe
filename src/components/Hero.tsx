@@ -21,16 +21,16 @@ const Hero = () => {
 
   return (
     <section className="relative h-screen w-full overflow-hidden bg-[#E90064]" aria-label="Hero section">
-      <div className="container-custom relative h-full flex flex-col lg:flex-row items-stretch justify-center pt-16 lg:pt-20 pb-16 lg:pb-20 z-20 space-y-16 lg:space-y-0 lg:space-x-20">
+      <div className="container-custom relative h-full flex flex-col lg:flex-row items-stretch justify-center pt-24 lg:pt-32 pb-24 lg:pb-32 z-20 space-y-24 lg:space-y-0 lg:space-x-32">
         {/* Hero Content - Centered with proper spacing */}
-        <div className="flex-1 flex flex-col justify-center items-center lg:items-start px-6 lg:px-8 max-w-2xl">
-          <div className="space-y-8 text-center lg:text-left">
+        <div className="flex-1 flex flex-col justify-center items-center lg:items-start px-10 lg:px-16 max-w-2xl">
+          <div className="space-y-12 text-center lg:text-left">
             <HeroContent scrollPosition={scrollPosition} />
           </div>
         </div>
         
         {/* Hero Image with White Container - Proper spacing and sizing */}
-        <div className="flex-1 flex justify-center lg:justify-end items-center px-6 lg:px-8 max-w-xl animate-fade-in" style={{ animationDelay: '0.3s' }}>
+        <div className="flex-1 flex justify-center lg:justify-end items-center px-10 lg:px-16 max-w-xl animate-fade-in" style={{ animationDelay: '0.3s' }}>
           <div className="bg-white rounded-3xl p-8 lg:p-12 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.3)] w-full max-w-lg transform hover:scale-[1.02] transition-all duration-500 ease-out hover:shadow-[0_35px_60px_-12px_rgba(0,0,0,0.4)]">
             <div className="aspect-square overflow-hidden rounded-2xl mb-8 lg:mb-10 shadow-lg relative group">
               <img
