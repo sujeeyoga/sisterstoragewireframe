@@ -24,7 +24,7 @@ const gridItems = [
   
   // Row 6 - End with normal normal
   { id: 10, image: "/lovable-uploads/c6544fac-3f2f-4a6a-a01e-5ca149720fcb.png", title: "Jewelry Party", span: "normal" },
-  { id: 11, image: "/lovable-uploads/0e5fe1c0-12f8-439f-94d5-ec1da8ca09c8.png", title: "Golden Elegance", span: "normal" }
+  { id: 11, image: "/lovable-uploads/b0963b41-dee1-4ccb-b8bc-7144c4ea6285.png", title: "Golden Elegance", span: "normal" }
 ];
 
 const FeaturedGrid = () => {
