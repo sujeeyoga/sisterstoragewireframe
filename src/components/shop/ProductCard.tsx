@@ -49,21 +49,15 @@ const ProductCard = ({ product }: ProductCardProps) => {
     });
   };
 
-  // Generate a random height for the Pinterest-style effect
-  const imageHeight = React.useMemo(() => {
-    return Math.floor(Math.random() * 50) + 250; // Random height between 250px and 300px
-  }, [product.id]);
-
   return (
     <Card className="group overflow-hidden border-0 shadow-md hover:shadow-xl transition-all duration-300 rounded-lg h-full">
       <Link to={`/shop/${product.id}`} className="block relative">
         <div className="relative overflow-hidden">
-          {/* Product Image with dynamic height */}
+          {/* Product Image with 3:2 aspect ratio */}
           <div 
-            className="transition-transform duration-500 group-hover:scale-105 flex items-center justify-center"
+            className="aspect-[3/2] transition-transform duration-500 group-hover:scale-105 flex items-center justify-center"
             style={{ 
               backgroundColor: product.color,
-              height: `${imageHeight}px`
             }}
           >
             <span className="text-white font-bold">Sister Storage</span>
@@ -116,28 +110,29 @@ const ProductCard = ({ product }: ProductCardProps) => {
           </div>
         </div>
         
-        <CardContent className="px-3 py-3">
-          <div className="mb-1 flex justify-between items-start">
-            <h3 className="font-semibold text-base">{product.name}</h3>
-            <span className="font-bold text-base">${product.price.toFixed(2)}</span>
+        {/* All product information underneath */}
+        <CardContent className="px-4 py-4">
+          <div className="mb-2 flex justify-between items-start">
+            <h3 className="font-semibold text-lg">{product.name}</h3>
+            <span className="font-bold text-lg">${product.price.toFixed(2)}</span>
           </div>
           
-          <p className="text-gray-600 text-sm mb-2 line-clamp-2">{product.description}</p>
+          <p className="text-gray-600 text-sm mb-3 line-clamp-2">{product.description}</p>
           
           {/* Material tag */}
-          <div className="mb-2 text-xs text-gray-500">
+          <div className="mb-3 text-sm text-gray-500">
             {product.material}
           </div>
           
-          {/* Feature list - simplified for Pinterest style */}
+          {/* Feature list */}
           {product.features.length > 0 && (
-            <div className="text-xs text-gray-600 flex items-center gap-1 mb-1">
-              <Check className="h-3 w-3 text-pink-600" /> {product.features[0]}
+            <div className="text-sm text-gray-600 flex items-center gap-1 mb-3">
+              <Check className="h-4 w-4 text-pink-600" /> {product.features[0]}
             </div>
           )}
           
-          <div className="flex justify-between items-center mt-2">
-            <span className="text-xs font-medium bg-pink-100 text-pink-700 px-2 py-1 rounded-full">
+          <div className="flex justify-between items-center">
+            <span className="text-sm font-medium bg-pink-100 text-pink-700 px-3 py-1 rounded-full">
               {product.category}
             </span>
           </div>
