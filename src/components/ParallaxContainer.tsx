@@ -66,8 +66,8 @@ const ParallaxContainer = () => {
         {/* Main Image */}
         {!imageError && (
           <img
-            src="/lovable-uploads/b0963b41-dee1-4ccb-b8bc-7144c4ea6285.png"
-            alt="Lifestyle image showing hands holding phone with social media interface"
+            src="https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-27-scaled.jpg"
+            alt="Sister Storage lifestyle organization"
             className={`w-full h-full object-cover transition-opacity duration-500 ${
               imageLoaded ? 'opacity-100' : 'opacity-0'
             }`}
