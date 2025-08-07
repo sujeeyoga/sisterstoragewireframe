@@ -64,7 +64,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
 
           {/* Logo */}
           <EnhancedLogo 
-            size="lg" 
+            size="xl" 
             scrolled={isScrolled}
             className="animate-fade-in"
             loading="eager"
