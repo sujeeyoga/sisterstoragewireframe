@@ -36,7 +36,7 @@ const HeroContent = ({ scrollPosition }: HeroContentProps) => {
         DESIGNED BY US — FOR US.
       </AnimatedText>
 
-      <div className="flex flex-col sm:flex-row gap-6 mb-6">
+      <div className="flex flex-col sm:flex-row gap-8 mb-6">
         <Button 
           className="px-8 py-6 text-lg w-full sm:w-auto group relative overflow-hidden transition-all duration-300 animate-breath-fade-up-4 bg-white text-black hover:bg-[#E90064] hover:text-white border-4 border-white hover:border-[#E90064] font-black shadow-xl hover:shadow-2xl"
           asChild
