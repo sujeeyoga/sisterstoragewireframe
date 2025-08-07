@@ -51,6 +51,10 @@ const ParallaxContainer = () => {
       {/* Background Layer with Parallax Effect */}
       <div 
         className="absolute inset-0 w-full h-full bg-[#E90064]"
+        style={{
+          transform: !prefersReducedMotion && isVisible ? `translateY(${mainOffset}px)` : 'none',
+          transition: prefersReducedMotion ? 'none' : 'transform 0.1s ease-out'
+        }}
       >
         {/* Loading State */}
         {!imageLoaded && !imageError && (
@@ -67,6 +71,10 @@ const ParallaxContainer = () => {
             className={`w-full h-full object-cover transition-opacity duration-500 ${
               imageLoaded ? 'opacity-100' : 'opacity-0'
             }`}
+            style={{
+              transform: !prefersReducedMotion && isVisible ? `translateY(${mainOffset * 0.8}px) scale(1.1)` : 'scale(1.1)',
+              transition: prefersReducedMotion ? 'none' : 'transform 0.1s ease-out'
+            }}
             loading="lazy"
             decoding="async"
             onLoad={handleImageLoad}
@@ -87,7 +95,13 @@ const ParallaxContainer = () => {
 
       
       {/* Content Overlay */}
-      <div className="relative z-20 h-full flex items-center justify-center px-6">
+      <div 
+        className="relative z-20 h-full flex items-center justify-center px-6"
+        style={{
+          transform: !prefersReducedMotion && isVisible ? `translateY(${overlayOffset}px)` : 'none',
+          transition: prefersReducedMotion ? 'none' : 'transform 0.1s ease-out'
+        }}
+      >
         <div className="text-center text-white max-w-4xl mx-auto">
           <h2 
             className="text-4xl md:text-6xl lg:text-7xl font-black mb-6 leading-tight tracking-tight drop-shadow-lg"
