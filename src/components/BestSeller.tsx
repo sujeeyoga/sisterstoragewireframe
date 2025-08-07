@@ -79,7 +79,7 @@ const BestSeller = () => {
                 <img 
                   src={item.image} 
                   alt={`${item.name} - Sister Storage best seller`}
-                  className="w-full aspect-[3/2] object-cover transition-transform duration-500 hover:scale-105"
+                  className="w-full aspect-[3/4] object-cover transition-transform duration-500 hover:scale-105"
                 />
                 <div className="absolute top-3 left-3">
                   <span className="bg-[#E6007E] text-white text-xs font-bold px-2 py-1 font-poppins">
