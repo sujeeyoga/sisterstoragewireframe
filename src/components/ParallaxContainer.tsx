@@ -76,7 +76,7 @@ const ParallaxContainer = () => {
 
         {/* Fallback for image error */}
         {imageError && (
-          <div className="absolute inset-0 bg-gradient-to-br from-[#E90064] to-[#B8004D] flex items-center justify-center">
+          <div className="absolute inset-0 bg-[#E90064] flex items-center justify-center">
             <div className="text-white text-center">
               <h3 className="text-2xl font-bold mb-2">Sister Storage</h3>
               <p className="text-lg opacity-90">Beautiful Organization</p>
@@ -85,10 +85,6 @@ const ParallaxContainer = () => {
         )}
       </div>
 
-      {/* Overlay Layer */}
-      <div className="absolute inset-0 z-10">
-        <div className="w-full h-full bg-gradient-to-b from-[#E90064]/30 via-black/20 to-black/40" />
-      </div>
       
       {/* Content Overlay */}
       <div className="relative z-20 h-full flex items-center justify-center px-6">
@@ -112,8 +108,6 @@ const ParallaxContainer = () => {
         </div>
       </div>
 
-      {/* Smooth transition gradient at bottom */}
-      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white via-white/80 to-transparent z-30 pointer-events-none" />
       
     </section>
   );
