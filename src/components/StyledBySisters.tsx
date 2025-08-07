@@ -3,14 +3,14 @@ import { Card } from '@/components/ui/card';
 import PerformanceImage from '@/components/ui/performance-image';
 
 const styledItems = [
-  { id: 1, type: "image", image: "/lovable-uploads/0e5fe1c0-12f8-439f-94d5-ec1da8ca09c8.png", title: "Sister Style 1" },
-  { id: 2, type: "color", color: "bg-primary", title: "Organize" },
-  { id: 3, type: "image", image: "/lovable-uploads/e9628188-8ef0-426b-9858-08b2848fd690.png", title: "Sister Style 3" },
+  { id: 1, type: "color", color: "bg-primary", title: "Organize" },
+  { id: 2, type: "image", image: "/lovable-uploads/0e5fe1c0-12f8-439f-94d5-ec1da8ca09c8.png", title: "Sister Style 1" },
+  { id: 3, type: "image", image: "/lovable-uploads/e9628188-8ef0-426b-9858-08b2848fd690.png", title: "Sister Style 2" },
   { id: 4, type: "color", color: "bg-secondary", title: "Style" },
-  { id: 5, type: "image", image: "/lovable-uploads/f9cf4a8d-2f00-4b1f-bbb3-4322491012ad.png", title: "Sister Style 5" },
-  { id: 6, type: "color", color: "bg-accent", title: "Inspire" },
-  { id: 7, type: "image", image: "/lovable-uploads/8620f7af-c089-458c-bef9-78d6cd77f04e.png", title: "Sister Style 7" },
-  { id: 8, type: "color", color: "bg-muted", title: "Connect" }
+  { id: 5, type: "image", image: "/lovable-uploads/f9cf4a8d-2f00-4b1f-bbb3-4322491012ad.png", title: "Sister Style 3" },
+  { id: 6, type: "image", image: "/lovable-uploads/8620f7af-c089-458c-bef9-78d6cd77f04e.png", title: "Sister Style 4" },
+  { id: 7, type: "color", color: "bg-accent", title: "Inspire" },
+  { id: 8, type: "image", image: "/lovable-uploads/ce6528ec-56be-4176-919f-4285946c18b2.png", title: "Sister Style 5" }
 ];
 
 const StyledBySisters = () => {
