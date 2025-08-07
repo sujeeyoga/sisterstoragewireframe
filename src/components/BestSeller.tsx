@@ -65,7 +65,7 @@ const BestSeller = () => {
       <div className="container-custom">
         <div className="text-center max-w-lg mx-auto mb-10 md:mb-12 px-4">
           <span className="text-[#E6007E] font-medium">Sister Favorites</span>
-          <h2 className="text-3xl md:text-5xl font-bold mt-2 mb-3 font-poppins">Our Best Sellers</h2>
+          <h2 className="text-6xl md:text-8xl lg:text-9xl font-thin font-poppins tracking-wide mt-2 mb-3 uppercase">Our Best Sellers</h2>
           <p className="text-gray-600 font-poppins">
             Discover why these storage solutions are most loved by our community of organized sisters.
           </p>
@@ -79,7 +79,7 @@ const BestSeller = () => {
                 <img 
                   src={item.image} 
                   alt={`${item.name} - Sister Storage best seller`}
-                  className="w-full h-48 md:h-56 object-cover transition-transform duration-500 hover:scale-105"
+                  className="w-full aspect-[3/2] object-cover transition-transform duration-500 hover:scale-105"
                 />
                 <div className="absolute top-3 left-3">
                   <span className="bg-[#E6007E] text-white text-xs font-bold px-2 py-1 font-poppins">
