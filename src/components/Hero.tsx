@@ -21,7 +21,7 @@ const Hero = () => {
 
   return (
     <section className="relative min-h-screen w-full overflow-hidden bg-[#E90064]" aria-label="Hero section">
-      <div className="relative min-h-screen w-full flex flex-col lg:flex-row items-center justify-center pt-20 pb-32 lg:pt-24 lg:pb-20 z-20 gap-16 lg:gap-24 px-4">
+      <div className="relative min-h-screen w-full flex flex-col lg:flex-row items-center justify-center pt-20 pb-32 lg:pt-24 lg:pb-20 z-20 gap-24 lg:gap-40 px-4">
         {/* Hero Content - Centered with proper spacing */}
         <div className="w-full flex flex-col justify-center items-center lg:items-start">
           <div className="w-full space-y-8 text-center lg:text-left">
