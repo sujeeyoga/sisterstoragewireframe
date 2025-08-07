@@ -23,7 +23,7 @@ const Hero = () => {
     <section className="relative h-screen w-full overflow-hidden bg-[#E90064]" aria-label="Hero section">
       <div className="container-custom relative h-full flex flex-col lg:flex-row items-center justify-between pt-20 lg:pt-24 z-20 gap-12 lg:gap-8">
         {/* Hero Content - First on both mobile and desktop, centered in 80vh */}
-        <div className="flex-1 flex flex-col justify-center items-center lg:items-start order-1 px-4 lg:px-0 h-[80vh]">
+        <div className="flex-1 flex flex-col justify-center items-center lg:items-start order-1 px-4 lg:px-0 h-[100vh]">
           <HeroContent scrollPosition={scrollPosition} />
         </div>
         
