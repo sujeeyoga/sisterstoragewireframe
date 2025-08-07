@@ -30,7 +30,7 @@ const HeroContent = ({ scrollPosition }: HeroContentProps) => {
       
       <AnimatedText
         as="h2"
-        className="text-2xl md:text-4xl lg:text-5xl xl:text-6xl text-white mb-6 font-black leading-none tracking-tight"
+        className="text-2xl md:text-4xl lg:text-5xl xl:text-6xl text-white mb-6 mt-8 font-black leading-none tracking-tight"
         animation="breath-fade-up-3"
       >
         DESIGNED BY US — FOR US.
