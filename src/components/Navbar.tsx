@@ -44,13 +44,13 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
     <>
       <header 
         className={`w-full transition-all duration-300 z-50 relative ${
-          isScrolled ? 'py-1' : 'py-2'
+          isScrolled ? 'py-0' : 'py-1'
         }`}
         style={{
           backgroundColor: '#ffffff',
         }}
       >
-        <div className="max-w-7xl mx-auto px-4 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between">
           {/* Back Button (only on mobile) */}
           {isMobile && (
             <button
@@ -116,8 +116,6 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
         </div>
       </header>
 
-      {/* Visual transition border */}
-      <div className="border-b border-pink-500 w-full relative z-40" />
 
       {/* Mobile Menu Slide-in from left with proper background and z-index */}
       <div 
