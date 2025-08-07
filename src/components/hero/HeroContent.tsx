@@ -21,7 +21,7 @@ const HeroContent = ({ scrollPosition }: HeroContentProps) => {
       
       <AnimatedText
         as="h1"
-        className="text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-black text-white mb-3 leading-none tracking-tight"
+        className="text-6xl md:text-8xl lg:text-9xl xl:text-[12rem] 2xl:text-[14rem] font-black text-white mb-3 leading-none tracking-tight"
         animation="breath-fade-up-2"
         words
       >
