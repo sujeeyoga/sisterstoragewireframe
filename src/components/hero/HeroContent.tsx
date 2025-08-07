@@ -13,7 +13,7 @@ const HeroContent = ({ scrollPosition }: HeroContentProps) => {
     <div className="w-full">
       <AnimatedText
         as="span"
-        className="inline-block px-6 py-3 mb-8 text-sm font-bold bg-white text-[#E90064] rounded-full shadow-lg"
+        className="inline-block px-6 py-3 mb-6 text-sm font-bold bg-white text-[#E90064] rounded-full shadow-lg"
         animation="breath-fade-up-1"
       >
         Beautifully Organized
@@ -21,7 +21,7 @@ const HeroContent = ({ scrollPosition }: HeroContentProps) => {
       
       <AnimatedText
         as="h1"
-        className="text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-black text-white mb-4 leading-none tracking-tight"
+        className="text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-black text-white mb-3 leading-none tracking-tight"
         animation="breath-fade-up-2"
         words
       >
@@ -30,13 +30,13 @@ const HeroContent = ({ scrollPosition }: HeroContentProps) => {
       
       <AnimatedText
         as="h2"
-        className="text-3xl md:text-5xl lg:text-6xl xl:text-7xl text-white mb-8 font-black leading-none tracking-tight"
+        className="text-2xl md:text-4xl lg:text-5xl xl:text-6xl text-white mb-6 font-black leading-none tracking-tight"
         animation="breath-fade-up-3"
       >
         DESIGNED BY US — FOR US.
       </AnimatedText>
 
-      <div className="flex flex-col sm:flex-row gap-6 mb-8">
+      <div className="flex flex-col sm:flex-row gap-6 mb-6">
         <Button 
           className="px-8 py-6 text-lg w-full sm:w-auto group relative overflow-hidden transition-all duration-300 animate-breath-fade-up-4 bg-white text-black hover:bg-[#E90064] hover:text-white border-4 border-white hover:border-[#E90064] font-black shadow-xl hover:shadow-2xl"
           asChild
