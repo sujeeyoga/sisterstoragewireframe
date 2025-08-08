@@ -27,8 +27,8 @@ const SaleBanner = ({ position = 0 }: SaleBannerProps) => {
 
   return (
     <div 
+      className="relative z-10 w-screen px-0 bg-[var(--brand-pink)] text-white py-3 overflow-hidden animate-slide-down"
       data-announcement
-      className="w-full overflow-hidden bg-transparent animate-slide-down"
       aria-live="polite"
       style={{
         '--ss-slide-duration': '12s',

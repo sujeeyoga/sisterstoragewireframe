@@ -143,29 +143,23 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
       {shouldShowStandardHeader && (
         <>
           {/* Full-bleed header wrapper */}
-          <div className="fixed top-0 inset-x-0 z-50 overflow-visible">
+          <header className="fixed top-0 inset-x-0 z-50 overflow-visible">
             {/* Pink background layer */}
             <div 
-              className="absolute top-0 inset-x-0 h-[120px] -z-10 pointer-events-none"
+              className="absolute top-0 inset-x-0 h-[140px] -z-10 pointer-events-none"
               style={{ background: 'var(--brand-pink)' }}
             />
             
             {/* Announcement bar */}
             {showSaleBanner && (
-              <div className="relative z-10 w-screen px-0 pt-4">
-                <SaleBanner position={position} />
-              </div>
+              <SaleBanner position={position} />
             )}
             
             {/* Pill navigation */}
-            <div className={`relative z-20 mx-auto rounded-[25px] bg-white overflow-visible transition-all duration-300 ${
-              position > 16 
-                ? 'w-[min(1080px,90%)] shadow-xl mt-[-28px]' 
-                : 'w-[min(1100px,92%)] shadow-lg mt-[-32px]'
-            }`}>
+            <nav className="sticky top-3 z-20 mx-auto w-[min(1100px,92%)] rounded-[25px] bg-white shadow-lg -mt-6 overflow-visible transition-all duration-300">
               <Navbar position={position} />
-            </div>
-          </div>
+            </nav>
+          </header>
           
           {/* Spacer to prevent content from being hidden behind header */}
           <div className="h-32 sm:h-36" />
