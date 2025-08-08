@@ -29,8 +29,8 @@ const ShopHero = ({ selectedCategory, setSelectedCategory, categories }: ShopHer
               onClick={() => setSelectedCategory(category)}
               className={`px-4 py-2 rounded-full capitalize transition-all ${
                 selectedCategory === category
-                  ? "bg-[#e90064] text-white shadow-md"
-                  : "bg-white border border-gray-200 text-gray-700 hover:bg-pink-100"
+                  ? "bg-[hsl(var(--primary))] text-white shadow-md"
+                  : "bg-white border border-gray-200 text-foreground/80 hover:bg-primary/10"
               }`}
             >
               {category}

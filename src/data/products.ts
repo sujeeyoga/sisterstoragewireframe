@@ -70,9 +70,58 @@ export const products = [
     bestSeller: true,
     stock: 7
   }
+,
+  {
+    id: "7",
+    name: "Starter Bangle Box Set",
+    description: "Compact bracelet holder set, gift-ready jewelry organizer for everyday essentials.",
+    price: 44.99,
+    category: "bundles",
+    color: "#ff4d8d",
+    features: ["Compact stackable design", "Gift-ready packaging", "Soft-touch lining"],
+    material: "Premium velvet and recycled board",
+    newArrival: true,
+    stock: 14
+  },
+  {
+    id: "8",
+    name: "Travel Jewelry Storage Box",
+    description: "Portable bracelet and bangle case for trips with protective compartments and mirror.",
+    price: 34.99,
+    category: "bundles",
+    color: "#e90064",
+    features: ["Zip-around secure closure", "Removable ring and stud tray", "Lightweight, travel-ready"],
+    material: "Vegan leather with velvet interior",
+    newArrival: true,
+    stock: 20
+  },
+  {
+    id: "9",
+    name: "Luxury Bangle Storage Case",
+    description: "Premium velvet-lined organizer for fine jewelry and heirloom bangles.",
+    price: 89.99,
+    category: "bundles",
+    color: "#a60048",
+    features: ["Velvet-lined compartments", "Anti-tarnish interior", "Lockable metal clasp"],
+    material: "Hardwood frame, velvet lining",
+    limitedEdition: true,
+    stock: 5
+  },
+  {
+    id: "10",
+    name: "Deluxe Jewelry Organizer Set",
+    description: "Complete home storage for bangles, bracelets, and watches with modular trays.",
+    price: 119.99,
+    category: "bundles",
+    color: "#c80056",
+    features: ["Modular stackable trays", "Watch pillows included", "Felt-lined dividers"],
+    material: "Recycled composite with felt",
+    bestSeller: true,
+    stock: 8
+  }
 ];
 
-export const categories = ["all", "bangles", "jewelry", "keepsakes"];
+export const categories = ["all", "bangles", "jewelry", "keepsakes", "bundles"];
 
 export const benefits = [
   {
