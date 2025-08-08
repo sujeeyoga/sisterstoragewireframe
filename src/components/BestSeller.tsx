@@ -151,16 +151,6 @@ const BestSeller = () => {
                   <p className="text-gray-600 text-sm leading-relaxed">{item.description}</p>
                 </div>
                 
-                {/* Rod Count Feature - Prominent Display */}
-                <div className="flex items-center justify-center py-3">
-                  <div className="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-6 py-3 rounded-xl shadow-lg">
-                    <div className="text-center">
-                      <span className="text-2xl font-black block">{item.rodCount}</span>
-                      <span className="text-xs font-bold uppercase tracking-wider">Total Rods</span>
-                    </div>
-                  </div>
-                </div>
-                
                 {/* Bundle Contents */}
                 <div className="bg-gray-50/80 rounded-xl p-4 border border-gray-100">
                   <div className="flex items-center gap-2 mb-2">
@@ -182,16 +172,25 @@ const BestSeller = () => {
                     </div>
                   </div>
                   
-                  {/* Buy Button */}
-                  <Button 
-                    variant="buy"
-                    size="buy"
-                    className="w-full font-bold text-sm py-3 shadow-lg hover:shadow-xl transition-all duration-300"
-                    onClick={() => handleBuyNow(item)}
-                  >
-                    <ShoppingBag className="h-4 w-4 mr-2" />
-                    GET THIS BUNDLE
-                  </Button>
+                  {/* Rod Count & Buy Button Row */}
+                  <div className="flex items-center gap-3">
+                    <div className="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-4 py-2 rounded-lg flex-shrink-0">
+                      <div className="text-center">
+                        <span className="text-lg font-black block">{item.rodCount}</span>
+                        <span className="text-xs font-bold uppercase tracking-wider">Rods</span>
+                      </div>
+                    </div>
+                    
+                    <Button 
+                      variant="buy"
+                      size="buy"
+                      className="flex-1 font-bold text-sm py-3 shadow-lg hover:shadow-xl transition-all duration-300"
+                      onClick={() => handleBuyNow(item)}
+                    >
+                      <ShoppingBag className="h-4 w-4 mr-2" />
+                      GET THIS BUNDLE
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>
