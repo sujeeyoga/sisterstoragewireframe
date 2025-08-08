@@ -445,6 +445,34 @@
       animation-duration: var(--ss-marquee-duration, 28s);
     }
   }
+
+  /* Pill Navigation Entrance Animation */
+  @keyframes pill-nav-drop {
+    0% {
+      opacity: 0;
+      transform: translateY(-40px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes pill-nav-settle {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(8px);
+    }
+  }
+
+  .pill-nav-entrance {
+    animation: pill-nav-drop 250ms cubic-bezier(.25,.46,.45,.94) 1s forwards,
+               pill-nav-settle 400ms cubic-bezier(.16,1,.3,1) 1.25s forwards;
+    opacity: 0;
+    transform: translateY(-40px);
+  }
 }
 
 /* Sister Storage brand colors utility classes */

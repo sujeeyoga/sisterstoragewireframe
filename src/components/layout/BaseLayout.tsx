@@ -180,8 +180,12 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
         </>
       )}
       
-      {/* Pill navigation (sticky on all pages) */}
-      <nav ref={navRef} className="sticky top-3 z-50 mx-auto w-[min(1100px,92%)] rounded-[25px] bg-white overflow-visible transition-all duration-300 shadow-lg mt-2 px-4 py-2">
+      {/* Fixed pill navigation with entrance animation */}
+      <nav 
+        id="pillNav"
+        ref={navRef} 
+        className="fixed top-3 left-1/2 -translate-x-1/2 z-50 w-[min(1080px,calc(100%-32px))] max-w-[1080px] rounded-[36px] bg-white shadow-lg px-6 py-4 pill-nav-entrance"
+      >
         <Navbar position={position} />
       </nav>
 
