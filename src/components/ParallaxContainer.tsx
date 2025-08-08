@@ -9,9 +9,9 @@ const ParallaxContainer = () => {
   const [imageLoaded, setImageLoaded] = useState(false);
   
   // Optimized mobile parallax - disabled on mobile for better performance
-  const parallaxDisabled = isMobile;
-  const mainParallaxSpeed = isMobile ? 0 : 0.3;
-  const overlayParallaxSpeed = isMobile ? 0 : 0.2;
+  const parallaxDisabled = false;
+  const mainParallaxSpeed = isMobile ? 0.12 : 0.6;
+  const overlayParallaxSpeed = isMobile ? 0.08 : 0.4;
   
   const { 
     ref: mainRef, 
@@ -26,6 +26,12 @@ const ParallaxContainer = () => {
   
   const { offset: overlayOffset } = useOptimizedParallax({
     speed: overlayParallaxSpeed,
+    threshold: 0.1,
+    disabled: parallaxDisabled
+  });
+  
+  const { offset: foregroundOffset } = useOptimizedParallax({
+    speed: isMobile ? 0.16 : 0.8,
     threshold: 0.1,
     disabled: parallaxDisabled
   });
@@ -101,7 +107,26 @@ const ParallaxContainer = () => {
         )}
       </div>
 
-      
+      {/* Foreground decorative parallax elements */}
+      <div className="pointer-events-none absolute inset-0 z-10">
+        <div
+          className="absolute -top-10 left-6 w-32 h-32 md:w-48 md:h-48 rounded-full bg-white/10 border border-white/20 backdrop-blur-[2px]"
+          style={{
+            transform: !prefersReducedMotion && isVisible ? `translateY(${foregroundOffset * 1.2}px)` : 'none',
+            transition: prefersReducedMotion ? 'none' : 'transform 0.1s ease-out',
+            willChange: 'transform'
+          }}
+        />
+        <div
+          className="absolute -bottom-10 right-10 w-40 h-40 md:w-56 md:h-56 rounded-full bg-black/10 border border-white/10"
+          style={{
+            transform: !prefersReducedMotion && isVisible ? `translateY(${foregroundOffset * 1.5}px)` : 'none',
+            transition: prefersReducedMotion ? 'none' : 'transform 0.1s ease-out',
+            willChange: 'transform'
+          }}
+        />
+      </div>
+
       {/* Content Overlay - Mobile Optimized */}
       <div 
         className="relative z-20 h-full flex items-center justify-center px-4 md:px-6"
