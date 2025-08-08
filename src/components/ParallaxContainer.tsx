@@ -129,10 +129,11 @@ const ParallaxContainer = () => {
 
       {/* Content Overlay - Mobile Optimized */}
       <div 
-        className="relative z-20 h-full flex items-center justify-center px-4 md:px-6"
+        className="relative z-20 h-full flex items-center justify-center px-4 md:px-6 animate-fade-in"
         style={{
-          transform: !prefersReducedMotion && !isMobile && isVisible ? `translateY(${overlayOffset}px)` : 'none',
-          transition: prefersReducedMotion || isMobile ? 'none' : 'transform 0.1s ease-out'
+          transform: !prefersReducedMotion && isVisible ? `translateY(${overlayOffset}px)` : 'none',
+          transition: prefersReducedMotion ? 'none' : 'transform 0.1s ease-out',
+          willChange: 'transform'
         }}
       >
         {/* Text overlay removed per request */}
