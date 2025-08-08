@@ -141,27 +141,38 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
 
   // Pill navigation animation setup
   useEffect(() => {
-    // === ENTRANCE: delayed grow-in ===
+    // === ENTRANCE: refined delayed grow-in ===
     const handleLoad = () => {
       const nav = document.getElementById('pillNav');
       if (nav) {
+        // Small delay, then elegant entrance
         setTimeout(() => {
-          // run keyframes once, then keep transitions alive for later state changes
-          nav.style.animation = 'pillIn 650ms cubic-bezier(.16,1,.3,1) forwards';
-        }, 1000);
+          nav.style.animation = 'pillIn 800ms cubic-bezier(.16,1,.3,1) forwards';
+        }, 800);
       }
     };
 
-    // === SCROLL REACTION: shrink on scroll ===
+    // === SCROLL REACTION: refined shrink on scroll ===
     const nav = document.getElementById('pillNav');
     let ticking = false;
+    let lastScrollY = 0;
 
     const onScroll = () => {
       const y = window.scrollY || document.documentElement.scrollTop;
+      const scrollDelta = Math.abs(y - lastScrollY);
+      
       if (nav) {
-        if (y > 8) nav.classList.add('nav-shrink');
-        else nav.classList.remove('nav-shrink');
+        // Only trigger on meaningful scroll changes for better performance
+        if (scrollDelta > 2) {
+          if (y > 12) {
+            nav.classList.add('nav-shrink');
+          } else {
+            nav.classList.remove('nav-shrink');
+          }
+        }
       }
+      
+      lastScrollY = y;
       ticking = false;
     };
 
@@ -232,8 +243,12 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
       <nav 
         id="pillNav"
         ref={navRef} 
-        className="sticky top-3 z-50 mx-auto w-[min(1100px,92%)] rounded-[25px] bg-white overflow-visible transition-all duration-300 shadow-lg mt-2 px-4 py-2"
-        style={{ height: '4rem' }}
+        className="sticky top-3 z-50 mx-auto w-[min(1100px,92%)] rounded-[25px] bg-white/95 overflow-visible shadow-elegant mt-2 px-4 py-2"
+        style={{ 
+          height: '4rem',
+          backdropFilter: 'blur(8px)',
+          WebkitBackdropFilter: 'blur(8px)'
+        }}
       >
         <Navbar position={position} />
       </nav>
