@@ -153,11 +153,6 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
           </Link>
         )}
 
-        {/* Pill navigation (sticky) shown on all variants */}
-          <nav ref={navRef} className={`${navPositionClass} z-30 mx-auto w-[min(1100px,92%)] rounded-[25px] bg-white overflow-visible transition-all duration-300 ${position > 16 ? 'shadow-xl mt-2 px-3 py-1.5' : 'shadow-lg mt-2 px-4 py-2'} mb-4 sm:mb-6`}>
-          <Navbar position={position} />
-        </nav>
-
         <main className={getMainPadding()}>
           {children}
         </main>
@@ -181,17 +176,15 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
             {showSaleBanner && (
               <SaleBanner position={position} />
             )}
-
-            {/* Pill navigation (sits under announcement, scrolls away) */}
-            {/* moved: nav now rendered below header for sticky behavior */}
           </header>
-
-          {/* Pill navigation (sticky, outside header so it persists while scrolling) */}
-          <nav ref={navRef} className={`${navPositionClass} z-30 mx-auto w-[min(1100px,92%)] rounded-[25px] bg-white overflow-visible transition-all duration-300 ${position > 16 ? 'shadow-xl mt-2 px-3 py-1.5' : 'shadow-lg mt-2 px-4 py-2'} mb-4 sm:mb-6`}>
-            <Navbar position={position} />
-          </nav>
         </>
       )}
+      
+      {/* Pill navigation (sticky on all pages) */}
+      <nav ref={navRef} className="sticky top-3 z-50 mx-auto w-[min(1100px,92%)] rounded-[25px] bg-white overflow-visible transition-all duration-300 shadow-lg mt-2 px-4 py-2 mb-4 sm:mb-6">
+        <Navbar position={position} />
+      </nav>
+
       <main className={`flex-grow ${getMainPadding()}`}>
         {children}
       </main>
