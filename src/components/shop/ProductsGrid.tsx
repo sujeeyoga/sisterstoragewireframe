@@ -12,9 +12,9 @@ interface ProductsGridProps {
 
 const ProductsGrid = ({ products }: ProductsGridProps) => {
   return (
-    <div className="masonry-grid columns-1 sm:columns-2 md:columns-3 gap-4 space-y-4">
+    <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
       {products.map((product) => (
-        <div key={product.id} className="masonry-item break-inside-avoid mb-4">
+        <div key={product.id}>
           <ProductCard key={product.id} product={product} />
         </div>
       ))}
