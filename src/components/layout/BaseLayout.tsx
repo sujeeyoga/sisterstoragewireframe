@@ -237,8 +237,8 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
       )}
       
       {/* Scroll-triggered pill navigation */}
-      <nav id="pillNav" className="px-4 py-2 flex items-center justify-center">
-        <div className="w-full max-w-none">
+      <nav id="pillNav" className="px-3 py-2 flex items-center justify-center">
+        <div className="w-full max-w-none flex items-center justify-between min-h-[2.5rem]">
           <Navbar position={position} />
         </div>
       </nav>
