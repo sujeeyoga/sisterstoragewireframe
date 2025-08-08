@@ -28,7 +28,7 @@ const SaleBanner = ({ position = 0 }: SaleBannerProps) => {
   return (
     <div 
       data-announcement
-      className="w-full overflow-hidden bg-transparent animate-slide-down hover:pause"
+      className="w-full overflow-hidden bg-transparent animate-slide-down"
       aria-live="polite"
       style={{
         '--ss-slide-duration': '12s',
@@ -37,10 +37,12 @@ const SaleBanner = ({ position = 0 }: SaleBannerProps) => {
     >
       <div 
         data-track
-        className="inline-flex items-center px-4 py-2 whitespace-nowrap will-change-transform hover:[animation-play-state:paused]"
+        className="inline-flex items-center py-2 whitespace-nowrap will-change-transform hover:[animation-play-state:paused]"
         style={{ 
           width: '200%',
-          gap: '1.5rem'
+          gap: '1.5rem',
+          paddingLeft: '0',
+          paddingRight: '0'
         }}
       >
         {duplicatedContent.map((item, index) => (

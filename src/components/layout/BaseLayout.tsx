@@ -142,29 +142,27 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
     <div className={`min-h-screen flex flex-col ${getBackgroundClasses()} ${className}`}>
       {shouldShowStandardHeader && (
         <>
-          {/* Hot Pink Background Layer */}
-          <div className="fixed top-0 left-0 w-full bg-[#EC036C] z-40" style={{ height: '120px' }}>
-            {/* Announcement Bar */}
+          {/* Full-bleed header wrapper */}
+          <div className="fixed top-0 inset-x-0 z-50 overflow-visible">
+            {/* Pink background layer */}
+            <div 
+              className="absolute top-0 inset-x-0 h-[120px] -z-10 pointer-events-none"
+              style={{ background: 'var(--brand-pink)' }}
+            />
+            
+            {/* Announcement bar */}
             {showSaleBanner && (
-              <div className="pt-4">
+              <div className="relative z-10 w-screen px-0 pt-4">
                 <SaleBanner position={position} />
               </div>
             )}
-          </div>
-          
-          {/* Floating Pill Navigation */}
-          <div 
-            className={`fixed top-16 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 ${
+            
+            {/* Pill navigation */}
+            <div className={`relative z-20 mx-auto rounded-[25px] bg-white overflow-visible transition-all duration-300 ${
               position > 16 
-                ? 'w-[min(1080px,88%)] shadow-xl' 
-                : 'w-[min(1100px,90%)] shadow-lg'
-            }`}
-            style={{ 
-              borderRadius: '25px',
-              marginTop: position > 16 ? '8px' : '16px'
-            }}
-          >
-            <div className="bg-white overflow-hidden" style={{ borderRadius: '25px' }}>
+                ? 'w-[min(1080px,90%)] shadow-xl mt-[-28px]' 
+                : 'w-[min(1100px,92%)] shadow-lg mt-[-32px]'
+            }`}>
               <Navbar position={position} />
             </div>
           </div>

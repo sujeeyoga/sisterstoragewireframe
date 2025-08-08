@@ -55,16 +55,15 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
           />
         </div>
 
-        {/* Center: Navigation Menu */}
         <div className="flex-1 flex justify-center">
           <div className="hidden xl:flex items-center gap-8">
-            <Link to="/gallery" className="text-black hover:text-brand-pink font-medium transition-colors">GALLERY</Link>
-            <Link to="/about" className="text-black hover:text-brand-pink font-medium transition-colors">ABOUT</Link>
-            <Link to="/shop" className="text-black hover:text-brand-pink font-medium transition-colors">SHOP</Link>
+            <Link to="/gallery" className="text-black font-medium transition-colors" style={{ color: 'black' }} onMouseEnter={(e) => e.currentTarget.style.color = 'var(--brand-pink)'} onMouseLeave={(e) => e.currentTarget.style.color = 'black'}>GALLERY</Link>
+            <Link to="/about" className="text-black font-medium transition-colors" style={{ color: 'black' }} onMouseEnter={(e) => e.currentTarget.style.color = 'var(--brand-pink)'} onMouseLeave={(e) => e.currentTarget.style.color = 'black'}>ABOUT</Link>
+            <Link to="/shop" className="text-black font-medium transition-colors" style={{ color: 'black' }} onMouseEnter={(e) => e.currentTarget.style.color = 'var(--brand-pink)'} onMouseLeave={(e) => e.currentTarget.style.color = 'black'}>SHOP</Link>
           </div>
           <div className="hidden lg:flex xl:hidden items-center gap-6">
-            <Link to="/gallery" className="text-black hover:text-brand-pink font-medium transition-colors">GALLERY</Link>
-            <Link to="/shop" className="text-black hover:text-brand-pink font-medium transition-colors">SHOP</Link>
+            <Link to="/gallery" className="text-black font-medium transition-colors" style={{ color: 'black' }} onMouseEnter={(e) => e.currentTarget.style.color = 'var(--brand-pink)'} onMouseLeave={(e) => e.currentTarget.style.color = 'black'}>GALLERY</Link>
+            <Link to="/shop" className="text-black font-medium transition-colors" style={{ color: 'black' }} onMouseEnter={(e) => e.currentTarget.style.color = 'var(--brand-pink)'} onMouseLeave={(e) => e.currentTarget.style.color = 'black'}>SHOP</Link>
           </div>
         </div>
 
@@ -77,7 +76,10 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
           >
             <ShoppingBag className="h-6 w-6" />
             {totalItems > 0 && (
-              <span className="absolute -top-1 -right-1 bg-brand-pink text-white rounded-full text-xs w-5 h-5 flex items-center justify-center font-semibold">
+              <span 
+                className="absolute -top-1 -right-1 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center font-semibold"
+                style={{ background: 'var(--brand-pink)' }}
+              >
                 {totalItems}
               </span>
             )}
