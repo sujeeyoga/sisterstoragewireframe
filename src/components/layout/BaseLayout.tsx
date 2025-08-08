@@ -181,7 +181,7 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
       )}
       
       {/* Pill navigation (sticky on all pages) */}
-      <nav ref={navRef} className="sticky top-3 z-40 mx-auto w-[min(1100px,92%)] rounded-[25px] bg-white overflow-visible transition-all duration-300 shadow-lg mt-2 px-4 py-2 mb-4 sm:mb-6">
+      <nav ref={navRef} className="sticky top-3 z-50 mx-auto w-[min(1100px,92%)] rounded-[25px] bg-white overflow-visible transition-all duration-300 shadow-lg mt-2 px-4 py-2 mb-4 sm:mb-6">
         <Navbar position={position} />
       </nav>
 
