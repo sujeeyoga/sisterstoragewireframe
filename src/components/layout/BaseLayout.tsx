@@ -143,26 +143,24 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
       {shouldShowStandardHeader && (
         <>
           {/* Full-bleed header wrapper */}
-          <header className="fixed top-0 inset-x-0 z-50 overflow-visible">
-            {/* Pink background layer */}
+          <header className="relative inset-x-0 z-50 overflow-visible">
+            {/* Pink background layer (fixed, full-bleed) */}
             <div 
-              className="absolute top-0 inset-x-0 h-[140px] -z-10 pointer-events-none"
-              style={{ background: 'var(--brand-pink)' }}
+              className="fixed top-0 inset-x-0 h-[140px] bg-[var(--brand-pink)] z-0 pointer-events-none"
             />
             
-            {/* Announcement bar */}
+            {/* Announcement bar (scrolls away) */}
             {showSaleBanner && (
               <SaleBanner position={position} />
             )}
             
-            {/* Pill navigation */}
-            <nav className="sticky top-3 z-20 mx-auto w-[min(1100px,92%)] rounded-[25px] bg-white shadow-lg -mt-6 overflow-visible transition-all duration-300">
+            {/* Pill navigation (sticky) */}
+            <nav className={`sticky top-3 z-20 mx-auto w-[min(1100px,92%)] rounded-[25px] bg-white overflow-visible transition-all duration-300 ${
+              position > 16 ? 'shadow-xl -mt-5' : 'shadow-lg -mt-6'
+            }`}>
               <Navbar position={position} />
             </nav>
           </header>
-          
-          {/* Spacer to prevent content from being hidden behind header */}
-          <div className="h-32 sm:h-36" />
         </>
       )}
       <main className={`flex-grow ${getMainPadding()}`}>

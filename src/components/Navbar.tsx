@@ -17,8 +17,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
   const navigate = useNavigate();
   
   // Calculate scroll-based styling for sticky positioning
-  const isSticky = position > 140; // When announcement bar scrolls away
-  const shadowDepth = isSticky ? 'shadow-xl' : 'shadow-lg';
+  const isSticky = position > 16; // Slightly after scroll begins
 
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
