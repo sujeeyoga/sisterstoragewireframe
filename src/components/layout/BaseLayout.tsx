@@ -142,9 +142,9 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
     <div className={`min-h-screen flex flex-col ${getBackgroundClasses()} ${className}`}>
       {shouldShowStandardHeader && (
         <div 
-          className="header-container fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+          className="header-container fixed inset-x-0 top-0 z-50 transition-all duration-300 bg-background"
           style={{
-            transform: `${headerVisibilityTransform} scale(${headerShrinkFactor})`,
+            transform: headerVisibilityTransform,
             transformOrigin: 'top center',
             boxShadow: `0 4px 20px rgba(0,0,0,${headerShadowOpacity})`,
           }}

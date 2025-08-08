@@ -47,7 +47,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
           isScrolled ? 'py-0' : 'py-1'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between">
+        <div className="w-full px-4 sm:px-6 lg:px-8 py-2 flex items-center justify-between">
           {/* Back Button (only on mobile) */}
           {isMobile && (
             <button
