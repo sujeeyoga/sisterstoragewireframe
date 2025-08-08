@@ -3,11 +3,11 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ShoppingBag, Check, Bookmark } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { useCart } from "@/contexts/CartContext";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import ProductImage from "../product/ProductImage";
+import { productTaxonomyMap } from "@/data/product-taxonomy";
 
 export interface Product {
   id: string;
@@ -31,6 +31,8 @@ interface ProductCardProps {
 const ProductCard = ({ product }: ProductCardProps) => {
   const { addItem } = useCart();
   const { toast } = useToast();
+  const taxonomy = productTaxonomyMap[product.id] ?? undefined;
+  const attrs = taxonomy?.attributes;
   
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -60,11 +62,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
               backgroundColor: product.color,
             }}
           >
-            <span className="text-white font-bold">Sister Storage</span>
+            <span className="text-background font-bold">Sister Storage</span>
           </div>
           
           {/* Hover Overlay */}
-          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+          <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/10 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
             <Button 
               variant="buy"
               size="sm"
@@ -79,7 +81,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
           <Button 
             size="icon"
             variant="ghost" 
-            className="absolute top-2 right-2 rounded-full bg-white bg-opacity-70 hover:bg-opacity-100 opacity-0 group-hover:opacity-100 transition-all duration-300"
+            className="absolute top-2 right-2 rounded-full bg-background/70 hover:bg-background opacity-0 group-hover:opacity-100 transition-all duration-300"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -95,16 +97,16 @@ const ProductCard = ({ product }: ProductCardProps) => {
           {/* Product badges */}
           <div className="absolute top-3 left-3 flex flex-col gap-2">
             {product.bestSeller && (
-              <Badge className="bg-amber-500 text-white">Best Seller</Badge>
+              <Badge>Best Seller</Badge>
             )}
             {product.newArrival && (
-              <Badge className="bg-green-500 text-white">New Arrival</Badge>
+              <Badge variant="secondary">New Arrival</Badge>
             )}
             {product.limitedEdition && (
-              <Badge className="bg-red-500 text-white">Limited Edition</Badge>
+              <Badge variant="destructive">Limited Edition</Badge>
             )}
             {product.stock <= 5 && (
-              <Badge className="bg-gray-700 text-white">Only {product.stock} left</Badge>
+              <Badge variant="outline">Only {product.stock} left</Badge>
             )}
           </div>
         </div>
@@ -116,24 +118,46 @@ const ProductCard = ({ product }: ProductCardProps) => {
             <span className="font-bold text-lg">${product.price.toFixed(2)}</span>
           </div>
           
-          <p className="text-gray-600 text-sm mb-3 line-clamp-2">{product.description}</p>
+          <p className="text-muted-foreground text-sm mb-3 line-clamp-2">{product.description}</p>
           
           {/* Material tag */}
-          <div className="mb-3 text-sm text-gray-500">
+          <div className="mb-3 text-sm text-muted-foreground">
             {product.material}
           </div>
           
           {/* Feature list */}
           {product.features.length > 0 && (
-            <div className="text-sm text-gray-600 flex items-center gap-1 mb-3">
-              <Check className="h-4 w-4 text-pink-600" /> {product.features[0]}
+            <div className="text-sm text-muted-foreground flex items-center gap-1 mb-3">
+              <Check className="h-4 w-4 text-[hsl(var(--primary))]" /> {product.features[0]}
+            </div>
+          )}
+          
+          {/* Attribute chips */}
+          {attrs && (
+            <div className="mb-3 flex flex-wrap gap-2">
+              {(() => {
+                const chips: React.ReactNode[] = [];
+                const push = (label: string, vals?: unknown) => {
+                  const arr = Array.isArray(vals) ? vals : vals ? [vals] : [];
+                  arr.forEach((v, i) =>
+                    chips.push(
+                      <Badge key={`${label}-${String(v)}-${i}`} variant="outline" className="text-xs">
+                        {label}: {String(v)}
+                      </Badge>
+                    )
+                  );
+                };
+                push("Rod", attrs.rodCount);
+                push("Size", attrs.size);
+                push("Use", attrs.useCase);
+                push("Bundle", attrs.bundleSize);
+                return chips;
+              })()}
             </div>
           )}
           
           <div className="flex justify-between items-center">
-            <span className="text-sm font-medium bg-pink-100 text-pink-700 px-3 py-1 rounded-full">
-              {product.category}
-            </span>
+            <Badge variant="outline">{product.category}</Badge>
           </div>
         </CardContent>
       </Link>
