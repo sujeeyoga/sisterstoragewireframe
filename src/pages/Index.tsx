@@ -11,7 +11,7 @@ import Testimonials from "@/components/Testimonials";
 import Newsletter from "@/components/Newsletter";
 import InstagramUGC from "@/components/InstagramUGC";
 import FeaturedGrid from "@/components/FeaturedGrid";
-import StyledBySisters from "@/components/StyledBySisters";
+
 import ParallaxContainer from "@/components/ParallaxContainer";
 import EnhancedScrollFade from "@/components/ui/enhanced-scroll-fade";
 
@@ -63,13 +63,6 @@ const Index = () => {
       <EnhancedScrollFade preset="medium" delay={0.1} once={true}>
         <Section spacing="lg" width="contained" background="white">
           <Testimonials />
-        </Section>
-      </EnhancedScrollFade>
-      
-      {/* Styled by Sisters - Community showcase */}
-      <EnhancedScrollFade preset="medium" delay={0.1} once={true}>
-        <Section spacing="md" width="contained" background="white">
-          <StyledBySisters />
         </Section>
       </EnhancedScrollFade>
       
