@@ -45,11 +45,11 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
 
   return (
     <>
-      <div className={`w-full relative flex items-center justify-between transition-all duration-300 ${
+      <div className={`w-full grid grid-cols-[1fr_auto_1fr] items-center transition-all duration-300 ${
         isSticky ? 'py-2 px-4' : 'py-3 px-4'
       }`}>
         {/* Left: Logo */}
-        <div className="shrink-0">
+        <div className="justify-self-start shrink-0">
           <EnhancedLogo 
             size={isSticky ? "lg" : "xl"} 
             scrolled={isSticky}
@@ -58,7 +58,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
           />
         </div>
 
-        <div className="absolute left-1/2 -translate-x-1/2 flex justify-center">
+        <div className="justify-self-center flex justify-center">
           {/* Full menu ≥1280px */}
           <div className="hidden xl:flex items-center gap-8">
             <Link to="/gallery" className="text-black font-medium transition-colors hover:text-[hsl(var(--brand-pink))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] rounded px-2 py-1">GALLERY</Link>
@@ -74,7 +74,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
         </div>
 
         {/* Right: Cart and Menu */}
-        <div className="shrink-0 flex items-center gap-2">
+        <div className="justify-self-end shrink-0 flex items-center gap-2">
           <button
             onClick={() => setCartOpen(true)}
             className="p-2 text-black hover:bg-black/10 rounded transition-colors relative focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] min-h-[44px] min-w-[44px] flex items-center justify-center"
