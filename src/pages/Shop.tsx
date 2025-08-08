@@ -12,7 +12,7 @@ import { products, benefits } from "@/data/products";
 import { productTaxonomyMap } from "@/data/product-taxonomy";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerFooter, DrawerClose, DrawerTrigger } from "@/components/ui/drawer";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
-import Navbar from "@/components/Navbar";
+import FloatingSearchModule from "@/components/FloatingSearchModule";
 
 const Shop = () => {
   
@@ -169,16 +169,17 @@ const Shop = () => {
       />
       
       <Section spacing="lg" width="contained" background="white">
-        {/* Desktop: pill NAV (non-sticky) */}
-        <nav className="hidden md:block mx-auto w-[min(1100px,92%)] rounded-[25px] bg-white overflow-visible transition-all duration-300 shadow-lg mt-2 px-4 py-2 mb-6">
-          <Navbar position={0} />
-        </nav>
-
-        {/* Mobile: NAV + Filters + Sort sticky as one unit */}
-        <div className="md:hidden sticky top-0 z-40 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-2 border-b mb-4">
-          <nav className="mx-auto w-[min(1100px,92%)] rounded-[25px] bg-white transition-all duration-300 shadow-lg px-4 py-2 mb-2">
-            <Navbar position={0} />
-          </nav>
+        {/* Floating Search Module */}
+        <div className="sticky top-4 z-50 mx-auto w-[min(1100px,92%)] mb-6">
+          <FloatingSearchModule 
+            onSearch={(query) => {
+              // Handle search functionality here
+              console.log('Searching for:', query);
+            }}
+          />
+        </div>
+        {/* Mobile: Filters + Sort controls */}
+        <div className="md:hidden sticky top-20 z-40 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-2 border-b mb-4">
           <div className="flex gap-2">
             <Drawer>
               <DrawerTrigger className="flex-1 rounded-md border px-3 py-2">Filters</DrawerTrigger>
