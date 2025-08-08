@@ -22,7 +22,7 @@ const ScrollIndicator = ({ scrollPosition }: ScrollIndicatorProps) => {
       }}
       onClick={handleScrollDown}
     >
-      <span className="text-white text-base md:text-lg font-medium text-center">Discover More</span>
+      
     </div>
   );
 };
