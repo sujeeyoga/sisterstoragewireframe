@@ -124,17 +124,14 @@ const FloatingSearchModule = ({ position = 0, onSearch, activeCategorySlug, onSe
           isExpanded ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'
         }`}>
           <div className="px-6 pb-6 space-y-6 border-t border-gray-100 bg-white">
-            {/* Search bar for all devices when expanded */}
-            <form onSubmit={handleSearch} className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="text"
-                placeholder="Search products..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-4 py-3 rounded-full border-0 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-[hsl(var(--primary))] w-full"
+            {/* Logo section when expanded */}
+            <div className="flex justify-center">
+              <EnhancedLogo 
+                size="xl" 
+                className="animate-fade-in"
+                loading="eager"
               />
-            </form>
+            </div>
 
             {/* Storage categories section */}
             <div className="space-y-4">
