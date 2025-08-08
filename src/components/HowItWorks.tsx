@@ -39,7 +39,7 @@ const HowItWorks = () => {
           </div>
         </ScrollFadeContainer>
         
-        <div className="px-4 md:px-0 columns-1 md:columns-2 gap-6 [column-fill:_balance]">
+        <div className="px-4 md:px-0 columns-2 gap-4 sm:gap-6 [column-fill:_balance]">
           {steps.map((step, index) => (
             <ScrollFadeContainer 
               key={step.id} 
@@ -54,7 +54,7 @@ const HowItWorks = () => {
                     <span className="text-[#FF8021] font-bold">{step.id}</span>
                   </div>
                   <div 
-                    className={`${index === 0 ? 'h-72' : index === 1 ? 'h-56' : 'h-64'} w-full rounded-lg mb-4 flex items-center justify-center text-white font-bold`}
+                    className={`${index === 0 ? 'h-40 md:h-72' : index === 1 ? 'h-36 md:h-56' : 'h-44 md:h-64'} w-full rounded-lg mb-4 flex items-center justify-center text-white font-bold`}
                     style={{ backgroundColor: step.color }}
                   >
                     Step {step.id}
