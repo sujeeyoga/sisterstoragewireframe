@@ -169,7 +169,7 @@ const FeaturedItems = () => {
                       <p className="text-gray-600 text-sm mb-4 line-clamp-2 h-10">{item.description}</p>
                       <Button 
                         variant="buy"
-                        className="w-full flex items-center justify-center gap-2"
+                        size="buy"
                         onClick={() => handleAddToCart(item)}
                       >
                         <ShoppingBag className="h-4 w-4" />

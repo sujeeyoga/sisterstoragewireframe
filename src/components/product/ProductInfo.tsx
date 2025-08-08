@@ -56,22 +56,22 @@ const ProductInfo = ({ product, quantity, setQuantity, onAddToCart, onBuyNow }: 
         {/* Add to Cart Button */}
         <Button 
           variant="buy"
-          className="w-full py-4"
+          size="buy"
           disabled={!product.stock}
           onClick={onAddToCart}
         >
-          <ShoppingBag className="h-3 w-3" />
+          <ShoppingBag className="h-4 w-4" />
           Add to Cart
         </Button>
 
         {/* Buy Now Button */}
         <Button 
           variant="buy"
-          className="w-full py-4"
+          size="buy"
           disabled={!product.stock}
           onClick={onBuyNow}
         >
-          <CreditCard className="h-3 w-3" />
+          <CreditCard className="h-4 w-4" />
           Buy Now
         </Button>
       </div>

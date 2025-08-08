@@ -29,15 +29,16 @@ const buttonVariants = cva(
         "ghost-pink": "bg-transparent text-[#E90064] hover:bg-[#E90064] hover:text-white active:scale-[0.98]",
         "ghost-orange": "bg-transparent text-[#FF8021] hover:bg-[#FF8021] hover:text-white active:scale-[0.98]",
         "ghost-black": "bg-transparent text-black hover:bg-black hover:text-white active:scale-[0.98]",
-        // Buy variant - standard rectangle white background, black text
-        buy: "bg-background text-foreground border border-foreground rounded-none hover:bg-foreground hover:text-background active:scale-[0.98]",
+        // Enhanced Buy variant - modern, responsive, with animations
+        buy: "bg-white text-black border-2 border-black rounded-md font-bold uppercase tracking-wide shadow-lg hover:bg-black hover:text-white hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 ease-out w-full sm:w-auto",
       },
       size: {
-        default: "h-7 px-4 py-2",
-        sm: "h-6 rounded-md px-3 py-1",
-        lg: "h-9 rounded-md px-5 py-2",
-        icon: "h-7 w-7",
-        full: "w-full h-9 px-5 py-2",
+        default: "h-10 px-6 py-3",
+        sm: "h-8 px-4 py-2",
+        lg: "h-12 px-8 py-4",
+        icon: "h-10 w-10",
+        full: "w-full h-12 px-8 py-4",
+        buy: "h-12 px-6 py-3 text-base",
       },
     },
     defaultVariants: {

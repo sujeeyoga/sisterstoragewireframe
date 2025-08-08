@@ -109,7 +109,8 @@ const BestSeller = () => {
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
                   <Button 
                     variant="buy"
-                    className="px-6 py-3 transform scale-95 group-hover:scale-100 transition-all duration-300"
+                    size="buy"
+                    className="transform scale-95 group-hover:scale-100"
                     onClick={() => handleBuyNow(item)}
                   >
                     <Plus className="h-4 w-4 mr-2" />
@@ -145,7 +146,7 @@ const BestSeller = () => {
                 {/* Buy Button */}
                 <Button 
                   variant="buy"
-                  className="w-full py-3 text-lg flex items-center justify-center gap-2 transition-all duration-300"
+                  size="buy"
                   onClick={() => handleBuyNow(item)}
                 >
                   <ShoppingBag className="h-5 w-5" />
