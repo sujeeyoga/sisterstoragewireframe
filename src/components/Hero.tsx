@@ -30,10 +30,23 @@ const Hero = () => {
         </div>
         
         {/* Hero Image with White Container - Proper spacing and sizing */}
-        <div className="flex-1 flex justify-center lg:justify-end items-center px-6 lg:px-8 max-w-sm animate-fade-in" style={{ animationDelay: '0.3s' }}>
-          <div className="w-full flex justify-center">
-            <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white text-[hsl(var(--brand-pink))] border-2 border-white shadow-lg hover:shadow-xl transition-all duration-300" aria-label="Beautiful Organization title pill">
-              <span className="text-sm lg:text-base font-black tracking-tight">BEAUTIFUL ORGANIZATION</span>
+        <div className="flex-1 flex justify-center lg:justify-end items-center px-6 lg:px-8 max-w-xl animate-fade-in" style={{ animationDelay: '0.3s' }}>
+          <div className="bg-white rounded-3xl p-6 lg:p-8 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.3)] w-full max-w-lg transform hover:scale-[1.02] transition-all duration-500 ease-out hover:shadow-[0_35px_60px_-12px_rgba(0,0,0,0.4)]">
+            <div className="aspect-square overflow-hidden rounded-2xl mb-8 lg:mb-10 shadow-lg relative group">
+              <img
+                src="https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-27-scaled.jpg"
+                alt="Sister Storage lifestyle organization"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                loading="eager"
+                decoding="async"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            </div>
+            <div className="text-center space-y-4">
+              <h3 className="text-xl lg:text-2xl font-black text-[hsl(var(--brand-pink))] tracking-tight leading-tight">BEAUTIFUL ORGANIZATION</h3>
+              <p className="text-gray-700 text-sm lg:text-base leading-relaxed font-medium">
+                Transform your space with our thoughtfully designed storage solutions. Made by sisters, for sisters.
+              </p>
             </div>
           </div>
         </div>
