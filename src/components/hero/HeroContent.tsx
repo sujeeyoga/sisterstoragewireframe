@@ -9,6 +9,9 @@ interface HeroContentProps {
 }
 
 const HeroContent = ({ scrollPosition }: HeroContentProps) => {
+  const progress = Math.min(scrollPosition / 600, 1);
+  const scaleX = 1 - progress * 0.2; // shrink up to 20% horizontally as user scrolls
+
   return (
     <div className="w-full">
       <AnimatedText
@@ -38,7 +41,8 @@ const HeroContent = ({ scrollPosition }: HeroContentProps) => {
 
       <div className="flex flex-col sm:flex-row gap-8 mb-6">
         <Button 
-          className="px-3 py-2 text-sm w-auto sm:w-auto group relative overflow-hidden transition-all duration-300 animate-breath-fade-up-4 bg-white text-black hover:bg-[#E90064] hover:text-white border-2 border-white hover:border-[#E90064] font-black shadow-xl hover:shadow-2xl"
+          className="px-3 py-2 text-sm w-full sm:w-auto group relative overflow-hidden transition-all duration-300 animate-breath-fade-up-4 bg-white text-black hover:bg-[#E90064] hover:text-white border-2 border-white hover:border-[#E90064] font-black shadow-xl hover:shadow-2xl"
+          style={{ transform: `scaleX(${scaleX})` }}
           asChild
         >
           <Link to="/shop" className="flex items-center justify-center gap-2">
