@@ -46,7 +46,7 @@ const SaleBanner = ({ position = 0 }: SaleBannerProps) => {
         }}
       >
         {duplicatedContent.map((item, index) => (
-          <React.Fragment key={index}>
+          <span key={index} className="inline-flex items-center" data-group>
             <div className="flex items-center" data-item>
               <BadgePercent className="h-3 w-3 text-white mr-1 shrink-0" />
               <span 
@@ -63,7 +63,7 @@ const SaleBanner = ({ position = 0 }: SaleBannerProps) => {
             {index < duplicatedContent.length - 1 && (
               <span className="text-white opacity-50" data-sep>•</span>
             )}
-          </React.Fragment>
+          </span>
         ))}
       </div>
     </div>

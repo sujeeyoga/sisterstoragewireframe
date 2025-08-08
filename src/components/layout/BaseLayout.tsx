@@ -155,7 +155,7 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
             )}
             
             {/* Pill navigation (sticky) */}
-            <nav className={`sticky top-3 z-20 mx-auto w-[min(1100px,92%)] rounded-[25px] bg-white overflow-visible transition-all duration-300 ${
+            <nav className={`sticky top-[12px] z-20 mx-auto w-[min(1100px,92%)] rounded-[25px] bg-white overflow-visible transition-all duration-300 ${
               position > 16 ? 'shadow-xl -mt-5' : 'shadow-lg -mt-6'
             }`}>
               <Navbar position={position} />
