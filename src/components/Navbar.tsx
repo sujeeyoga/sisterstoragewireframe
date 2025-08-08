@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Menu, X, ShoppingBag, Mail, ArrowLeft, Home, Package } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
 import EnhancedLogo from '@/components/ui/enhanced-logo';
 
@@ -15,7 +15,13 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
   const isMobile = useIsMobile();
   const { totalItems, setIsOpen: setCartOpen } = useCart();
   const navigate = useNavigate();
-  
+  const location = useLocation();
+
+  // Scroll to top on route change
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, [location.pathname]);
+
   // Calculate scroll-based styling for sticky positioning
   const isSticky = position > 16; // Slightly after scroll begins
 
