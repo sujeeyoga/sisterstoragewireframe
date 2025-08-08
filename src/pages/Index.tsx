@@ -82,7 +82,7 @@ const Index = () => {
       
       {/* Delivery - Final service details */}
       <EnhancedScrollFade preset="subtle" once={true}>
-        <Section spacing="md" width="contained" background="white">
+        <Section spacing="md" width="contained" background="white" id="delivery">
           <Delivery />
         </Section>
       </EnhancedScrollFade>

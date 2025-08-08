@@ -106,7 +106,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
 
       {/* Mobile Menu Slide-in from left with proper background and z-index */}
       <div 
-        className={`md:hidden fixed inset-0 z-60 transform transition-all duration-300 ease-in-out ${
+        className={`md:hidden fixed inset-0 z-[60] transform transition-all duration-300 ease-in-out ${
           mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
         aria-hidden={!mobileMenuOpen}
@@ -120,7 +120,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
             { name: 'HOME', path: '/', icon: Home },
             { name: 'GALLERY', path: '/gallery' },
             { name: 'ABOUT US', path: '/about' },
-            { name: 'SHIPPING', path: '#delivery', icon: Package },
+            { name: 'SHIPPING', path: '/#delivery', icon: Package },
             { name: 'SHOPPING CART', path: '#', icon: ShoppingBag, onClick: () => { setMobileMenuOpen(false); setCartOpen(true); } }
           ].map((item) => (
             item.onClick ? (

@@ -56,7 +56,7 @@ const Newsletter = () => {
             <Button 
               type="submit" 
               disabled={isLoading}
-              className="sm:w-auto w-full"
+              className="w-auto"
             >
               {isLoading ? "Signing Up..." : "Sign Up"}
             </Button>
