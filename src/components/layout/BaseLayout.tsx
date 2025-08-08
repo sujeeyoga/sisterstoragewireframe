@@ -37,6 +37,8 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
   const location = useLocation();
   const { isAtTop, position, direction } = useScrollDirection(10);
   const isMobile = useIsMobile();
+  const isHome = location.pathname === '/';
+  const navPositionClass = isHome ? 'relative top-0' : 'sticky top-[12px]';
 
   // Track nav element to compute a global offset for other sticky bars
   const navRef = useRef<HTMLDivElement | null>(null);
@@ -152,7 +154,7 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
         )}
 
         {/* Pill navigation (sticky) shown on all variants */}
-        <nav ref={navRef} className={`sticky top-[12px] z-30 mx-auto w-[min(1100px,92%)] rounded-[25px] bg-white overflow-visible transition-all duration-300 ${position > 16 ? 'shadow-xl mt-2 px-3 py-1.5' : 'shadow-lg mt-2 px-4 py-2'} mb-4 sm:mb-6`}>
+          <nav ref={navRef} className={`${navPositionClass} z-30 mx-auto w-[min(1100px,92%)] rounded-[25px] bg-white overflow-visible transition-all duration-300 ${position > 16 ? 'shadow-xl mt-2 px-3 py-1.5' : 'shadow-lg mt-2 px-4 py-2'} mb-4 sm:mb-6`}>
           <Navbar position={position} />
         </nav>
 
@@ -182,7 +184,7 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
           </header>
 
           {/* Pill navigation (sticky, outside header so it persists while scrolling) */}
-          <nav ref={navRef} className={`sticky top-[12px] z-30 mx-auto w-[min(1100px,92%)] rounded-[25px] bg-white overflow-visible transition-all duration-300 ${position > 16 ? 'shadow-xl mt-2 px-3 py-1.5' : 'shadow-lg mt-2 px-4 py-2'} mb-4 sm:mb-6`}>
+          <nav ref={navRef} className={`${navPositionClass} z-30 mx-auto w-[min(1100px,92%)] rounded-[25px] bg-white overflow-visible transition-all duration-300 ${position > 16 ? 'shadow-xl mt-2 px-3 py-1.5' : 'shadow-lg mt-2 px-4 py-2'} mb-4 sm:mb-6`}>
             <Navbar position={position} />
           </nav>
         </>
