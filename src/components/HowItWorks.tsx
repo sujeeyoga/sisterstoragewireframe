@@ -31,15 +31,15 @@ const HowItWorks = () => {
       <div className="container-custom">
         <ScrollFadeContainer scrollFadeDirection="both" threshold={0.2} duration={0.8}>
           <div className="text-center max-w-lg mx-auto mb-12 md:mb-16 px-4">
-            <span className="text-[#E90064] font-medium">Simple Process</span>
-            <h2 className="font-bold mt-2 mb-3">How It Works</h2>
+            <span className="text-[hsl(var(--brand-pink))] font-semibold uppercase tracking-wide text-xs">Process</span>
+            <h2 className="text-3xl md:text-4xl font-black mt-2 mb-3 tracking-tight">How It Works</h2>
             <p className="text-gray-600">
               Transform your space in three easy steps with our beautiful storage solutions
             </p>
           </div>
         </ScrollFadeContainer>
         
-        <div className="px-4 md:px-0 columns-2 gap-4 sm:gap-6 [column-fill:_balance]">
+        <div className="px-4 md:px-0 columns-1 sm:columns-2 gap-5 sm:gap-6 [column-fill:_balance]">
           {steps.map((step, index) => (
             <ScrollFadeContainer 
               key={step.id} 
@@ -49,23 +49,22 @@ const HowItWorks = () => {
               delay={index * 0.15}
             >
               <article className="mb-6 break-inside-avoid rounded-xl bg-white shadow-sm ring-1 ring-black/5 overflow-hidden">
-                <div className="p-6 text-center">
-                  <div className="mx-auto mb-4 w-14 h-14 rounded-full flex items-center justify-center" style={{ backgroundColor: '#FFDCBD' }}>
-                    <span className="text-[#FF8021] font-bold">{step.id}</span>
+                <div className="p-6 text-left">
+                  <div className="mb-3">
+                    <span className="inline-flex items-center rounded-full bg-[hsl(var(--brand-pink))]/10 text-[hsl(var(--brand-pink))] px-3 py-1 text-xs font-bold tracking-wide">
+                      Step {step.id}
+                    </span>
                   </div>
+                  <h3 className="text-lg md:text-xl font-bold leading-snug mb-2">{step.title}</h3>
+                  <p className="text-gray-600 mb-4">{step.description}</p>
                   <div 
-                    className={`${index === 0 ? 'h-40 md:h-72' : index === 1 ? 'h-36 md:h-56' : 'h-44 md:h-64'} w-full rounded-lg mb-4 flex items-center justify-center text-white font-bold`}
+                    className={`${index === 0 ? 'h-40 md:h-72' : index === 1 ? 'h-36 md:h-56' : 'h-44 md:h-64'} w-full rounded-lg mb-4`} 
                     style={{ backgroundColor: step.color }}
-                  >
-                    Step {step.id}
-                  </div>
-                  
-                  <h3 className="font-bold mb-2">{step.title}</h3>
-                  <p className="text-gray-600">{step.description}</p>
-                  
-                  <div className="mt-4 flex items-center justify-center text-[hsl(var(--brand-pink))]">
-                    <Check className="h-5 w-5 mr-1" />
-                    <span className="text-sm font-medium">Easy & Intuitive</span>
+                    aria-hidden="true"
+                  />
+                  <div className="mt-2 flex items-center gap-2 text-[hsl(var(--brand-pink))]">
+                    <Check className="h-4 w-4" />
+                    <span className="text-xs font-medium uppercase tracking-wide">Easy & Intuitive</span>
                   </div>
                 </div>
               </article>
