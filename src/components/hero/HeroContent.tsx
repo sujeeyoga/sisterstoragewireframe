@@ -43,7 +43,7 @@ const HeroContent = ({ scrollPosition }: HeroContentProps) => {
         <Button 
           variant="buy"
           size="buy"
-          className="w-full sm:w-auto animate-breath-fade-up-4"
+          className="w-full sm:w-1/2 animate-breath-fade-up-4"
           style={{ transform: `scaleX(${scaleX})` }}
           asChild
         >
