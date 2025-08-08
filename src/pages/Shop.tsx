@@ -169,43 +169,43 @@ const Shop = () => {
       
       <Section spacing="lg" width="contained" background="white">
         {/* Mobile: Filters + Sort sticky bar */}
-        <div className="md:hidden sticky top-16 z-40 bg-background/90 backdrop-blur p-2 border-b mb-4">
-          <div className="flex gap-2">
-            <Drawer>
-              <DrawerTrigger className="flex-1 rounded-md border px-3 py-2">Filters</DrawerTrigger>
-              <DrawerContent>
-                <DrawerHeader>
-                  <DrawerTitle>Filters</DrawerTitle>
-                </DrawerHeader>
-                <div className="p-4">
-                  <ShopFilters filters={filters} onChange={handleFiltersChange} />
-                </div>
-                <DrawerFooter>
-                  <DrawerClose className="rounded-md border px-3 py-2">Apply</DrawerClose>
-                  <button
-                    className="text-sm text-muted-foreground"
-                    onClick={() =>
-                      handleFiltersChange({ category: undefined, rodCount: [], size: [], useCase: [], bundleSize: [] })
-                    }
-                  >
-                    Clear all
-                  </button>
-                </DrawerFooter>
-              </DrawerContent>
-            </Drawer>
+          <div className="md:hidden sticky z-40 bg-background p-2 border-b mb-4" style={{ top: 'var(--sticky-nav-offset, 88px)' }}>
+            <div className="flex gap-2">
+              <Drawer>
+                <DrawerTrigger className="flex-1 rounded-md border px-3 py-2">Filters</DrawerTrigger>
+                <DrawerContent>
+                  <DrawerHeader>
+                    <DrawerTitle>Filters</DrawerTitle>
+                  </DrawerHeader>
+                  <div className="p-4">
+                    <ShopFilters filters={filters} onChange={handleFiltersChange} />
+                  </div>
+                  <DrawerFooter>
+                    <DrawerClose className="rounded-md border px-3 py-2">Apply</DrawerClose>
+                    <button
+                      className="text-sm text-muted-foreground"
+                      onClick={() =>
+                        handleFiltersChange({ category: undefined, rodCount: [], size: [], useCase: [], bundleSize: [] })
+                      }
+                    >
+                      Clear all
+                    </button>
+                  </DrawerFooter>
+                </DrawerContent>
+              </Drawer>
 
-            <Select value={sort} onValueChange={handleSortChange}>
-              <SelectTrigger className="w-40">
-                <SelectValue placeholder="Sort" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="relevance">Relevance</SelectItem>
-                <SelectItem value="price-asc">Price: Low to High</SelectItem>
-                <SelectItem value="price-desc">Price: High to Low</SelectItem>
-              </SelectContent>
-            </Select>
+              <Select value={sort} onValueChange={handleSortChange}>
+                <SelectTrigger className="w-40">
+                  <SelectValue placeholder="Sort" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="relevance">Relevance</SelectItem>
+                  <SelectItem value="price-asc">Price: Low to High</SelectItem>
+                  <SelectItem value="price-desc">Price: High to Low</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-        </div>
 
         {/* Desktop: Filters sidebar + Sort control */}
         <div className="hidden md:flex items-center justify-end mb-4">
