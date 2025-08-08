@@ -39,7 +39,7 @@ const HowItWorks = () => {
           </div>
         </ScrollFadeContainer>
         
-        <div className="px-4 md:px-0 columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-5 sm:gap-6 [column-fill:_balance]">
+        <div className="px-4 md:px-0 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
           {steps.map((step, index) => (
             <ScrollFadeContainer 
               key={step.id} 
@@ -49,22 +49,16 @@ const HowItWorks = () => {
               delay={index * 0.15}
             >
               <article className="mb-6 break-inside-avoid rounded-xl bg-white shadow-sm ring-1 ring-black/5 overflow-hidden">
-                <div className="p-6 text-left">
-                  <div className="mb-3">
-                    <span className="inline-flex items-center rounded-full bg-[hsl(var(--brand-pink))]/10 text-[hsl(var(--brand-pink))] px-3 py-1 text-xs font-bold tracking-wide">
+                <div className="relative w-full aspect-square overflow-hidden">
+                  <div className="absolute inset-0" style={{ backgroundColor: step.color }} aria-hidden="true" />
+                  <div className="absolute top-3 left-3">
+                    <span className="inline-flex items-center rounded-full bg-white/80 text-[hsl(var(--brand-pink))] px-2.5 py-1 text-[11px] font-bold tracking-wide">
                       Step {step.id}
                     </span>
                   </div>
-                  <h3 className="text-lg md:text-xl font-bold leading-snug mb-2">{step.title}</h3>
-                  <p className="text-gray-600 mb-4">{step.description}</p>
-                  <div 
-                    className={`${index === 0 ? 'h-40 md:h-72' : index === 1 ? 'h-36 md:h-56' : 'h-44 md:h-64'} w-full rounded-lg mb-4`} 
-                    style={{ backgroundColor: step.color }}
-                    aria-hidden="true"
-                  />
-                  <div className="mt-2 flex items-center gap-2 text-[hsl(var(--brand-pink))]">
-                    <Check className="h-4 w-4" />
-                    <span className="text-xs font-medium uppercase tracking-wide">Easy & Intuitive</span>
+                  <div className="absolute inset-x-0 bottom-0 p-3 md:p-4 bg-gradient-to-t from-black/50 via-black/10 to-transparent text-white">
+                    <h3 className="text-base md:text-lg font-bold leading-snug">{step.title}</h3>
+                    <p className="hidden sm:block text-xs md:text-sm opacity-90">{step.description}</p>
                   </div>
                 </div>
               </article>
