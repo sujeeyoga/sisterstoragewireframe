@@ -2,9 +2,11 @@
 import React, { useState } from 'react';
 import { useOptimizedParallax } from '@/hooks/use-optimized-parallax';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useViewportHeight } from '@/hooks/use-viewport-height';
 
 const ParallaxContainer = () => {
   const isMobile = useIsMobile();
+  useViewportHeight();
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   
@@ -45,16 +47,16 @@ const ParallaxContainer = () => {
     setImageError(true);
   };
 
-  // Mobile-optimized height and text sizes
-  const containerHeight = isMobile ? 'h-[70vh] min-h-[500px]' : 'h-screen';
-
+  // Use CSS variable-driven viewport height for reliable mobile VH
+  // Fallback to h-screen via class; inline style uses --vh
   return (
     <section 
       ref={mainRef}
-      className={`relative ${containerHeight} overflow-hidden w-full`}
+      className="relative h-screen overflow-hidden w-full"
       aria-label="Parallax showcase section"
       style={{
-        marginTop: '0' // Remove conflicting margins
+        height: 'calc(var(--vh, 1vh) * 100)',
+        marginTop: '0'
       }}
     >
       {/* Background Layer with Optimized Mobile Performance */}
