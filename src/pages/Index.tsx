@@ -14,6 +14,7 @@ import FeaturedGrid from "@/components/FeaturedGrid";
 
 import ParallaxContainer from "@/components/ParallaxContainer";
 import EnhancedScrollFade from "@/components/ui/enhanced-scroll-fade";
+import { Button } from "@/components/ui/button";
 
 
 const Index = () => {
@@ -50,6 +51,17 @@ const Index = () => {
       <EnhancedScrollFade preset="medium" delay={0.1} once={true}>
         <Section spacing="lg" width="contained" background="white">
           <HowItWorks />
+        </Section>
+      </EnhancedScrollFade>
+
+      {/* Our Story CTA - Pink button on white */}
+      <EnhancedScrollFade preset="subtle" delay={0.05} once={true}>
+        <Section spacing="md" width="contained" background="white">
+          <div className="w-full flex items-center justify-center">
+            <Button variant="pink" size="lg" asChild aria-label="Read Our Story">
+              <a href="/our-story">Our Story</a>
+            </Button>
+          </div>
         </Section>
       </EnhancedScrollFade>
       

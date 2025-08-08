@@ -15,7 +15,8 @@ import HeroGalleryDemo from "./pages/HeroGalleryDemo";
 import ContentPage from "./pages/ContentPage";
 import NotFound from "./pages/NotFound";
 import { CartProvider } from "./contexts/CartContext";
-import CartDrawer from "./components/CartDrawer";
+import CartDrawer from "../src/components/CartDrawer";
+import OurStory from "./pages/OurStory";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +38,7 @@ const App = () => (
             <Route path="/brand/*" element={<Brand />} />
             <Route path="/content/:slug" element={<ContentPage />} />
             <Route path="/hero-gallery-demo" element={<HeroGalleryDemo />} />
+            <Route path="/our-story" element={<OurStory />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
