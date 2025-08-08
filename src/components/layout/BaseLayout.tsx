@@ -147,7 +147,11 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
             className="fixed top-4 left-1/2 -translate-x-1/2 w-[95%] bg-white shadow-lg z-50 overflow-hidden"
             style={{ borderRadius: '25px' }}
           >
-            {showSaleBanner && <SaleBanner position={position} />}
+            {showSaleBanner && (
+              <div className="border-b border-gray-100">
+                <SaleBanner position={position} />
+              </div>
+            )}
             <Navbar position={position} />
           </header>
           

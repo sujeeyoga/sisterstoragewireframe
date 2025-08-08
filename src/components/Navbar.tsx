@@ -77,7 +77,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
           >
             <ShoppingBag className="h-6 w-6" />
             {totalItems > 0 && (
-              <span className="absolute -top-1 -right-1 bg-[#E90064] text-white rounded-full text-xs w-5 h-5 flex items-center justify-center font-semibold">
+              <span className="absolute -top-1 -right-1 bg-brand-pink text-white rounded-full text-xs w-5 h-5 flex items-center justify-center font-semibold">
                 {totalItems}
               </span>
             )}
