@@ -1,15 +1,14 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useOptimizedParallax } from '@/hooks/use-optimized-parallax';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useViewportHeight } from '@/hooks/use-viewport-height';
-import FollowUs from '@/components/social/FollowUs';
+import { Button } from '@/components/ui/button';
+import { Instagram } from 'lucide-react';
 
 const ParallaxContainer = () => {
   const isMobile = useIsMobile();
   useViewportHeight();
-  const [imageError, setImageError] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
   
   // Optimized mobile parallax - disabled on mobile for better performance
   const parallaxDisabled = false;
@@ -43,15 +42,6 @@ const ParallaxContainer = () => {
   const imageUrlMobile = "/lovable-uploads/b0963b41-dee1-4ccb-b8bc-7144c4ea6285.png";
   const backgroundImage = `url(${isMobile ? imageUrlMobile : imageUrlDesktop})`;
 
-  // Handle image loading
-  const handleImageLoad = () => {
-    setImageLoaded(true);
-  };
-
-  const handleImageError = () => {
-    setImageError(true);
-  };
-
   // Use CSS variable-driven viewport height for reliable mobile VH
   // Fallback to h-screen via class; inline style uses --vh
   return (
@@ -82,7 +72,7 @@ const ParallaxContainer = () => {
         }}
       />
 
-      {/* Content overlay with CTA */}
+      {/* Centered Instagram button only */}
       <div 
         className="relative z-10 h-full flex items-center justify-center px-4 md:px-6"
         style={{
@@ -91,11 +81,23 @@ const ParallaxContainer = () => {
           willChange: 'transform'
         }}
       >
-        <div className="w-full max-w-5xl">
-          <div className="rounded-2xl bg-black/30 backdrop-blur-sm p-6 md:p-10 text-white">
-            <FollowUs />
-          </div>
-        </div>
+        <Button
+          asChild
+          variant="pink"
+          size="lg"
+          aria-label="Follow us on Instagram"
+          className="shadow-lg"
+        >
+          <a
+            href="https://www.instagram.com/sisterstorage/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2"
+          >
+            <Instagram className="h-5 w-5" aria-hidden="true" />
+            <span>Follow on Instagram</span>
+          </a>
+        </Button>
       </div>
 
       {/* Optional subtle bottom gradient for contrast */}
