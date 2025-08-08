@@ -42,56 +42,59 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
 
   return (
     <>
-      <header className="w-full bg-white relative">
-        <div className="w-full flex items-center justify-between h-16 px-4">
-          {/* Left: Back button (mobile) or spacer */}
-          <div className="shrink-0">
-            {isMobile ? (
-              <button
-                onClick={handleBack}
-                className="p-1.5 text-black focus:outline-none hover:bg-black/10 rounded transition-colors"
-                aria-label="Go back"
-              >
-                <ArrowLeft className="h-6 w-6" />
-              </button>
-            ) : (
-              <span className="inline-block w-6" aria-hidden="true"></span>
-            )}
-          </div>
-
-          {/* Center: Logo */}
-          <div className="flex-1 flex justify-center">
-            <EnhancedLogo 
-              size="xl" 
-              scrolled={isScrolled}
-              className="animate-fade-in"
-              loading="eager"
-            />
-          </div>
-
-          {/* Right: Actions (cart + menu) */}
-          <div className="shrink-0 flex items-center gap-2">
+      <nav className="w-full flex items-center justify-between h-16 px-4">
+        {/* Left: Back button or spacer */}
+        <div className="shrink-0">
+          {!isMobile ? (
             <button
-              onClick={() => setCartOpen(true)}
-              className="p-1.5 text-black hover:bg-black/10 rounded transition-colors"
-              aria-label="Open cart"
-            >
-              <ShoppingBag className="h-6 w-6" />
-            </button>
-            <button 
+              onClick={handleBack}
               className="p-1.5 text-black focus:outline-none hover:bg-black/10 rounded transition-colors"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Toggle menu"
+              aria-label="Go back"
             >
-              {mobileMenuOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
+              <ArrowLeft className="h-6 w-6" />
             </button>
-          </div>
+          ) : (
+            <div className="w-9 h-9" /> // Spacer to maintain center alignment
+          )}
         </div>
-      </header>
+
+        {/* Center: Logo */}
+        <div className="flex-1 flex justify-center">
+          <EnhancedLogo 
+            size="xl" 
+            scrolled={isScrolled}
+            className="animate-fade-in"
+            loading="eager"
+          />
+        </div>
+
+        {/* Right: Cart and Menu */}
+        <div className="shrink-0 flex items-center gap-2">
+          <button
+            onClick={() => setCartOpen(true)}
+            className="p-1.5 text-black hover:bg-black/10 rounded transition-colors relative"
+            aria-label="Open cart"
+          >
+            <ShoppingBag className="h-6 w-6" />
+            {totalItems > 0 && (
+              <span className="absolute -top-1 -right-1 bg-[#E90064] text-white rounded-full text-xs w-5 h-5 flex items-center justify-center font-semibold">
+                {totalItems}
+              </span>
+            )}
+          </button>
+          <button 
+            className="p-1.5 text-black focus:outline-none hover:bg-black/10 rounded transition-colors"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? (
+              <X className="h-6 w-6" />
+            ) : (
+              <Menu className="h-6 w-6" />
+            )}
+          </button>
+        </div>
+      </nav>
 
 
       {/* Mobile Menu Slide-in from left with proper background and z-index */}
