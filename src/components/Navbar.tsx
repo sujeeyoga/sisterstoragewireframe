@@ -128,38 +128,36 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
         <div className="absolute inset-0 bg-white shadow-2xl border-r border-gray-200"></div>
         
         {/* Menu content */}
-        <div className="relative h-full flex flex-col pt-28 px-8">
-          <nav className="flex flex-col space-y-8 items-center mt-8">
-            {[
-              { name: 'HOME', path: '/', icon: Home },
-              { name: 'GALLERY', path: '/gallery' },
-              { name: 'ABOUT US', path: '/about' },
-              { name: 'SHIPPING', path: '#delivery', icon: Package },
-              { name: 'SHOPPING CART', path: '#', icon: ShoppingBag, onClick: () => { setMobileMenuOpen(false); setCartOpen(true); } }
-            ].map((item) => (
-              item.onClick ? (
-                <button
-                  key={item.name}
-                  onClick={item.onClick}
-                  className="text-[#E90064] text-xl font-bold hover:text-[#c80056] hover:bg-[#E90064]/10 transition-all duration-300 flex items-center gap-3 px-6 py-3 rounded-lg w-full max-w-xs text-center justify-center"
-                >
-                  {item.icon && <item.icon className="h-6 w-6" />}
-                  {item.name} ({totalItems})
-                </button>
-              ) : (
-                <Link 
-                  key={item.name} 
-                  to={item.path} 
-                  className="text-[#E90064] text-xl font-bold hover:text-[#c80056] hover:bg-[#E90064]/10 transition-all duration-300 flex items-center gap-3 px-6 py-3 rounded-lg w-full max-w-xs text-center justify-center"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {item.icon && <item.icon className="h-6 w-6" />}
-                  {item.name}
-                </Link>
-              )
-            ))}
-          </nav>
-        </div>
+        <nav className="flex flex-col space-y-8 items-center mt-8 pt-28 px-8">
+          {[
+            { name: 'HOME', path: '/', icon: Home },
+            { name: 'GALLERY', path: '/gallery' },
+            { name: 'ABOUT US', path: '/about' },
+            { name: 'SHIPPING', path: '#delivery', icon: Package },
+            { name: 'SHOPPING CART', path: '#', icon: ShoppingBag, onClick: () => { setMobileMenuOpen(false); setCartOpen(true); } }
+          ].map((item) => (
+            item.onClick ? (
+              <button
+                key={item.name}
+                onClick={item.onClick}
+                className="text-[#E90064] text-xl font-bold hover:text-[#c80056] hover:bg-[#E90064]/10 transition-all duration-300 flex items-center gap-3 px-6 py-3 rounded-lg w-full max-w-xs text-center justify-center"
+              >
+                {item.icon && <item.icon className="h-6 w-6" />}
+                {item.name} ({totalItems})
+              </button>
+            ) : (
+              <Link 
+                key={item.name} 
+                to={item.path} 
+                className="text-[#E90064] text-xl font-bold hover:text-[#c80056] hover:bg-[#E90064]/10 transition-all duration-300 flex items-center gap-3 px-6 py-3 rounded-lg w-full max-w-xs text-center justify-center"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {item.icon && <item.icon className="h-6 w-6" />}
+                {item.name}
+              </Link>
+            )
+          ))}
+        </nav>
       </div>
     </>
   );
