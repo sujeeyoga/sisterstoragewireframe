@@ -43,12 +43,9 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
   return (
     <>
       <header 
-        className={`w-full transition-all duration-300 z-50 relative ${
+        className={`w-full transition-all duration-300 z-50 relative bg-background ${
           isScrolled ? 'py-0' : 'py-1'
         }`}
-        style={{
-          backgroundColor: '#ffffff',
-        }}
       >
         <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between">
           {/* Back Button (only on mobile) */}
