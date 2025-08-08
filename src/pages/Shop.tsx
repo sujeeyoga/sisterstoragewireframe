@@ -1,5 +1,5 @@
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import BaseLayout from "@/components/layout/BaseLayout";
 import Section from "@/components/layout/Section";
@@ -8,11 +8,11 @@ import ProductsGrid from "@/components/shop/ProductsGrid";
 import BenefitsSection from "@/components/shop/BenefitsSection";
 import TestimonialSection from "@/components/shop/TestimonialSection";
 import ShopFilters, { type Filters } from "@/components/shop/ShopFilters";
-import { products, categories, benefits } from "@/data/products";
+import { products, benefits } from "@/data/products";
 import { productTaxonomyMap } from "@/data/product-taxonomy";
 
 const Shop = () => {
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  
   const [searchParams, setSearchParams] = useSearchParams();
 
   const filters: Filters = useMemo(() => {
@@ -34,7 +34,7 @@ const Shop = () => {
   }, []);
 
   const filteredProducts = useMemo(() => {
-    let items = selectedCategory === "all" ? augmentedProducts : augmentedProducts.filter((p) => p.category === selectedCategory);
+    let items = augmentedProducts;
 
     // Category slug filter
     if (filters.category) {
@@ -75,7 +75,7 @@ const Shop = () => {
     }
 
     return items;
-  }, [augmentedProducts, selectedCategory, filters]);
+  }, [augmentedProducts, filters]);
 
   const handleFiltersChange = (next: Filters) => {
     const params: Record<string, string> = {};
@@ -90,9 +90,8 @@ const Shop = () => {
   return (
     <BaseLayout variant="standard" pageId="shop" spacing="normal">
       <ShopHero 
-        selectedCategory={selectedCategory}
-        setSelectedCategory={setSelectedCategory}
-        categories={categories}
+        activeCategorySlug={filters.category || undefined}
+        onSelectCategory={(slug) => handleFiltersChange({ ...filters, category: slug })}
       />
       
       <Section spacing="lg" width="contained" background="white">
