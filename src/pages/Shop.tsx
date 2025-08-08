@@ -172,6 +172,8 @@ const Shop = () => {
         {/* Floating Search Module */}
         <div className="sticky top-4 z-50 mx-auto w-[min(1100px,92%)] mb-6">
           <FloatingSearchModule 
+            activeCategorySlug={filters.category}
+            onSelectCategory={(slug) => handleFiltersChange({ ...filters, category: slug })}
             onSearch={(query) => {
               // Handle search functionality here
               console.log('Searching for:', query);
