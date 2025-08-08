@@ -39,7 +39,7 @@ const HowItWorks = () => {
           </div>
         </ScrollFadeContainer>
         
-        <div className="px-4 md:px-0 columns-1 sm:columns-2 gap-5 sm:gap-6 [column-fill:_balance]">
+        <div className="px-4 md:px-0 columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-5 sm:gap-6 [column-fill:_balance]">
           {steps.map((step, index) => (
             <ScrollFadeContainer 
               key={step.id} 
