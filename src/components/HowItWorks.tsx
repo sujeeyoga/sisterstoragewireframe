@@ -49,7 +49,7 @@ const HowItWorks = () => {
               duration={0.8}
               delay={index * 0.15}
             >
-              <article className="snap-start shrink-0 w-[75vw] sm:w-64 md:w-72 lg:w-80 aspect-square rounded-xl bg-white shadow-sm ring-1 ring-black/5 overflow-hidden">
+              <article className="snap-start shrink-0 w-[64vw] sm:w-52 md:w-56 lg:w-64 aspect-square rounded-xl bg-white shadow-sm ring-1 ring-black/5 overflow-hidden">
                 <div className="relative w-full aspect-square overflow-hidden">
                   <div className="absolute inset-0" style={{ backgroundColor: step.color }} aria-hidden="true" />
                   <div className="absolute top-3 left-3">
@@ -67,7 +67,7 @@ const HowItWorks = () => {
           ))}
 
           <ScrollFadeContainer scrollFadeDirection="both" threshold={0.3} duration={0.8} delay={0.45}>
-            <article className="snap-start shrink-0 w-[75vw] sm:w-64 md:w-72 lg:w-80 aspect-square rounded-xl bg-white shadow-sm ring-1 ring-black/5 overflow-hidden">
+            <article className="snap-start shrink-0 w-[64vw] sm:w-52 md:w-56 lg:w-64 aspect-square rounded-xl bg-white shadow-sm ring-1 ring-black/5 overflow-hidden">
               <div className="p-6 text-center">
                 <h3 className="font-bold text-xl mb-3">Learn More About Our Process</h3>
                 <p className="text-gray-600 mb-4">See how we design, test, and refine for sisters everywhere.</p>
