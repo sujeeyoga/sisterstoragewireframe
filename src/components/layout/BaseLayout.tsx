@@ -139,54 +139,6 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
     }
   }, [location]);
 
-  // Pill navigation animation setup
-  useEffect(() => {
-    // === ENTRANCE: delayed grow-in ===
-    const handleLoad = () => {
-      const nav = document.getElementById('pillNav');
-      if (nav) {
-        setTimeout(() => {
-          // run keyframes once, then keep transitions alive for later state changes
-          nav.style.animation = 'pillIn 650ms cubic-bezier(.16,1,.3,1) forwards';
-        }, 1000);
-      }
-    };
-
-    // === SCROLL REACTION: shrink on scroll ===
-    const nav = document.getElementById('pillNav');
-    let ticking = false;
-
-    const onScroll = () => {
-      const y = window.scrollY || document.documentElement.scrollTop;
-      if (nav) {
-        if (y > 8) nav.classList.add('nav-shrink');
-        else nav.classList.remove('nav-shrink');
-      }
-      ticking = false;
-    };
-
-    const handleScroll = () => {
-      if (!ticking) {
-        requestAnimationFrame(onScroll);
-        ticking = true;
-      }
-    };
-
-    // Set up event listeners
-    if (document.readyState === 'complete') {
-      handleLoad();
-    } else {
-      window.addEventListener('load', handleLoad);
-    }
-    
-    window.addEventListener('scroll', handleScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener('load', handleLoad);
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
-
   if (variant === 'brand' || variant === 'full') {
     return (
       <div className={`min-h-screen ${getBackgroundClasses()} ${className}`}>
@@ -200,6 +152,11 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
             <ArrowLeft className="h-5 w-5" />
           </Link>
         )}
+
+        {/* Pill navigation (sticky) shown on all variants */}
+          <nav ref={navRef} className={`${navPositionClass} z-30 mx-auto w-[min(1100px,92%)] rounded-[25px] bg-white overflow-visible transition-all duration-300 ${position > 16 ? 'shadow-xl mt-2 px-3 py-1.5' : 'shadow-lg mt-2 px-4 py-2'} mb-4 sm:mb-6`}>
+          <Navbar position={position} />
+        </nav>
 
         <main className={getMainPadding()}>
           {children}
@@ -224,20 +181,17 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
             {showSaleBanner && (
               <SaleBanner position={position} />
             )}
+
+            {/* Pill navigation (sits under announcement, scrolls away) */}
+            {/* moved: nav now rendered below header for sticky behavior */}
           </header>
+
+          {/* Pill navigation (sticky, outside header so it persists while scrolling) */}
+          <nav ref={navRef} className={`${navPositionClass} z-30 mx-auto w-[min(1100px,92%)] rounded-[25px] bg-white overflow-visible transition-all duration-300 ${position > 16 ? 'shadow-xl mt-2 px-3 py-1.5' : 'shadow-lg mt-2 px-4 py-2'} mb-4 sm:mb-6`}>
+            <Navbar position={position} />
+          </nav>
         </>
       )}
-      
-      {/* Pill navigation (sticky on all pages) */}
-      <nav 
-        id="pillNav"
-        ref={navRef} 
-        className="sticky top-3 z-50 mx-auto w-[min(1100px,92%)] rounded-[25px] bg-white overflow-visible transition-all duration-300 shadow-lg mt-2 px-4 py-2"
-        style={{ height: '4rem' }}
-      >
-        <Navbar position={position} />
-      </nav>
-
       <main className={`flex-grow ${getMainPadding()}`}>
         {children}
       </main>
