@@ -139,65 +139,6 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
     }
   }, [location]);
 
-  // Pill navigation animation setup
-  useEffect(() => {
-    // === ENTRANCE: refined delayed grow-in ===
-    const handleLoad = () => {
-      const nav = document.getElementById('pillNav');
-      if (nav) {
-        // Small delay, then elegant entrance
-        setTimeout(() => {
-          nav.style.animation = 'pillIn 800ms cubic-bezier(.16,1,.3,1) forwards';
-        }, 800);
-      }
-    };
-
-    // === SCROLL REACTION: refined shrink on scroll ===
-    const nav = document.getElementById('pillNav');
-    let ticking = false;
-    let lastScrollY = 0;
-
-    const onScroll = () => {
-      const y = window.scrollY || document.documentElement.scrollTop;
-      const scrollDelta = Math.abs(y - lastScrollY);
-      
-      if (nav) {
-        // Only trigger on meaningful scroll changes for better performance
-        if (scrollDelta > 2) {
-          if (y > 12) {
-            nav.classList.add('nav-shrink');
-          } else {
-            nav.classList.remove('nav-shrink');
-          }
-        }
-      }
-      
-      lastScrollY = y;
-      ticking = false;
-    };
-
-    const handleScroll = () => {
-      if (!ticking) {
-        requestAnimationFrame(onScroll);
-        ticking = true;
-      }
-    };
-
-    // Set up event listeners
-    if (document.readyState === 'complete') {
-      handleLoad();
-    } else {
-      window.addEventListener('load', handleLoad);
-    }
-    
-    window.addEventListener('scroll', handleScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener('load', handleLoad);
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
-
   if (variant === 'brand' || variant === 'full') {
     return (
       <div className={`min-h-screen ${getBackgroundClasses()} ${className}`}>
@@ -240,16 +181,7 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
       )}
       
       {/* Pill navigation (sticky on all pages) */}
-      <nav 
-        id="pillNav"
-        ref={navRef} 
-        className="sticky top-3 z-50 mx-auto w-[min(1100px,92%)] rounded-[25px] bg-white/95 overflow-visible shadow-elegant mt-2 px-4 py-2"
-        style={{ 
-          height: '4rem',
-          backdropFilter: 'blur(8px)',
-          WebkitBackdropFilter: 'blur(8px)'
-        }}
-      >
+      <nav ref={navRef} className="sticky top-3 z-50 mx-auto w-[min(1100px,92%)] rounded-[25px] bg-white overflow-visible transition-all duration-300 shadow-lg mt-2 px-4 py-2">
         <Navbar position={position} />
       </nav>
 
