@@ -106,46 +106,53 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
 
       {/* Mobile Menu Slide-in from left with proper background and z-index */}
       <div 
-        className={`md:hidden fixed inset-0 z-[60] transform transition-all duration-300 ease-in-out ${
+        className={`lg:hidden fixed inset-0 z-[60] transform transition-all duration-300 ease-in-out ${
           mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
         aria-hidden={!mobileMenuOpen}
       >
         {/* Backdrop overlay */}
-        <div className="absolute inset-0 bg-white shadow-2xl border-r border-gray-200"></div>
+        {/* Backdrop overlay */}
+        <div
+          className="absolute inset-0 bg-foreground/30 backdrop-blur-sm"
+          onClick={() => setMobileMenuOpen(false)}
+          aria-hidden="true"
+        />
         
-        {/* Menu content */}
-        <nav className="flex flex-col space-y-8 items-center mt-8 pt-28 px-8">
-          {[
-            { name: 'HOME', path: '/', icon: Home },
-            { name: 'GALLERY', path: '/gallery' },
-            { name: 'SHOP', path: '/shop' },
-            { name: 'ABOUT US', path: '/about' },
-            { name: 'SHIPPING', path: '/#delivery', icon: Package },
-            { name: 'SHOPPING CART', path: '#', icon: ShoppingBag, onClick: () => { setMobileMenuOpen(false); setCartOpen(true); } }
-          ].map((item) => (
-            item.onClick ? (
-              <button
-                key={item.name}
-                onClick={item.onClick}
-                className="text-[#EA0064] text-xl font-bold hover:text-[#c80056] hover:bg-[#EA0064]/10 transition-all duration-300 flex items-center gap-3 px-6 py-3 rounded-lg w-full max-w-xs text-center justify-center"
-              >
-                {item.icon && <item.icon className="h-6 w-6" />}
-                {item.name} ({totalItems})
-              </button>
-            ) : (
-              <Link 
-                key={item.name} 
-                to={item.path} 
-                className="text-[#EA0064] text-xl font-bold hover:text-[#c80056] hover:bg-[#EA0064]/10 transition-all duration-300 flex items-center gap-3 px-6 py-3 rounded-lg w-full max-w-xs text-center justify-center"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {item.icon && <item.icon className="h-6 w-6" />}
-                {item.name}
-              </Link>
-            )
-          ))}
-        </nav>
+        {/* Slide-in panel */}
+        <aside className="relative z-[1] h-full w-[85%] max-w-sm bg-background text-foreground shadow-2xl border-r border-border">
+          <nav className="flex flex-col gap-4 p-6 mt-12">
+            {[
+              { name: 'HOME', path: '/', icon: Home },
+              { name: 'GALLERY', path: '/gallery' },
+              { name: 'SHOP', path: '/shop' },
+              { name: 'ABOUT US', path: '/about' },
+              { name: 'SHIPPING', path: '/#delivery', icon: Package },
+              { name: 'SHOPPING CART', path: '#', icon: ShoppingBag, onClick: () => { setMobileMenuOpen(false); setCartOpen(true); } }
+            ].map((item) => (
+              item.onClick ? (
+                <button
+                  key={item.name}
+                  onClick={item.onClick}
+                  className="text-[hsl(var(--brand-pink))] text-lg font-semibold hover:bg-[hsl(var(--brand-pink))]/10 transition-colors flex items-center gap-3 px-4 py-2 rounded-md text-left"
+                >
+                  {item.icon && <item.icon className="h-5 w-5" />}
+                  <span>{item.name} ({totalItems})</span>
+                </button>
+              ) : (
+                <Link
+                  key={item.name}
+                  to={item.path}
+                  className="text-foreground text-lg font-medium hover:text-[hsl(var(--brand-pink))] hover:bg-muted transition-colors flex items-center gap-3 px-4 py-2 rounded-md"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {item.icon && <item.icon className="h-5 w-5 text-[hsl(var(--brand-pink))]" />}
+                  <span>{item.name}</span>
+                </Link>
+              )
+            ))}
+          </nav>
+        </aside>
       </div>
     </>
   );
