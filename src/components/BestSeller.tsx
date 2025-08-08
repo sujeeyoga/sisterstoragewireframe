@@ -8,37 +8,56 @@ import { Link } from 'react-router-dom';
 
 const buyCards = [
   {
-    id: "buy1",
-    name: 'Velvet Bangle Organizer',
-    price: 29.99,
-    originalPrice: 39.99,
+    id: "bundle1",
+    name: 'First Sister Set',
+    price: 89.99,
+    originalPrice: 120.99,
     image: 'https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-31-scaled.jpg',
-    badge: "BESTSELLER",
-    description: "Perfect for organizing bangles and bracelets",
-    rating: 5,
-    reviews: 124
-  },
-  {
-    id: "buy2", 
-    name: 'Glass Lid Jewelry Box',
-    price: 42.99,
-    originalPrice: 54.99,
-    image: 'https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-23-scaled.jpg',
-    badge: "POPULAR",
-    description: "Elegant glass display for precious jewelry",
+    badge: "STARTER BUNDLE",
+    description: "Perfect starter collection for new Sister Storage lovers",
+    rodCount: 11,
+    bundleContents: "2 Large (4 rods each) + 1 Medium (2 rods) + 1 Travel (1 rod)",
     rating: 5,
     reviews: 89
   },
   {
-    id: "buy3",
-    name: 'Cultural Keepsake Box', 
-    price: 64.99,
-    originalPrice: 79.99,
-    image: 'https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-13-scaled.jpg',
-    badge: "LIMITED",
-    description: "Honor your heritage with beautiful storage",
+    id: "bundle2", 
+    name: 'Small & Travel',
+    price: 49.99,
+    originalPrice: 60.99,
+    image: 'https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-23-scaled.jpg',
+    badge: "TRAVEL READY",
+    description: "Compact, on-the-go storage for your adventures",
+    rodCount: 3,
+    bundleContents: "3 Travel boxes (1 rod each)",
     rating: 5,
-    reviews: 156
+    reviews: 124
+  },
+  {
+    id: "bundle3",
+    name: 'Everyday Sister Staples', 
+    price: 79.99,
+    originalPrice: 95.99,
+    image: 'https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-13-scaled.jpg',
+    badge: "MOST POPULAR",
+    description: "Mid-range, daily-use essentials for the organized sister",
+    rodCount: 10,
+    bundleContents: "2 Large (4 rods each) + 1 Medium (2 rods)",
+    rating: 5,
+    reviews: 203
+  },
+  {
+    id: "bundle4",
+    name: 'Forever Sister Collection',
+    price: 149.99,
+    originalPrice: 200.99,
+    image: 'https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-31-scaled.jpg',
+    badge: "BEST VALUE",
+    description: "High-value premium bundle for the ultimate Sister experience",
+    rodCount: 22,
+    bundleContents: "4 Large (4 rods each) + 2 Medium (2 rods) + 2 Travel (1 rod)",
+    rating: 5,
+    reviews: 167
   },
 ];
 
@@ -77,23 +96,26 @@ const BestSeller = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 px-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 px-4">
           {buyCards.map((item, index) => (
             <Card key={item.id} className="group overflow-hidden border-none shadow-lg hover:shadow-2xl transition-all duration-500 bg-white relative transform hover:-translate-y-2">
-              {/* Product Badge */}
+              {/* Bundle Badge */}
               <div className="absolute top-4 left-4 z-10">
                 <span className={`px-3 py-1 text-xs font-bold rounded-full ${
-                  item.badge === 'BESTSELLER' ? 'bg-[#E90064] text-white' :
-                  item.badge === 'POPULAR' ? 'bg-orange-500 text-white' :
+                  item.badge === 'STARTER BUNDLE' ? 'bg-blue-600 text-white' :
+                  item.badge === 'TRAVEL READY' ? 'bg-green-600 text-white' :
+                  item.badge === 'MOST POPULAR' ? 'bg-[#E90064] text-white' :
                   'bg-purple-600 text-white'
                 }`}>
                   {item.badge}
                 </span>
               </div>
 
-              {/* Favorite Heart */}
+              {/* Rod Count Badge */}
               <div className="absolute top-4 right-4 z-10">
-                <Heart className="h-6 w-6 text-white fill-[#E90064] drop-shadow-lg" />
+                <div className="bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 border border-white/20">
+                  <span className="text-[#E90064] font-black text-sm">{item.rodCount} RODS</span>
+                </div>
               </div>
               
               {/* Product Image */}
@@ -130,9 +152,15 @@ const BestSeller = () => {
                   <span className="text-gray-600 text-sm">({item.reviews} reviews)</span>
                 </div>
                 
-                {/* Product Info */}
+                {/* Bundle Info */}
                 <h3 className="text-xl font-bold text-gray-900 mb-2 leading-tight">{item.name}</h3>
-                <p className="text-gray-600 text-sm mb-4 leading-relaxed">{item.description}</p>
+                <p className="text-gray-600 text-sm mb-3 leading-relaxed">{item.description}</p>
+                
+                {/* Bundle Contents */}
+                <div className="bg-gray-50 rounded-lg p-3 mb-4">
+                  <p className="text-xs font-semibold text-gray-700 mb-1">What's Included:</p>
+                  <p className="text-xs text-gray-600 leading-relaxed">{item.bundleContents}</p>
+                </div>
                 
                 {/* Pricing */}
                 <div className="flex items-center gap-3 mb-4">
