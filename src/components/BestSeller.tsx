@@ -176,8 +176,8 @@ const BestSeller = () => {
                   <div className="flex items-center gap-3">
                     <div className="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-4 py-2 rounded-lg flex-shrink-0">
                       <div className="text-center">
-                        <span className="text-lg font-black block">{item.rodCount}</span>
-                        <span className="text-xs font-bold uppercase tracking-wider">Rods</span>
+                        <span className="text-xs font-bold uppercase tracking-wider block">Rods</span>
+                        <span className="text-2xl font-black">{item.rodCount}</span>
                       </div>
                     </div>
                     
