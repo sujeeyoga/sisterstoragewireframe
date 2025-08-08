@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Menu, X, ShoppingBag, Mail, ArrowLeft, Home, Package } from 'lucide-react';
+import { Menu, X, ShoppingBag, Home, Package, Info, Image, Newspaper, Palette, BookOpen, ShoppingCart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
@@ -124,9 +124,12 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
           <nav className="flex flex-col gap-4 p-6 mt-12">
             {[
               { name: 'HOME', path: '/', icon: Home },
-              { name: 'GALLERY', path: '/gallery' },
-              { name: 'SHOP', path: '/shop' },
-              { name: 'ABOUT US', path: '/about' },
+              { name: 'GALLERY', path: '/gallery', icon: Image },
+              { name: 'SHOP', path: '/shop', icon: ShoppingCart },
+              { name: 'ABOUT', path: '/about', icon: Info },
+              { name: 'BLOG', path: '/blog', icon: Newspaper },
+              { name: 'BRAND', path: '/brand', icon: Palette },
+              { name: 'OUR STORY', path: '/our-story', icon: BookOpen },
               { name: 'SHIPPING', path: '/#delivery', icon: Package },
               { name: 'SHOPPING CART', path: '#', icon: ShoppingBag, onClick: () => { setMobileMenuOpen(false); setCartOpen(true); } }
             ].map((item) => (
