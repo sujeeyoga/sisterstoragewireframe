@@ -1,5 +1,5 @@
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -40,8 +40,11 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
   const isShop = location.pathname === '/shop';
   const navPositionClass = 'sticky top-3';
 
-  // Track nav element to compute a global offset for other sticky bars
+  // Track nav element and pill animation state
   const navRef = useRef<HTMLDivElement | null>(null);
+  const [pillState, setPillState] = useState<'mini' | 'open'>('mini');
+  const [isReady, setIsReady] = useState(false);
+
   useEffect(() => {
     const el = navRef.current;
     if (!el) return;
@@ -59,6 +62,35 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
       window.removeEventListener('resize', update);
     };
   }, []);
+
+  // Pill animation logic
+  useEffect(() => {
+    // Set ready state after DOM load
+    const timer = setTimeout(() => setIsReady(true), 100);
+    
+    // Setup intersection observer for hero
+    const hero = document.getElementById('hero');
+    if (!hero) return () => clearTimeout(timer);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.25) {
+          setPillState('open');
+        } else {
+          setPillState('mini');
+        }
+      },
+      { threshold: [0, 0.25, 1] }
+    );
+
+    observer.observe(hero);
+
+    return () => {
+      clearTimeout(timer);
+      observer.disconnect();
+    };
+  }, [location.pathname]);
 
   // Calculate spacing based on variant and spacing prop
   const getMainPadding = () => {
@@ -181,8 +213,16 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
       )}
       
       {/* Pill navigation (sticky on all pages) */}
-      <nav ref={navRef} className="sticky top-3 z-50 mx-auto w-[min(1100px,92%)] rounded-[25px] bg-white overflow-visible transition-all duration-300 shadow-lg mt-2 px-4 py-2">
-        <Navbar position={position} />
+      <nav 
+        ref={navRef} 
+        id="pillNav"
+        className={`
+          pill-nav-base
+          ${pillState === 'mini' ? 'pill--mini' : 'pill--open'}
+          ${isReady ? 'is-ready' : ''}
+        `}
+      >
+        <Navbar position={position} pillState={pillState} />
       </nav>
 
       <main className={`flex-grow ${getMainPadding()}`}>
