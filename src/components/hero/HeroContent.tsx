@@ -39,11 +39,11 @@ const HeroContent = ({ scrollPosition }: HeroContentProps) => {
         DESIGNED BY US — FOR US.
       </AnimatedText>
 
-      <div className="flex flex-col sm:flex-row items-start gap-8 mb-6">
+      <div className="flex flex-col items-center gap-8 mb-6">
         <Button 
           variant="buy"
           size="buy"
-          className="self-start animate-breath-fade-up-4"
+          className="animate-breath-fade-up-4"
           style={{ transform: `scaleX(${scaleX})` }}
           asChild
         >
