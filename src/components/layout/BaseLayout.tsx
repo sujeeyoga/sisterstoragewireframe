@@ -38,7 +38,7 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
   const { isAtTop, position, direction } = useScrollDirection(10);
   const isMobile = useIsMobile();
   const isShop = location.pathname === '/shop';
-  const navPositionClass = 'relative top-0';
+  const navPositionClass = 'sticky top-3';
 
   // Track nav element to compute a global offset for other sticky bars
   const navRef = useRef<HTMLDivElement | null>(null);
@@ -183,14 +183,15 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
             )}
 
             {/* Pill navigation (sits under announcement, scrolls away) */}
-            {!isShop && (
-              <nav ref={navRef} className={`${navPositionClass} z-30 mx-auto w-[min(1100px,92%)] rounded-[25px] bg-white overflow-visible transition-all duration-300 ${position > 16 ? 'shadow-xl mt-2 px-3 py-1.5' : 'shadow-lg mt-2 px-4 py-2'} mb-4 sm:mb-6`}>
-                <Navbar position={position} />
-              </nav>
-            )}
+            {/* moved: nav now rendered below header for sticky behavior */}
           </header>
 
           {/* Pill navigation (sticky, outside header so it persists while scrolling) */}
+          {!isShop && (
+            <nav ref={navRef} className={`${navPositionClass} z-30 mx-auto w-[min(1100px,92%)] rounded-[25px] bg-white overflow-visible transition-all duration-300 ${position > 16 ? 'shadow-xl mt-2 px-3 py-1.5' : 'shadow-lg mt-2 px-4 py-2'} mb-4 sm:mb-6`}>
+              <Navbar position={position} />
+            </nav>
+          )}
         </>
       )}
       <main className={`flex-grow ${getMainPadding()}`}>
