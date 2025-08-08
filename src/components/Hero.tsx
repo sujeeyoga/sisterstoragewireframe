@@ -3,9 +3,54 @@ import { useState } from 'react';
 import HeroContent from './hero/HeroContent';
 import ScrollIndicator from './hero/ScrollIndicator';
 import { useOptimizedScroll } from '@/hooks/use-optimized-scroll';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { ShoppingBag, Star, Heart } from 'lucide-react';
+import { useCart } from '@/contexts/CartContext';
+import { useToast } from '@/components/ui/use-toast';
+
+const bestSellerItems = [
+  {
+    id: "bestseller1",
+    name: 'Velvet Bangle Organizer',
+    price: 29.99,
+    image: 'https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-31-scaled.jpg',
+    rating: 5
+  },
+  {
+    id: "bestseller2", 
+    name: 'Glass Lid Jewelry Box',
+    price: 42.99,
+    image: 'https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-23-scaled.jpg',
+    rating: 5
+  },
+  {
+    id: "bestseller3",
+    name: 'Cultural Keepsake Box', 
+    price: 64.99,
+    image: 'https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-13-scaled.jpg',
+    rating: 5
+  },
+];
 
 const Hero = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
+  const { addItem } = useCart();
+  const { toast } = useToast();
+
+  const handleAddToCart = (item: { id: string; name: string; price: number; image: string }) => {
+    addItem({
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      image: item.image
+    });
+    
+    toast({
+      title: "Added to cart",
+      description: `${item.name} added to your cart`,
+    });
+  };
 
   // Check for reduced motion preference
   const prefersReducedMotion = typeof window !== 'undefined' 
@@ -48,6 +93,56 @@ const Hero = () => {
                 Transform your space with our thoughtfully designed storage solutions. Made by sisters, for sisters.
               </p>
             </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Best Seller Cards Section */}
+      <div className="relative z-20 px-4 pb-16">
+        <div className="container-custom">
+          <div className="text-center mb-8">
+            <h3 className="text-2xl md:text-3xl font-black text-white mb-2">SISTER FAVORITES</h3>
+            <p className="text-white/90 text-sm">Our most loved storage solutions</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
+            {bestSellerItems.map((item, index) => (
+              <Card key={item.id} className="overflow-hidden border-none shadow-lg hover:shadow-xl transition-all duration-300 bg-white animate-fade-in" style={{ animationDelay: `${0.5 + index * 0.1}s` }}>
+                <div className="relative overflow-hidden">
+                  <img 
+                    src={item.image} 
+                    alt={`${item.name} - Sister Storage best seller`}
+                    className="w-full aspect-[3/4] object-cover transition-transform duration-500 hover:scale-105"
+                  />
+                  <div className="absolute top-2 right-2">
+                    <Heart className="h-4 w-4 text-white fill-[#E90064]" />
+                  </div>
+                </div>
+                
+                <CardContent className="p-3">
+                  <div className="flex items-center gap-1 mb-2">
+                    {[...Array(item.rating)].map((_, i) => (
+                      <Star key={i} className="h-3 w-3 text-amber-500 fill-amber-500" />
+                    ))}
+                  </div>
+                  
+                  <div className="flex justify-between items-start mb-3">
+                    <h4 className="text-sm font-semibold text-gray-900 leading-tight">{item.name}</h4>
+                    <span className="text-[#E90064] font-bold text-sm">${item.price.toFixed(2)}</span>
+                  </div>
+                  
+                  <Button 
+                    variant="default"
+                    size="sm"
+                    className="w-full flex items-center justify-center gap-1 bg-[#E90064] hover:bg-[#c50058] text-xs py-2"
+                    onClick={() => handleAddToCart(item)}
+                  >
+                    <ShoppingBag className="h-3 w-3" />
+                    BUY
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </div>
