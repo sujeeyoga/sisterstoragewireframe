@@ -3,7 +3,7 @@ import BaseLayout from "@/components/layout/BaseLayout";
 import Section from "@/components/layout/Section";
 import Hero from "@/components/Hero";
 import BestSeller from "@/components/BestSeller";
-import StorySection from "@/components/hero/StorySection";
+
 import About from "@/components/About";
 import HowItWorks from "@/components/HowItWorks";
 import Delivery from "@/components/Delivery";
@@ -40,12 +40,6 @@ const Index = () => {
         </Section>
       </EnhancedScrollFade>
       
-      {/* Story Section - Visual storytelling */}
-      <EnhancedScrollFade preset="medium" delay={0.1} once={true}>
-        <Section spacing="lg" width="full">
-          <StorySection />
-        </Section>
-      </EnhancedScrollFade>
       
       {/* How It Works - Process explanation */}
       <EnhancedScrollFade preset="medium" delay={0.1} once={true}>
