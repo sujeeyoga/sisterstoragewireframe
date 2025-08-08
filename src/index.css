@@ -408,27 +408,31 @@
     backface-visibility: hidden;
   }
 
+  [data-track]:hover {
+    animation-play-state: paused;
+  }
+
+  /* Slide down animation for announcement bar */
+  @keyframes slide-down {
+    0% {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .animate-slide-down {
+    animation: slide-down 0.8s ease-out;
+  }
+
   /* Responsive marquee speeds */
   @media (min-width: 768px) {
     [data-track] {
       animation-duration: var(--ss-marquee-duration, 28s);
     }
-  }
-
-  /* Legacy marquee support */
-  @keyframes marquee {
-    0% {
-      transform: translateX(0);
-    }
-    100% {
-      transform: translateX(-50%);
-    }
-  }
-  
-  .animate-marquee {
-    animation: marquee 30s linear infinite;
-    will-change: transform;
-    backface-visibility: hidden;
   }
 }
 

@@ -42,30 +42,30 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
 
   return (
     <>
-      <nav className="w-full flex items-center justify-between h-16 px-4">
-        {/* Left: Back button or spacer */}
+      <nav className={`w-full flex items-center justify-between transition-all duration-300 ${
+        position > 16 ? 'h-14 px-3' : 'h-16 px-4'
+      }`}>
+        {/* Left: Logo */}
         <div className="shrink-0">
-          {!isMobile ? (
-            <button
-              onClick={handleBack}
-              className="p-1.5 text-black focus:outline-none hover:bg-black/10 rounded transition-colors"
-              aria-label="Go back"
-            >
-              <ArrowLeft className="h-6 w-6" />
-            </button>
-          ) : (
-            <div className="w-9 h-9" /> // Spacer to maintain center alignment
-          )}
-        </div>
-
-        {/* Center: Logo */}
-        <div className="flex-1 flex justify-center">
           <EnhancedLogo 
-            size="xl" 
+            size={position > 16 ? "lg" : "xl"} 
             scrolled={isScrolled}
             className="animate-fade-in"
             loading="eager"
           />
+        </div>
+
+        {/* Center: Navigation Menu */}
+        <div className="flex-1 flex justify-center">
+          <div className="hidden xl:flex items-center gap-8">
+            <Link to="/gallery" className="text-black hover:text-brand-pink font-medium transition-colors">GALLERY</Link>
+            <Link to="/about" className="text-black hover:text-brand-pink font-medium transition-colors">ABOUT</Link>
+            <Link to="/shop" className="text-black hover:text-brand-pink font-medium transition-colors">SHOP</Link>
+          </div>
+          <div className="hidden lg:flex xl:hidden items-center gap-6">
+            <Link to="/gallery" className="text-black hover:text-brand-pink font-medium transition-colors">GALLERY</Link>
+            <Link to="/shop" className="text-black hover:text-brand-pink font-medium transition-colors">SHOP</Link>
+          </div>
         </div>
 
         {/* Right: Cart and Menu */}
@@ -83,7 +83,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
             )}
           </button>
           <button 
-            className="p-1.5 text-black focus:outline-none hover:bg-black/10 rounded transition-colors"
+            className="lg:hidden p-1.5 text-black focus:outline-none hover:bg-black/10 rounded transition-colors"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle menu"
           >

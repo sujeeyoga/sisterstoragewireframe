@@ -142,24 +142,35 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
     <div className={`min-h-screen flex flex-col ${getBackgroundClasses()} ${className}`}>
       {shouldShowStandardHeader && (
         <>
-          {/* Full-width header background */}
-          <div className="fixed top-0 left-0 w-full bg-white/80 backdrop-blur-sm z-40 py-4">
-            {/* Floating Pill-Shaped Nav */}
-            <div 
-              className="w-[95%] bg-white shadow-lg mx-auto overflow-hidden"
-              style={{ borderRadius: '25px' }}
-            >
-              {showSaleBanner && (
-                <div className="border-b border-gray-100">
-                  <SaleBanner position={position} />
-                </div>
-              )}
+          {/* Hot Pink Background Layer */}
+          <div className="fixed top-0 left-0 w-full bg-[#EC036C] z-40" style={{ height: '120px' }}>
+            {/* Announcement Bar */}
+            {showSaleBanner && (
+              <div className="pt-4">
+                <SaleBanner position={position} />
+              </div>
+            )}
+          </div>
+          
+          {/* Floating Pill Navigation */}
+          <div 
+            className={`fixed top-16 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 ${
+              position > 16 
+                ? 'w-[min(1080px,88%)] shadow-xl' 
+                : 'w-[min(1100px,90%)] shadow-lg'
+            }`}
+            style={{ 
+              borderRadius: '25px',
+              marginTop: position > 16 ? '8px' : '16px'
+            }}
+          >
+            <div className="bg-white overflow-hidden" style={{ borderRadius: '25px' }}>
               <Navbar position={position} />
             </div>
           </div>
           
           {/* Spacer to prevent content from being hidden behind header */}
-          <div className="h-28 sm:h-32" />
+          <div className="h-32 sm:h-36" />
         </>
       )}
       <main className={`flex-grow ${getMainPadding()}`}>

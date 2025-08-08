@@ -28,7 +28,7 @@ const SaleBanner = ({ position = 0 }: SaleBannerProps) => {
   return (
     <div 
       data-announcement
-      className="w-full overflow-hidden bg-transparent"
+      className="w-full overflow-hidden bg-transparent animate-slide-down hover:pause"
       aria-live="polite"
       style={{
         '--ss-slide-duration': '12s',
@@ -37,7 +37,7 @@ const SaleBanner = ({ position = 0 }: SaleBannerProps) => {
     >
       <div 
         data-track
-        className="inline-flex items-center px-4 py-2 whitespace-nowrap will-change-transform"
+        className="inline-flex items-center px-4 py-2 whitespace-nowrap will-change-transform hover:[animation-play-state:paused]"
         style={{ 
           width: '200%',
           gap: '1.5rem'
@@ -46,9 +46,9 @@ const SaleBanner = ({ position = 0 }: SaleBannerProps) => {
         {duplicatedContent.map((item, index) => (
           <React.Fragment key={index}>
             <div className="flex items-center" data-item>
-              {item.icon}
+              <BadgePercent className="h-3 w-3 text-white mr-1 shrink-0" />
               <span 
-                className="font-bold text-brand-pink uppercase font-poppins"
+                className="font-bold text-white uppercase font-poppins"
                 style={{ 
                   fontSize: '9px', 
                   lineHeight: '13.8px',
@@ -59,7 +59,7 @@ const SaleBanner = ({ position = 0 }: SaleBannerProps) => {
               </span>
             </div>
             {index < duplicatedContent.length - 1 && (
-              <span className="text-brand-pink opacity-50" data-sep>•</span>
+              <span className="text-white opacity-50" data-sep>•</span>
             )}
           </React.Fragment>
         ))}
