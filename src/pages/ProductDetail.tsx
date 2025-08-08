@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import ProductImage from "@/components/product/ProductImage";
 import ProductInfo from "@/components/product/ProductInfo";
 import Breadcrumbs from "@/components/product/Breadcrumbs";
@@ -10,7 +10,7 @@ import RelatedProducts from "@/components/product/RelatedProducts";
 import Layout from "@/components/layout/Layout";
 
 import { products as shopProducts } from "@/data/products";
-
+import { productTaxonomyMap } from "@/data/product-taxonomy";
 const ProductDetail = () => {
   const { productId } = useParams<{ productId: string }>();
   const [quantity, setQuantity] = useState(1);
@@ -20,6 +20,9 @@ const ProductDetail = () => {
   
   // Find the product based on the URL parameter
   const product = shopProducts.find(p => p.id === productId);
+  const taxonomy = product ? productTaxonomyMap[product.id] : undefined;
+  const attributes = taxonomy?.attributes;
+  const primaryCategorySlug = taxonomy?.categorySlugs?.[0];
   
   // Handle case where product isn't found
   if (!product) {
@@ -76,7 +79,7 @@ const ProductDetail = () => {
     <Layout>
       <div className="pb-10">
         <div className="container-custom">
-          <Breadcrumbs productName={product.name} />
+          <Breadcrumbs productName={product.name} primaryCategorySlug={primaryCategorySlug} />
           
           {/* Product Details */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
@@ -90,6 +93,33 @@ const ProductDetail = () => {
             />
           </div>
           
+          {/* Attributes */}
+          {attributes && (
+            <div className="mb-8">
+              <h2 className="text-sm font-semibold mb-3">Product Attributes</h2>
+              <div className="flex flex-wrap gap-2">
+                {(() => {
+                  const chips: JSX.Element[] = [];
+                  const push = (label: string, vals?: unknown) => {
+                    const arr = Array.isArray(vals) ? vals : vals ? [vals] : [];
+                    arr.forEach((v, i) =>
+                      chips.push(
+                        <span key={`${label}-${String(v)}-${i}`} className="px-3 py-1 rounded-full text-xs border border-border bg-background text-foreground/80">
+                          {label}: {String(v)}
+                        </span>
+                      )
+                    );
+                  };
+                  push("Rod", attributes?.rodCount);
+                  push("Size", attributes?.size);
+                  push("Use", attributes?.useCase);
+                  push("Bundle", attributes?.bundleSize);
+                  return chips;
+                })()}
+              </div>
+            </div>
+          )}
+
           {/* Related Products */}
           <RelatedProducts products={relatedProducts} />
         </div>
