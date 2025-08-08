@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useOptimizedParallax } from '@/hooks/use-optimized-parallax';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useViewportHeight } from '@/hooks/use-viewport-height';
+import FollowUs from '@/components/social/FollowUs';
 
 const ParallaxContainer = () => {
   const isMobile = useIsMobile();
@@ -80,6 +81,22 @@ const ParallaxContainer = () => {
           willChange: 'transform'
         }}
       />
+
+      {/* Content overlay with CTA */}
+      <div 
+        className="relative z-10 h-full flex items-center justify-center px-4 md:px-6"
+        style={{
+          transform: !prefersReducedMotion && isVisible ? `translateY(${overlayOffset}px)` : 'none',
+          transition: prefersReducedMotion ? 'none' : 'transform 0.1s ease-out',
+          willChange: 'transform'
+        }}
+      >
+        <div className="w-full max-w-5xl">
+          <div className="rounded-2xl bg-black/30 backdrop-blur-sm p-6 md:p-10 text-white">
+            <FollowUs />
+          </div>
+        </div>
+      </div>
 
       {/* Optional subtle bottom gradient for contrast */}
       <div

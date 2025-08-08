@@ -14,7 +14,7 @@ import FeaturedGrid from "@/components/FeaturedGrid";
 
 import ParallaxContainer from "@/components/ParallaxContainer";
 import EnhancedScrollFade from "@/components/ui/enhanced-scroll-fade";
-import FollowUs from "@/components/social/FollowUs";
+
 
 const Index = () => {
   return (
@@ -67,12 +67,6 @@ const Index = () => {
         </Section>
       </EnhancedScrollFade>
       
-      {/* Follow Us - CTA to Instagram */}
-      <EnhancedScrollFade preset="medium" delay={0.05} once={true}>
-        <Section spacing="lg" width="contained">
-          <FollowUs />
-        </Section>
-      </EnhancedScrollFade>
       
       {/* Instagram UGC - Social media integration */}
       <EnhancedScrollFade preset="subtle" delay={0.2} once={true}>
