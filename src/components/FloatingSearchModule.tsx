@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ChevronDown, Search, X } from 'lucide-react';
+import { ChevronDown, Search, X, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -133,11 +133,20 @@ const FloatingSearchModule = ({ position = 0, onSearch, activeCategorySlug, onSe
               />
             </div>
 
+            {/* Filter search bar */}
+            <div className="relative">
+              <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[hsl(var(--primary))]" />
+              <Input
+                type="text"
+                placeholder="Filter by category, rod count, or use case..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 pr-4 py-3 rounded-full border border-[hsl(var(--primary))]/20 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-[hsl(var(--primary))] focus:border-[hsl(var(--primary))] w-full"
+              />
+            </div>
+
             {/* Storage categories section */}
             <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <span className="text-sm font-medium">Storage with Soul</span>
-              </div>
               <div className="flex flex-wrap gap-2">
                 <button
                   onClick={() => {
