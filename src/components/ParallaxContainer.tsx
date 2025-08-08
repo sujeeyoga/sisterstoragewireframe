@@ -61,14 +61,33 @@ const ParallaxContainer = () => {
       style={{
         height: 'calc(var(--vh, 1vh) * 100)',
         marginTop: '0',
-        backgroundImage: backgroundImage,
-        backgroundAttachment: !prefersReducedMotion && !isMobile ? 'fixed' : 'scroll',
         backgroundColor: 'hsl(var(--brand-pink))'
       }}
     >
-      {/* Image-only parallax background applied via section styles */}
+      {/* JS-driven parallax background for broad browser support */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0"
+        style={{
+          backgroundImage,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          transform: !prefersReducedMotion && !isMobile && isVisible
+            ? `translateY(${mainOffset * 0.4}px)`
+            : 'none',
+          transition: prefersReducedMotion || isMobile ? 'none' : 'transform 0.1s ease-out',
+          willChange: 'transform'
+        }}
+      />
 
-      {/* Image-only — no foreground elements or overlays */}
+      {/* Optional subtle bottom gradient for contrast */}
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-24"
+        style={{
+          background: 'linear-gradient(to top, rgba(0,0,0,0.2), rgba(0,0,0,0))'
+        }}
+      />
     </section>
   );
 };
