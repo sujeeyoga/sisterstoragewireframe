@@ -91,7 +91,6 @@ const EnhancedLogo: React.FC<LogoProps> = ({
           loading={loading}
           onLoad={handleImageLoad}
           onError={handleImageError}
-          fetchPriority={loading === 'eager' ? 'high' : 'auto'}
         />
       </div>
     </Link>
