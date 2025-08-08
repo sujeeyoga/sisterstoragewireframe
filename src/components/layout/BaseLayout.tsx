@@ -43,10 +43,10 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
     if (variant === 'brand' || variant === 'full') return 'pt-0';
     
     const spacingMap = {
-      none: 'pt-16',
-      compact: 'pt-20',
-      normal: 'pt-32',
-      spacious: 'pt-40'
+      none: 'pt-0',
+      compact: 'pt-0',
+      normal: 'pt-0',
+      spacious: 'pt-0'
     };
     return spacingMap[spacing];
   };
@@ -142,17 +142,17 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
     <div className={`min-h-screen flex flex-col ${getBackgroundClasses()} ${className}`}>
       {shouldShowStandardHeader && (
         <div 
-          className="header-container fixed inset-x-0 top-0 z-50 transition-all duration-300 bg-background"
+          className="header-container fixed inset-x-0 top-0 z-50 bg-white shadow-md"
           style={{
             transform: headerVisibilityTransform,
-            transformOrigin: 'top center',
-            boxShadow: `0 4px 20px rgba(0,0,0,${headerShadowOpacity})`,
+            transformOrigin: 'top center'
           }}
         >
-          <Navbar position={position} />
           {showSaleBanner && <SaleBanner position={position} />}
+          <Navbar position={position} />
         </div>
       )}
+      <div aria-hidden="true" className="h-28 sm:h-32"></div>
       <main className={`flex-grow ${getMainPadding()}`}>
         {children}
       </main>

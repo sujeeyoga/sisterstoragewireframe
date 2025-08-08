@@ -26,35 +26,14 @@ const SaleBanner = ({ position = 0 }: SaleBannerProps) => {
 
   return (
     <div 
-      className="w-full bg-white overflow-hidden relative z-10"
-      style={{
-        opacity: isVisible ? bannerOpacity : 0,
-        height: `${bannerHeight}px`,
-        transition: 'opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), height 0.3s ease',
-        transform: `scale(${1 - (scrollProgress * 0.05)})`,
-      }}
+      className="w-full overflow-x-auto whitespace-nowrap bg-white border-b px-4 py-2"
+      style={{ WebkitOverflowScrolling: 'touch' }}
     >
-      <div 
-        className="flex whitespace-nowrap animate-marquee h-full items-center"
-        style={{ 
-          animationDuration: '30s',
-          willChange: 'transform'
-        }}
-      >
-        {/* Repeat the content multiple times to create a seamless scroll effect */}
-        {[...Array(10)].map((_, index) => (
-          <div 
-            key={index} 
-            className="flex items-center mx-4"
-          >
-            <BadgePercent className="h-5 w-5 text-black mr-2" />
-            <AnimatedText
-              animation="breath-fade-up-2"
-              className="font-semibold text-black uppercase"
-              duration={2.2} // Slower animation
-            >
-              Spring Summer Sale - 20% Off Storewide
-            </AnimatedText>
+      <div className="flex items-center gap-6">
+        {[...Array(8)].map((_, index) => (
+          <div key={index} className="flex items-center">
+            <BadgePercent className="h-5 w-5 text-black mr-2 shrink-0" />
+            <span className="font-semibold text-black uppercase">Spring Summer Sale - 20% Off Storewide</span>
           </div>
         ))}
       </div>
