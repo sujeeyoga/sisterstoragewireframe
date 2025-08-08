@@ -45,7 +45,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
 
   return (
     <>
-      <div className={`w-full flex items-center justify-between transition-all duration-300 ${
+      <div className={`w-full relative flex items-center justify-between transition-all duration-300 ${
         isSticky ? 'py-2 px-4' : 'py-3 px-4'
       }`}>
         {/* Left: Logo */}
@@ -58,7 +58,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
           />
         </div>
 
-        <div className="flex-1 flex justify-center">
+        <div className="absolute left-1/2 -translate-x-1/2 flex justify-center">
           {/* Full menu ≥1280px */}
           <div className="hidden xl:flex items-center gap-8">
             <Link to="/gallery" className="text-black font-medium transition-colors hover:text-[hsl(var(--brand-pink))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] rounded px-2 py-1">GALLERY</Link>
