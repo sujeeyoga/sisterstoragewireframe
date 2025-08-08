@@ -122,6 +122,62 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
     };
   }, [location.pathname, variant, pageId]);
 
+  // Pill navigation scroll animation
+  useEffect(() => {
+    let rafId: number;
+    let lastScrollY = 0;
+
+    const handleScroll = () => {
+      rafId = requestAnimationFrame(() => {
+        const scrollY = window.pageYOffset;
+        const pillNav = document.getElementById('pillNav');
+        
+        if (!pillNav) return;
+
+        // Only update if there's a meaningful change
+        if (Math.abs(scrollY - lastScrollY) < 1) return;
+        lastScrollY = scrollY;
+
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        
+        if (scrollY > 24) {
+          // Show pill
+          if (!pillNav.classList.contains('nav-revealed')) {
+            pillNav.classList.remove('nav-hidden');
+            pillNav.classList.add('nav-revealed');
+          }
+          
+          // Add shrink state when scrolling past 160px
+          if (scrollY > 160) {
+            pillNav.classList.add('nav-shrink');
+          } else {
+            pillNav.classList.remove('nav-shrink');
+          }
+        } else {
+          // Hide pill
+          if (pillNav.classList.contains('nav-revealed')) {
+            pillNav.classList.remove('nav-revealed', 'nav-shrink');
+            if (!prefersReducedMotion) {
+              pillNav.classList.add('nav-hidden');
+            }
+          }
+        }
+      });
+    };
+
+    // Initial check
+    handleScroll();
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+      }
+    };
+  }, []);
+
   // Handle smooth scrolling for anchor links
   useEffect(() => {
     if (location.hash) {
@@ -180,13 +236,11 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
         </>
       )}
       
-      {/* Fixed pill navigation with entrance animation */}
-      <nav 
-        id="pillNav"
-        ref={navRef} 
-        className="fixed top-3 left-1/2 -translate-x-1/2 z-50 w-[min(1080px,calc(100%-32px))] max-w-[1080px] rounded-[36px] bg-white shadow-lg px-6 py-4 pill-nav-entrance"
-      >
-        <Navbar position={position} />
+      {/* Scroll-triggered pill navigation */}
+      <nav id="pillNav" className="px-3 py-2 flex items-center justify-center">
+        <div className="w-full max-w-none flex items-center justify-between min-h-[2.5rem]">
+          <Navbar position={position} />
+        </div>
       </nav>
 
       <main className={`flex-grow ${getMainPadding()}`}>
