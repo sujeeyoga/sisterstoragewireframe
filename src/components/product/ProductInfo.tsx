@@ -52,7 +52,7 @@ const ProductInfo = ({ product, quantity, setQuantity, onAddToCart, onBuyNow }: 
       )}
       
       {/* Buttons Container */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-2 justify-items-start">
         {/* Add to Cart Button */}
         <Button 
           variant="buy"

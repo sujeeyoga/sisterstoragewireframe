@@ -106,12 +106,12 @@ const CartDrawer = () => {
                 <span className="text-gray-600">Shipping</span>
                 <span className="text-gray-600">Calculated at checkout</span>
               </div>
-              <Button className="w-full bg-purple-600 hover:bg-purple-500 mb-2">
+              <Button className="bg-purple-600 hover:bg-purple-500 mb-2">
                 Proceed to Checkout
               </Button>
               <Button 
                 variant="secondary" 
-                className="w-full"
+                className=""
                 onClick={() => setIsOpen(false)}
               >
                 Continue Shopping

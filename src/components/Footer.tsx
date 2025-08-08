@@ -94,7 +94,7 @@ const Footer = () => {
                 placeholder="Your email address" 
                 className="bg-gray-700 text-white py-1.5 px-3 rounded-md focus:outline-none focus:ring-1 focus:ring-[#E6007E] w-full"
               />
-              <Button variant="default" size="sm" className="bg-[#E6007E] hover:bg-white hover:text-[#E6007E] text-white w-full">
+              <Button variant="default" size="sm" className="bg-[#E6007E] hover:bg-white hover:text-[#E6007E] text-white">
                 Sign Up
               </Button>
             </div>
