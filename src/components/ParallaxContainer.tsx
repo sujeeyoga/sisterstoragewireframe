@@ -110,24 +110,7 @@ const ParallaxContainer = () => {
           transition: prefersReducedMotion || isMobile ? 'none' : 'transform 0.1s ease-out'
         }}
       >
-        <div className="text-center text-white max-w-4xl mx-auto">
-          <h2 
-            className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl xl:text-7xl font-black mb-4 md:mb-6 leading-tight tracking-tight drop-shadow-lg"
-            style={{
-              textShadow: '2px 2px 4px rgba(0,0,0,0.8)'
-            }}
-          >
-            STORAGE THAT SPEAKS TO YOUR SOUL
-          </h2>
-          <p 
-            className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-medium opacity-95 leading-relaxed drop-shadow-md"
-            style={{
-              textShadow: '1px 1px 3px rgba(0,0,0,0.8)'
-            }}
-          >
-            Every piece designed with intention, crafted with love
-          </p>
-        </div>
+        {/* Text overlay removed per request */}
       </div>
 
       
