@@ -142,18 +142,21 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
     <div className={`min-h-screen flex flex-col ${getBackgroundClasses()} ${className}`}>
       {shouldShowStandardHeader && (
         <>
-          {/* Floating Pill-Shaped Header */}
-          <header 
-            className="fixed top-4 left-1/2 -translate-x-1/2 w-[95%] bg-white shadow-lg z-50 overflow-hidden"
-            style={{ borderRadius: '25px' }}
-          >
-            {showSaleBanner && (
-              <div className="border-b border-gray-100">
-                <SaleBanner position={position} />
-              </div>
-            )}
-            <Navbar position={position} />
-          </header>
+          {/* Full-width header background */}
+          <div className="fixed top-0 left-0 w-full bg-white/80 backdrop-blur-sm z-40 py-4">
+            {/* Floating Pill-Shaped Nav */}
+            <div 
+              className="w-[95%] bg-white shadow-lg mx-auto overflow-hidden"
+              style={{ borderRadius: '25px' }}
+            >
+              {showSaleBanner && (
+                <div className="border-b border-gray-100">
+                  <SaleBanner position={position} />
+                </div>
+              )}
+              <Navbar position={position} />
+            </div>
+          </div>
           
           {/* Spacer to prevent content from being hidden behind header */}
           <div className="h-28 sm:h-32" />
