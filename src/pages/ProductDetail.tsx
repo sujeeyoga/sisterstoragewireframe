@@ -9,49 +9,7 @@ import Breadcrumbs from "@/components/product/Breadcrumbs";
 import RelatedProducts from "@/components/product/RelatedProducts";
 import Layout from "@/components/layout/Layout";
 
-// Sample product data (would typically come from an API)
-const products = [
-  {
-    id: "1",
-    name: "Bamboo Storage Box",
-    description: "Elegant bamboo storage box with lid for bathroom essentials. This beautifully crafted box features a smooth finish and minimalist design, perfect for storing cotton swabs, bath salts, or other small items. The natural bamboo material adds warmth to your space while being eco-friendly and durable.",
-    price: 35.99,
-    category: "bathroom",
-    color: "#9b87f5", // Primary Purple
-    features: [
-      "Made from sustainable bamboo",
-      "Water-resistant finish",
-      "Removable dividers",
-      "Compact size: 8\" x 6\" x 4\""
-    ],
-    stock: 12,
-    relatedProducts: ["2", "3", "4"]
-  },
-  {
-    id: "2",
-    name: "Fabric Closet Organizer",
-    description: "Soft fabric organizer for clothes and accessories.",
-    price: 29.99,
-    category: "closet",
-    color: "#7E69AB" // Secondary Purple
-  },
-  {
-    id: "3",
-    name: "Kitchen Drawer Dividers",
-    description: "Expandable bamboo dividers for kitchen utensils.",
-    price: 24.99,
-    category: "kitchen",
-    color: "#6E59A5" // Tertiary Purple
-  },
-  {
-    id: "4",
-    name: "Decorative Wicker Basket",
-    description: "Handwoven wicker basket for stylish storage.",
-    price: 42.99,
-    category: "living",
-    color: "#D6BCFA" // Light Purple
-  }
-];
+import { products as shopProducts } from "@/data/products";
 
 const ProductDetail = () => {
   const { productId } = useParams<{ productId: string }>();
@@ -61,7 +19,7 @@ const ProductDetail = () => {
   const navigate = useNavigate();
   
   // Find the product based on the URL parameter
-  const product = products.find(p => p.id === productId);
+  const product = shopProducts.find(p => p.id === productId);
   
   // Handle case where product isn't found
   if (!product) {
@@ -78,10 +36,10 @@ const ProductDetail = () => {
     );
   }
   
-  // Get related products
-  const relatedProducts = product.relatedProducts 
-    ? products.filter(p => product.relatedProducts?.includes(p.id))
-    : [];
+  // Get related products from same category
+  const relatedProducts = shopProducts
+    .filter((p) => p.category === product.category && p.id !== product.id)
+    .slice(0, 3);
 
   const handleAddToCart = () => {
     addItem({

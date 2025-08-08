@@ -119,6 +119,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
           {[
             { name: 'HOME', path: '/', icon: Home },
             { name: 'GALLERY', path: '/gallery' },
+            { name: 'SHOP', path: '/shop' },
             { name: 'ABOUT US', path: '/about' },
             { name: 'SHIPPING', path: '/#delivery', icon: Package },
             { name: 'SHOPPING CART', path: '#', icon: ShoppingBag, onClick: () => { setMobileMenuOpen(false); setCartOpen(true); } }
