@@ -111,12 +111,6 @@ const BestSeller = () => {
                 </span>
               </div>
 
-              {/* Rod Count Badge */}
-              <div className="absolute top-4 right-4 z-10">
-                <div className="bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 border border-white/20">
-                  <span className="text-[#E90064] font-black text-sm">{item.rodCount} RODS</span>
-                </div>
-              </div>
               
               {/* Product Image */}
               <div className="relative overflow-hidden">
@@ -160,6 +154,14 @@ const BestSeller = () => {
                 <div className="bg-gray-50 rounded-lg p-3 mb-4">
                   <p className="text-xs font-semibold text-gray-700 mb-1">What's Included:</p>
                   <p className="text-xs text-gray-600 leading-relaxed">{item.bundleContents}</p>
+                </div>
+                
+                {/* Rod Count Feature */}
+                <div className="flex items-center justify-center mb-4">
+                  <div className="bg-[#E90064] text-white px-4 py-2 rounded-lg">
+                    <span className="text-2xl font-black">{item.rodCount}</span>
+                    <span className="text-sm font-bold ml-1">RODS</span>
+                  </div>
                 </div>
                 
                 {/* Pricing */}
