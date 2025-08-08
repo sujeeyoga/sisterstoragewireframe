@@ -168,7 +168,7 @@ const FeaturedItems = () => {
                       </div>
                       <p className="text-gray-600 text-sm mb-4 line-clamp-2 h-10">{item.description}</p>
                       <Button 
-                        variant="default"
+                        variant="buy"
                         className="w-full flex items-center justify-center gap-2"
                         onClick={() => handleAddToCart(item)}
                       >

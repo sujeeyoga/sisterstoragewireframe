@@ -55,7 +55,7 @@ const ProductInfo = ({ product, quantity, setQuantity, onAddToCart, onBuyNow }: 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-2">
         {/* Add to Cart Button */}
         <Button 
-          variant="default"
+          variant="buy"
           className="w-full py-4"
           disabled={!product.stock}
           onClick={onAddToCart}
@@ -66,7 +66,7 @@ const ProductInfo = ({ product, quantity, setQuantity, onAddToCart, onBuyNow }: 
 
         {/* Buy Now Button */}
         <Button 
-          variant="secondary"
+          variant="buy"
           className="w-full py-4"
           disabled={!product.stock}
           onClick={onBuyNow}

@@ -67,8 +67,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
           <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
             <Button 
               size="sm" 
-              variant="secondary"
-              className="bg-white text-gray-800 hover:bg-gray-100"
+              variant="buy"
               onClick={handleAddToCart}
             >
               <ShoppingBag className="h-3 w-3 mr-1" />

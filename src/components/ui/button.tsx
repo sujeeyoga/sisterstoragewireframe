@@ -29,6 +29,8 @@ const buttonVariants = cva(
         "ghost-pink": "bg-transparent text-[#E90064] hover:bg-[#E90064] hover:text-white active:scale-[0.98]",
         "ghost-orange": "bg-transparent text-[#FF8021] hover:bg-[#FF8021] hover:text-white active:scale-[0.98]",
         "ghost-black": "bg-transparent text-black hover:bg-black hover:text-white active:scale-[0.98]",
+        // Buy variant - standard rectangle white background, black text
+        buy: "bg-background text-foreground border border-foreground rounded-none hover:bg-foreground hover:text-background active:scale-[0.98]",
       },
       size: {
         default: "h-7 px-4 py-2",
