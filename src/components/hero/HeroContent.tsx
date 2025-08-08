@@ -47,9 +47,9 @@ const HeroContent = ({ scrollPosition }: HeroContentProps) => {
           style={{ transform: `scaleX(${scaleX})` }}
           asChild
         >
-          <Link to="/shop" className="flex items-center gap-2" aria-label="Buy Now">
+          <Link to="/shop" className="flex items-center gap-2" aria-label="Shop the Drop">
             <ShoppingBag className="h-4 w-4" />
-            <span>Buy Now</span>
+            <span>Shop the Drop</span>
           </Link>
         </Button>
       </div>
