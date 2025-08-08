@@ -39,7 +39,7 @@ const HowItWorks = () => {
           </div>
         </ScrollFadeContainer>
         
-        <div className="px-4 md:px-0" role="region" aria-label="How it works horizontal scroll">
+        <div className="px-6 sm:px-8 md:px-12" role="region" aria-label="How it works horizontal scroll">
           <div className="flex gap-3 sm:gap-4 md:gap-6 overflow-x-auto snap-x snap-mandatory pb-2">
           {steps.map((step, index) => (
             <ScrollFadeContainer 
