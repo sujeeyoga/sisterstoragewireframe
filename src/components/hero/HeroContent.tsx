@@ -44,7 +44,7 @@ const HeroContent = ({ scrollPosition }: HeroContentProps) => {
           <Link to="/shop" className="flex items-center justify-center gap-2">
             <Heart className="h-4 w-4" />
             <ShoppingBag className="h-4 w-4" />
-            <span className="relative z-10 transition-transform group-hover:translate-x-1">SHOP NOW</span>
+            <span className="relative z-10 transition-transform group-hover:translate-x-1">BUY</span>
             <span className="absolute inset-0 bg-[#E90064] translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"></span>
           </Link>
         </Button>
