@@ -74,7 +74,7 @@ const ParallaxContainer = () => {
 
       {/* Centered Instagram button only */}
       <div 
-        className="relative z-10 h-full flex items-center justify-center px-4 md:px-6 animate-[float_3s_ease-in-out_infinite]"
+        className="relative z-10 h-full flex items-center justify-center px-4 md:px-6"
         style={{
           transform: !prefersReducedMotion && isVisible ? `translateY(${overlayOffset}px)` : 'none',
           transition: prefersReducedMotion ? 'none' : 'transform 0.1s ease-out',

@@ -122,62 +122,6 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
     };
   }, [location.pathname, variant, pageId]);
 
-  // Pill navigation scroll animation
-  useEffect(() => {
-    let rafId: number;
-    let lastScrollY = 0;
-
-    const handleScroll = () => {
-      rafId = requestAnimationFrame(() => {
-        const scrollY = window.pageYOffset;
-        const pillNav = document.getElementById('pillNav');
-        
-        if (!pillNav) return;
-
-        // Only update if there's a meaningful change
-        if (Math.abs(scrollY - lastScrollY) < 1) return;
-        lastScrollY = scrollY;
-
-        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        
-        if (scrollY > 24) {
-          // Show pill
-          if (!pillNav.classList.contains('nav-revealed')) {
-            pillNav.classList.remove('nav-hidden');
-            pillNav.classList.add('nav-revealed');
-          }
-          
-          // Add shrink state when scrolling past 160px
-          if (scrollY > 160) {
-            pillNav.classList.add('nav-shrink');
-          } else {
-            pillNav.classList.remove('nav-shrink');
-          }
-        } else {
-          // Hide pill
-          if (pillNav.classList.contains('nav-revealed')) {
-            pillNav.classList.remove('nav-revealed', 'nav-shrink');
-            if (!prefersReducedMotion) {
-              pillNav.classList.add('nav-hidden');
-            }
-          }
-        }
-      });
-    };
-
-    // Initial check
-    handleScroll();
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      if (rafId) {
-        cancelAnimationFrame(rafId);
-      }
-    };
-  }, []);
-
   // Handle smooth scrolling for anchor links
   useEffect(() => {
     if (location.hash) {
@@ -236,11 +180,9 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
         </>
       )}
       
-      {/* Scroll-triggered pill navigation */}
-      <nav id="pillNav" className="px-4 py-2 flex items-center justify-center">
-        <div className="w-full max-w-none">
-          <Navbar position={position} />
-        </div>
+      {/* Pill navigation (sticky on all pages) */}
+      <nav ref={navRef} className="sticky top-3 z-50 mx-auto w-[min(1100px,92%)] rounded-[25px] bg-white overflow-visible transition-all duration-300 shadow-lg mt-2 px-4 py-2">
+        <Navbar position={position} />
       </nav>
 
       <main className={`flex-grow ${getMainPadding()}`}>
