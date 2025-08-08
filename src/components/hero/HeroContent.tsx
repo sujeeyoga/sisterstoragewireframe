@@ -39,15 +39,15 @@ const HeroContent = ({ scrollPosition }: HeroContentProps) => {
         DESIGNED BY US — FOR US.
       </AnimatedText>
 
-      <div className="flex flex-col sm:flex-row gap-8 mb-6">
+      <div className="flex flex-col sm:flex-row items-start gap-8 mb-6">
         <Button 
           variant="buy"
           size="buy"
-          className="w-full sm:w-1/2 animate-breath-fade-up-4"
+          className="self-start animate-breath-fade-up-4"
           style={{ transform: `scaleX(${scaleX})` }}
           asChild
         >
-          <Link to="/shop" className="flex items-center justify-center gap-2" aria-label="Buy Now">
+          <Link to="/shop" className="flex items-center gap-2" aria-label="Buy Now">
             <ShoppingBag className="h-4 w-4" />
             <span>Buy Now</span>
           </Link>
