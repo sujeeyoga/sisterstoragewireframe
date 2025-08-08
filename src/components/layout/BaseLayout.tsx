@@ -122,55 +122,6 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
     };
   }, [location.pathname, variant, pageId]);
 
-  // Pill navigation animation logic
-  useEffect(() => {
-    const nav = document.getElementById('pillNav');
-    const hero = document.getElementById('hero');
-    
-    if (!nav || !hero) return;
-
-    // Check for reduced motion preference
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    
-    // Reveal mini state once DOM is ready
-    const handleLoad = () => {
-      nav.classList.add('is-ready');
-    };
-    
-    // Set up intersection observer for hero visibility
-    const observer = new IntersectionObserver((entries) => {
-      const [entry] = entries;
-      if (entry.isIntersecting && entry.intersectionRatio >= 0.25) {
-        // Hero in view → grow to full pill
-        nav.classList.remove('pill--mini');
-        nav.classList.add('pill--open');
-      } else {
-        // Hero not in view → collapse to mini
-        nav.classList.remove('pill--open');
-        nav.classList.add('pill--mini');
-      }
-    }, { 
-      threshold: [0, 0.25, 1],
-      rootMargin: '-10px 0px'
-    });
-
-    // Start observing
-    observer.observe(hero);
-    
-    // Add load listener for initial reveal
-    if (document.readyState === 'complete') {
-      handleLoad();
-    } else {
-      window.addEventListener('load', handleLoad);
-    }
-
-    // Cleanup
-    return () => {
-      observer.disconnect();
-      window.removeEventListener('load', handleLoad);
-    };
-  }, []);
-
   // Handle smooth scrolling for anchor links
   useEffect(() => {
     if (location.hash) {
@@ -230,11 +181,7 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
       )}
       
       {/* Pill navigation (sticky on all pages) */}
-      <nav 
-        ref={navRef} 
-        id="pillNav"
-        className="pill-nav-base pill--mini fixed top-3 left-1/2 -translate-x-1/2 z-50 bg-white overflow-visible shadow-lg px-4 py-2"
-      >
+      <nav ref={navRef} className="sticky top-3 z-40 mx-auto w-[min(1100px,92%)] rounded-[25px] bg-white overflow-visible transition-all duration-300 shadow-lg mt-2 px-4 py-2 mb-4 sm:mb-6">
         <Navbar position={position} />
       </nav>
 
