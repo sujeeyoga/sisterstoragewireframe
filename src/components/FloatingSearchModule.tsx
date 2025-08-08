@@ -195,13 +195,6 @@ const FloatingSearchModule = ({ position = 0, onSearch, activeCategorySlug, onSe
         </div>
       </div>
 
-      {/* Backdrop overlay */}
-      {isExpanded && (
-        <div 
-          className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
-          onClick={() => setIsExpanded(false)}
-        />
-      )}
     </>
   );
 };
