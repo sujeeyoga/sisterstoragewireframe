@@ -91,7 +91,7 @@ const Gallery = () => {
 
         {/* Gallery Grid */}
         <motion.div 
-          className="gallery-grid grid grid-cols-3 gap-2.5 max-w-[1364px] mx-auto"
+          className="gallery-grid grid grid-cols-3 gap-2.5 w-[min(1100px,92%)] mx-auto"
           style={{ gridTemplateRows: `repeat(${Math.ceil(filteredItems.length / 5) * 2}, 200px)` }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
