@@ -1,16 +1,17 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import HeroContent from './hero/HeroContent';
 import ScrollIndicator from './hero/ScrollIndicator';
 import { useOptimizedScroll } from '@/hooks/use-optimized-scroll';
 
 const Hero = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
-  // Check for reduced motion preference
-  const prefersReducedMotion = typeof window !== 'undefined' 
-    ? window.matchMedia('(prefers-reduced-motion: reduce)').matches 
-    : false;
+  // Check for reduced motion preference client-side only
+  useEffect(() => {
+    setPrefersReducedMotion(window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  }, []);
 
   // Use optimized scroll hook only if motion is allowed
   useOptimizedScroll({

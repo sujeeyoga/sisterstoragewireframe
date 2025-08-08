@@ -1,5 +1,5 @@
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -40,11 +40,9 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
   const isShop = location.pathname === '/shop';
   const navPositionClass = 'sticky top-3';
 
-  // Track nav element and pill animation state
+  // Track nav element to compute a global offset for other sticky bars
   const navRef = useRef<HTMLDivElement | null>(null);
-  const [pillState, setPillState] = useState<'mini' | 'open'>('mini');
-  const [isReady, setIsReady] = useState(false);
-
+  
   useEffect(() => {
     const el = navRef.current;
     if (!el) return;
@@ -63,22 +61,28 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
     };
   }, []);
 
-  // Pill animation logic
+  // Pill animation with direct DOM manipulation
   useEffect(() => {
-    // Set ready state after DOM load
-    const timer = setTimeout(() => setIsReady(true), 100);
+    const pillNav = document.getElementById('pillNav');
+    if (!pillNav) return;
+
+    // Set initial state and reveal after DOM load
+    pillNav.classList.add('pill--mini');
+    const readyTimer = setTimeout(() => pillNav.classList.add('is-ready'), 100);
     
     // Setup intersection observer for hero
     const hero = document.getElementById('hero');
-    if (!hero) return () => clearTimeout(timer);
+    if (!hero) return () => clearTimeout(readyTimer);
 
     const observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0];
         if (entry.isIntersecting && entry.intersectionRatio >= 0.25) {
-          setPillState('open');
+          pillNav.classList.remove('pill--mini');
+          pillNav.classList.add('pill--open');
         } else {
-          setPillState('mini');
+          pillNav.classList.remove('pill--open');
+          pillNav.classList.add('pill--mini');
         }
       },
       { threshold: [0, 0.25, 1] }
@@ -87,7 +91,7 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
     observer.observe(hero);
 
     return () => {
-      clearTimeout(timer);
+      clearTimeout(readyTimer);
       observer.disconnect();
     };
   }, [location.pathname]);
@@ -216,13 +220,9 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
       <nav 
         ref={navRef} 
         id="pillNav"
-        className={`
-          pill-nav-base
-          ${pillState === 'mini' ? 'pill--mini' : 'pill--open'}
-          ${isReady ? 'is-ready' : ''}
-        `}
+        className="pill-nav-base"
       >
-        <Navbar position={position} pillState={pillState} />
+        <Navbar position={position} />
       </nav>
 
       <main className={`flex-grow ${getMainPadding()}`}>
