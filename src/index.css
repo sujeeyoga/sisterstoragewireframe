@@ -429,75 +429,84 @@
     animation: slide-down 0.8s ease-out;
   }
 
+  /* Float animation */
+  @keyframes float {
+    0%, 100% { 
+      transform: translateY(0px);
+    }
+    50% { 
+      transform: translateY(-10px);
+    }
+  }
+
+  /* === PILL NAVIGATION ENTRANCE ANIMATION === */
+  /* Fade + scale from .92 → 1 with a tiny overshoot */
+  @keyframes pillIn {
+    0%   { opacity: 0; transform: scale(.92) translateY(8px); }
+    70%  { opacity: 1; transform: scale(1.02) translateY(0); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  /* Optional utility-level shadow */
+  .shadow-xl\/30 { box-shadow: 0 10px 30px rgba(0,0,0,.12); }
+
+  /* Base transitions for smoothness (attach these to your nav element) */
+  #pillNav {
+    opacity: 0;
+    transition: transform 300ms cubic-bezier(.16,1,.3,1),
+                box-shadow 300ms cubic-bezier(.16,1,.3,1),
+                border-radius 300ms cubic-bezier(.16,1,.3,1),
+                height 300ms cubic-bezier(.16,1,.3,1),
+                opacity 300ms cubic-bezier(.16,1,.3,1);
+    will-change: transform;
+  }
+
+  /* === SCROLL STATE === */
+  /* Slightly smaller, tighter radius, deeper shadow */
+  #pillNav.nav-shrink {
+    height: 3rem;              /* e.g., from 4rem down to 3rem */
+    border-radius: 22px;       /* tighten the pill */
+    box-shadow: 0 12px 36px rgba(0,0,0,.16);
+    transform: scale(.985);
+  }
+
+  /* === PILL NAVIGATION ENTRANCE ANIMATION === */
+  /* Fade + scale from .92 → 1 with a tiny overshoot */
+  @keyframes pillIn {
+    0%   { opacity: 0; transform: scale(.92) translateY(8px); }
+    70%  { opacity: 1; transform: scale(1.02) translateY(0); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  /* Optional utility-level shadow */
+  .shadow-xl\/30 { box-shadow: 0 10px 30px rgba(0,0,0,.12); }
+
+  /* Base transitions for smoothness (attach these to your nav element) */
+  #pillNav {
+    opacity: 0;
+    transition: transform 300ms cubic-bezier(.16,1,.3,1),
+                box-shadow 300ms cubic-bezier(.16,1,.3,1),
+                border-radius 300ms cubic-bezier(.16,1,.3,1),
+                height 300ms cubic-bezier(.16,1,.3,1),
+                opacity 300ms cubic-bezier(.16,1,.3,1);
+    will-change: transform;
+  }
+
+  /* === SCROLL STATE === */
+  /* Slightly smaller, tighter radius, deeper shadow */
+  #pillNav.nav-shrink {
+    height: 3rem;              /* e.g., from 4rem down to 3rem */
+    border-radius: 22px;       /* tighten the pill */
+    box-shadow: 0 12px 36px rgba(0,0,0,.16);
+    transform: scale(.985);
+  }
+
   /* Responsive marquee speeds */
   @media (min-width: 768px) {
     [data-track] {
       animation-duration: var(--ss-marquee-duration, 28s);
     }
   }
-}
-
-/* Pill Navigation Animation System */
-#pillNav {
-  position: fixed;
-  top: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 50;
-  background: white;
-  overflow: visible;
-  transition:
-    transform 450ms cubic-bezier(.16,1,.3,1),
-    width 450ms cubic-bezier(.16,1,.3,1),
-    height 450ms cubic-bezier(.16,1,.3,1),
-    border-radius 450ms cubic-bezier(.16,1,.3,1),
-    opacity 250ms ease-out,
-    box-shadow 300ms ease;
-  transform-origin: center;
-  will-change: transform, width, height, border-radius, opacity;
-}
-
-/* Starting: small pill (logo only) */
-#pillNav.pill--mini {
-  opacity: 0;
-  height: 44px;
-  border-radius: 22px;
-  transform: translateX(-50%) translateY(8px) scaleX(.72) scaleY(.96);
-  box-shadow: 0 10px 24px rgba(0,0,0,.10);
-  width: max-content;
-  padding: 8px 16px;
-}
-
-/* After DOM ready, reveal mini state */
-#pillNav.is-ready.pill--mini {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0) scaleX(.72) scaleY(.96);
-}
-
-/* Open: full pill (nav/controls visible) */
-#pillNav.pill--open {
-  opacity: 1;
-  height: 64px;
-  border-radius: 32px;
-  transform: translateX(-50%) translateY(0) scaleX(1) scaleY(1);
-  box-shadow: 0 14px 40px rgba(0,0,0,.16);
-  width: min(1100px, calc(100% - 32px));
-  padding: 8px 16px;
-}
-
-/* Nav items animation */
-#pillNav .nav-item {
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(8px) scale(.96);
-  transition: opacity 250ms ease, transform 250ms ease, pointer-events 0ms 250ms;
-}
-
-#pillNav.pill--open .nav-item {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateY(0) scale(1);
-  transition: opacity 250ms ease 120ms, transform 250ms ease 120ms, pointer-events 0ms 0ms;
 }
 
 /* Sister Storage brand colors utility classes */
@@ -567,19 +576,5 @@
   [data-track] {
     animation: none !important;
     transform: translateX(0) !important;
-  }
-
-  /* Pill Navigation - Static for Accessibility */
-  #pillNav {
-    transition: none !important;
-    transform: translateX(-50%) translateY(0) !important;
-    opacity: 1 !important;
-  }
-
-  #pillNav .nav-item {
-    opacity: 1 !important;
-    pointer-events: auto !important;
-    transform: translateY(0) scale(1) !important;
-    transition: none !important;
   }
 }

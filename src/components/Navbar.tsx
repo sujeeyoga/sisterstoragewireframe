@@ -60,21 +60,21 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
 
         <div className="flex-1 flex justify-center">
           {/* Full menu ≥1280px */}
-          <div className="nav-item hidden xl:flex items-center gap-8">
+          <div className="hidden xl:flex items-center gap-8">
             <Link to="/gallery" className="text-black font-medium transition-colors hover:text-[hsl(var(--brand-pink))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] rounded px-2 py-1">GALLERY</Link>
             <Link to="/about" className="text-black font-medium transition-colors hover:text-[hsl(var(--brand-pink))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] rounded px-2 py-1">ABOUT</Link>
             <Link to="/shop" className="text-black font-medium transition-colors hover:text-[hsl(var(--brand-pink))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] rounded px-2 py-1">SHOP</Link>
           </div>
           
           {/* Condensed menu 768-1279px */}
-          <div className="nav-item hidden lg:flex xl:hidden items-center gap-6">
+          <div className="hidden lg:flex xl:hidden items-center gap-6">
             <Link to="/gallery" className="text-black font-medium transition-colors hover:text-[hsl(var(--brand-pink))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] rounded px-2 py-1">GALLERY</Link>
             <Link to="/shop" className="bg-[hsl(var(--brand-pink))] text-white px-4 py-2 rounded-full font-medium transition-colors hover:bg-[hsl(var(--brand-pink))]/90 focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] focus:ring-offset-2 min-h-[44px] flex items-center">SHOP</Link>
           </div>
         </div>
 
         {/* Right: Cart and Menu */}
-        <div className="nav-item shrink-0 flex items-center gap-2">
+        <div className="shrink-0 flex items-center gap-2">
           <button
             onClick={() => setCartOpen(true)}
             className="p-2 text-black hover:bg-black/10 rounded transition-colors relative focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] min-h-[44px] min-w-[44px] flex items-center justify-center"

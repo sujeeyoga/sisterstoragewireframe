@@ -42,7 +42,6 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
 
   // Track nav element to compute a global offset for other sticky bars
   const navRef = useRef<HTMLDivElement | null>(null);
-  
   useEffect(() => {
     const el = navRef.current;
     if (!el) return;
@@ -60,41 +59,6 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
       window.removeEventListener('resize', update);
     };
   }, []);
-
-  // Pill animation with direct DOM manipulation
-  useEffect(() => {
-    const pillNav = document.getElementById('pillNav');
-    if (!pillNav) return;
-
-    // Set initial state and reveal after DOM load
-    pillNav.classList.add('pill--mini');
-    const readyTimer = setTimeout(() => pillNav.classList.add('is-ready'), 100);
-    
-    // Setup intersection observer for hero
-    const hero = document.getElementById('hero');
-    if (!hero) return () => clearTimeout(readyTimer);
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const entry = entries[0];
-        if (entry.isIntersecting && entry.intersectionRatio >= 0.25) {
-          pillNav.classList.remove('pill--mini');
-          pillNav.classList.add('pill--open');
-        } else {
-          pillNav.classList.remove('pill--open');
-          pillNav.classList.add('pill--mini');
-        }
-      },
-      { threshold: [0, 0.25, 1] }
-    );
-
-    observer.observe(hero);
-
-    return () => {
-      clearTimeout(readyTimer);
-      observer.disconnect();
-    };
-  }, [location.pathname]);
 
   // Calculate spacing based on variant and spacing prop
   const getMainPadding = () => {
@@ -175,6 +139,54 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
     }
   }, [location]);
 
+  // Pill navigation animation setup
+  useEffect(() => {
+    // === ENTRANCE: delayed grow-in ===
+    const handleLoad = () => {
+      const nav = document.getElementById('pillNav');
+      if (nav) {
+        setTimeout(() => {
+          // run keyframes once, then keep transitions alive for later state changes
+          nav.style.animation = 'pillIn 650ms cubic-bezier(.16,1,.3,1) forwards';
+        }, 1000);
+      }
+    };
+
+    // === SCROLL REACTION: shrink on scroll ===
+    const nav = document.getElementById('pillNav');
+    let ticking = false;
+
+    const onScroll = () => {
+      const y = window.scrollY || document.documentElement.scrollTop;
+      if (nav) {
+        if (y > 8) nav.classList.add('nav-shrink');
+        else nav.classList.remove('nav-shrink');
+      }
+      ticking = false;
+    };
+
+    const handleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(onScroll);
+        ticking = true;
+      }
+    };
+
+    // Set up event listeners
+    if (document.readyState === 'complete') {
+      handleLoad();
+    } else {
+      window.addEventListener('load', handleLoad);
+    }
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener('load', handleLoad);
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   if (variant === 'brand' || variant === 'full') {
     return (
       <div className={`min-h-screen ${getBackgroundClasses()} ${className}`}>
@@ -218,9 +230,10 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
       
       {/* Pill navigation (sticky on all pages) */}
       <nav 
-        ref={navRef} 
         id="pillNav"
-        className="pill-nav-base"
+        ref={navRef} 
+        className="sticky top-3 z-50 mx-auto w-[min(1100px,92%)] rounded-[25px] bg-white overflow-visible transition-all duration-300 shadow-lg mt-2 px-4 py-2"
+        style={{ height: '4rem' }}
       >
         <Navbar position={position} />
       </nav>

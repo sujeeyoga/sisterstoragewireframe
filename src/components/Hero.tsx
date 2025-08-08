@@ -1,17 +1,16 @@
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import HeroContent from './hero/HeroContent';
 import ScrollIndicator from './hero/ScrollIndicator';
 import { useOptimizedScroll } from '@/hooks/use-optimized-scroll';
 
 const Hero = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
-  // Check for reduced motion preference client-side only
-  useEffect(() => {
-    setPrefersReducedMotion(window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-  }, []);
+  // Check for reduced motion preference
+  const prefersReducedMotion = typeof window !== 'undefined' 
+    ? window.matchMedia('(prefers-reduced-motion: reduce)').matches 
+    : false;
 
   // Use optimized scroll hook only if motion is allowed
   useOptimizedScroll({
@@ -21,7 +20,7 @@ const Hero = () => {
   });
 
   return (
-    <section id="hero" className="relative min-h-screen w-full overflow-hidden bg-[hsl(var(--brand-pink))]" aria-label="Hero section">
+    <section className="relative min-h-screen w-full overflow-hidden bg-[hsl(var(--brand-pink))]" aria-label="Hero section">
       <div className="relative min-h-screen w-full flex flex-col lg:flex-row items-center justify-center pt-24 pb-32 lg:pt-32 lg:pb-20 z-20 gap-24 lg:gap-40 px-4">
         {/* Hero Content - Centered with proper spacing */}
         <div className="w-full flex flex-col justify-center items-center lg:items-start">
