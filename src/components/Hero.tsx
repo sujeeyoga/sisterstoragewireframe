@@ -20,7 +20,7 @@ const Hero = () => {
   });
 
   return (
-    <section className="relative min-h-screen w-full overflow-hidden bg-[var(--brand-pink)]" aria-label="Hero section">
+    <section className="relative min-h-screen w-full overflow-hidden bg-[hsl(var(--brand-pink))]" aria-label="Hero section">
       <div className="relative min-h-screen w-full flex flex-col lg:flex-row items-center justify-center pt-40 pb-32 lg:pt-48 lg:pb-20 z-20 gap-24 lg:gap-40 px-4">
         {/* Hero Content - Centered with proper spacing */}
         <div className="w-full flex flex-col justify-center items-center lg:items-start">
@@ -43,7 +43,7 @@ const Hero = () => {
               <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </div>
             <div className="text-center space-y-4">
-              <h3 className="text-xl lg:text-2xl font-black text-[var(--brand-pink)] tracking-tight leading-tight">BEAUTIFUL ORGANIZATION</h3>
+              <h3 className="text-xl lg:text-2xl font-black text-[hsl(var(--brand-pink))] tracking-tight leading-tight">BEAUTIFUL ORGANIZATION</h3>
               <p className="text-gray-700 text-sm lg:text-base leading-relaxed font-medium">
                 Transform your space with our thoughtfully designed storage solutions. Made by sisters, for sisters.
               </p>
@@ -54,7 +54,7 @@ const Hero = () => {
       
       <ScrollIndicator scrollPosition={scrollPosition} />
       
-      <div className="absolute bottom-0 left-0 right-0 h-40 z-10 pointer-events-none" style={{background: 'linear-gradient(to top, var(--brand-pink), rgba(0,0,0,0))'}} />
+      <div className="absolute bottom-0 left-0 right-0 h-40 z-10 pointer-events-none" style={{background: 'linear-gradient(to top, hsl(var(--brand-pink)), rgba(0,0,0,0))'}} />
     </section>
   );
 };

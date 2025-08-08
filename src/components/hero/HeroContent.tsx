@@ -16,7 +16,7 @@ const HeroContent = ({ scrollPosition }: HeroContentProps) => {
     <div className="w-full">
       <AnimatedText
         as="span"
-        className="inline-block px-6 py-3 mb-6 text-sm font-bold bg-white text-[var(--brand-pink)] rounded-full shadow-lg"
+        className="inline-block px-6 py-3 mb-6 text-sm font-bold bg-white text-[hsl(var(--brand-pink))] rounded-full shadow-lg"
         animation="breath-fade-up-1"
       >
         Beautifully Organized
@@ -41,7 +41,7 @@ const HeroContent = ({ scrollPosition }: HeroContentProps) => {
 
       <div className="flex flex-col sm:flex-row gap-8 mb-6">
         <Button 
-          className="px-3 py-2 text-sm w-full sm:w-auto group relative overflow-hidden transition-all duration-300 animate-breath-fade-up-4 bg-white text-black hover:bg-[var(--brand-pink)] hover:text-white border-2 border-white hover:border-[var(--brand-pink)] font-black shadow-xl hover:shadow-2xl"
+          className="px-3 py-2 text-sm w-full sm:w-auto group relative overflow-hidden transition-all duration-300 animate-breath-fade-up-4 bg-white text-black hover:bg-[hsl(var(--brand-pink))] hover:text-white border-2 border-white hover:border-[hsl(var(--brand-pink))] font-black shadow-xl hover:shadow-2xl"
           style={{ transform: `scaleX(${scaleX})` }}
           asChild
         >
@@ -49,7 +49,7 @@ const HeroContent = ({ scrollPosition }: HeroContentProps) => {
             <Heart className="h-4 w-4" />
             <ShoppingBag className="h-4 w-4" />
             <span className="relative z-10 transition-transform group-hover:translate-x-1">BUY</span>
-            <span className="absolute inset-0 bg-[var(--brand-pink)] translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"></span>
+            <span className="absolute inset-0 bg-[hsl(var(--brand-pink))] translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"></span>
           </Link>
         </Button>
       </div>

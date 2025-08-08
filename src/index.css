@@ -17,7 +17,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 10%;
 
-    --primary: 336 100% 45%; /* #e90064 in HSL */
+    --primary: 334 100% 46%; /* #EA0064 in HSL */
     --primary-foreground: 0 0% 100%;
 
     --secondary: 262 32% 54%;
@@ -34,21 +34,21 @@
 
     --border: 0 0% 90%;
     --input: 0 0% 90%;
-    --ring: 336 100% 45%; /* Changed to match new primary color */
+    --ring: 334 100% 46%; /* Changed to match new primary color */
 
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 336 100% 45%; /* Updated to match new primary color */
+    --sidebar-primary: 334 100% 46%; /* Updated to match new primary color */
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 240 4.8% 95.9%;
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 336 100% 45%; /* Updated to match new primary color */
+    --sidebar-ring: 334 100% 46%; /* Updated to match new primary color */
 
     /* Sister Storage Brand Colors */
-    --brand-pink: 336 100% 45%; /* #E90064 */
+    --brand-pink: 334 100% 46%; /* #EA0064 */
     --brand-orange: 22 100% 56%; /* #FF8021 */
     --brand-black: 0 0% 0%; /* #000000 */
     --brand-gray: 0 0% 96%; /* #F4F4F4 */
@@ -72,7 +72,7 @@
     --popover: 0 0% 15%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 336 100% 45%; /* #e90064 in HSL */
+    --primary: 334 100% 46%; /* #EA0064 in HSL */
     --primary-foreground: 0 0% 100%;
 
     --secondary: 262 32% 54%;
@@ -89,19 +89,19 @@
 
     --border: 0 0% 25%;
     --input: 0 0% 25%;
-    --ring: 336 100% 45%; /* Changed to match new primary color */
+    --ring: 334 100% 46%; /* Changed to match new primary color */
     
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 336 100% 45%; /* Updated to match new primary color */
+    --sidebar-primary: 334 100% 46%; /* Updated to match new primary color */
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 240 3.7% 15.9%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 336 100% 45%; /* Updated to match new primary color */
+    --sidebar-ring: 334 100% 46%; /* Updated to match new primary color */
 
     /* Sister Storage Brand Colors */
-    --brand-pink: 336 100% 45%; /* #E90064 */
+    --brand-pink: 334 100% 46%; /* #EA0064 */
     --brand-orange: 22 100% 56%; /* #FF8021 */
     --brand-black: 0 0% 0%; /* #000000 */
     --brand-gray: 0 0% 96%; /* #F4F4F4 */
@@ -439,7 +439,7 @@
 
 /* Sister Storage brand colors utility classes */
 .bg-brand-pink {
-    background-color: #E90064;
+    background-color: #EA0064;
   }
   .bg-brand-orange {
     background-color: #FF8021;
@@ -461,7 +461,7 @@
   }
   
   .text-brand-pink {
-    color: #E90064;
+    color: #EA0064;
   }
   .text-brand-orange {
     color: #FF8021;

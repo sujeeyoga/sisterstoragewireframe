@@ -1,7 +1,7 @@
 export const SisterBrand = {
   colors: {
     // Primary brand colors
-    'Sister Pink': '#E90064',
+    'Sister Pink': '#EA0064',
     'Sister Orange': '#FF8021',
     'Sister Black': '#000000',
     'Sister Gray': '#F4F4F4',
@@ -70,9 +70,9 @@ export const SisterBrand = {
     },
     secondary: {
       bg: 'transparent',
-      color: '#E90064',
-      border: '1px solid #E90064',
-      hover: '#E90064',
+      color: '#EA0064',
+      border: '1px solid #EA0064',
+      hover: '#EA0064',
       hoverColor: '#FFFFFF',
       borderRadius: '0px',
     },
