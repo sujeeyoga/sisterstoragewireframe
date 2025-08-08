@@ -34,7 +34,7 @@ const testimonials = [
 
 const Testimonials = () => {
   return (
-    <section className="py-16 md:py-20 bg-white">
+    <div className="w-full">{/* Spacing controlled by Section wrapper */}
       <div className="container-custom">
         <div className="text-center max-w-lg mx-auto mb-10 md:mb-14 px-4">
           <span className="text-[#E90064] font-medium">Customer Love</span>
@@ -87,7 +87,7 @@ const Testimonials = () => {
           </Carousel>
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 

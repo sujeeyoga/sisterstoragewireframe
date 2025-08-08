@@ -27,7 +27,7 @@ const steps = [
 
 const HowItWorks = () => {
   return (
-    <section className="py-16 md:py-20 bg-white">
+    <div className="w-full">{/* Spacing controlled by Section wrapper */}
       <div className="container-custom">
         <ScrollFadeContainer scrollFadeDirection="both" threshold={0.2} duration={0.8}>
           <div className="text-center max-w-lg mx-auto mb-12 md:mb-16 px-4">
@@ -84,7 +84,7 @@ const HowItWorks = () => {
           </div>
         </ScrollFadeContainer>
       </div>
-    </section>
+    </div>
   );
 };
 

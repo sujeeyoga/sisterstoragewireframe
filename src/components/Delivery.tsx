@@ -30,7 +30,7 @@ const shippingZones = [
 
 const Delivery = () => {
   return (
-    <section id="delivery" className="py-16 md:py-20 bg-white">
+    <div className="w-full">{/* Spacing controlled by Section wrapper */}
       <div className="container-custom">
         <div className="text-center max-w-lg mx-auto mb-10 md:mb-12 px-4">
           <span className="text-[#E90064] font-medium">Shipping Info</span>
@@ -87,7 +87,7 @@ const Delivery = () => {
           </p>
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 

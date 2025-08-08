@@ -36,7 +36,7 @@ const Newsletter = () => {
   };
 
   return (
-    <section className="bg-white py-16 md:py-20">
+    <div className="w-full">{/* Spacing controlled by Section wrapper */}
       <div className="container-custom">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Stay Organized. Stay Inspired.</h2>
@@ -63,7 +63,7 @@ const Newsletter = () => {
           </form>
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 

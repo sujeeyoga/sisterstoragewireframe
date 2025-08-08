@@ -18,58 +18,78 @@ import EnhancedScrollFade from "@/components/ui/enhanced-scroll-fade";
 const Index = () => {
   return (
     <BaseLayout variant="standard" pageId="home">
+      {/* Hero Section - No wrapper needed, has built-in spacing */}
       <Hero />
       
+      {/* Parallax Transition - No additional spacing */}
       <ParallaxContainer />
       
-      <EnhancedScrollFade preset="medium" delay={0.1} once={true}>
-        <FeaturedGrid />
-      </EnhancedScrollFade>
-      
-      <EnhancedScrollFade preset="medium" once={true}>
-        <BestSeller />
-      </EnhancedScrollFade>
-      
-      <EnhancedScrollFade preset="medium" delay={0.1} once={true}>
-        <StorySection />
-      </EnhancedScrollFade>
-      
+      {/* Featured Grid - First major section after hero */}
       <EnhancedScrollFade preset="medium" delay={0.1} once={true}>
         <Section spacing="xl" width="contained">
+          <FeaturedGrid />
+        </Section>
+      </EnhancedScrollFade>
+      
+      {/* Buy Cards - Major product section */}
+      <EnhancedScrollFade preset="medium" once={true}>
+        <Section spacing="lg" width="full">
+          <BestSeller />
+        </Section>
+      </EnhancedScrollFade>
+      
+      {/* Story Section - Visual storytelling */}
+      <EnhancedScrollFade preset="medium" delay={0.1} once={true}>
+        <Section spacing="lg" width="full">
+          <StorySection />
+        </Section>
+      </EnhancedScrollFade>
+      
+      {/* How It Works - Process explanation */}
+      <EnhancedScrollFade preset="medium" delay={0.1} once={true}>
+        <Section spacing="lg" width="contained" background="white">
           <HowItWorks />
         </Section>
       </EnhancedScrollFade>
       
+      {/* About Section - Brand story */}
       <EnhancedScrollFade preset="subtle" delay={0.2} once={true}>
-        <Section spacing="xl" width="contained" background="gray">
+        <Section spacing="lg" width="contained" background="gray">
           <About />
         </Section>
       </EnhancedScrollFade>
       
+      {/* Testimonials - Social proof */}
       <EnhancedScrollFade preset="medium" delay={0.1} once={true}>
-        <Section spacing="xl" width="contained">
+        <Section spacing="lg" width="contained" background="white">
           <Testimonials />
         </Section>
       </EnhancedScrollFade>
       
+      {/* Styled by Sisters - Community showcase */}
       <EnhancedScrollFade preset="medium" delay={0.1} once={true}>
-        <Section spacing="lg" width="contained">
+        <Section spacing="md" width="contained" background="white">
           <StyledBySisters />
         </Section>
       </EnhancedScrollFade>
       
+      {/* Instagram UGC - Social media integration */}
       <EnhancedScrollFade preset="subtle" delay={0.2} once={true}>
-        <InstagramUGC />
+        <Section spacing="lg" width="full">
+          <InstagramUGC />
+        </Section>
       </EnhancedScrollFade>
       
+      {/* Newsletter - Email capture */}
       <EnhancedScrollFade preset="medium" delay={0.1} once={true}>
-        <Section spacing="xl" width="contained" background="brand-pink">
+        <Section spacing="lg" width="contained" background="white">
           <Newsletter />
         </Section>
       </EnhancedScrollFade>
       
+      {/* Delivery - Final service details */}
       <EnhancedScrollFade preset="subtle" once={true}>
-        <Section spacing="xl" width="contained">
+        <Section spacing="md" width="contained" background="white">
           <Delivery />
         </Section>
       </EnhancedScrollFade>

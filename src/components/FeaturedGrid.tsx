@@ -29,7 +29,7 @@ const gridItems = [
 
 const FeaturedGrid = () => {
   return (
-    <section className="py-12 md:py-16">
+    <div className="w-full">{/* Removed py-12 md:py-16 - controlled by Section wrapper */}
       <div className="container-custom">
         <div className="text-center mb-8 md:mb-12">
           <h2 className="text-6xl md:text-8xl lg:text-9xl font-thin font-poppins tracking-wide mb-4 uppercase">Featured Collections</h2>
@@ -67,7 +67,7 @@ const FeaturedGrid = () => {
           })}
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 

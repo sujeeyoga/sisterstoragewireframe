@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 // A simplified version of the About component for the home page
 const About = () => {
   return (
-    <section className="py-16 bg-sister-soft-gray">
+    <div className="w-full">{/* Spacing controlled by Section wrapper */}
       <div className="container-custom">
         <div className="text-center mb-10">
           <span className="text-[#E90064] font-medium">Our Story</span>
@@ -32,7 +32,7 @@ const About = () => {
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 
