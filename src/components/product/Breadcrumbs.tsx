@@ -22,16 +22,15 @@ const Breadcrumbs = ({ productName, primaryCategorySlug }: BreadcrumbsProps) => 
         <li>
           <Link to="/shop" className="hover:text-[hsl(var(--primary))]">Shop</Link>
         </li>
-        {path.map((node, i) => (
-          <React.Fragment key={node.slug}>
-            <li className="text-foreground/40">/</li>
-            <li>
-              <Link to={`/shop?category=${encodeURIComponent(node.slug)}`} className="hover:text-[hsl(var(--primary))]">
-                {node.label}
-              </Link>
-            </li>
-          </React.Fragment>
-        ))}
+        {path.flatMap((node, i) => [
+          <li key={`sep-${i}`} className="text-foreground/40">/</li>,
+          <li key={`cat-${node.slug}`}>
+            <Link to={`/shop?category=${encodeURIComponent(node.slug)}`} className="hover:text-[hsl(var(--primary))]">
+              {node.label}
+            </Link>
+          </li>
+        ])}
+
         <li className="text-foreground/40">/</li>
         <li className="text-foreground">{productName}</li>
       </ol>
