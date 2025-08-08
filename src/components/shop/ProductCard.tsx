@@ -14,6 +14,7 @@ export interface Product {
   name: string;
   description: string;
   price: number;
+  originalPrice?: number;
   category: string;
   color: string;
   features: string[];
@@ -22,6 +23,9 @@ export interface Product {
   newArrival?: boolean;
   limitedEdition?: boolean;
   stock: number;
+  sku?: string;
+  caption?: string;
+  funnelStage?: string;
 }
 
 interface ProductCardProps {
@@ -114,9 +118,23 @@ const ProductCard = ({ product }: ProductCardProps) => {
         {/* All product information underneath */}
         <CardContent className="px-4 py-4">
           <div className="mb-2 flex justify-between items-start">
-            <h3 className="font-semibold text-lg">{product.name}</h3>
-            <span className="font-bold text-lg">${product.price.toFixed(2)}</span>
+            <h3 className="font-semibold text-lg line-clamp-2">{product.name}</h3>
+            <div className="text-right flex-shrink-0 ml-2">
+              {product.originalPrice && product.originalPrice > product.price ? (
+                <div className="flex flex-col items-end">
+                  <span className="text-xs text-muted-foreground line-through">${product.originalPrice.toFixed(2)}</span>
+                  <span className="font-bold text-lg text-[hsl(var(--primary))]">${product.price.toFixed(2)}</span>
+                </div>
+              ) : (
+                <span className="font-bold text-lg">${product.price.toFixed(2)}</span>
+              )}
+            </div>
           </div>
+          
+          {/* Sister Caption - prominent display */}
+          {product.caption && (
+            <p className="text-[hsl(var(--primary))] text-sm font-medium mb-2 italic">"{product.caption}"</p>
+          )}
           
           <p className="text-muted-foreground text-sm mb-3 line-clamp-2">{product.description}</p>
           
@@ -132,7 +150,17 @@ const ProductCard = ({ product }: ProductCardProps) => {
             </div>
           )}
           
-          {/* Attribute chips */}
+          {/* Rod Count - Prominent Display */}
+          {attrs?.rodCount && (
+            <div className="mb-3 text-center">
+              <div className="inline-flex flex-col items-center bg-[hsl(var(--primary))] text-primary-foreground rounded-lg px-3 py-2">
+                <span className="text-xs font-medium">RODS</span>
+                <span className="text-2xl font-bold">{attrs.rodCount}</span>
+              </div>
+            </div>
+          )}
+          
+          {/* Other Attribute chips */}
           {attrs && (
             <div className="mb-3 flex flex-wrap gap-2">
               {(() => {
@@ -147,12 +175,18 @@ const ProductCard = ({ product }: ProductCardProps) => {
                     )
                   );
                 };
-                push("Rod", attrs.rodCount);
                 push("Size", attrs.size);
                 push("Use", attrs.useCase);
                 push("Bundle", attrs.bundleSize);
                 return chips;
               })()}
+            </div>
+          )}
+          
+          {/* SKU Display */}
+          {product.sku && (
+            <div className="mb-2 text-xs text-muted-foreground">
+              SKU: {product.sku}
             </div>
           )}
           
