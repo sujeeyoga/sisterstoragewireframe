@@ -68,7 +68,7 @@ const HeroMedia = () => {
       <div 
         className="absolute inset-0 z-0"
         style={{ 
-          backgroundColor: '#E90064',
+          backgroundColor: 'var(--brand-pink)',
         }}
       />
     </>
