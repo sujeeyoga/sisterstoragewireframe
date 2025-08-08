@@ -30,7 +30,7 @@ const buttonVariants = cva(
         "ghost-orange": "bg-transparent text-[#FF8021] hover:bg-[#FF8021] hover:text-white active:scale-[0.98]",
         "ghost-black": "bg-transparent text-black hover:bg-black hover:text-white active:scale-[0.98]",
         // Enhanced Buy variant - modern, responsive, with animations
-        buy: "bg-white text-black border-2 border-black rounded-md font-bold uppercase tracking-wide shadow-lg hover:bg-black hover:text-white hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 ease-out w-full sm:w-auto",
+        buy: "bg-white text-black border-2 border-black rounded-md font-bold uppercase tracking-wide shadow-lg hover:bg-black hover:text-white hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 ease-out w-auto",
       },
       size: {
         default: "h-10 px-6 py-3",
