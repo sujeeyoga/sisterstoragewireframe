@@ -1,40 +1,57 @@
-
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { BadgePercent } from 'lucide-react';
-import AnimatedText from './ui/animated-text';
 
 interface SaleBannerProps {
   position?: number;
 }
 
 const SaleBanner = ({ position = 0 }: SaleBannerProps) => {
-  const [isVisible, setIsVisible] = useState(false);
-  
-  // Calculate scroll-based styling
-  const scrollProgress = Math.min(1, position / 150);
-  const bannerHeight = Math.max(30, 48 - (scrollProgress * 18)); // Shrink from 48px to 30px
-  const bannerOpacity = Math.max(0.85, 1 - (scrollProgress * 0.15));
+  // Create content items with separators
+  const contentItems = [
+    {
+      icon: <BadgePercent className="h-5 w-5 text-foreground mr-2 shrink-0" />,
+      text: "Spring Summer Sale - 20% Off Storewide"
+    },
+    {
+      icon: <BadgePercent className="h-5 w-5 text-foreground mr-2 shrink-0" />,
+      text: "Free Shipping on Orders Over $75"
+    },
+    {
+      icon: <BadgePercent className="h-5 w-5 text-foreground mr-2 shrink-0" />,
+      text: "New Collection Now Available"
+    }
+  ];
 
-  useEffect(() => {
-    // Add a small delay before showing the banner
-    const timer = setTimeout(() => {
-      setIsVisible(true);
-    }, 800); // Increased delay
-    
-    return () => clearTimeout(timer);
-  }, []);
+  // Duplicate content for seamless loop
+  const duplicatedContent = [...contentItems, ...contentItems];
 
   return (
     <div 
-      className="w-full overflow-x-auto whitespace-nowrap bg-white border-b px-4 py-2"
-      style={{ WebkitOverflowScrolling: 'touch' }}
+      data-announcement
+      className="w-full overflow-hidden bg-white border-b"
+      aria-live="polite"
+      style={{
+        '--ss-slide-duration': '12s',
+        '--ss-marquee-duration': '20s'
+      } as React.CSSProperties}
     >
-      <div className="flex items-center gap-6">
-        {[...Array(8)].map((_, index) => (
-          <div key={index} className="flex items-center">
-            <BadgePercent className="h-5 w-5 text-black mr-2 shrink-0" />
-            <span className="font-semibold text-black uppercase">Spring Summer Sale - 20% Off Storewide</span>
-          </div>
+      <div 
+        data-track
+        className="inline-flex items-center gap-6 px-4 py-2 whitespace-nowrap will-change-transform"
+        style={{ width: '200%' }}
+      >
+        {duplicatedContent.map((item, index) => (
+          <React.Fragment key={index}>
+            <div className="flex items-center" data-item>
+              {item.icon}
+              <span className="font-semibold text-foreground uppercase text-sm">
+                {item.text}
+              </span>
+            </div>
+            {index < duplicatedContent.length - 1 && (
+              <span className="text-foreground opacity-50" data-sep>•</span>
+            )}
+          </React.Fragment>
         ))}
       </div>
     </div>

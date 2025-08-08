@@ -54,6 +54,11 @@
     --brand-peach: 30 100% 87%; /* #FFDCBD */
     --brand-light-pink: 338 99% 69%; /* #FE5FA4 */
     --brand-gold: 36 100% 56%; /* #FFA51E */
+    
+    /* Sister Storage Announcement Bar Animation Variables */
+    --ss-slide-duration: 12s;
+    --ss-marquee-duration: 20s;
+    --ss-gap: 1.5rem;
   }
 
   .dark {
@@ -102,6 +107,11 @@
     --brand-peach: 30 100% 87%; /* #FFDCBD */
     --brand-light-pink: 338 99% 69%; /* #FE5FA4 */
     --brand-gold: 36 100% 56%; /* #FFA51E */
+    
+    /* Sister Storage Announcement Bar Animation Variables */
+    --ss-slide-duration: 12s;
+    --ss-marquee-duration: 28s; /* Slower on desktop */
+    --ss-gap: 1.5rem;
   }
 }
 
@@ -354,7 +364,58 @@
     animation-delay: 0.4s;
   }
   
-  /* Improved Marquee animation with smoother movement */
+  /* Sister Storage Announcement Bar Animations */
+  @keyframes ss-slide-in-out {
+    0% { 
+      transform: translateY(-100%); 
+      opacity: 0; 
+    }
+    10% { 
+      transform: translateY(0); 
+      opacity: 1; 
+    }
+    80% { 
+      transform: translateY(0); 
+      opacity: 1; 
+    }
+    90% { 
+      transform: translateY(-100%); 
+      opacity: 0; 
+    }
+    100% { 
+      transform: translateY(-100%); 
+      opacity: 0; 
+    }
+  }
+
+  @keyframes ss-marquee-left {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  /* Sister Storage Announcement Bar Classes */
+  [data-announcement] {
+    animation: ss-slide-in-out var(--ss-slide-duration, 12s) ease-in-out infinite;
+  }
+
+  [data-track] {
+    animation: ss-marquee-left var(--ss-marquee-duration, 20s) linear infinite;
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+
+  /* Responsive marquee speeds */
+  @media (min-width: 768px) {
+    [data-track] {
+      animation-duration: var(--ss-marquee-duration, 28s);
+    }
+  }
+
+  /* Legacy marquee support */
   @keyframes marquee {
     0% {
       transform: translateX(0);
@@ -426,5 +487,17 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
     transition-delay: 0ms !important;
+  }
+
+  /* Sister Storage Announcement Bar - Static for Accessibility */
+  [data-announcement] {
+    animation: none !important;
+    transform: translateY(0) !important;
+    opacity: 1 !important;
+  }
+
+  [data-track] {
+    animation: none !important;
+    transform: translateX(0) !important;
   }
 }
