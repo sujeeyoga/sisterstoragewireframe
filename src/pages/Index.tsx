@@ -23,15 +23,11 @@ const Index = () => {
       <ParallaxContainer />
       
       <EnhancedScrollFade preset="medium" delay={0.1} once={true}>
-        <Section spacing="md" width="contained">
-          <FeaturedGrid />
-        </Section>
+        <FeaturedGrid />
       </EnhancedScrollFade>
       
       <EnhancedScrollFade preset="medium" once={true}>
-        <Section spacing="md" width="contained">
-          <BestSeller />
-        </Section>
+        <BestSeller />
       </EnhancedScrollFade>
       
       <EnhancedScrollFade preset="medium" delay={0.1} once={true}>
@@ -39,37 +35,35 @@ const Index = () => {
       </EnhancedScrollFade>
       
       <EnhancedScrollFade preset="medium" delay={0.1} once={true}>
-        <Section spacing="lg" width="contained">
+        <Section spacing="xl" width="contained">
           <HowItWorks />
         </Section>
       </EnhancedScrollFade>
       
       <EnhancedScrollFade preset="subtle" delay={0.2} once={true}>
-        <Section spacing="md" width="contained" background="gray">
+        <Section spacing="xl" width="contained" background="gray">
           <About />
         </Section>
       </EnhancedScrollFade>
       
       <EnhancedScrollFade preset="medium" delay={0.1} once={true}>
-        <Section spacing="lg" width="contained">
+        <Section spacing="xl" width="contained">
           <Testimonials />
         </Section>
       </EnhancedScrollFade>
       
       <EnhancedScrollFade preset="medium" delay={0.1} once={true}>
-        <Section spacing="md" width="contained">
+        <Section spacing="lg" width="contained">
           <StyledBySisters />
         </Section>
       </EnhancedScrollFade>
       
       <EnhancedScrollFade preset="subtle" delay={0.2} once={true}>
-        <Section spacing="md" width="full">
-          <InstagramUGC />
-        </Section>
+        <InstagramUGC />
       </EnhancedScrollFade>
       
       <EnhancedScrollFade preset="medium" delay={0.1} once={true}>
-        <Section spacing="lg" width="contained" background="brand-pink">
+        <Section spacing="xl" width="contained" background="brand-pink">
           <Newsletter />
         </Section>
       </EnhancedScrollFade>
