@@ -46,7 +46,7 @@ const Hero = () => {
               title="Beautiful Organization"
               body="Made by sisters, for sisters. Designed storage that respects your space."
               cta={{ label: "Shop the Drop", href: "/shop" }}
-              aspect="9/16"
+              aspect="4/3"
               className="md:sticky md:top-24 group"
             />
           </div>
