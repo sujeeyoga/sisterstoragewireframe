@@ -29,9 +29,9 @@ const Hero = () => {
           </div>
         </div>
         
-        {/* Hero Image with White Container - Proper spacing and sizing */}
-        <div className="flex-1 flex justify-center lg:justify-end items-center px-6 lg:px-8 max-w-xl animate-fade-in" style={{ animationDelay: '0.3s' }}>
-          <div className="bg-white rounded-3xl p-6 lg:p-8 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.3)] w-full max-w-lg transform hover:scale-[1.02] transition-all duration-500 ease-out hover:shadow-[0_35px_60px_-12px_rgba(0,0,0,0.4)]">
+        {/* Hero Image with White Container - Flexible sizing to fit space */}
+        <div className="flex-1 flex justify-center lg:justify-end items-center px-6 lg:px-8 animate-fade-in" style={{ animationDelay: '0.3s' }}>
+          <div className="bg-white rounded-3xl p-6 lg:p-8 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.3)] w-full max-w-sm sm:max-w-md lg:max-w-lg xl:max-w-xl transform hover:scale-[1.02] transition-all duration-500 ease-out hover:shadow-[0_35px_60px_-12px_rgba(0,0,0,0.4)]">
             <div className="aspect-square overflow-hidden rounded-2xl mb-8 lg:mb-10 shadow-lg relative group">
               <img
                 src="https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-27-scaled.jpg"
