@@ -83,7 +83,6 @@ const PerformanceImage: React.FC<PerformanceImageProps> = ({
         onError={handleError}
         sizes={sizes}
         srcSet={srcSet}
-        fetchPriority={priority ? 'high' : 'auto'}
         {...props}
       />
     </div>
