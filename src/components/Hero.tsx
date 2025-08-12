@@ -3,6 +3,7 @@ import { useState } from 'react';
 import HeroContent from './hero/HeroContent';
 import ScrollIndicator from './hero/ScrollIndicator';
 import HeroSpotlightCard from './HeroSpotlightCard';
+import HeroProductCard from './HeroProductCard';
 import { useOptimizedScroll } from '@/hooks/use-optimized-scroll';
 
 // Import optimized image assets
@@ -28,13 +29,27 @@ const Hero = () => {
       {/* Hero container with max-width and proper padding */}
       <div className="relative mx-auto max-w-[1200px] px-4 lg:px-6">
         <div className="pt-20 pb-16 lg:pt-28 lg:pb-24">
-          <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-8 items-start min-h-[calc(100vh-12rem)]">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_auto] gap-8 items-start min-h-[calc(100vh-12rem)]">
             {/* Hero Content */}
             <div className="flex flex-col justify-center">
-              <div className="space-y-8 text-center md:text-left">
+              <div className="space-y-8 text-center lg:text-left">
                 <HeroContent scrollPosition={scrollPosition} />
               </div>
             </div>
+
+            {/* Hero Product Card */}
+            <HeroProductCard
+              id="hero-featured"
+              name="First Sister Set"
+              price={89.99}
+              originalPrice={120.99}
+              image="https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-31-scaled.jpg"
+              badge="FEATURED"
+              description="Perfect starter collection for new Sister Storage lovers"
+              rating={5}
+              reviews={89}
+              href="/shop"
+            />
 
             {/* Hero Spotlight Card */}
             <HeroSpotlightCard
