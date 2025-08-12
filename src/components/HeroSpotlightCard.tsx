@@ -73,11 +73,6 @@ export default function HeroSpotlightCard({
       </div>
 
       <div className="p-4 lg:p-6 space-y-3">
-        {badge && (
-          <span className="inline-flex items-center rounded-full bg-primary/10 px-2 py-1 text-[11px] font-medium text-primary ring-1 ring-primary/20">
-            {badge}
-          </span>
-        )}
         {title && (
           <h3 className="text-xl lg:text-2xl font-black text-primary tracking-tight leading-tight uppercase">
             {title}
