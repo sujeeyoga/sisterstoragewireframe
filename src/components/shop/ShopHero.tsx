@@ -16,7 +16,7 @@ const ShopHero = ({ activeCategorySlug, onSelectCategory }: ShopHeroProps) => {
   };
 
   return (
-    <div className="mb-8">
+    <div className="mb-8 -mt-5">
       <div className="flex flex-wrap items-center gap-6 text-sm">
         <button
           onClick={() => onSelectCategory(undefined)}
