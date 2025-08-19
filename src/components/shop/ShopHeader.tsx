@@ -7,23 +7,29 @@ interface ShopHeaderProps {
 }
 
 const ShopHeader = ({ sort, onSortChange, productCount }: ShopHeaderProps) => {
+  const getSortLabel = (sortValue: string) => {
+    switch (sortValue) {
+      case "price-asc": return "lowest price first";
+      case "price-desc": return "highest price first";
+      case "relevance": return "newest";
+      default: return "newest";
+    }
+  };
+
   return (
-    <div className="flex items-center justify-between mb-8 pb-4 border-b">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">SHOP</h1>
-        <p className="text-gray-500 text-sm">({productCount} products)</p>
-      </div>
-      
-      <div className="flex items-center gap-3">
-        <span className="text-sm font-medium text-gray-700">Sort by:</span>
+    <div className="flex items-center justify-end mb-8">
+      <div className="flex items-center gap-2 text-sm">
+        <span className="text-muted-foreground">Sort by</span>
         <Select value={sort} onValueChange={onSortChange}>
-          <SelectTrigger className="w-40 h-9">
-            <SelectValue />
+          <SelectTrigger className="w-auto border-none shadow-none p-0 h-auto font-medium underline">
+            <SelectValue>
+              {getSortLabel(sort)}
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="relevance">RELEVANCE</SelectItem>
-            <SelectItem value="price-asc">PRICE: LOW TO HIGH</SelectItem>
-            <SelectItem value="price-desc">PRICE: HIGH TO LOW</SelectItem>
+            <SelectItem value="relevance">Newest first</SelectItem>
+            <SelectItem value="price-asc">Lowest Price first</SelectItem>
+            <SelectItem value="price-desc">Highest Price first</SelectItem>
           </SelectContent>
         </Select>
       </div>
