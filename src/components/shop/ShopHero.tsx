@@ -2,6 +2,7 @@
 import React from "react";
 import { categoryTree } from "@/data/catalog";
 import { products } from "@/data/products";
+import { productTaxonomyMap } from "@/data/product-taxonomy";
 
 interface ShopHeroProps {
   activeCategorySlug?: string;
@@ -9,10 +10,18 @@ interface ShopHeroProps {
 }
 
 const ShopHero = ({ activeCategorySlug, onSelectCategory }: ShopHeroProps) => {
-  // Calculate product counts for each category
+  // Calculate product counts for each category using taxonomy (same logic as filtering)
   const getCategoryCount = (categorySlug?: string) => {
     if (!categorySlug) return products.length;
-    return products.filter(product => product.category === categorySlug).length;
+    
+    const augmentedProducts = products.map((p) => ({
+      ...p,
+      taxonomy: productTaxonomyMap[p.id] ?? { categorySlugs: [], attributes: {} },
+    }));
+    
+    return augmentedProducts.filter((p) => 
+      p.taxonomy?.categorySlugs?.includes(categorySlug)
+    ).length;
   };
 
   return (
