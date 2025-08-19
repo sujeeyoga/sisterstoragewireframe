@@ -166,7 +166,7 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
       {shouldShowStandardHeader && (
         <>
           {/* Full-bleed header wrapper */}
-          <header className="relative inset-x-0 z-50 overflow-visible pb-6">
+          <header className="relative inset-x-0 z-50 overflow-visible pb-1">
             {/* Pink background layer (fixed, full-bleed) */}
             <div 
               className="fixed top-0 inset-x-0 h-[140px] bg-[hsl(var(--brand-pink))] z-0 pointer-events-none"
