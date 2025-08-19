@@ -50,7 +50,7 @@ const SingleProductCard = ({ product }: SingleProductCardProps) => {
           
           <div className="flex items-center justify-between">
             <div className="flex items-baseline gap-2">
-              <span className="text-sm font-medium text-gray-900">${product.price}</span>
+              <span className="text-base font-medium text-gray-900">${product.price}</span>
               {product.originalPrice && (
                 <span className="text-xs text-gray-400 line-through">${product.originalPrice}</span>
               )}
