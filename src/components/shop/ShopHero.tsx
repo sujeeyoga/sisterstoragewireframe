@@ -12,7 +12,7 @@ const ShopHero = ({ activeCategorySlug, onSelectCategory }: ShopHeroProps) => {
   return (
     <div className="container-custom">
       {/* Desktop and up: inline pill bar */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between pt-[150px]">
         <div className="flex items-center gap-3">
           <span className="text-sm font-medium">Storage with Soul</span>
           <div className="flex flex-wrap gap-2">
