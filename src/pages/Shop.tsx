@@ -25,7 +25,7 @@ const Shop = () => {
         onSelectCategory={(slug) => updateFilters({ ...filters, category: slug })}
       />
       
-      <div className="bg-gray-50 min-h-screen">
+      <div className="bg-gray-50 min-h-screen pt-[150px]">
         <div className="container mx-auto px-4 py-8">
           <ShopHeader
             sort={sort}
