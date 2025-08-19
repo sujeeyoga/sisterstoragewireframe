@@ -72,27 +72,6 @@ export default function HeroSpotlightCard({
         <div className="pointer-events-none absolute inset-0 ring-1 ring-black/5" />
       </div>
 
-      <div className="p-4 lg:p-6 space-y-3">
-        {title && (
-          <h3 className="text-xl lg:text-2xl font-black text-primary tracking-tight leading-tight uppercase">
-            {title}
-          </h3>
-        )}
-        {body && (
-          <p className="text-muted-foreground text-sm lg:text-base leading-relaxed font-medium">
-            {body}
-          </p>
-        )}
-        {cta && (
-          <Link
-            to={cta.href}
-            className="inline-flex items-center gap-1 rounded-lg border border-input bg-background px-3 py-1.5 text-xs font-medium text-foreground hover:bg-accent hover:text-accent-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-colors duration-200"
-          >
-            {cta.label}
-            <span aria-hidden>↗</span>
-          </Link>
-        )}
-      </div>
     </aside>
   );
 }
