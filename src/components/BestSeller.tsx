@@ -38,7 +38,7 @@ const buyCards = [
     name: 'Everyday Sister Staples', 
     price: 79.99,
     originalPrice: 95.99,
-    image: 'https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-13-scaled.jpg',
+    image: '/lovable-uploads/b32a7860-b957-41e7-9c5c-cbd348260cf2.png',
     badge: "MOST POPULAR",
     description: "Mid-range, daily-use essentials for the organized sister",
     rodCount: 10,
