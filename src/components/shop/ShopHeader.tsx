@@ -17,7 +17,7 @@ const ShopHeader = ({ sort, onSortChange, productCount }: ShopHeaderProps) => {
   };
 
   return (
-    <div className="flex items-center justify-end mb-8">
+    <div className="flex items-center justify-end mb-6 md:mb-8">
       <div className="flex items-center gap-2 text-sm">
         <span className="text-muted-foreground">Sort by</span>
         <Select value={sort} onValueChange={onSortChange}>

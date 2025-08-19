@@ -17,7 +17,7 @@ const ProductsGrid = ({ products }: ProductsGridProps) => {
   }
 
   return (
-    <div className="grid gap-8 grid-cols-1 md:grid-cols-3 lg:grid-cols-4">
+    <div className="grid gap-6 md:gap-8 grid-cols-1 md:grid-cols-3 lg:grid-cols-4">
       {products.map((product) => (
         <SingleProductCard key={product.id} product={product} />
       ))}

@@ -16,8 +16,8 @@ const ShopHero = ({ activeCategorySlug, onSelectCategory }: ShopHeroProps) => {
   };
 
   return (
-    <div className="mb-8 -mt-5">
-      <div className="flex flex-wrap items-center justify-center gap-16 text-sm">
+    <div className="mb-6 -mt-5">
+      <div className="flex flex-wrap items-center justify-center gap-4 md:gap-8 lg:gap-16 text-sm md:text-base">
         <button
           onClick={() => onSelectCategory(undefined)}
           className={`transition-colors ${

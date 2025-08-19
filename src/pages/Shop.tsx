@@ -16,7 +16,7 @@ const Shop = () => {
   return (
     <BaseLayout variant="standard" pageId="shop" spacing="normal">
       <div className="bg-background min-h-screen">
-        <div className="container mx-auto px-4 py-8">
+        <div className="px-4 py-6 md:py-8">
           <ShopHero 
             activeCategorySlug={filters.category || undefined}
             onSelectCategory={(slug) => updateFilters({ ...filters, category: slug })}
