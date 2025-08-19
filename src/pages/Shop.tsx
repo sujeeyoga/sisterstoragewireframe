@@ -1,6 +1,6 @@
 
 import React from "react";
-import ShopLayout from "@/components/shop/ShopLayout";
+import BaseLayout from "@/components/layout/BaseLayout";
 import ShopHero from "@/components/shop/ShopHero";
 import ShopHeader from "@/components/shop/ShopHeader";
 import ShopSidebar from "@/components/shop/ShopSidebar";
@@ -18,51 +18,55 @@ const Shop = () => {
   // SEO setup
   useShopSEO(sortedProducts);
 
-  const hero = (
-    <ShopHero 
-      activeCategorySlug={filters.category || undefined}
-      onSelectCategory={(slug) => updateFilters({ ...filters, category: slug })}
-    />
-  );
-
   return (
-    <ShopLayout hero={hero}>
-      <div className="container mx-auto px-4">
-        <ShopHeader
-          sort={sort}
-          onSortChange={updateSort}
-          productCount={sortedProducts.length}
-        />
-        
-        <div className="flex gap-8">
-          {/* Sidebar - Hidden on mobile */}
-          <div className="hidden lg:block">
-            <ShopSidebar
-              filters={filters}
-              onFiltersChange={updateFilters}
-            />
-          </div>
+    <BaseLayout variant="standard" pageId="shop" spacing="normal">
+      <ShopHero 
+        activeCategorySlug={filters.category || undefined}
+        onSelectCategory={(slug) => updateFilters({ ...filters, category: slug })}
+      />
+      
+      <div className="bg-gray-50 min-h-screen">
+        <div className="container mx-auto px-4 py-8">
+          <ShopHeader
+            sort={sort}
+            onSortChange={updateSort}
+            productCount={sortedProducts.length}
+          />
           
-          {/* Main content */}
-          <div className="flex-1">
-            <ProductsGrid products={sortedProducts} />
+          <div className="flex gap-8">
+            {/* Filters Sidebar */}
+            <div className="hidden lg:block">
+              <ShopSidebar
+                filters={filters}
+                onFiltersChange={updateFilters}
+              />
+            </div>
             
-            {/* Load more button */}
-            <div className="mt-12 flex justify-center">
-              <Button variant="outline" size="lg">
-                Load More Products
-              </Button>
+            {/* Main Product Grid */}
+            <div className="flex-1">
+              <div className="bg-white rounded-lg p-6">
+                <ProductsGrid products={sortedProducts} />
+                
+                {/* Load more button */}
+                {sortedProducts.length > 0 && (
+                  <div className="mt-8 flex justify-center">
+                    <Button variant="outline" size="lg" className="px-8">
+                      Load More Products
+                    </Button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-        
-        {/* Additional sections */}
-        <div className="mt-16 space-y-16">
-          <BenefitsSection benefits={benefits} />
-          <TestimonialSection />
+          
+          {/* Additional sections */}
+          <div className="mt-16 space-y-16">
+            <BenefitsSection benefits={benefits} />
+            <TestimonialSection />
+          </div>
         </div>
       </div>
-    </ShopLayout>
+    </BaseLayout>
   );
 };
 
