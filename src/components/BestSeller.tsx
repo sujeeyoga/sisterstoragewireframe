@@ -25,7 +25,7 @@ const buyCards = [
     name: 'Small & Travel',
     price: 49.99,
     originalPrice: 60.99,
-    image: 'https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-23-scaled.jpg',
+    image: '/lovable-uploads/76c5f6ac-f27b-4f26-8377-759dfc17c71d.png',
     badge: "TRAVEL READY",
     description: "Compact, on-the-go storage for your adventures",
     rodCount: 3,
