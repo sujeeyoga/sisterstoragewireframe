@@ -51,7 +51,7 @@ const buyCards = [
     name: 'Forever Sister Collection',
     price: 149.99,
     originalPrice: 200.99,
-    image: 'https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-31-scaled.jpg',
+    image: '/lovable-uploads/03cc68a5-5bfc-4417-bf01-d43578ffa321.png',
     badge: "BEST VALUE",
     description: "High-value premium bundle for the ultimate Sister experience",
     rodCount: 22,
