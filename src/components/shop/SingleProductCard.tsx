@@ -5,6 +5,7 @@ import { ShoppingBag } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
 import { Product } from "./ProductCard";
+import { productTaxonomyMap } from "@/data/product-taxonomy";
 
 interface SingleProductCardProps {
   product: Product;
@@ -13,6 +14,11 @@ interface SingleProductCardProps {
 const SingleProductCard = ({ product }: SingleProductCardProps) => {
   const { addItem } = useCart();
   const { toast } = useToast();
+  
+  // Get taxonomy info for rod count and other attributes
+  const taxonomy = productTaxonomyMap[product.id];
+  const rodCount = taxonomy?.attributes?.rodCount;
+  const size = taxonomy?.attributes?.size;
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -47,6 +53,22 @@ const SingleProductCard = ({ product }: SingleProductCardProps) => {
           <h3 className="font-medium text-sm text-gray-900 group-hover:text-gray-600 transition-colors">
             {product.name}
           </h3>
+          
+          {/* Rod count and size info */}
+          {(rodCount || size) && (
+            <div className="flex gap-2 text-xs text-gray-500">
+              {rodCount && (
+                <span className="bg-gray-100 px-2 py-1 rounded-full">
+                  {rodCount} rod{Array.isArray(rodCount) ? 's' : rodCount !== '1' ? 's' : ''}
+                </span>
+              )}
+              {size && (
+                <span className="bg-gray-100 px-2 py-1 rounded-full">
+                  {size}
+                </span>
+              )}
+            </div>
+          )}
           
           <div className="flex items-center justify-between">
             <div className="flex items-baseline gap-2">
