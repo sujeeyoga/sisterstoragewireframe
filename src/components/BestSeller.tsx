@@ -12,7 +12,7 @@ const buyCards = [
     name: 'First Sister Set',
     price: 89.99,
     originalPrice: 120.99,
-    image: 'https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-31-scaled.jpg',
+    image: '/lovable-uploads/2a4c457a-7695-47d3-9912-ab2900c6ea25.png',
     badge: "STARTER BUNDLE",
     description: "Perfect starter collection for new Sister Storage lovers",
     rodCount: 11,
