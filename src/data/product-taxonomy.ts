@@ -37,12 +37,12 @@ export const productTaxonomyMap: Record<string, ProductTaxonomy> = {
     tags: ["props", "travel", "1-rod"],
   },
   "bridesmaid-travel-bundle-8": {
-    categorySlugs: ["bundles", "bridesmaid-packs", "bangle-boxes"],
+    categorySlugs: ["bundles", "bridesmaid-packs", "bangle-boxes", "bridal-ceremonial"],
     attributes: { size: "Travel", rodCount: "1", useCase: ["Bridal", "Travel"], bundleSize: "8-pack" },
     tags: ["bridesmaid", "bundle", "8-pack", "travel"],
   },
   "props-travel-bundle-8": {
-    categorySlugs: ["bundles", "props-packs", "bangle-boxes"],
+    categorySlugs: ["bundles", "props-packs", "bangle-boxes", "bridal-ceremonial"],
     attributes: { size: "Travel", rodCount: "1", useCase: ["Props", "Travel"], bundleSize: "8-pack" },
     tags: ["props", "bundle", "8-pack", "travel"],
   },
