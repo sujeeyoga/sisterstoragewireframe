@@ -55,7 +55,8 @@ const FeaturedGrid = () => {
             return (
               <div 
                 key={item.id} 
-                className={`relative overflow-hidden bg-gray-100 cursor-pointer group ${getSpanClass(item.span)}`}
+                className={`relative overflow-hidden bg-gray-100 cursor-pointer group ${getSpanClass(item.span)} opacity-0 animate-fade-in`}
+                style={{ animationDelay: `${(item.id - 1) * 200}ms`, animationFillMode: 'forwards' }}
               >
                 <PerformanceImage
                   src={item.image}
