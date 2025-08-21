@@ -21,7 +21,7 @@ const PromotionalSection = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 h-full">
               {/* Left: Text content */}
               <div className="flex flex-col justify-between h-full p-8 md:p-10">
-                <h2 className="text-9xl font-bold text-foreground leading-tight mb-6">
+                <h2 className="text-9xl font-bold text-foreground leading-none mb-6">
                   SUMMER<br />
                   END<br />
                   <span className="text-primary">SALE!</span>
