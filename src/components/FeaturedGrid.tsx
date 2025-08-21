@@ -73,7 +73,7 @@ const FeaturedGrid = () => {
   return <div className="w-full">{/* Removed py-12 md:py-16 - controlled by Section wrapper */}
       <div className="container-custom">
         <div className="text-center mb-8 md:mb-12">
-          <h2 className="text-6xl md:text-8xl lg:text-9xl font-thin font-poppins tracking-wide mb-4 uppercase">SUMMER END ORIGINATION</h2>
+          <h2 className="text-6xl md:text-8xl lg:text-9xl font-thin font-poppins tracking-wide mb-4 uppercase">SUMMER END ORGANIZATION</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
             Discover our curated selection of storage solutions designed for the modern sister.
           </p>
