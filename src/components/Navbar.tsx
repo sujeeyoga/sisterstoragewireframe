@@ -66,17 +66,9 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
             ) : (
               <Link to="/" className="text-black font-medium transition-colors hover:text-[hsl(var(--brand-pink))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] rounded px-2 py-1">HOME</Link>
             )}
-            <Link to="/gallery" className={`font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] rounded px-2 py-1 ${
-              location.pathname === '/gallery' ? 'text-[hsl(var(--brand-pink))] bg-[hsl(var(--brand-pink))]/10' : 'text-black hover:text-[hsl(var(--brand-pink))]'
-            }`}>GALLERY</Link>
-            <Link to="/about" className={`font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] rounded px-2 py-1 ${
-              location.pathname === '/about' ? 'text-[hsl(var(--brand-pink))] bg-[hsl(var(--brand-pink))]/10' : 'text-black hover:text-[hsl(var(--brand-pink))]'
-            }`}>ABOUT</Link>
-            {location.pathname === '/shop' ? (
-              <Link to="/shop" className="bg-[hsl(var(--brand-pink))] text-white px-6 py-2.5 rounded-full font-medium transition-colors hover:bg-[hsl(var(--brand-pink))]/90 focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] focus:ring-offset-2 min-h-[44px] flex items-center">SHOP</Link>
-            ) : (
-              <Link to="/shop" className="text-black font-medium transition-colors hover:text-[hsl(var(--brand-pink))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] rounded px-2 py-1">SHOP</Link>
-            )}
+            <Link to="/gallery" className="text-black font-medium transition-colors hover:text-[hsl(var(--brand-pink))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] rounded px-2 py-1">GALLERY</Link>
+            <Link to="/about" className="text-black font-medium transition-colors hover:text-[hsl(var(--brand-pink))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] rounded px-2 py-1">ABOUT</Link>
+            <Link to="/shop" className="bg-[hsl(var(--brand-pink))] text-white px-6 py-2.5 rounded-full font-medium transition-colors hover:bg-[hsl(var(--brand-pink))]/90 focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] focus:ring-offset-2 min-h-[44px] flex items-center">SHOP</Link>
           </div>
           
           {/* Condensed menu 768-1279px */}
@@ -86,9 +78,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
             ) : (
               <Link to="/" className="text-black font-medium transition-colors hover:text-[hsl(var(--brand-pink))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] rounded px-2 py-1">HOME</Link>
             )}
-            <Link to="/gallery" className={`font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] rounded px-2 py-1 ${
-              location.pathname === '/gallery' ? 'text-[hsl(var(--brand-pink))] bg-[hsl(var(--brand-pink))]/10' : 'text-black hover:text-[hsl(var(--brand-pink))]'
-            }`}>GALLERY</Link>
+            <Link to="/gallery" className="text-black font-medium transition-colors hover:text-[hsl(var(--brand-pink))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] rounded px-2 py-1">GALLERY</Link>
             <Link to="/shop" className="bg-[hsl(var(--brand-pink))] text-white px-6 py-2.5 rounded-full font-medium transition-colors hover:bg-[hsl(var(--brand-pink))]/90 focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] focus:ring-offset-2 min-h-[44px] flex items-center">SHOP</Link>
           </div>
         </div>
