@@ -16,7 +16,15 @@ const PromotionalSection = () => {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 w-full px-4 md:px-6">
           
           {/* Summer Sale Card - Large */}
-          <div className="md:col-span-5 bg-gradient-to-br from-accent/20 to-accent/5 rounded-3xl p-8 md:p-10 flex flex-col justify-center min-h-[320px]">
+          <div className="md:col-span-5 bg-gradient-to-br from-accent/20 to-accent/5 rounded-3xl p-8 md:p-10 flex flex-col justify-center min-h-[320px] relative overflow-hidden">
+            {/* Image beside title */}
+            <div className="absolute top-6 right-6 w-20 h-20 rounded-2xl overflow-hidden bg-white/10 flex items-center justify-center">
+              <img 
+                src="/lovable-uploads/c3b682be-b949-4e16-8aff-82cc8e879642.png" 
+                alt="Woman holding ziplock bag with bangles"
+                className="w-full h-full object-cover rounded-2xl"
+              />
+            </div>
             <h2 className="text-4xl md:text-6xl font-bold text-foreground leading-tight mb-6">
               SUMMER<br />
               END<br />
@@ -43,16 +51,8 @@ const PromotionalSection = () => {
           </div>
 
           {/* Storage Solutions Card */}
-          <div className="md:col-span-3 bg-gradient-to-br from-secondary to-secondary/80 rounded-3xl p-8 text-white flex flex-col justify-center min-h-[320px] relative overflow-hidden">
-            <div className="bg-accent rounded-2xl p-6 mb-6 text-center relative">
-              {/* Image beside title */}
-              <div className="absolute -top-4 -right-4 w-16 h-16 rounded-full overflow-hidden bg-white/10 flex items-center justify-center">
-                <img 
-                  src="/lovable-uploads/c3b682be-b949-4e16-8aff-82cc8e879642.png" 
-                  alt="Woman holding ziplock bag with bangles"
-                  className="w-12 h-12 object-cover rounded-full"
-                />
-              </div>
+          <div className="md:col-span-3 bg-gradient-to-br from-secondary to-secondary/80 rounded-3xl p-8 text-white flex flex-col justify-center min-h-[320px]">
+            <div className="bg-accent rounded-2xl p-6 mb-6 text-center">
               <h3 className="font-bold text-xl text-foreground mb-3">
                 ZIP LOCK<br />BAGS?
               </h3>
