@@ -38,7 +38,7 @@ const FeaturedGrid = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-2 gap-0 max-w-3xl mx-auto auto-rows-min">
+        <div className="grid grid-cols-2 gap-0 w-full auto-rows-min">
           {gridItems.map((item) => {
             const getSpanClass = (span: string) => {
               switch (span) {
