@@ -8,7 +8,7 @@ import { JoinMovementCard } from './JoinMovementCard';
 
 const CommunityStoriesCarousels = () => {
   return (
-    <section className="py-8 md:py-12 bg-gradient-to-b from-background to-background/50">
+    <section className="py-8 md:py-12 bg-gradient-to-b from-background to-background/50 min-h-[600px]">
       <div className="container-custom">
         <EnhancedScrollFade preset="medium" className="text-center mb-12 md:mb-16">
           <div className="space-y-4">

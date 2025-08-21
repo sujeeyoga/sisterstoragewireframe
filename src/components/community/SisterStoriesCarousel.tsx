@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const videoStories = [
   { 
@@ -34,6 +35,14 @@ const videoStories = [
 ];
 
 export const SisterStoriesCarousel = () => {
+  const [loadingVideos, setLoadingVideos] = useState<Record<number, boolean>>(
+    Object.fromEntries(videoStories.map(story => [story.id, true]))
+  );
+
+  const handleVideoLoad = (storyId: number) => {
+    setLoadingVideos(prev => ({ ...prev, [storyId]: false }));
+  };
+
   return (
     <div>
       <div className="mb-8">
@@ -53,12 +62,21 @@ export const SisterStoriesCarousel = () => {
             <CarouselItem key={story.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3">
               <Card className="overflow-hidden border-0 bg-card/50 backdrop-blur-sm group cursor-pointer hover:bg-card/80 transition-all duration-500">
                 <div className="relative aspect-[9/16] overflow-hidden">
+                  {loadingVideos[story.id] && (
+                    <div className="absolute inset-0 z-10">
+                      <Skeleton className="w-full h-full" />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="animate-pulse text-primary">Loading...</div>
+                      </div>
+                    </div>
+                  )}
                   <video
                     src={story.video}
                     autoPlay
                     muted
                     loop
                     playsInline
+                    onLoadedData={() => handleVideoLoad(story.id)}
                     className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/20 opacity-0 group-hover:opacity-100 transition-all duration-300" />

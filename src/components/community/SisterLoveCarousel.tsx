@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const testimonialItems = [
   { 
@@ -76,6 +77,30 @@ const testimonialItems = [
 ];
 
 export const SisterLoveCarousel = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate initial loading delay for testimonials
+    const timer = setTimeout(() => setIsLoading(false), 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div>
+        <div className="mb-8">
+          <Skeleton className="h-8 w-32 mb-2" />
+          <Skeleton className="h-4 w-64" />
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[...Array(6)].map((_, i) => (
+            <Skeleton key={i} className="h-48 w-full" />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className="mb-8">
@@ -93,7 +118,7 @@ export const SisterLoveCarousel = () => {
         <CarouselContent className="-ml-2 md:-ml-4">
           {testimonialItems.map((item) => (
             <CarouselItem key={item.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3">
-              <Card className="border-0 bg-card/50 backdrop-blur-sm group cursor-pointer hover:bg-card/80 transition-all duration-500 h-full">
+              <Card className="border-0 bg-card/50 backdrop-blur-sm group cursor-pointer hover:bg-card/80 transition-all duration-500 h-full animate-fade-in">
                 {item.type === "quote" ? (
                   <div className="w-full h-full min-h-[200px] bg-gradient-to-br from-primary/20 to-primary/5 flex flex-col justify-center p-6 text-center relative overflow-hidden">
                     <div className="absolute top-3 left-3 text-primary/20 text-4xl font-serif">"</div>
