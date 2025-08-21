@@ -26,7 +26,7 @@ const CommunityStoriesCarousels = () => {
           </div>
         </EnhancedScrollFade>
 
-        <div className="space-y-16">
+        <div className="space-y-8">
           <EnhancedScrollFade preset="subtle" delay={200}>
             <SisterStoriesCarousel />
           </EnhancedScrollFade>
