@@ -51,7 +51,16 @@ const HowItWorks = () => {
             >
               <article className="w-full aspect-square rounded-xl bg-white shadow-sm ring-1 ring-black/5 overflow-hidden">
                 <div className="relative w-full aspect-square overflow-hidden">
-                  <div className="absolute inset-0" style={{ backgroundColor: step.color }} aria-hidden="true" />
+                  <div 
+                    className="absolute inset-0 bg-cover bg-center bg-no-repeat" 
+                    style={{ 
+                      backgroundImage: `url('/lovable-uploads/e60a5afe-c0c9-4913-bf6a-eff94188c606.png')`,
+                      backgroundColor: step.color 
+                    }} 
+                    aria-hidden="true" 
+                  >
+                    <div className="absolute inset-0" style={{ backgroundColor: `${step.color}80` }} />
+                  </div>
                   <div className="absolute top-3 left-3">
                     <span className="inline-flex items-center rounded-full bg-white/80 text-[hsl(var(--brand-pink))] px-2.5 py-1 text-[11px] font-bold tracking-wide">
                       Step {step.id}
