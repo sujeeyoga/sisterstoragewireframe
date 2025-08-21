@@ -61,27 +61,27 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
         <div className="justify-self-center flex justify-center">
           {/* Full menu ≥1280px */}
           <div className="hidden xl:flex items-center gap-8">
-            <Link to="/" className={`px-4 py-2 rounded-full font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${
-              location.pathname === '/' ? 'text-[hsl(var(--brand-pink))] bg-[hsl(var(--brand-pink))]/10' : 'text-black hover:text-[hsl(var(--brand-pink))]'
-            }`}>HOME</Link>
+            <Link to="/" className="bg-[hsl(var(--brand-pink))] text-white px-6 py-2.5 rounded-full font-medium transition-colors hover:bg-[hsl(var(--brand-pink))]/90 focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] focus:ring-offset-2 min-h-[44px] flex items-center">HOME</Link>
             <Link to="/gallery" className={`px-4 py-2 rounded-full font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${
               location.pathname === '/gallery' ? 'text-[hsl(var(--brand-pink))] bg-[hsl(var(--brand-pink))]/10' : 'text-black hover:text-[hsl(var(--brand-pink))]'
             }`}>GALLERY</Link>
             <Link to="/about" className={`px-4 py-2 rounded-full font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${
               location.pathname === '/about' ? 'text-[hsl(var(--brand-pink))] bg-[hsl(var(--brand-pink))]/10' : 'text-black hover:text-[hsl(var(--brand-pink))]'
             }`}>ABOUT</Link>
-            <Link to="/shop" className="bg-[hsl(var(--brand-pink))] text-white px-6 py-2.5 rounded-full font-medium transition-colors hover:bg-[hsl(var(--brand-pink))]/90 focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] focus:ring-offset-2 min-h-[44px] flex items-center">SHOP</Link>
+            <Link to="/shop" className={`px-4 py-2 rounded-full font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${
+              location.pathname === '/shop' ? 'text-[hsl(var(--brand-pink))] bg-[hsl(var(--brand-pink))]/10' : 'text-black hover:text-[hsl(var(--brand-pink))]'
+            }`}>SHOP</Link>
           </div>
           
           {/* Condensed menu 768-1279px */}
           <div className="hidden lg:flex xl:hidden items-center gap-6">
-            <Link to="/" className={`px-4 py-2 rounded-full font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${
-              location.pathname === '/' ? 'text-[hsl(var(--brand-pink))] bg-[hsl(var(--brand-pink))]/10' : 'text-black hover:text-[hsl(var(--brand-pink))]'
-            }`}>HOME</Link>
+            <Link to="/" className="bg-[hsl(var(--brand-pink))] text-white px-6 py-2.5 rounded-full font-medium transition-colors hover:bg-[hsl(var(--brand-pink))]/90 focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] focus:ring-offset-2 min-h-[44px] flex items-center">HOME</Link>
             <Link to="/gallery" className={`px-4 py-2 rounded-full font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${
               location.pathname === '/gallery' ? 'text-[hsl(var(--brand-pink))] bg-[hsl(var(--brand-pink))]/10' : 'text-black hover:text-[hsl(var(--brand-pink))]'
             }`}>GALLERY</Link>
-            <Link to="/shop" className="bg-[hsl(var(--brand-pink))] text-white px-6 py-2.5 rounded-full font-medium transition-colors hover:bg-[hsl(var(--brand-pink))]/90 focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] focus:ring-offset-2 min-h-[44px] flex items-center">SHOP</Link>
+            <Link to="/shop" className={`px-4 py-2 rounded-full font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${
+              location.pathname === '/shop' ? 'text-[hsl(var(--brand-pink))] bg-[hsl(var(--brand-pink))]/10' : 'text-black hover:text-[hsl(var(--brand-pink))]'
+            }`}>SHOP</Link>
           </div>
         </div>
 
