@@ -28,15 +28,15 @@ const RotatingImageGallery = ({
   if (images.length === 0) return null;
 
   return (
-    <div className={`relative overflow-hidden ${className}`}>
+    <div className={`relative ${className}`}>
       {images.map((image, index) => (
         <img
           key={index}
           src={image}
           alt={`Sister brand organization solution ${index + 1}`}
-          className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-1000 ${
+          className={`w-full h-auto transition-opacity duration-1000 ${
             index === currentIndex ? 'opacity-100' : 'opacity-0'
-          }`}
+          } ${index !== currentIndex ? 'absolute inset-0' : ''}`}
           loading={index === 0 ? 'eager' : 'lazy'}
         />
       ))}

@@ -55,7 +55,7 @@ const Hero = () => {
               
               {/* XL Image Container - appears on desktop in right section, mobile after text */}
               <div className="w-[48rem] max-w-full mx-auto lg:mx-0 lg:block hidden animate-breath-fade-up-6">
-                <div className="aspect-square bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden">
+                <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden">
                   <RotatingImageGallery
                     images={[
                       '/lovable-uploads/a501115d-f6f4-4f74-bdbe-1b73ba1bc625.png',
@@ -69,7 +69,7 @@ const Hero = () => {
               
               {/* Mobile version - shows after hero text */}
               <div className="w-[48rem] max-w-full mx-auto lg:hidden animate-breath-fade-up-6">
-                <div className="aspect-square bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden">
+                <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden">
                   <RotatingImageGallery
                     images={[
                       '/lovable-uploads/a501115d-f6f4-4f74-bdbe-1b73ba1bc625.png',
