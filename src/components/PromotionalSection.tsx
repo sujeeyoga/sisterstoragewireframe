@@ -16,24 +16,31 @@ const PromotionalSection = () => {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 w-full px-4 md:px-6">
           
           {/* Summer Sale Card - Large */}
-          <div className="md:col-span-5 bg-gradient-to-br from-accent/20 to-accent/5 rounded-3xl p-8 md:p-10 flex flex-col justify-center min-h-[320px] relative overflow-hidden">
-            {/* Full container image */}
-            <div className="absolute inset-0 opacity-20">
-              <img 
-                src="/lovable-uploads/ff4988e3-c51c-4391-a440-95e03d111656.png" 
-                alt="Woman holding ziplock bag with bangles"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="relative z-10">
-              <h2 className="text-4xl md:text-6xl font-bold text-foreground leading-tight mb-6">
-                SUMMER<br />
-                END<br />
-                <span className="text-primary">SALE!</span>
-              </h2>
-              <Button variant="default" size="lg" className="w-fit">
-                Shop Now
-              </Button>
+          <div className="md:col-span-5 bg-gradient-to-br from-accent/20 to-accent/5 rounded-3xl p-8 md:p-10 flex items-center min-h-[320px] relative overflow-hidden">
+            {/* Two column layout */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full items-center">
+              {/* Left: Text content */}
+              <div className="flex flex-col justify-center">
+                <h2 className="text-3xl md:text-5xl font-bold text-foreground leading-tight mb-6">
+                  SUMMER<br />
+                  END<br />
+                  <span className="text-primary">SALE!</span>
+                </h2>
+                <Button variant="default" size="lg" className="w-fit">
+                  Shop Now
+                </Button>
+              </div>
+              
+              {/* Right: Image */}
+              <div className="flex justify-center md:justify-end">
+                <div className="w-full max-w-[200px] aspect-square rounded-2xl overflow-hidden">
+                  <img 
+                    src="/lovable-uploads/ff4988e3-c51c-4391-a440-95e03d111656.png" 
+                    alt="Woman holding ziplock bag with bangles"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </div>
             </div>
           </div>
 
