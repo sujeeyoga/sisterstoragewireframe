@@ -67,7 +67,6 @@ export const SisterStoriesCarousel = () => {
   const [loadingVideos, setLoadingVideos] = useState<Record<number, boolean>>(
     Object.fromEntries(videoStories.map(story => [story.id, true]))
   );
-  const [videoErrors, setVideoErrors] = useState<Record<number, boolean>>({});
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
@@ -85,26 +84,8 @@ export const SisterStoriesCarousel = () => {
   });
 
   const handleVideoLoad = (storyId: number) => {
-    console.log(`✅ Video ${storyId} loaded successfully`);
     setLoadingVideos(prev => ({ ...prev, [storyId]: false }));
   };
-
-  const handleVideoError = (storyId: number, error: any) => {
-    console.error(`❌ Video ${storyId} failed to load:`, error);
-    setVideoErrors(prev => ({ ...prev, [storyId]: true }));
-    setLoadingVideos(prev => ({ ...prev, [storyId]: false }));
-  };
-
-  // Filter out videos that have errors
-  const validVideoStories = videoStories.filter(story => !videoErrors[story.id]);
-
-  // Debug: Log video count
-  useEffect(() => {
-    console.log(`📊 Total videos: ${videoStories.length}, Valid videos: ${validVideoStories.length}`);
-    if (Object.keys(videoErrors).length > 0) {
-      console.log('❌ Failed videos:', Object.keys(videoErrors).filter(id => videoErrors[parseInt(id)]));
-    }
-  }, [videoErrors, validVideoStories.length]);
 
   const startAutoRotation = useCallback(() => {
     if (intervalRef.current) clearInterval(intervalRef.current);
@@ -204,7 +185,7 @@ export const SisterStoriesCarousel = () => {
           className="w-full"
         >
           <CarouselContent className="-ml-2 md:-ml-4">
-            {validVideoStories.map((story) => (
+            {videoStories.map((story) => (
               <CarouselItem key={story.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3">
                 <Card className="overflow-hidden border-0 bg-card/50 backdrop-blur-sm group cursor-pointer hover:bg-card/80 transition-all duration-500">
                   <div className="relative aspect-[9/16] overflow-hidden">
@@ -223,7 +204,6 @@ export const SisterStoriesCarousel = () => {
                       loop
                       playsInline
                       onLoadedData={() => handleVideoLoad(story.id)}
-                      onError={(e) => handleVideoError(story.id, e.currentTarget.error)}
                       className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/20 opacity-0 group-hover:opacity-100 transition-all duration-300" />
@@ -248,7 +228,7 @@ export const SisterStoriesCarousel = () => {
 
         {/* Progress Indicators */}
         <div className="flex justify-center items-center mt-4 space-x-2">
-          {validVideoStories.map((_, index) => (
+          {videoStories.map((_, index) => (
             <button
               key={index}
               onClick={() => api?.scrollTo(index)}
