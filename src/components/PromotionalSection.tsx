@@ -20,7 +20,7 @@ const PromotionalSection = () => {
             {/* Two column layout */}
             <div className="grid grid-cols-1 md:grid-cols-2 h-full">
               {/* Left: Text content */}
-              <div className="flex flex-col justify-center p-8 md:p-10">
+              <div className="flex flex-col justify-between h-full p-8 md:p-10">
                 <h2 className="text-3xl md:text-5xl font-bold text-foreground leading-tight mb-6">
                   SUMMER<br />
                   END<br />
