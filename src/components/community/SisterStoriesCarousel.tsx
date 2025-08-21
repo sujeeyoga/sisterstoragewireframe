@@ -31,6 +31,34 @@ const videoStories = [
     title: "Style Goals",
     author: "@bingewithanbu_",
     description: "Perfect accessory storage"
+  },
+  { 
+    id: 5, 
+    video: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/sister/sisterlove_morning.mp4", 
+    title: "Morning Routine",
+    author: "@sisterlove",
+    description: "Starting the day organized"
+  },
+  { 
+    id: 6, 
+    video: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/sister/cultural_jewelry.mp4", 
+    title: "Cultural Beauty",
+    author: "@culturalsisters",
+    description: "Celebrating heritage through organization"
+  },
+  { 
+    id: 7, 
+    video: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/sister/weekend_prep.mp4", 
+    title: "Weekend Prep",
+    author: "@weekendvibes",
+    description: "Getting ready for special occasions"
+  },
+  { 
+    id: 8, 
+    video: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/sister/sisterhood_goals.mp4", 
+    title: "Sisterhood Goals",
+    author: "@sistergoals",
+    description: "Organizing with friends and family"
   }
 ];
 
