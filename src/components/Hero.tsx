@@ -36,8 +36,9 @@ const Hero = () => {
               </div>
             </div>
 
-            {/* Hero Spotlight Card - positioned beside on desktop, after on mobile */}
-            <div className="flex-shrink-0">
+            {/* Right section - Spotlight Card on desktop, Image container on mobile */}
+            <div className="flex-shrink-0 flex flex-col gap-8">
+              {/* Hero Spotlight Card */}
               <HeroSpotlightCard
                 alt="Beautiful jewelry storage solutions with elegant pink and white bangle organizers"
                 sources={[
@@ -50,6 +51,20 @@ const Hero = () => {
                 aspect="1/1"
                 className="w-[32rem] max-w-full mx-auto lg:mx-0"
               />
+              
+              {/* 32rem Image Container - appears on desktop in right section, mobile after text */}
+              <div className="w-[32rem] max-w-full mx-auto lg:mx-0 lg:block hidden animate-breath-fade-up-6">
+                <div className="aspect-square bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden">
+                  {/* Image content will go here */}
+                </div>
+              </div>
+              
+              {/* Mobile version - shows after hero text */}
+              <div className="w-[32rem] max-w-full mx-auto lg:hidden animate-breath-fade-up-6">
+                <div className="aspect-square bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden">
+                  {/* Image content will go here */}
+                </div>
+              </div>
             </div>
           </div>
         </div>
