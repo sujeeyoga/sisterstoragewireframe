@@ -177,7 +177,7 @@ const BestSeller = () => {
                     <div className="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-4 py-2 rounded-lg flex-shrink-0">
                       <div className="text-center">
                         <span className="text-xs font-bold uppercase tracking-wider block">Rods</span>
-                        <span className="text-2xl font-black">{item.rodCount}</span>
+                        <span className="text-2xl font-thin">{item.rodCount}</span>
                       </div>
                     </div>
                     
