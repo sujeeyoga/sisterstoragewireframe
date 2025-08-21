@@ -96,7 +96,7 @@ const BestSeller = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 px-4">
+        <div className="grid grid-cols-2 gap-6 md:gap-8 px-4">
           {buyCards.map((item, index) => (
             <Card key={item.id} className="group overflow-hidden border-none shadow-md hover:shadow-xl transition-all duration-500 bg-white relative transform hover:-translate-y-1 hover:scale-[1.02]">
               {/* Bundle Badge */}
