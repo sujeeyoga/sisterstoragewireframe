@@ -9,7 +9,6 @@ import HowItWorks from "@/components/HowItWorks";
 import Delivery from "@/components/Delivery";
 import Testimonials from "@/components/Testimonials";
 import Newsletter from "@/components/Newsletter";
-import InstagramUGC from "@/components/InstagramUGC";
 import StyledBySisters from "@/components/StyledBySisters";
 import FeaturedGrid from "@/components/FeaturedGrid";
 
@@ -75,17 +74,10 @@ const Index = () => {
       </EnhancedScrollFade>
       
       
-      {/* Styled By Sisters - Community Videos */}
+      {/* Community Stories - Combined carousel section */}
       <EnhancedScrollFade preset="subtle" delay={0.2} once={true}>
         <Section spacing="lg" width="full">
           <StyledBySisters />
-        </Section>
-      </EnhancedScrollFade>
-      
-      {/* Instagram UGC - Social media integration */}
-      <EnhancedScrollFade preset="subtle" delay={0.2} once={true}>
-        <Section spacing="lg" width="full">
-          <InstagramUGC />
         </Section>
       </EnhancedScrollFade>
       

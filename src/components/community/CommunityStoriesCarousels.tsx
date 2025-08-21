@@ -3,6 +3,7 @@ import { EnhancedScrollFade } from '@/components/ui/enhanced-scroll-fade';
 import { SisterStoriesCarousel } from './SisterStoriesCarousel';
 import { CommunitySpacesCarousel } from './CommunitySpacesCarousel';
 import { SisterLoveCarousel } from './SisterLoveCarousel';
+import { InstagramCarousel } from './InstagramCarousel';
 import { JoinMovementCard } from './JoinMovementCard';
 
 const CommunityStoriesCarousels = () => {
@@ -39,6 +40,10 @@ const CommunityStoriesCarousels = () => {
           </EnhancedScrollFade>
 
           <EnhancedScrollFade preset="subtle" delay={800}>
+            <InstagramCarousel />
+          </EnhancedScrollFade>
+
+          <EnhancedScrollFade preset="subtle" delay={1000}>
             <JoinMovementCard />
           </EnhancedScrollFade>
         </div>
