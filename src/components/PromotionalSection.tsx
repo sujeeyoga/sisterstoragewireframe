@@ -32,12 +32,12 @@ const PromotionalSection = () => {
               </div>
               
               {/* Right: Image */}
-              <div className="flex justify-center md:justify-end">
-                <div className="w-full max-w-[200px] aspect-square rounded-2xl overflow-hidden">
+              <div className="flex justify-center md:justify-end items-end h-full">
+                <div className="w-full h-full rounded-2xl overflow-hidden">
                   <img 
                     src="/lovable-uploads/ff4988e3-c51c-4391-a440-95e03d111656.png" 
                     alt="Woman holding ziplock bag with bangles"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover object-bottom"
                   />
                 </div>
               </div>
