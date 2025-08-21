@@ -16,7 +16,7 @@ const PromotionalSection = () => {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 w-full px-4 md:px-6">
           
           {/* Summer Sale Card - Large */}
-          <div className="md:col-span-5 bg-gradient-to-br from-accent/20 to-accent/5 rounded-3xl overflow-hidden min-h-[320px] relative">
+          <div className="md:col-span-6 bg-gradient-to-br from-accent/20 to-accent/5 rounded-3xl overflow-hidden min-h-[320px] relative">
             {/* Two column layout */}
             <div className="grid grid-cols-1 md:grid-cols-2 h-full">
               {/* Left: Text content */}
@@ -43,7 +43,7 @@ const PromotionalSection = () => {
           </div>
 
           {/* Product Demo Card */}
-          <div className="md:col-span-4 bg-primary rounded-3xl p-8 text-white flex flex-col justify-center min-h-[320px] relative overflow-hidden">
+          <div className="md:col-span-3 bg-primary rounded-3xl p-8 text-white flex flex-col justify-center min-h-[320px] relative overflow-hidden">
             <div className="relative z-10">
               <p className="text-lg mb-6 leading-relaxed">
                 See how our storage solutions transform your jewelry organization
