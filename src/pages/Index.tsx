@@ -9,7 +9,7 @@ import HowItWorks from "@/components/HowItWorks";
 import Delivery from "@/components/Delivery";
 import Testimonials from "@/components/Testimonials";
 import Newsletter from "@/components/Newsletter";
-import StyledBySisters from "@/components/StyledBySisters";
+import CommunityStoriesCarousels from "@/components/community/CommunityStoriesCarousels";
 import FeaturedGrid from "@/components/FeaturedGrid";
 
 import ParallaxContainer from "@/components/ParallaxContainer";
@@ -75,11 +75,7 @@ const Index = () => {
       
       
       {/* Community Stories - Combined carousel section */}
-      <EnhancedScrollFade preset="subtle" delay={0.2} once={true}>
-        <Section spacing="lg" width="full">
-          <StyledBySisters />
-        </Section>
-      </EnhancedScrollFade>
+      <CommunityStoriesCarousels />
       
       {/* Newsletter - Email capture */}
       <EnhancedScrollFade preset="medium" delay={0.1} once={true}>
