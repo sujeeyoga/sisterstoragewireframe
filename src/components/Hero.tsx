@@ -53,8 +53,8 @@ const Hero = () => {
                 className="w-[32rem] max-w-full mx-auto lg:mx-0"
               />
               
-              {/* 32rem Image Container - appears on desktop in right section, mobile after text */}
-              <div className="w-[32rem] max-w-full mx-auto lg:mx-0 lg:block hidden animate-breath-fade-up-6">
+              {/* Full Image Container - appears on desktop in right section, mobile after text */}
+              <div className="w-full mx-auto lg:mx-0 lg:block hidden animate-breath-fade-up-6">
                 <div className="aspect-square bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden">
                   <RotatingImageGallery
                     images={[
@@ -68,7 +68,7 @@ const Hero = () => {
               </div>
               
               {/* Mobile version - shows after hero text */}
-              <div className="w-[32rem] max-w-full mx-auto lg:hidden animate-breath-fade-up-6">
+              <div className="w-full mx-auto lg:hidden animate-breath-fade-up-6">
                 <div className="aspect-square bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden">
                   <RotatingImageGallery
                     images={[
