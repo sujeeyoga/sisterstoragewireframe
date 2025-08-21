@@ -13,7 +13,7 @@ const PromotionalSection = () => {
         </div>
 
         {/* Main Grid Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 max-w-7xl mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 w-full">
           
           {/* Summer Sale Card - Large */}
           <div className="md:col-span-5 bg-gradient-to-br from-accent/20 to-accent/5 rounded-2xl p-8 flex flex-col justify-center min-h-[300px]">
