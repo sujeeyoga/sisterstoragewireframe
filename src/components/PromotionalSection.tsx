@@ -17,22 +17,24 @@ const PromotionalSection = () => {
           
           {/* Summer Sale Card - Large */}
           <div className="md:col-span-5 bg-gradient-to-br from-accent/20 to-accent/5 rounded-3xl p-8 md:p-10 flex flex-col justify-center min-h-[320px] relative overflow-hidden">
-            {/* Image beside title */}
-            <div className="absolute top-6 right-6 w-20 h-20 rounded-2xl overflow-hidden bg-white/10 flex items-center justify-center">
+            {/* Full container image */}
+            <div className="absolute inset-0 opacity-20">
               <img 
-                src="/lovable-uploads/c3b682be-b949-4e16-8aff-82cc8e879642.png" 
+                src="/lovable-uploads/ff4988e3-c51c-4391-a440-95e03d111656.png" 
                 alt="Woman holding ziplock bag with bangles"
-                className="w-full h-full object-cover rounded-2xl"
+                className="w-full h-full object-cover"
               />
             </div>
-            <h2 className="text-4xl md:text-6xl font-bold text-foreground leading-tight mb-6">
-              SUMMER<br />
-              END<br />
-              <span className="text-primary">SALE!</span>
-            </h2>
-            <Button variant="default" size="lg" className="w-fit">
-              Shop Now
-            </Button>
+            <div className="relative z-10">
+              <h2 className="text-4xl md:text-6xl font-bold text-foreground leading-tight mb-6">
+                SUMMER<br />
+                END<br />
+                <span className="text-primary">SALE!</span>
+              </h2>
+              <Button variant="default" size="lg" className="w-fit">
+                Shop Now
+              </Button>
+            </div>
           </div>
 
           {/* Product Demo Card */}
