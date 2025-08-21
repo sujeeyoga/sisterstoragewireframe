@@ -10,6 +10,7 @@ import Delivery from "@/components/Delivery";
 import Newsletter from "@/components/Newsletter";
 import CommunityStoriesCarousels from "@/components/community/CommunityStoriesCarousels";
 import FeaturedGrid from "@/components/FeaturedGrid";
+import PromotionalSection from "@/components/PromotionalSection";
 
 import ParallaxContainer from "@/components/ParallaxContainer";
 import EnhancedScrollFade from "@/components/ui/enhanced-scroll-fade";
@@ -74,6 +75,11 @@ const Index = () => {
         <Section spacing="lg" width="contained" background="white">
           <Newsletter />
         </Section>
+      </EnhancedScrollFade>
+      
+      {/* Promotional Section - Summer Sale & Storage Solutions */}
+      <EnhancedScrollFade preset="medium" delay={0.1} once={true}>
+        <PromotionalSection />
       </EnhancedScrollFade>
       
       {/* Delivery - Final service details */}
