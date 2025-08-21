@@ -27,11 +27,11 @@ const Section: React.FC<SectionProps> = ({
 }) => {
   // Spacing utilities - Enhanced hierarchy
   const spacingMap = {
-    xs: 'py-4 md:py-6',      // Tight spacing for subsections
-    sm: 'py-8 md:py-12',     // Small spacing for minor sections  
-    md: 'py-12 md:py-16',    // Default medium spacing
-    lg: 'py-16 md:py-24',    // Large spacing for major sections
-    xl: 'py-24 md:py-32'     // Extra large for hero-adjacent sections
+    xs: 'py-2 md:py-3',      // Tight spacing for subsections
+    sm: 'py-4 md:py-6',      // Small spacing for minor sections  
+    md: 'py-6 md:py-8',      // Default medium spacing
+    lg: 'py-8 md:py-12',     // Large spacing for major sections
+    xl: 'py-12 md:py-16'     // Extra large for hero-adjacent sections
   };
 
   // Width utilities
