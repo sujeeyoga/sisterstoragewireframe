@@ -6,9 +6,9 @@ const testimonialItems = [
   { 
     id: 1, 
     type: "quote",
-    text: "Finally, storage that honors my culture and keeps my bangles perfect!",
-    author: "Priya K.",
-    location: "Toronto"
+    text: "These organizers changed my life! Now everything has a home.",
+    author: "Priya S.",
+    location: "Jewelry Collector"
   },
   { 
     id: 2, 
@@ -20,19 +20,54 @@ const testimonialItems = [
   { 
     id: 3, 
     type: "quote",
-    text: "I love how Sister Storage celebrates my heritage while keeping everything beautifully organized.",
-    author: "Meera S.",
-    location: "London"
+    text: "Perfect blend of beauty and practicality.",
+    author: "Anjali R.",
+    location: "Interior Designer"
   },
   { 
     id: 4, 
+    type: "quote",
+    text: "Feels like it was made just for us.",
+    author: "Meena K.",
+    location: "Minimalist Enthusiast"
+  },
+  { 
+    id: 5, 
     type: "stat",
     number: "50+",
     label: "Countries",
     subtext: "Sisters worldwide"
   },
   { 
-    id: 5, 
+    id: 6, 
+    type: "quote",
+    text: "Finally found storage solutions that celebrate our culture with elegance.",
+    author: "Reema T.",
+    location: "Art Collector"
+  },
+  { 
+    id: 7, 
+    type: "quote",
+    text: "Finally, storage that honors my culture and keeps my bangles perfect!",
+    author: "Priya K.",
+    location: "Toronto"
+  },
+  { 
+    id: 8, 
+    type: "quote",
+    text: "I love how Sister Storage celebrates my heritage while keeping everything beautifully organized.",
+    author: "Meera S.",
+    location: "London"
+  },
+  { 
+    id: 9, 
+    type: "stat",
+    number: "25k+",
+    label: "Products Sold",
+    subtext: "Organizing dreams fulfilled"
+  },
+  { 
+    id: 10, 
     type: "quote",
     text: "The attention to detail in every piece shows they understand our needs as South Asian women.",
     author: "Anjali P.",
