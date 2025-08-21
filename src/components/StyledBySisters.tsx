@@ -166,6 +166,16 @@ const StyledBySisters = () => {
                       loop
                       playsInline
                       className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
+                      onError={(e) => {
+                        console.error('Video loading error for:', item.video, e);
+                        console.log('Video element:', e.target);
+                      }}
+                      onLoadStart={() => {
+                        console.log('Video loading started for:', item.video);
+                      }}
+                      onCanPlay={() => {
+                        console.log('Video can play:', item.video);
+                      }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/20 opacity-0 group-hover:opacity-100 transition-all duration-300" />
                     <div className="absolute bottom-0 left-0 right-0 p-3 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
