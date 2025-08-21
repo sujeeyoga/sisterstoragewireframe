@@ -6,7 +6,7 @@ import HeroSpotlightCard from './HeroSpotlightCard';
 import { useOptimizedScroll } from '@/hooks/use-optimized-scroll';
 
 // Import optimized image assets
-import heroSpotPortrait from '@/assets/hero-spot-portrait.jpg';
+import heroMain32rem from '@/assets/hero-main-32rem.jpg';
 
 const Hero = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
@@ -38,16 +38,16 @@ const Hero = () => {
 
             {/* Hero Spotlight Card */}
             <HeroSpotlightCard
-              alt="Sisters organizing beautiful storage solutions with elegant pink and white organizers"
+              alt="Beautiful jewelry storage solutions with elegant pink and white bangle organizers"
               sources={[
-                { src: heroSpotPortrait, width: 1080 },
+                { src: heroMain32rem, width: 512 },
               ]}
               badge="Beautifully Organized"
               title="Beautiful Organization"
               body="Made by sisters, for sisters. Designed storage that respects your space."
               cta={{ label: "Shop the Drop", href: "/shop" }}
-              aspect="4/3"
-              className="md:sticky md:top-24 group"
+              aspect="1/1"
+              className="md:sticky md:top-24 group w-[32rem] max-w-[32rem]"
             />
           </div>
         </div>
