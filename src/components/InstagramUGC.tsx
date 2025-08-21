@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Instagram, Heart, MessageCircle, Share } from 'lucide-react';
+import { Instagram, Heart, MessageCircle, Share, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const instagramPosts = [
@@ -8,33 +8,37 @@ const instagramPosts = [
     id: 1,
     color: "#E90064",
     username: "priya_organized",
-    likes: 456,
+    likes: 2847,
     image: "https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-27-scaled.jpg",
-    caption: "Finally found storage that celebrates my culture! 💕"
+    caption: "POV: Your jewelry collection finally has a home that honors your heritage ✨💍",
+    isReel: true
   },
   {
     id: 2,
     color: "#FF8021", 
     username: "meera_styles",
-    likes: 389,
+    likes: 1923,
     image: "https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-23-scaled.jpg",
-    caption: "These jewelry boxes are pure art ✨"
+    caption: "Watch me transform my chaotic vanity into organized bliss 🔄💫",
+    isReel: true
   },
   {
     id: 3,
     color: "#FFDCBD",
     username: "anjali_decor",
-    likes: 512,
+    likes: 3156,
     image: "https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-31-scaled.jpg",
-    caption: "Organization goals achieved! 🙌"
+    caption: "The satisfying sound of organizing with Sister Storage 🎵✨",
+    isReel: true
   },
   {
     id: 4,
     color: "#FE5FA2",
     username: "rani_jewels", 
-    likes: 347,
+    likes: 2634,
     image: "https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-13-scaled.jpg",
-    caption: "Beautiful storage for beautiful things 💎"
+    caption: "Get ready with me but make it ✨organized✨ #GRWM",
+    isReel: true
   }
 ];
 
@@ -70,7 +74,22 @@ const InstagramUGC = () => {
                   alt={`Sister Storage styled by @${post.username}`}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                 
+                 {/* Reel Play Button */}
+                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                   <div className="bg-black/40 backdrop-blur-sm rounded-full p-3 group-hover:bg-black/60 transition-colors">
+                     <Play className="h-6 w-6 text-white fill-white" />
+                   </div>
+                 </div>
+                 
+                 {/* Reel Label */}
+                 <div className="absolute top-3 right-3">
+                   <div className="bg-black/40 backdrop-blur-sm rounded-full px-2 py-1 flex items-center space-x-1">
+                     <Play className="h-3 w-3 text-white" />
+                     <span className="text-white text-xs font-medium">Reel</span>
+                   </div>
+                 </div>
                 
                 {/* Instagram Overlay */}
                 <div className="absolute inset-0 flex flex-col justify-between p-4 opacity-0 group-hover:opacity-100 transition-all duration-300">
