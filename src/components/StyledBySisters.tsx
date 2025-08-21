@@ -7,16 +7,17 @@ import { EnhancedScrollFade } from '@/components/ui/enhanced-scroll-fade';
 const styledItems = [
   { 
     id: 1, 
-    type: "featured", 
-    image: "/lovable-uploads/0e5fe1c0-12f8-439f-94d5-ec1da8ca09c8.png", 
-    title: "Heritage Organization",
-    description: "Traditional meets modern in this stunning setup"
+    type: "video", 
+    video: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/sister/rishegaselva_.mp4", 
+    title: "Sister Stories",
+    author: "@rishegaselva_"
   },
   { 
     id: 2, 
-    type: "image", 
-    image: "/lovable-uploads/e9628188-8ef0-426b-9858-08b2848fd690.png", 
-    title: "Colorful Collection" 
+    type: "video", 
+    video: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/sister/nxtsisterduo_.mp4", 
+    title: "Community Love",
+    author: "@nxtsisterduo_"
   },
   { 
     id: 3, 
@@ -33,9 +34,10 @@ const styledItems = [
   },
   { 
     id: 5, 
-    type: "image", 
-    image: "/lovable-uploads/8620f7af-c089-458c-bef9-78d6cd77f04e.png", 
-    title: "Organized Beauty" 
+    type: "video", 
+    video: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/sister/rishegaselva.mp4", 
+    title: "Daily Ritual",
+    author: "@rishegaselva"
   },
   { 
     id: 6, 
@@ -52,9 +54,10 @@ const styledItems = [
   },
   { 
     id: 8, 
-    type: "image", 
-    image: "/lovable-uploads/160b5d30-ba2c-4e66-8423-c4a6288d1af0.png", 
-    title: "Style Goals" 
+    type: "video", 
+    video: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/sister/bingewithanbu_.mp4", 
+    title: "Style Goals",
+    author: "@bingewithanbu_"
   },
   { 
     id: 9, 
@@ -102,11 +105,13 @@ const StyledBySisters = () => {
   const getAspectClass = (item: any) => {
     if (isMobile) {
       if (item.type === "featured") return "aspect-[16/9]";
+      if (item.type === "video") return "aspect-[9/16]";
       return "aspect-square";
     }
     
     if (item.type === "featured") return "aspect-square";
     if (item.type === "quote" || item.type === "cta") return "aspect-[2/1]";
+    if (item.type === "video") return "aspect-[9/16]";
     return "aspect-square";
   };
 
@@ -148,6 +153,29 @@ const StyledBySisters = () => {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/20 opacity-0 group-hover:opacity-100 transition-all duration-300" />
                     <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
                       <h3 className="font-semibold text-sm md:text-base">{item.title}</h3>
+                    </div>
+                  </>
+                )}
+
+                {item.type === "video" && (
+                  <>
+                    <video
+                      src={item.video}
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/20 opacity-0 group-hover:opacity-100 transition-all duration-300" />
+                    <div className="absolute bottom-0 left-0 right-0 p-3 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                      <h3 className="font-semibold text-sm">{item.title}</h3>
+                      <p className="text-xs opacity-90">{item.author}</p>
+                    </div>
+                    <div className="absolute top-3 right-3 bg-black/30 text-white text-xs px-2 py-1 rounded-full backdrop-blur-sm">
+                      <svg className="w-3 h-3 inline" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                      </svg>
                     </div>
                   </>
                 )}
