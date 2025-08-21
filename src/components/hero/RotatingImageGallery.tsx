@@ -34,7 +34,7 @@ const RotatingImageGallery = ({
           key={index}
           src={image}
           alt={`Sister brand organization solution ${index + 1}`}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
+          className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-1000 ${
             index === currentIndex ? 'opacity-100' : 'opacity-0'
           }`}
           loading={index === 0 ? 'eager' : 'lazy'}
