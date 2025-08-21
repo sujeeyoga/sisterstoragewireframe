@@ -36,7 +36,7 @@ const PromotionalSection = () => {
                 <img 
                   src="/lovable-uploads/ff4988e3-c51c-4391-a440-95e03d111656.png" 
                   alt="Woman holding ziplock bag with bangles"
-                  className="w-full h-full object-cover object-center"
+                  className="w-full h-full object-contain object-center"
                 />
               </div>
             </div>
