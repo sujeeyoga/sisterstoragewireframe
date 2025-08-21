@@ -4,17 +4,16 @@ import { Badge } from '@/components/ui/badge';
 
 const PromotionalSection = () => {
   return (
-    <div className="bg-gradient-to-br from-primary/5 to-secondary/10 py-8 md:py-12">
-      <div className="container-custom">
+    <div className="bg-gradient-to-br from-primary/5 to-secondary/10 py-8 md:py-12 w-full">
         {/* Header */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-8 px-4">
           <Badge variant="outline" className="mb-4 text-sm font-medium">
             BY SISTERS / FOR SISTERS
           </Badge>
         </div>
 
         {/* Main Grid Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 max-w-7xl mx-auto px-4">
           
           {/* Summer Sale Card - Large */}
           <div className="md:col-span-5 bg-gradient-to-br from-accent/20 to-accent/5 rounded-2xl p-8 flex flex-col justify-center min-h-[300px]">
@@ -87,7 +86,7 @@ const PromotionalSection = () => {
         </div>
 
         {/* Call to Action */}
-        <div className="text-center mt-8">
+        <div className="text-center mt-8 px-4">
           <p className="text-muted-foreground mb-4">Join thousands of sisters who've transformed their jewelry storage</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" variant="default">
@@ -96,9 +95,8 @@ const PromotionalSection = () => {
             <Button size="lg" variant="outline">
               Learn More
             </Button>
-          </div>
-        </div>
       </div>
+    </div>
     </div>
   );
 };
