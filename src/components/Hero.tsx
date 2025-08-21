@@ -3,6 +3,7 @@ import { useState } from 'react';
 import HeroContent from './hero/HeroContent';
 import ScrollIndicator from './hero/ScrollIndicator';
 import HeroSpotlightCard from './HeroSpotlightCard';
+import RotatingImageGallery from './hero/RotatingImageGallery';
 import { useOptimizedScroll } from '@/hooks/use-optimized-scroll';
 
 // Import optimized image assets
@@ -55,14 +56,28 @@ const Hero = () => {
               {/* 32rem Image Container - appears on desktop in right section, mobile after text */}
               <div className="w-[32rem] max-w-full mx-auto lg:mx-0 lg:block hidden animate-breath-fade-up-6">
                 <div className="aspect-square bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden">
-                  {/* Image content will go here */}
+                  <RotatingImageGallery
+                    images={[
+                      '/lovable-uploads/a501115d-f6f4-4f74-bdbe-1b73ba1bc625.png',
+                      '/lovable-uploads/fb8da55a-c9bb-419e-a96f-175a667875e1.png',
+                      '/lovable-uploads/4ef08ea3-3380-4111-b4a1-eb939cba275b.png'
+                    ]}
+                    className="w-full h-full rounded-2xl"
+                  />
                 </div>
               </div>
               
               {/* Mobile version - shows after hero text */}
               <div className="w-[32rem] max-w-full mx-auto lg:hidden animate-breath-fade-up-6">
                 <div className="aspect-square bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden">
-                  {/* Image content will go here */}
+                  <RotatingImageGallery
+                    images={[
+                      '/lovable-uploads/a501115d-f6f4-4f74-bdbe-1b73ba1bc625.png',
+                      '/lovable-uploads/fb8da55a-c9bb-419e-a96f-175a667875e1.png',
+                      '/lovable-uploads/4ef08ea3-3380-4111-b4a1-eb939cba275b.png'
+                    ]}
+                    className="w-full h-full rounded-2xl"
+                  />
                 </div>
               </div>
             </div>
