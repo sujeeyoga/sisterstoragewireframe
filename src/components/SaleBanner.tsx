@@ -10,7 +10,7 @@ const SaleBanner = ({ position = 0 }: SaleBannerProps) => {
   const contentItems = [
     {
       icon: <BadgePercent className="h-3 w-3 text-brand-pink mr-1 shrink-0" />,
-      text: "Spring Summer Sale - 20% Off Storewide"
+      text: "Summer End Sale - 20% Off"
     },
     {
       icon: <BadgePercent className="h-3 w-3 text-brand-pink mr-1 shrink-0" />,
@@ -18,7 +18,7 @@ const SaleBanner = ({ position = 0 }: SaleBannerProps) => {
     },
     {
       icon: <BadgePercent className="h-3 w-3 text-brand-pink mr-1 shrink-0" />,
-      text: "New Collection Now Available"
+      text: "Limited Time Only"
     }
   ];
 
