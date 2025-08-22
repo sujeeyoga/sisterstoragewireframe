@@ -65,7 +65,11 @@ const BestSeller = () => {
   const { addItem } = useCart();
   const { toast } = useToast();
   
+  console.log('BestSeller component rendering');
+  console.log('BestSeller buyCards length:', buyCards.length);
+  
   const handleBuyNow = (item: { id: string; name: string; price: number; image: string }) => {
+    console.log('handleBuyNow called with:', item);
     addItem({
       id: item.id,
       name: item.name,
