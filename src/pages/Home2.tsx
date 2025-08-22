@@ -43,12 +43,12 @@ const Home2 = () => {
                 <span className="inline-block px-6 py-3 bg-pink-600 text-white text-sm font-bold rounded-full">
                   NEW COLLECTION
                 </span>
-                <h1 className="text-5xl lg:text-7xl font-black text-gray-900 leading-tight">
+                <h1 className="text-6xl lg:text-8xl font-black text-gray-900 leading-tight">
                   ORGANIZE<br />
                   <span className="text-pink-600">YOUR LIFE</span><br />
                   WITH STYLE
                 </h1>
-                <p className="text-xl text-gray-600 leading-relaxed max-w-lg">
+                <p className="text-xl lg:text-2xl text-gray-600 leading-relaxed max-w-lg">
                   Beautiful, functional storage solutions designed by sisters, for sisters. 
                   Transform your space into an organized sanctuary.
                 </p>
@@ -147,11 +147,11 @@ const Home2 = () => {
             <span className="inline-block px-6 py-3 bg-pink-600 text-white text-sm font-bold rounded-full mb-6">
               Shop Now
             </span>
-            <h2 className="text-4xl md:text-6xl font-black text-gray-900 mb-8 leading-tight">
+            <h2 className="text-5xl lg:text-6xl font-black text-gray-900 mb-8 leading-tight">
               BUY SISTER<br />
               <span className="text-pink-600">FAVORITES</span>
             </h2>
-            <p className="text-gray-600 text-lg leading-relaxed">
+            <p className="text-gray-600 text-xl lg:text-2xl leading-relaxed">
               Get the storage solutions our community loves most. 
               Limited stock, unlimited style.
             </p>
@@ -192,9 +192,9 @@ const Home2 = () => {
                   <span className="text-gray-500 text-xs font-medium">(89)</span>
                 </div>
                 
-                <div className="space-y-2">
-                  <h3 className="text-lg font-bold text-gray-900">First Sister Set</h3>
-                  <p className="text-gray-600 text-sm">Perfect starter collection for new Sister Storage lovers</p>
+                <div className="space-y-3">
+                  <h3 className="text-xl font-bold text-gray-900">First Sister Set</h3>
+                  <p className="text-gray-600 text-base">Perfect starter collection for new Sister Storage lovers</p>
                 </div>
                 
                 <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
@@ -269,9 +269,9 @@ const Home2 = () => {
                   <span className="text-gray-500 text-xs font-medium">(124)</span>
                 </div>
                 
-                <div className="space-y-2">
-                  <h3 className="text-lg font-bold text-gray-900">Small & Travel</h3>
-                  <p className="text-gray-600 text-sm">Compact, on-the-go storage for your adventures</p>
+                <div className="space-y-3">
+                  <h3 className="text-xl font-bold text-gray-900">Small & Travel</h3>
+                  <p className="text-gray-600 text-base">Compact, on-the-go storage for your adventures</p>
                 </div>
                 
                 <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
@@ -314,10 +314,10 @@ const Home2 = () => {
           </div>
           
           <div className="text-center mt-20">
-            <button className="px-10 py-5 text-lg border-2 border-pink-600 text-pink-600 hover:bg-pink-600 hover:text-white font-bold transition-colors rounded-lg">
+            <button className="px-10 py-5 text-xl border-2 border-pink-600 text-pink-600 hover:bg-pink-600 hover:text-white font-bold transition-colors rounded-lg">
               View All Products
             </button>
-            <p className="text-gray-500 text-sm mt-6">Free shipping on orders over $50 • 30-day returns</p>
+            <p className="text-gray-500 text-base mt-6">Free shipping on orders over $50 • 30-day returns</p>
           </div>
         </div>
       </section>
@@ -331,12 +331,12 @@ const Home2 = () => {
                 <span className="inline-block px-6 py-3 bg-pink-100 text-pink-600 text-sm font-bold rounded-full">
                   ABOUT US
                 </span>
-                <h2 className="text-4xl lg:text-5xl font-black text-gray-900 leading-tight">
+                <h2 className="text-5xl lg:text-6xl font-black text-gray-900 leading-tight">
                   DESIGNED BY<br />
                   <span className="text-pink-600">SISTERS</span><br />
                   FOR SISTERS
                 </h2>
-                <p className="text-gray-600 text-lg leading-relaxed">
+                <p className="text-gray-600 text-xl lg:text-2xl leading-relaxed">
                   We understand the unique challenges women face in staying organized. 
                   Our products are designed with love, tested by real sisters, and built to last.
                 </p>
@@ -349,8 +349,8 @@ const Home2 = () => {
                     </svg>
                   </div>
                   <div>
-                    <h4 className="font-bold text-gray-900 mb-1">Quality Materials</h4>
-                    <p className="text-gray-600">Premium materials that stand the test of time</p>
+                    <h4 className="font-bold text-gray-900 mb-2 text-lg">Quality Materials</h4>
+                    <p className="text-gray-600 text-base">Premium materials that stand the test of time</p>
                   </div>
                 </div>
                 <div className="flex items-start space-x-4">
@@ -360,8 +360,8 @@ const Home2 = () => {
                     </svg>
                   </div>
                   <div>
-                    <h4 className="font-bold text-gray-900 mb-1">Beautiful Design</h4>
-                    <p className="text-gray-600">Functional doesn't mean boring - style meets utility</p>
+                    <h4 className="font-bold text-gray-900 mb-2 text-lg">Beautiful Design</h4>
+                    <p className="text-gray-600 text-base">Functional doesn't mean boring - style meets utility</p>
                   </div>
                 </div>
                 <div className="flex items-start space-x-4">
@@ -371,8 +371,8 @@ const Home2 = () => {
                     </svg>
                   </div>
                   <div>
-                    <h4 className="font-bold text-gray-900 mb-1">Sister Support</h4>
-                    <p className="text-gray-600">Join a community of organized, empowered women</p>
+                    <h4 className="font-bold text-gray-900 mb-2 text-lg">Sister Support</h4>
+                    <p className="text-gray-600 text-base">Join a community of organized, empowered women</p>
                   </div>
                 </div>
               </div>
@@ -395,23 +395,23 @@ const Home2 = () => {
       <section className="py-24 lg:py-32 bg-gradient-to-r from-pink-600 to-rose-600">
         <div className="container mx-auto px-6 lg:px-8 text-center">
           <div className="max-w-2xl mx-auto space-y-10">
-            <h2 className="text-3xl lg:text-4xl font-black text-white">
+            <h2 className="text-5xl lg:text-6xl font-black text-white">
               JOIN THE SISTER COMMUNITY
             </h2>
-            <p className="text-pink-100 text-xl leading-relaxed">
+            <p className="text-pink-100 text-xl lg:text-2xl leading-relaxed">
               Get exclusive access to new products, organization tips, and sister stories delivered to your inbox.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+            <div className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
               <input 
                 type="email" 
                 placeholder="Enter your email" 
-                className="flex-1 px-6 py-4 rounded-lg border-0 focus:ring-2 focus:ring-white/50 text-lg"
+                className="flex-1 px-6 py-4 rounded-lg border-0 focus:ring-2 focus:ring-white/50 text-base"
               />
-              <button className="bg-white text-pink-600 px-8 py-4 rounded-lg font-bold hover:bg-gray-100 transition-colors">
+              <button className="bg-white text-pink-600 px-8 py-4 rounded-lg font-bold hover:bg-gray-100 transition-colors text-base">
                 Subscribe
               </button>
             </div>
-            <p className="text-pink-200 text-sm mt-6">
+            <p className="text-pink-200 text-base mt-6">
               No spam, just sister love. Unsubscribe anytime.
             </p>
           </div>
