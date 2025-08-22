@@ -26,8 +26,8 @@ const Hero = () => {
 
   return (
     <section className="relative min-h-screen w-full overflow-hidden bg-[hsl(var(--brand-pink))]" aria-label="Hero section">
-      {/* Hero container with max-width and proper padding */}
-      <div className="relative mx-auto max-w-[1200px] px-4 lg:px-6">
+      {/* Hero container with standardized container system */}
+      <div className="container-custom relative">
         <div className="pt-20 pb-16 lg:pt-28 lg:pb-24">
           <div className="flex flex-col lg:flex-row lg:items-center gap-8 min-h-[calc(100vh-12rem)]">
             {/* Hero Content */}
