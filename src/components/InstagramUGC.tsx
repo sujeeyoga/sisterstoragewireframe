@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Instagram, Heart, MessageCircle, Share, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -44,6 +44,41 @@ const instagramPosts = [
 ];
 
 const InstagramUGC = () => {
+  const [currentReelIndex, setCurrentReelIndex] = useState(0);
+  const [isAutoScrolling, setIsAutoScrolling] = useState(true);
+  const reelRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll through reels
+  useEffect(() => {
+    if (!isAutoScrolling) return;
+
+    const interval = setInterval(() => {
+      setCurrentReelIndex(prev => {
+        const nextIndex = prev === instagramPosts.length - 1 ? 0 : prev + 1;
+        
+        // Scroll to next reel
+        if (reelRefs.current[nextIndex]) {
+          reelRefs.current[nextIndex]?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+            inline: 'center'
+          });
+        }
+        
+        return nextIndex;
+      });
+    }, 5000); // Auto-scroll every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [isAutoScrolling]);
+
+  // Handle manual scroll - disable auto scroll temporarily
+  const handleManualScroll = () => {
+    setIsAutoScrolling(false);
+    setTimeout(() => setIsAutoScrolling(true), 10000); // Resume after 10 seconds
+  };
+
   return (
     <section className="py-16 md:py-24 bg-gradient-to-br from-pink-50 via-white to-orange-50">
       <div className="container-custom">
@@ -61,11 +96,18 @@ const InstagramUGC = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 max-w-3xl mx-auto">
+        <div 
+          ref={containerRef}
+          className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 max-w-3xl mx-auto"
+          onScroll={handleManualScroll}
+        >
           {instagramPosts.map((post, index) => (
             <div 
-              key={post.id} 
-              className="group relative overflow-hidden rounded-2xl bg-white shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2"
+              key={post.id}
+              ref={el => reelRefs.current[index] = el}
+              className={`group relative overflow-hidden rounded-2xl bg-white shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 ${
+                currentReelIndex === index ? 'ring-2 ring-[#E90064] ring-opacity-50' : ''
+              }`}
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               {/* Post Image */}
