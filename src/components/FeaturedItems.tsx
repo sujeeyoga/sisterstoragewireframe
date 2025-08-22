@@ -151,7 +151,7 @@ const FeaturedItems = () => {
           
           {Object.entries(menuItems).map(([category, items]) => (
             <TabsContent key={category} value={category} className="mt-0">
-              <div className="grid grid-cols-2 gap-4 md:gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
                  {items.map((item) => (
                    <Card key={item.id} className="overflow-hidden border-none shadow-lg hover:shadow-xl transition-shadow duration-300 h-full flex flex-col">
                      <div className="w-full overflow-hidden">

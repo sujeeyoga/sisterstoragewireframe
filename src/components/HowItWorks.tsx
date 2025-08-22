@@ -40,7 +40,7 @@ const HowItWorks = () => {
         </ScrollFadeContainer>
         
         <div className="px-6 sm:px-8 md:px-12" role="region" aria-label="How it works grid">
-          <div className="grid grid-cols-2 gap-4 sm:gap-6 md:gap-8 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 md:gap-8 max-w-4xl mx-auto">
           {steps.map((step, index) => (
             <ScrollFadeContainer 
               key={step.id} 
