@@ -27,6 +27,8 @@ export const SisterStoriesCarousel = () => {
   const ROTATION_INTERVAL = 4000; // 4 seconds
   const PROGRESS_UPDATE_INTERVAL = 50;
 
+  console.log('SisterStoriesCarousel: Rendering with', videoStories.length, 'videos, loading:', isLoading);
+
   // Intersection observer to only auto-rotate when visible
   const { ref: carouselRef, isIntersecting } = useIntersectionObserver({
     threshold: 0.3,
@@ -36,6 +38,7 @@ export const SisterStoriesCarousel = () => {
   // Fetch videos from Supabase storage
   const fetchVideos = useCallback(async () => {
     try {
+      console.log('SisterStoriesCarousel: Starting video fetch...');
       setIsLoading(true);
       const { data, error } = await supabase.storage
         .from('sister')
@@ -43,6 +46,8 @@ export const SisterStoriesCarousel = () => {
 
       if (error) {
         console.error('Error fetching videos:', error);
+        console.log('SisterStoriesCarousel: Using fallback - no videos available');
+        setVideoStories([]); // Explicitly set empty array
         return;
       }
 
@@ -70,6 +75,9 @@ export const SisterStoriesCarousel = () => {
       
     } catch (error) {
       console.error('Error fetching videos:', error);
+      console.log('SisterStoriesCarousel: Catch block - setting empty stories');
+      setVideoStories([]); // Ensure empty state
+      setIsLoading(false);
     } finally {
       setIsLoading(false);
     }
@@ -179,16 +187,8 @@ export const SisterStoriesCarousel = () => {
   }
 
   if (videoStories.length === 0) {
-    return (
-      <div className="w-full">
-        <div className="container-custom">
-          <div className="mb-8">
-            <h3 className="text-2xl md:text-3xl font-bold mb-2">Sister Stories</h3>
-            <p className="text-muted-foreground">No videos found in the sister bucket</p>
-          </div>
-        </div>
-      </div>
-    );
+    console.log('SisterStoriesCarousel: No videos available, hiding component');
+    return null; // Hide component instead of showing error
   }
 
   return (
