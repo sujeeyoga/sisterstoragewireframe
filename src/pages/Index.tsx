@@ -5,7 +5,6 @@ import Hero from "@/components/Hero";
 import BestSeller from "@/components/BestSeller";
 
 import About from "@/components/About";
-import HowItWorks from "@/components/HowItWorks";
 import Delivery from "@/components/Delivery";
 import Newsletter from "@/components/Newsletter";
 import CommunityStoriesCarousels from "@/components/community/CommunityStoriesCarousels";
@@ -41,13 +40,6 @@ const Index = () => {
       </EnhancedScrollFade>
       
       
-      {/* How It Works - Process explanation */}
-      <EnhancedScrollFade preset="medium" delay={0.1} once={true}>
-        <Section spacing="lg" width="contained" background="white">
-          <HowItWorks />
-        </Section>
-      </EnhancedScrollFade>
-
       {/* Our Story CTA - Pink button on white */}
       <EnhancedScrollFade preset="subtle" delay={0.05} once={true}>
         <Section spacing="md" width="contained" background="white">
