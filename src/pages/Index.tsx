@@ -39,18 +39,6 @@ const Index = () => {
         </Section>
       </EnhancedScrollFade>
       
-      
-      {/* Our Story CTA - Pink button on white */}
-      <EnhancedScrollFade preset="subtle" delay={0.05} once={true}>
-        <Section spacing="md" width="contained" background="white">
-          <div className="w-full flex items-center justify-center">
-            <Button variant="pink" size="lg" asChild aria-label="Read Our Story">
-              <a href="/our-story">Our Story</a>
-            </Button>
-          </div>
-        </Section>
-      </EnhancedScrollFade>
-      
       {/* About Section - Brand story */}
       <EnhancedScrollFade preset="subtle" delay={0.2} once={true}>
         <Section spacing="lg" width="contained" background="gray">
