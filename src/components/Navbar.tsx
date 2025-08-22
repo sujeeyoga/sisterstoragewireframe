@@ -102,71 +102,168 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
             )}
           </button>
           <button 
-            className="lg:hidden p-2 text-black focus:outline-none hover:bg-black/10 rounded transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center focus:ring-2 focus:ring-[hsl(var(--brand-pink))]"
+            className="lg:hidden p-3 text-black focus:outline-none hover:bg-[hsl(var(--brand-pink)/0.1)] rounded-full transition-all duration-300 min-h-[44px] min-w-[44px] flex items-center justify-center focus:ring-2 focus:ring-[hsl(var(--brand-pink))] transform hover:scale-110"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle menu"
           >
-            {mobileMenuOpen ? (
-              <X className="h-6 w-6" />
-            ) : (
-              <Menu className="h-6 w-6" />
-            )}
+            <div className="relative">
+              {mobileMenuOpen ? (
+                <X className="h-6 w-6 text-[hsl(var(--brand-pink))] rotate-0 transition-all duration-300" />
+              ) : (
+                <Menu className="h-6 w-6 text-[hsl(var(--brand-pink))] transition-all duration-300" />
+              )}
+            </div>
           </button>
         </div>
       </div>
 
 
-      {/* Mobile Menu Slide-in from left with proper background and z-index */}
+      {/* Enhanced Mobile Menu with improved animations and design */}
       <div 
-        className={`lg:hidden fixed inset-0 z-[60] transform transition-all duration-300 ease-in-out ${
-          mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+        className={`lg:hidden fixed inset-0 z-[60] transition-all duration-500 ease-out ${
+          mobileMenuOpen ? 'visible opacity-100' : 'invisible opacity-0'
         }`}
         aria-hidden={!mobileMenuOpen}
       >
-        {/* Backdrop overlay */}
-        {/* Backdrop overlay */}
+        {/* Enhanced Backdrop with blur */}
         <div
-          className="absolute inset-0 bg-foreground/30 backdrop-blur-sm"
+          className={`absolute inset-0 bg-black/40 backdrop-blur-md transition-all duration-500 ${
+            mobileMenuOpen ? 'opacity-100' : 'opacity-0'
+          }`}
           onClick={() => setMobileMenuOpen(false)}
           aria-hidden="true"
         />
         
-        {/* Slide-in panel */}
-        <aside className="relative z-[1] h-full w-[85%] max-w-sm bg-background text-foreground shadow-2xl border-r border-border">
-          <nav className="flex flex-col gap-4 p-6 mt-12">
-            {[
-              { name: 'HOME', path: '/', icon: Home },
-              { name: 'GALLERY', path: '/gallery', icon: Image },
-              { name: 'SHOP', path: '/shop', icon: ShoppingCart },
-              { name: 'ABOUT', path: '/about', icon: Info },
-              { name: 'BLOG', path: '/blog', icon: Newspaper },
-              { name: 'BRAND', path: '/brand', icon: Palette },
-              { name: 'OUR STORY', path: '/our-story', icon: BookOpen },
-              { name: 'SHIPPING', path: '/#delivery', icon: Package },
-              { name: 'SHOPPING CART', path: '#', icon: ShoppingBag, onClick: () => { setMobileMenuOpen(false); setCartOpen(true); } }
-            ].map((item) => (
-              item.onClick ? (
-                <button
-                  key={item.name}
-                  onClick={item.onClick}
-                  className="text-[hsl(var(--brand-pink))] text-lg font-semibold hover:bg-[hsl(var(--brand-pink))]/10 transition-colors flex items-center gap-3 px-4 py-2 rounded-md text-left"
-                >
-                  {item.icon && <item.icon className="h-5 w-5" />}
-                  <span>{item.name} ({totalItems})</span>
-                </button>
-              ) : (
-                <Link
-                  key={item.name}
-                  to={item.path}
-                  className="text-foreground text-lg font-medium hover:text-[hsl(var(--brand-pink))] hover:bg-muted transition-colors flex items-center gap-3 px-4 py-2 rounded-md"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {item.icon && <item.icon className="h-5 w-5 text-[hsl(var(--brand-pink))]" />}
-                  <span>{item.name}</span>
-                </Link>
-              )
-            ))}
+        {/* Enhanced Slide-in panel with brand gradient */}
+        <aside className={`absolute right-0 top-0 h-full w-[90%] max-w-sm bg-gradient-to-br from-white via-[hsl(var(--brand-pink)/0.02)] to-[hsl(var(--brand-orange)/0.03)] backdrop-blur-xl shadow-2xl border-l border-[hsl(var(--brand-pink)/0.1)] transform transition-transform duration-500 ease-out ${
+          mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}>
+          
+          {/* Header Section */}
+          <div className="p-6 border-b border-[hsl(var(--brand-pink)/0.1)] bg-gradient-to-r from-[hsl(var(--brand-pink))] to-[hsl(var(--brand-orange))]">
+            <div className="flex items-center justify-between mb-4">
+              <div className="text-white">
+                <h2 className="text-2xl font-black tracking-tight">SISTER</h2>
+                <p className="text-white/80 text-sm font-medium">Culture Without Clutter</p>
+              </div>
+              <button
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-2 text-white hover:bg-white/20 rounded-full transition-all duration-200 hover:rotate-90"
+                aria-label="Close menu"
+              >
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+          </div>
+
+          {/* Navigation Section */}
+          <nav className="flex-1 overflow-y-auto py-6">
+            <div className="px-6 space-y-2">
+              {[
+                { name: 'HOME', path: '/', icon: Home, gradient: 'from-[hsl(var(--brand-pink))] to-[hsl(var(--brand-orange))]' },
+                { name: 'SHOP', path: '/shop', icon: ShoppingCart, gradient: 'from-[hsl(var(--brand-orange))] to-[hsl(var(--brand-pink))]' },
+                { name: 'GALLERY', path: '/gallery', icon: Image, gradient: 'from-[hsl(var(--brand-pink))] to-purple-500' },
+                { name: 'ABOUT', path: '/about', icon: Info, gradient: 'from-[hsl(var(--brand-orange))] to-yellow-500' },
+                { name: 'OUR STORY', path: '/our-story', icon: BookOpen, gradient: 'from-purple-500 to-[hsl(var(--brand-pink))]' },
+                { name: 'BLOG', path: '/blog', icon: Newspaper, gradient: 'from-blue-500 to-[hsl(var(--brand-orange))]' },
+                { name: 'BRAND', path: '/brand', icon: Palette, gradient: 'from-green-500 to-[hsl(var(--brand-pink))]' }
+              ].map((item, index) => {
+                const isActive = location.pathname === item.path;
+                return (
+                  <Link
+                    key={item.name}
+                    to={item.path}
+                    className={`group flex items-center gap-4 p-4 rounded-2xl transition-all duration-300 transform hover:scale-[1.02] ${
+                      isActive 
+                        ? 'bg-gradient-to-r from-[hsl(var(--brand-pink)/0.1)] to-[hsl(var(--brand-orange)/0.1)] shadow-lg border border-[hsl(var(--brand-pink)/0.2)]' 
+                        : 'hover:bg-gradient-to-r hover:from-[hsl(var(--brand-pink)/0.05)] hover:to-[hsl(var(--brand-orange)/0.05)]'
+                    }`}
+                    onClick={() => setMobileMenuOpen(false)}
+                    style={{ animationDelay: `${index * 0.1}s` }}
+                  >
+                    <div className={`p-3 rounded-xl bg-gradient-to-r ${item.gradient} shadow-lg`}>
+                      <item.icon className="h-5 w-5 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <span className={`text-lg font-bold transition-colors ${
+                        isActive ? 'text-[hsl(var(--brand-pink))]' : 'text-gray-900 group-hover:text-[hsl(var(--brand-pink))]'
+                      }`}>
+                        {item.name}
+                      </span>
+                    </div>
+                    {isActive && (
+                      <div className="w-2 h-2 bg-[hsl(var(--brand-pink))] rounded-full animate-pulse" />
+                    )}
+                  </Link>
+                );
+              })}
+            </div>
+
+            {/* Divider */}
+            <div className="mx-6 my-6 h-px bg-gradient-to-r from-[hsl(var(--brand-pink)/0.2)] via-[hsl(var(--brand-orange)/0.2)] to-transparent" />
+
+            {/* Special Actions */}
+            <div className="px-6 space-y-3">
+              {/* Cart Button */}
+              <button
+                onClick={() => { setMobileMenuOpen(false); setCartOpen(true); }}
+                className="w-full group flex items-center gap-4 p-4 rounded-2xl bg-gradient-to-r from-[hsl(var(--brand-pink))] to-[hsl(var(--brand-orange))] text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
+              >
+                <div className="p-3 rounded-xl bg-white/20">
+                  <ShoppingBag className="h-5 w-5" />
+                </div>
+                <div className="flex-1 text-left">
+                  <span className="text-lg font-bold">SHOPPING CART</span>
+                  {totalItems > 0 && (
+                    <p className="text-white/80 text-sm">{totalItems} items</p>
+                  )}
+                </div>
+                {totalItems > 0 && (
+                  <div className="w-8 h-8 bg-white text-[hsl(var(--brand-pink))] rounded-full flex items-center justify-center font-bold text-sm">
+                    {totalItems}
+                  </div>
+                )}
+              </button>
+
+              {/* Quick Link */}
+              <Link
+                to="/#delivery"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full group flex items-center gap-4 p-4 rounded-2xl border-2 border-[hsl(var(--brand-pink)/0.2)] hover:border-[hsl(var(--brand-pink)/0.4)] hover:bg-[hsl(var(--brand-pink)/0.05)] transition-all duration-300"
+              >
+                <div className="p-3 rounded-xl bg-[hsl(var(--brand-orange)/0.1)]">
+                  <Package className="h-5 w-5 text-[hsl(var(--brand-orange))]" />
+                </div>
+                <div className="flex-1 text-left">
+                  <span className="text-lg font-semibold text-gray-900 group-hover:text-[hsl(var(--brand-pink))]">SHIPPING INFO</span>
+                  <p className="text-gray-600 text-sm">Free on orders $75+</p>
+                </div>
+              </Link>
+            </div>
           </nav>
+
+          {/* Footer Section */}
+          <div className="p-6 border-t border-[hsl(var(--brand-pink)/0.1)] bg-gradient-to-r from-[hsl(var(--brand-pink)/0.02)] to-[hsl(var(--brand-orange)/0.02)]">
+            <div className="text-center">
+              <p className="text-gray-600 text-sm mb-2">Follow us for daily inspiration</p>
+              <div className="flex justify-center space-x-4">
+                <a 
+                  href="https://instagram.com/sisterstorage" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 bg-gradient-to-r from-[hsl(var(--brand-pink))] to-[hsl(var(--brand-orange))] rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform duration-200"
+                >
+                  <span className="text-sm font-bold">IG</span>
+                </a>
+                <a 
+                  href="#" 
+                  className="w-10 h-10 bg-gradient-to-r from-[hsl(var(--brand-orange))] to-[hsl(var(--brand-pink))] rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform duration-200"
+                >
+                  <span className="text-sm font-bold">FB</span>
+                </a>
+              </div>
+            </div>
+          </div>
         </aside>
       </div>
     </>
