@@ -23,7 +23,7 @@ import { CartProvider } from "./contexts/CartContext";
 import CartDrawer from "../src/components/CartDrawer";
 import OurStory from "./pages/OurStory";
 import ScreenLoader from "./components/ui/ScreenLoader";
-import { useState } from "react";
+import React, { useState } from "react";
 
 const queryClient = new QueryClient();
 
