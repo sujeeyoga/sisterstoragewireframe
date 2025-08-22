@@ -131,7 +131,7 @@ const About = () => {
                 animate={{ opacity: 1, y: [0, 10, 0] }}
                 transition={{ duration: 1.5, repeat: Infinity, repeatType: "loop" }}
               >
-                <ArrowDown className="h-8 w-8 text-[#E90064]" />
+                <ArrowDown className="h-8 w-8 text-[hsl(var(--brand-pink))]" />
               </motion.div>
             </div>
           </motion.div>
