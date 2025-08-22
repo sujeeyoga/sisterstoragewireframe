@@ -35,12 +35,12 @@ const Home2 = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-pink-50 to-white py-20">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-8">
-              <div className="space-y-4">
-                <span className="inline-block px-4 py-2 bg-pink-600 text-white text-sm font-bold rounded-full">
+      <section className="relative bg-gradient-to-br from-pink-50 to-white py-32 lg:py-40">
+        <div className="container mx-auto px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-20 items-center">
+            <div className="space-y-12">
+              <div className="space-y-8">
+                <span className="inline-block px-6 py-3 bg-pink-600 text-white text-sm font-bold rounded-full">
                   NEW COLLECTION
                 </span>
                 <h1 className="text-5xl lg:text-7xl font-black text-gray-900 leading-tight">
@@ -53,11 +53,11 @@ const Home2 = () => {
                   Transform your space into an organized sanctuary.
                 </p>
               </div>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <button className="bg-pink-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-pink-700 transition-colors">
+              <div className="flex flex-col sm:flex-row gap-6">
+                <button className="bg-pink-600 text-white px-10 py-5 rounded-lg font-bold text-lg hover:bg-pink-700 transition-colors">
                   SHOP NOW
                 </button>
-                <button className="border-2 border-pink-600 text-pink-600 px-8 py-4 rounded-lg font-bold text-lg hover:bg-pink-600 hover:text-white transition-colors">
+                <button className="border-2 border-pink-600 text-pink-600 px-10 py-5 rounded-lg font-bold text-lg hover:bg-pink-600 hover:text-white transition-colors">
                   OUR STORY
                 </button>
               </div>
@@ -87,7 +87,7 @@ const Home2 = () => {
       </section>
 
       {/* Featured Grid */}
-      <section className="py-16">
+      <section className="py-24 lg:py-32">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 h-screen">
           <div className="relative overflow-hidden group">
             <img 
@@ -141,13 +141,13 @@ const Home2 = () => {
       </section>
 
       {/* Best Seller Section */}
-      <section className="py-16 bg-gradient-to-br from-gray-50 to-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <span className="inline-block px-4 py-2 bg-pink-600 text-white text-sm font-bold rounded-full mb-4">
+      <section className="py-24 lg:py-32 bg-gradient-to-br from-gray-50 to-white">
+        <div className="container mx-auto px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-20">
+            <span className="inline-block px-6 py-3 bg-pink-600 text-white text-sm font-bold rounded-full mb-6">
               Shop Now
             </span>
-            <h2 className="text-4xl md:text-6xl font-black text-gray-900 mb-6 leading-tight">
+            <h2 className="text-4xl md:text-6xl font-black text-gray-900 mb-8 leading-tight">
               BUY SISTER<br />
               <span className="text-pink-600">FAVORITES</span>
             </h2>
@@ -157,11 +157,11 @@ const Home2 = () => {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 lg:gap-12">
             {/* Product Card 1 */}
             <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
               <div className="relative">
-                <span className="absolute top-3 left-3 z-10 px-3 py-1.5 text-xs font-bold rounded-full bg-white text-blue-600 shadow-lg">
+                <span className="absolute top-4 left-4 z-10 px-4 py-2 text-xs font-bold rounded-full bg-white text-blue-600 shadow-lg">
                   STARTER BUNDLE
                 </span>
                 <img 
@@ -170,7 +170,7 @@ const Home2 = () => {
                   className="w-full aspect-[4/5] object-cover"
                 />
               </div>
-              <div className="p-6 space-y-4">
+              <div className="p-8 space-y-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1">
                     <svg className="h-4 w-4 text-amber-400 fill-amber-400" viewBox="0 0 24 24">
@@ -238,7 +238,7 @@ const Home2 = () => {
             {/* Product Card 2 */}
             <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
               <div className="relative">
-                <span className="absolute top-3 left-3 z-10 px-3 py-1.5 text-xs font-bold rounded-full bg-white text-emerald-600 shadow-lg">
+                <span className="absolute top-4 left-4 z-10 px-4 py-2 text-xs font-bold rounded-full bg-white text-emerald-600 shadow-lg">
                   TRAVEL READY
                 </span>
                 <img 
@@ -247,7 +247,7 @@ const Home2 = () => {
                   className="w-full aspect-[4/5] object-cover"
                 />
               </div>
-              <div className="p-6 space-y-4">
+              <div className="p-8 space-y-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1">
                     <svg className="h-4 w-4 text-amber-400 fill-amber-400" viewBox="0 0 24 24">
@@ -313,22 +313,22 @@ const Home2 = () => {
             </div>
           </div>
           
-          <div className="text-center mt-16">
-            <button className="px-8 py-4 text-lg border-2 border-pink-600 text-pink-600 hover:bg-pink-600 hover:text-white font-bold transition-colors rounded-lg">
+          <div className="text-center mt-20">
+            <button className="px-10 py-5 text-lg border-2 border-pink-600 text-pink-600 hover:bg-pink-600 hover:text-white font-bold transition-colors rounded-lg">
               View All Products
             </button>
-            <p className="text-gray-500 text-sm mt-3">Free shipping on orders over $50 • 30-day returns</p>
+            <p className="text-gray-500 text-sm mt-6">Free shipping on orders over $50 • 30-day returns</p>
           </div>
         </div>
       </section>
 
       {/* About Section */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6">
-              <div className="space-y-4">
-                <span className="inline-block px-4 py-2 bg-pink-100 text-pink-600 text-sm font-bold rounded-full">
+      <section className="py-24 lg:py-32 bg-white">
+        <div className="container mx-auto px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-20 items-center">
+            <div className="space-y-10">
+              <div className="space-y-8">
+                <span className="inline-block px-6 py-3 bg-pink-100 text-pink-600 text-sm font-bold rounded-full">
                   ABOUT US
                 </span>
                 <h2 className="text-4xl lg:text-5xl font-black text-gray-900 leading-tight">
@@ -341,7 +341,7 @@ const Home2 = () => {
                   Our products are designed with love, tested by real sisters, and built to last.
                 </p>
               </div>
-              <div className="space-y-4">
+              <div className="space-y-6">
                 <div className="flex items-start space-x-4">
                   <div className="w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
                     <svg className="w-4 h-4 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -376,7 +376,7 @@ const Home2 = () => {
                   </div>
                 </div>
               </div>
-              <button className="bg-pink-600 text-white px-8 py-4 rounded-lg font-bold hover:bg-pink-700 transition-colors">
+              <button className="bg-pink-600 text-white px-10 py-5 rounded-lg font-bold hover:bg-pink-700 transition-colors mt-4">
                 Learn Our Story
               </button>
             </div>
@@ -392,26 +392,26 @@ const Home2 = () => {
       </section>
 
       {/* Newsletter Section */}
-      <section className="py-16 bg-gradient-to-r from-pink-600 to-rose-600">
-        <div className="container mx-auto px-4 text-center">
-          <div className="max-w-2xl mx-auto space-y-6">
+      <section className="py-24 lg:py-32 bg-gradient-to-r from-pink-600 to-rose-600">
+        <div className="container mx-auto px-6 lg:px-8 text-center">
+          <div className="max-w-2xl mx-auto space-y-10">
             <h2 className="text-3xl lg:text-4xl font-black text-white">
               JOIN THE SISTER COMMUNITY
             </h2>
-            <p className="text-pink-100 text-lg">
+            <p className="text-pink-100 text-xl leading-relaxed">
               Get exclusive access to new products, organization tips, and sister stories delivered to your inbox.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
               <input 
                 type="email" 
                 placeholder="Enter your email" 
-                className="flex-1 px-4 py-3 rounded-lg border-0 focus:ring-2 focus:ring-white/50"
+                className="flex-1 px-6 py-4 rounded-lg border-0 focus:ring-2 focus:ring-white/50 text-lg"
               />
-              <button className="bg-white text-pink-600 px-6 py-3 rounded-lg font-bold hover:bg-gray-100 transition-colors">
+              <button className="bg-white text-pink-600 px-8 py-4 rounded-lg font-bold hover:bg-gray-100 transition-colors">
                 Subscribe
               </button>
             </div>
-            <p className="text-pink-200 text-sm">
+            <p className="text-pink-200 text-sm mt-6">
               No spam, just sister love. Unsubscribe anytime.
             </p>
           </div>
@@ -419,10 +419,10 @@ const Home2 = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="space-y-4">
+      <footer className="bg-gray-900 text-white py-16 lg:py-20">
+        <div className="container mx-auto px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 lg:gap-16">
+            <div className="space-y-6">
               <div className="flex items-center space-x-2">
                 <span className="text-2xl font-black">SISTER</span>
                 <span className="text-sm text-gray-400">STORAGE</span>
@@ -432,9 +432,9 @@ const Home2 = () => {
               </p>
             </div>
             
-            <div className="space-y-4">
+            <div className="space-y-6">
               <h4 className="font-bold text-lg">Shop</h4>
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <a href="#" className="block text-gray-400 hover:text-white transition-colors">All Products</a>
                 <a href="#" className="block text-gray-400 hover:text-white transition-colors">Bundles</a>
                 <a href="#" className="block text-gray-400 hover:text-white transition-colors">Travel Collection</a>
@@ -442,9 +442,9 @@ const Home2 = () => {
               </div>
             </div>
             
-            <div className="space-y-4">
+            <div className="space-y-6">
               <h4 className="font-bold text-lg">Company</h4>
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <a href="#" className="block text-gray-400 hover:text-white transition-colors">About Us</a>
                 <a href="#" className="block text-gray-400 hover:text-white transition-colors">Our Story</a>
                 <a href="#" className="block text-gray-400 hover:text-white transition-colors">Blog</a>
@@ -452,9 +452,9 @@ const Home2 = () => {
               </div>
             </div>
             
-            <div className="space-y-4">
+            <div className="space-y-6">
               <h4 className="font-bold text-lg">Support</h4>
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <a href="#" className="block text-gray-400 hover:text-white transition-colors">Help Center</a>
                 <a href="#" className="block text-gray-400 hover:text-white transition-colors">Shipping Info</a>
                 <a href="#" className="block text-gray-400 hover:text-white transition-colors">Returns</a>
@@ -463,7 +463,7 @@ const Home2 = () => {
             </div>
           </div>
           
-          <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+          <div className="border-t border-gray-800 mt-12 pt-12 flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">
               © 2024 Sister Storage. All rights reserved.
             </p>
