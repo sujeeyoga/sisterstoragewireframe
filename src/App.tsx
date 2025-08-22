@@ -44,28 +44,31 @@ const App = () => {
           {/* Screen Loader */}
           {isLoading && <ScreenLoader onComplete={handleLoadingComplete} />}
           
-          <BrowserRouter>
-            <CartDrawer />
-            <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/shop" element={<Shop />} />
-            <Route path="/gallery" element={<Gallery />} />
-            <Route path="/shop/:productId" element={<ProductDetail />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/brand/*" element={<Brand />} />
-            <Route path="/content/:slug" element={<ContentPage />} />
-            <Route path="/hero-gallery-demo" element={<HeroGalleryDemo />} />
-            <Route path="/our-story" element={<OurStory />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/gift" element={<Gift />} />
-            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-            <Route path="/terms-of-service" element={<TermsOfService />} />
-            <Route path="/accessibility" element={<Accessibility />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          </BrowserRouter>
+          {/* Hide navigation and content during loading */}
+          {!isLoading && (
+            <BrowserRouter>
+              <CartDrawer />
+              <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/shop" element={<Shop />} />
+              <Route path="/gallery" element={<Gallery />} />
+              <Route path="/shop/:productId" element={<ProductDetail />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/brand/*" element={<Brand />} />
+              <Route path="/content/:slug" element={<ContentPage />} />
+              <Route path="/hero-gallery-demo" element={<HeroGalleryDemo />} />
+              <Route path="/our-story" element={<OurStory />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/gift" element={<Gift />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/terms-of-service" element={<TermsOfService />} />
+              <Route path="/accessibility" element={<Accessibility />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+            </BrowserRouter>
+          )}
         </CartProvider>
       </TooltipProvider>
     </QueryClientProvider>
