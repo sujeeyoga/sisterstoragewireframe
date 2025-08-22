@@ -290,6 +290,8 @@ export default {
 				// New hero animations
 				'slide-in-left': 'slide-in-left 2s ease-out forwards',
 				'fade-out-smooth': 'fade-out-smooth 1s ease-out forwards',
+				// Screen loader animations
+				'loader-fade-out': 'fade-out-smooth 0.5s ease-out forwards',
 				// Sister Storage announcement bar animations
 				'ss-slide-in-out': 'ss-slide-in-out var(--ss-slide-duration, 12s) ease-in-out infinite',
 				'ss-marquee-left': 'ss-marquee-left var(--ss-marquee-duration, 20s) linear infinite',
