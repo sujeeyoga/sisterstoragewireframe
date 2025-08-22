@@ -49,7 +49,7 @@ const InstagramUGC = () => {
   const reelRefs = useRef<(HTMLDivElement | null)[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll through reels
+  // Auto-scroll through reels with improved timing
   useEffect(() => {
     if (!isAutoScrolling) return;
 
@@ -57,26 +57,28 @@ const InstagramUGC = () => {
       setCurrentReelIndex(prev => {
         const nextIndex = prev === instagramPosts.length - 1 ? 0 : prev + 1;
         
-        // Scroll to next reel
-        if (reelRefs.current[nextIndex]) {
-          reelRefs.current[nextIndex]?.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center',
-            inline: 'center'
-          });
-        }
+        // Smooth scroll to next reel with better behavior
+        requestAnimationFrame(() => {
+          if (reelRefs.current[nextIndex]) {
+            reelRefs.current[nextIndex]?.scrollIntoView({
+              behavior: 'smooth',
+              block: 'nearest',
+              inline: 'center'
+            });
+          }
+        });
         
         return nextIndex;
       });
-    }, 5000); // Auto-scroll every 5 seconds
+    }, 8000); // Slower auto-scroll every 8 seconds
 
     return () => clearInterval(interval);
   }, [isAutoScrolling]);
 
-  // Handle manual scroll - disable auto scroll temporarily
-  const handleManualScroll = () => {
+  // Handle manual interaction - pause auto scroll longer
+  const handleManualInteraction = () => {
     setIsAutoScrolling(false);
-    setTimeout(() => setIsAutoScrolling(true), 10000); // Resume after 10 seconds
+    setTimeout(() => setIsAutoScrolling(true), 15000); // Resume after 15 seconds
   };
 
   return (
@@ -99,7 +101,8 @@ const InstagramUGC = () => {
         <div 
           ref={containerRef}
           className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 max-w-3xl mx-auto"
-          onScroll={handleManualScroll}
+          onTouchStart={handleManualInteraction}
+          onMouseDown={handleManualInteraction}
         >
           {instagramPosts.map((post, index) => (
             <div 
@@ -112,14 +115,16 @@ const InstagramUGC = () => {
             >
               {/* Post Image */}
               <div className="relative aspect-[9/16] overflow-hidden">
-                {post.isVideo ? (
+                 {post.isVideo ? (
                   <video 
                     src={post.video}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     muted
                     loop
                     playsInline
-                    preload="metadata"
+                    preload="none"
+                    onLoadStart={() => console.log('Video loading started')}
+                    onError={() => console.warn('Video failed to load')}
                     title={`Sister Storage styled by @${post.username}`}
                   />
                 ) : (

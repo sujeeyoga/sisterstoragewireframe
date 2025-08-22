@@ -6,30 +6,21 @@ interface ScreenLoaderProps {
   duration?: number;
 }
 
-// Videos to preload before showing the app
-const videosToPreload = [
-  "https://dl.snapcdn.app/get?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJodHRwczovL3Njb250ZW50LmNkbmluc3RhZ3JhbS5jb20vbzEvdi90Mi9mMi9tODYvQVFNNjJ1bjZWYjFNRDQ2RGJYRWJsbU9NVDU1OFpkUFV0My1kNWpEUzVTLVhqUVlPXzNQV1R4dXNWd050d0ROUjhkY0lCRi00TTVNbm9PWTFuVVhtNm5yejo1RFdGY29WQnZTRnAxYy5tcDQ_X25jX2NhdD0xMTEmX25jX3NpZD01ZTk4NTEmX25jX2h0PXNjb250ZW50LWhlbDMtMS5jZG5pbnN0YWdyYW0uY29tJl9uY19vaGM9N2tFQTdMUU02WVVRN2tOdndFVGl5X3kmZWZnPWV5SjJaVzVqYjJSbFgzUmhaeUk2SW5od2RsOXdjbTluY21WemMybDJaUzVKVGxOVVFVZFNRVTB1UTB4SlVGTXVRekl1TnpJd0xtUmhjMmhmWW1GelpXeHBibVZmTVY5Mk1DSXNJbmh3ZGw5aGMzTmxkRjlwWkNJNk1USTJPRFkxTURBek5UQXdNREV3TkN3aWRtbGZkWE5sWTJGelpWOXBaQ0k2TVRBd085aUUsaWRIVnlZWEZwYjI1ZmN5STZNalVzSW5WeWJHeHVaMV96YjNWeVkyVWlPaUozZDNkSWJqRSZjY2I9MTctMSZ2cz0yMDY1MWU4NTE5MDY2YjYwJl9uY192cz1IQmtzRlFJWVVtbG5YM2h3ZGw5eVpXVnNjMTl3WlhKeVlXNWxiblJmYzNKZmNISnZaQzlDUmpReVJVUTVSa1l4T0VGQlJqTTRSVVUwUVVZd05rSTRSVGt3TnpZNU5WOTJhV1JsYjE5a1lYTm9hVzVwZEM1dGNEUlZBQUxJQVJJQUZRSVlPbkJoYzNOMGFISnZkV2RvWDJWMlpYSnpkRzl5WlM5SVRVNTBWbmd0T1hOeWQzQjJhV3RHUTU4ZldVcHJlRWgwVERoNFluRmZSVUZCUVVZVkFnTElBUklBS0FBWUFCc0NpQWQxYzJWZll6RTZWQmlFU2NISnZaM0psYzNOcGRtVmZjbVZqYVhCbEFERVZBQUFtMUV6eHFwUDF3QVFWQWlnQ1EzUXNGMHE1MVQ5ODdaRm9HQkprWVhOb1gySmhjMlZzYVc1bFh6RmZkakVSQUhYX0IyWG1uUUVBJl9uY19naWQ9b3k0aFU5ZXlRbjcwVWowV05RdTVFQSZfbmNfenQ9Mjgmb2g9MDBfQWZWVVNrc1dTTWNrZ2I5RnNULTZfVjg5akZUREVkMTNqRTdLcUx6enIzdTdfQSZvZT02OEE5NTA0NCIsImZpbGVuYW1lIjoiU25hcEluc3RhLnRvX0FRTTYydW42VmIxTUQ0NkRiWEVibG1PTVQ1NThaZFBVdDMtZDVqRFM1Uy1YalFZT18zUFdUeHVzVndOdHdETlI4ZGNJQkYtNE01TW5vT1kxblVYbTZucnpqNURXRmNvVkJ2U0ZwMWMubXA0IiwibmJmIjoxNzU1ODA1MTU1LCJleHAiOjE3NTU4MDg3NTUsImlhdCI6MTc1NTgwNTE1NX0.js9VlqNeFDamrXTf0XfwnVuFqw706DKFgx0R-rZ1_4w"
-];
+// Videos to preload before showing the app - simplified approach
+const videosToPreload: string[] = []; // Removed problematic external videos
 
 const ScreenLoader: React.FC<ScreenLoaderProps> = ({ 
   onComplete, 
-  duration = 5000 // 5 second load time
+  duration = 5000 // Clean 5 second load time
 }) => {
   const [isVisible, setIsVisible] = useState(true);
   const [logoLoaded, setLogoLoaded] = useState(false);
-  const [videosReady, setVideosReady] = useState(false);
-
-  // Preload videos
-  const { isAllLoaded: videosLoaded, progress } = useVideoPreloader({
-    videos: videosToPreload,
-    onAllLoaded: () => setVideosReady(true)
-  });
 
   useEffect(() => {
     // Start logo animation after a brief delay
     const logoTimer = setTimeout(() => {
       setLogoLoaded(true);
-    }, 200);
+    }, 500);
 
     return () => {
       clearTimeout(logoTimer);
