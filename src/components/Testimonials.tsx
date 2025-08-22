@@ -1,5 +1,7 @@
 
+import { useState, useEffect } from "react";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import type { CarouselApi } from "@/components/ui/carousel";
 
 const testimonials = [
   {
@@ -33,6 +35,17 @@ const testimonials = [
 ];
 
 const Testimonials = () => {
+  const [api, setApi] = useState<CarouselApi>();
+  
+  useEffect(() => {
+    if (!api) return;
+
+    const interval = setInterval(() => {
+      api.scrollNext();
+    }, 5000); // Auto-rotate every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [api]);
   return (
     <div className="w-full">{/* Spacing controlled by Section wrapper */}
       <div className="container-custom">
@@ -53,6 +66,7 @@ const Testimonials = () => {
                 align: "start",
                 loop: true,
               }}
+              setApi={setApi}
               className="w-full"
             >
               <CarouselContent>
