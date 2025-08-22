@@ -14,6 +14,11 @@ import ProductDetail from "./pages/ProductDetail";
 import HeroGalleryDemo from "./pages/HeroGalleryDemo";
 import ContentPage from "./pages/ContentPage";
 import NotFound from "./pages/NotFound";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
+import Accessibility from "./pages/Accessibility";
+import Contact from "./pages/Contact";
+import Gift from "./pages/Gift";
 import { CartProvider } from "./contexts/CartContext";
 import CartDrawer from "../src/components/CartDrawer";
 import OurStory from "./pages/OurStory";
@@ -39,6 +44,11 @@ const App = () => (
             <Route path="/content/:slug" element={<ContentPage />} />
             <Route path="/hero-gallery-demo" element={<HeroGalleryDemo />} />
             <Route path="/our-story" element={<OurStory />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/gift" element={<Gift />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-of-service" element={<TermsOfService />} />
+            <Route path="/accessibility" element={<Accessibility />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

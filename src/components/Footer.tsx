@@ -47,8 +47,8 @@ const Footer = () => {
                 {name: 'Home', link: '/'},
                 {name: 'US SISTERS', link: '/about'},
                 {name: 'BUY', link: '/shop'},
-                {name: 'GIFT', link: '#gift'},
-                {name: 'CONTACT', link: '#contact'}
+                {name: 'GIFT', link: '/gift'},
+                {name: 'CONTACT', link: '/contact'}
               ].map((link) => (
                 <li key={link.name}>
                   <Link to={link.link} className="text-gray-400 hover:text-white transition-colors">
@@ -106,9 +106,9 @@ const Footer = () => {
             © {new Date().getFullYear()} Sister Storage. All rights reserved. Culture without clutter since 2020.
           </p>
           <div className="flex space-x-5 mt-3 md:mt-0">
-            <a href="#" className="text-gray-500 hover:text-gray-400">Privacy Policy</a>
-            <a href="#" className="text-gray-500 hover:text-gray-400">Terms of Service</a>
-            <a href="#" className="text-gray-500 hover:text-gray-400">Accessibility</a>
+            <Link to="/privacy-policy" className="text-gray-500 hover:text-gray-400">Privacy Policy</Link>
+            <Link to="/terms-of-service" className="text-gray-500 hover:text-gray-400">Terms of Service</Link>
+            <Link to="/accessibility" className="text-gray-500 hover:text-gray-400">Accessibility</Link>
           </div>
         </div>
       </div>
