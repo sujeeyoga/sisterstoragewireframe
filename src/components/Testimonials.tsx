@@ -70,34 +70,41 @@ const Testimonials = () => {
               setApi={setApi}
               className="w-full"
             >
-              <CarouselContent>
-                {testimonials.map((testimonial) => (
-                  <CarouselItem key={testimonial.id} className="basis-full p-2">
-                    <div className="bg-white p-6 rounded-lg shadow-md border border-gray-100 h-full flex flex-col transform-none">
-                      <div className="mb-4">
-                        <svg className="h-6 w-6 text-[#E90064]" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
-                        </svg>
-                      </div>
-                      <p className="text-gray-700 flex-grow">{testimonial.quote}</p>
-                      <div className="mt-6 flex items-center">
-                        <div className="flex-shrink-0">
-                          <div 
-                            className="h-10 w-10 rounded-full flex items-center justify-center text-white text-xs font-bold"
-                            style={{ backgroundColor: testimonial.color }}
-                          >
-                            {testimonial.author.split(' ')[0][0]}{testimonial.author.split(' ')[1][0]}
-                          </div>
-                        </div>
-                        <div className="ml-3">
-                          <p className="text-sm font-medium text-gray-900">{testimonial.author}</p>
-                          <p className="text-sm text-gray-500">{testimonial.title}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
+               <CarouselContent>
+                 {testimonials.map((testimonial) => (
+                   <CarouselItem key={testimonial.id} className="basis-full p-2">
+                     <div className="bg-white p-6 rounded-lg shadow-md border border-gray-100 h-[280px] flex flex-col">
+                       {/* Quote Icon - Fixed Height */}
+                       <div className="mb-4 h-6">
+                         <svg className="h-6 w-6 text-[#E90064]" fill="currentColor" viewBox="0 0 24 24">
+                           <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                         </svg>
+                       </div>
+                       
+                       {/* Quote Text - Fixed Height */}
+                       <div className="flex-1 min-h-[6rem] mb-6">
+                         <p className="text-gray-700 line-clamp-4">{testimonial.quote}</p>
+                       </div>
+                       
+                       {/* Author Section - Fixed Height */}
+                       <div className="h-[3rem] flex items-center">
+                         <div className="flex-shrink-0">
+                           <div 
+                             className="h-10 w-10 rounded-full flex items-center justify-center text-white text-xs font-bold"
+                             style={{ backgroundColor: testimonial.color }}
+                           >
+                             {testimonial.author.split(' ')[0][0]}{testimonial.author.split(' ')[1][0]}
+                           </div>
+                         </div>
+                         <div className="ml-3 flex-1">
+                           <p className="text-sm font-medium text-gray-900 line-clamp-1">{testimonial.author}</p>
+                           <p className="text-sm text-gray-500 line-clamp-1">{testimonial.title}</p>
+                         </div>
+                       </div>
+                     </div>
+                   </CarouselItem>
+                 ))}
+               </CarouselContent>
               <div className="hidden md:flex mt-8">
                 <CarouselPrevious className="-left-4 bg-white border border-gray-200" />
                 <CarouselNext className="-right-4 bg-white border border-gray-200" />

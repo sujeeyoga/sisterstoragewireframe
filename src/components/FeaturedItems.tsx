@@ -152,32 +152,42 @@ const FeaturedItems = () => {
           {Object.entries(menuItems).map(([category, items]) => (
             <TabsContent key={category} value={category} className="mt-0">
               <div className="grid grid-cols-2 gap-4 md:gap-6">
-                {items.map((item) => (
-                  <Card key={item.id} className="overflow-hidden border-none shadow-lg hover:shadow-xl transition-shadow duration-300">
-                    <div className="w-full overflow-hidden">
-                      <img 
-                        src={item.image} 
-                        alt={`Sister Storage ${item.name.toLowerCase()} showcasing elegant jewelry storage solutions`}
-                        className="w-full h-auto object-cover transition-transform duration-500 hover:scale-105"
-                      />
-                    </div>
-                    <CardContent className="p-4 md:p-6">
-                      <div className="flex justify-between items-start mb-2">
-                        <h3 className="text-lg md:text-xl font-semibold">{item.name}</h3>
-                        <span className="text-[#E6007E] font-bold">${item.price.toFixed(2)}</span>
-                      </div>
-                      <p className="text-gray-600 text-sm mb-4 line-clamp-2 h-10">{item.description}</p>
-                      <Button 
-                        variant="buy"
-                        size="buy"
-                        onClick={() => handleAddToCart(item)}
-                      >
-                        <ShoppingBag className="h-4 w-4" />
-                        Add to Cart
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ))}
+                 {items.map((item) => (
+                   <Card key={item.id} className="overflow-hidden border-none shadow-lg hover:shadow-xl transition-shadow duration-300 h-full flex flex-col">
+                     <div className="w-full overflow-hidden">
+                       <img 
+                         src={item.image} 
+                         alt={`Sister Storage ${item.name.toLowerCase()} showcasing elegant jewelry storage solutions`}
+                         className="w-full h-48 md:h-56 object-cover transition-transform duration-500 hover:scale-105"
+                       />
+                     </div>
+                     <CardContent className="p-4 md:p-6 flex-1 flex flex-col">
+                       {/* Title & Price - Fixed Height */}
+                       <div className="flex justify-between items-start mb-3 min-h-[3rem]">
+                         <h3 className="text-lg md:text-xl font-semibold line-clamp-2 flex-1 mr-2">{item.name}</h3>
+                         <span className="text-[#E6007E] font-bold text-lg flex-shrink-0">${item.price.toFixed(2)}</span>
+                       </div>
+                       
+                       {/* Description - Fixed Height */}
+                       <div className="h-[3rem] mb-4">
+                         <p className="text-gray-600 text-sm line-clamp-2">{item.description}</p>
+                       </div>
+                       
+                       {/* Button - Fixed at Bottom */}
+                       <div className="mt-auto">
+                         <Button 
+                           variant="buy"
+                           size="buy"
+                           className="w-full h-12"
+                           onClick={() => handleAddToCart(item)}
+                         >
+                           <ShoppingBag className="h-4 w-4 mr-2" />
+                           Add to Cart
+                         </Button>
+                       </div>
+                     </CardContent>
+                   </Card>
+                 ))}
               </div>
             </TabsContent>
           ))}

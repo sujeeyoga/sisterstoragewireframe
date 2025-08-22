@@ -116,9 +116,10 @@ const ProductCard = ({ product }: ProductCardProps) => {
         </div>
         
         {/* All product information underneath */}
-        <CardContent className="px-4 py-4">
-          <div className="mb-2 flex justify-between items-start">
-            <h3 className="font-semibold text-lg line-clamp-2">{product.name}</h3>
+        <CardContent className="px-4 py-4 flex flex-col h-full">
+          {/* Title & Price - Fixed Height */}
+          <div className="mb-2 flex justify-between items-start min-h-[3rem]">
+            <h3 className="font-semibold text-lg line-clamp-2 flex-1">{product.name}</h3>
             <div className="text-right flex-shrink-0 ml-2">
               {product.originalPrice && product.originalPrice > product.price ? (
                 <div className="flex flex-col items-end">
@@ -131,67 +132,83 @@ const ProductCard = ({ product }: ProductCardProps) => {
             </div>
           </div>
           
-          {/* Sister Caption - prominent display */}
-          {product.caption && (
-            <p className="text-[hsl(var(--primary))] text-sm font-medium mb-2 italic">"{product.caption}"</p>
-          )}
+          {/* Sister Caption - Fixed Height */}
+          <div className="min-h-[1.5rem] mb-2">
+            {product.caption && (
+              <p className="text-[hsl(var(--primary))] text-sm font-medium italic line-clamp-1">"{product.caption}"</p>
+            )}
+          </div>
           
-          <p className="text-muted-foreground text-sm mb-3 line-clamp-2">{product.description}</p>
+          {/* Description - Fixed Height */}
+          <div className="h-[3rem] mb-3">
+            <p className="text-muted-foreground text-sm line-clamp-2">{product.description}</p>
+          </div>
           
-          {/* Material tag */}
-          <div className="mb-3 text-sm text-muted-foreground">
+          {/* Material - Fixed Height */}
+          <div className="h-[1.5rem] mb-3 text-sm text-muted-foreground">
             {product.material}
           </div>
           
-          {/* Feature list */}
-          {product.features.length > 0 && (
-            <div className="text-sm text-muted-foreground flex items-center gap-1 mb-3">
-              <Check className="h-4 w-4 text-[hsl(var(--primary))]" /> {product.features[0]}
-            </div>
-          )}
+          {/* Feature - Fixed Height */}
+          <div className="h-[1.5rem] mb-3">
+            {product.features.length > 0 && (
+              <div className="text-sm text-muted-foreground flex items-center gap-1">
+                <Check className="h-4 w-4 text-[hsl(var(--primary))]" /> 
+                <span className="line-clamp-1">{product.features[0]}</span>
+              </div>
+            )}
+          </div>
           
-          {/* Rod Count - Prominent Display */}
-          {attrs?.rodCount && (
-            <div className="mb-3 text-center">
+          {/* Rod Count - Fixed Height */}
+          <div className="min-h-[4rem] mb-3 flex justify-center">
+            {attrs?.rodCount && (
               <div className="inline-flex flex-col items-center bg-[hsl(var(--primary))] text-primary-foreground rounded-lg px-3 py-2">
                 <span className="text-xs font-medium">RODS</span>
                 <span className="text-2xl font-bold">{attrs.rodCount}</span>
               </div>
-            </div>
-          )}
+            )}
+          </div>
           
-          {/* Other Attribute chips */}
-          {attrs && (
-            <div className="mb-3 flex flex-wrap gap-2">
-              {(() => {
-                const chips: React.ReactNode[] = [];
-                const push = (label: string, vals?: unknown) => {
-                  const arr = Array.isArray(vals) ? vals : vals ? [vals] : [];
-                  arr.forEach((v, i) =>
-                    chips.push(
-                      <Badge key={`${label}-${String(v)}-${i}`} variant="outline" className="text-xs">
-                        {label}: {String(v)}
-                      </Badge>
-                    )
-                  );
-                };
-                push("Size", attrs.size);
-                push("Use", attrs.useCase);
-                push("Bundle", attrs.bundleSize);
-                return chips;
-              })()}
-            </div>
-          )}
+          {/* Attribute Chips - Fixed Height */}
+          <div className="min-h-[2rem] mb-3">
+            {attrs && (
+              <div className="flex flex-wrap gap-2">
+                {(() => {
+                  const chips: React.ReactNode[] = [];
+                  const push = (label: string, vals?: unknown) => {
+                    const arr = Array.isArray(vals) ? vals : vals ? [vals] : [];
+                    arr.forEach((v, i) =>
+                      chips.push(
+                        <Badge key={`${label}-${String(v)}-${i}`} variant="outline" className="text-xs h-6 px-2">
+                          {label}: {String(v)}
+                        </Badge>
+                      )
+                    );
+                  };
+                  push("Size", attrs.size);
+                  push("Use", attrs.useCase);
+                  push("Bundle", attrs.bundleSize);
+                  return chips;
+                })()}
+              </div>
+            )}
+          </div>
           
-          {/* SKU Display */}
-          {product.sku && (
-            <div className="mb-2 text-xs text-muted-foreground">
-              SKU: {product.sku}
+          {/* Bottom Section - Fixed at Bottom */}
+          <div className="mt-auto space-y-2">
+            {/* SKU - Fixed Height */}
+            <div className="min-h-[1rem]">
+              {product.sku && (
+                <div className="text-xs text-muted-foreground">
+                  SKU: {product.sku}
+                </div>
+              )}
             </div>
-          )}
-          
-          <div className="flex justify-between items-center">
-            <Badge variant="outline">{product.category}</Badge>
+            
+            {/* Category Badge - Fixed Height */}
+            <div className="flex justify-between items-center h-8">
+              <Badge variant="outline" className="h-6 px-3">{product.category}</Badge>
+            </div>
           </div>
         </CardContent>
       </Link>

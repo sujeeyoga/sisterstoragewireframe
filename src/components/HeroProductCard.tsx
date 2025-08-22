@@ -63,9 +63,9 @@ const HeroProductCard = ({
         </div>
       </div>
       
-      <CardContent className="p-5 space-y-4">
-        {/* Rating */}
-        <div className="flex items-center justify-between">
+      <CardContent className="p-5 flex flex-col h-full">
+        {/* Rating - Fixed Height */}
+        <div className="flex items-center justify-between h-6 mb-4">
           <div className="flex items-center gap-1">
             {[...Array(rating)].map((_, i) => (
               <Star key={i} className="h-3.5 w-3.5 text-amber-400 fill-amber-400" />
@@ -74,20 +74,24 @@ const HeroProductCard = ({
           <span className="text-gray-500 text-xs font-medium">({reviews})</span>
         </div>
         
-        {/* Product Title & Description */}
-        <div className="space-y-2">
+        {/* Product Title - Fixed Min Height */}
+        <div className="min-h-[3rem] mb-3">
           <h3 className="text-lg font-bold text-gray-900 leading-tight line-clamp-2">{name}</h3>
-          <p className="text-gray-600 text-sm leading-relaxed">{description}</p>
         </div>
         
-        {/* Pricing */}
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
+        {/* Description - Fixed Height */}
+        <div className="h-[3rem] mb-4">
+          <p className="text-gray-600 text-sm leading-relaxed line-clamp-2">{description}</p>
+        </div>
+        
+        {/* Pricing & Action - Fixed Height */}
+        <div className="mt-auto space-y-3">
+          <div className="flex items-center justify-between min-h-[2rem]">
             <div className="flex items-baseline gap-2">
               <span className="text-2xl font-black text-gray-900">${price}</span>
               <span className="text-sm text-gray-400 line-through">${originalPrice}</span>
             </div>
-            <div className="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-lg">
+            <div className="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-lg min-w-[4rem] text-center">
               Save ${(originalPrice - price).toFixed(2)}
             </div>
           </div>
@@ -95,7 +99,7 @@ const HeroProductCard = ({
           <Button 
             variant="buy"
             size="buy"
-            className="w-full font-bold text-sm py-3 shadow-lg hover:shadow-xl transition-all duration-300"
+            className="w-full font-bold text-sm h-[3rem] shadow-lg hover:shadow-xl transition-all duration-300"
             onClick={handleBuyNow}
           >
             <ShoppingBag className="h-4 w-4 mr-2" />

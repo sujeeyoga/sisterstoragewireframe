@@ -33,12 +33,12 @@ const buttonVariants = cva(
         buy: "bg-white text-black border-2 border-black rounded-md font-bold uppercase tracking-wide shadow-lg hover:bg-black hover:text-white hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 ease-out w-auto",
       },
       size: {
-        default: "h-10 px-6 py-3",
-        sm: "h-8 px-4 py-2",
-        lg: "h-12 px-8 py-4",
-        icon: "h-10 w-10",
-        full: "w-full h-12 px-8 py-4",
-        buy: "h-12 px-6 py-3 text-base",
+        default: "h-10 px-6 py-3 min-w-[3rem]",
+        sm: "h-8 px-4 py-2 min-w-[2.5rem]",
+        lg: "h-12 px-8 py-4 min-w-[4rem]",
+        icon: "h-10 w-10 min-w-[2.5rem]",
+        full: "w-full h-12 px-8 py-4 min-w-[8rem]",
+        buy: "h-12 px-6 py-3 text-base min-w-[8rem]",
       },
     },
     defaultVariants: {

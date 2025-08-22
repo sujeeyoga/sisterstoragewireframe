@@ -30,9 +30,9 @@ const DualProductCard = ({ products }: DualProductCardProps) => {
   };
 
   const ProductContent = ({ product }: { product: Product }) => (
-    <div className="flex-1 space-y-3">
+    <div className="flex-1 flex flex-col">
       {/* Product Image */}
-      <Link to={`/shop/${product.id}`} className="block group">
+      <Link to={`/shop/${product.id}`} className="block group mb-3">
         <div 
           className="aspect-square rounded-lg overflow-hidden"
           style={{ backgroundColor: product.color }}
@@ -43,40 +43,50 @@ const DualProductCard = ({ products }: DualProductCardProps) => {
         </div>
       </Link>
 
-      {/* Product Info */}
-      <div className="space-y-2">
-        <div className="flex items-center gap-1 mb-1">
+      {/* Product Info - Flex Layout */}
+      <div className="flex-1 flex flex-col">
+        {/* Rating - Fixed Height */}
+        <div className="flex items-center gap-1 mb-2 h-4">
           {[...Array(5)].map((_, i) => (
             <Star key={i} className="h-3 w-3 text-amber-400 fill-amber-400" />
           ))}
         </div>
         
-        <Link to={`/shop/${product.id}`}>
-          <h3 className="font-bold text-gray-900 text-sm hover:text-pink-600 transition-colors">
-            {product.name}
-          </h3>
-        </Link>
+        {/* Title - Fixed Height */}
+        <div className="min-h-[2.5rem] mb-2">
+          <Link to={`/shop/${product.id}`}>
+            <h3 className="font-bold text-gray-900 text-sm hover:text-pink-600 transition-colors line-clamp-2">
+              {product.name}
+            </h3>
+          </Link>
+        </div>
         
-        <p className="text-xs text-gray-600 line-clamp-2">
-          {product.description || "Premium storage solution for your jewelry collection"}
-        </p>
+        {/* Description - Fixed Height */}
+        <div className="h-[2.5rem] mb-3">
+          <p className="text-xs text-gray-600 line-clamp-2">
+            {product.description || "Premium storage solution for your jewelry collection"}
+          </p>
+        </div>
         
-        <div className="flex items-center justify-between">
-          <div className="flex items-baseline gap-1">
-            <span className="text-lg font-bold text-gray-900">${product.price}</span>
-            {product.originalPrice && (
-              <span className="text-sm text-gray-400 line-through">${product.originalPrice}</span>
-            )}
+        {/* Price & Action - Fixed at Bottom */}
+        <div className="mt-auto">
+          <div className="flex items-center justify-between h-8">
+            <div className="flex items-baseline gap-1">
+              <span className="text-lg font-bold text-gray-900">${product.price}</span>
+              {product.originalPrice && (
+                <span className="text-sm text-gray-400 line-through">${product.originalPrice}</span>
+              )}
+            </div>
+            
+            <Button 
+              size="sm" 
+              className="h-7 px-3 text-xs min-w-[3rem]"
+              onClick={() => handleAddToCart(product)}
+            >
+              <ShoppingBag className="h-3 w-3 mr-1" />
+              Add
+            </Button>
           </div>
-          
-          <Button 
-            size="sm" 
-            className="h-7 px-3 text-xs"
-            onClick={() => handleAddToCart(product)}
-          >
-            <ShoppingBag className="h-3 w-3 mr-1" />
-            Add
-          </Button>
         </div>
       </div>
     </div>
