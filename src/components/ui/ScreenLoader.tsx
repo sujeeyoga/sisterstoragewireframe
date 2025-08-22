@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Logo from './Logo';
 
 interface ScreenLoaderProps {
   onComplete?: () => void;
@@ -38,7 +37,9 @@ const ScreenLoader: React.FC<ScreenLoaderProps> = ({
 
   if (!isVisible) {
     return (
-      <div className="fixed inset-0 bg-background z-50 animate-fade-out-smooth pointer-events-none" />
+      <div 
+        className="fixed inset-0 bg-background z-50 pointer-events-none transition-opacity duration-500 opacity-0" 
+      />
     );
   }
 
@@ -57,7 +58,12 @@ const ScreenLoader: React.FC<ScreenLoaderProps> = ({
               : 'opacity-0 scale-95 translate-y-4'
           }`}
         >
-          <Logo size="lg" className="drop-shadow-lg" />
+          <img 
+            src="https://sisterstorage.com/wp-content/uploads/2025/02/Sister-Storage-Logo-Main-300x112.png"
+            alt="Sister Storage"
+            className="h-12 md:h-16 w-auto drop-shadow-lg"
+            loading="eager"
+          />
         </div>
         
         {/* Loading indicator */}
