@@ -23,6 +23,7 @@ import { CartProvider } from "./contexts/CartContext";
 import CartDrawer from "../src/components/CartDrawer";
 import OurStory from "./pages/OurStory";
 import ScreenLoader from "./components/ui/ScreenLoader";
+import PageTransition from "./components/layout/PageTransition";
 import React, { useState } from "react";
 
 const queryClient = new QueryClient();
@@ -49,24 +50,24 @@ const App = () => {
             <BrowserRouter>
               <CartDrawer />
               <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/shop" element={<Shop />} />
-              <Route path="/gallery" element={<Gallery />} />
-              <Route path="/shop/:productId" element={<ProductDetail />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/blog" element={<Blog />} />
-              <Route path="/brand/*" element={<Brand />} />
-              <Route path="/content/:slug" element={<ContentPage />} />
-              <Route path="/hero-gallery-demo" element={<HeroGalleryDemo />} />
-              <Route path="/our-story" element={<OurStory />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/gift" element={<Gift />} />
-              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-              <Route path="/terms-of-service" element={<TermsOfService />} />
-              <Route path="/accessibility" element={<Accessibility />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+                <Route path="/" element={<PageTransition><Index /></PageTransition>} />
+                <Route path="/shop" element={<PageTransition><Shop /></PageTransition>} />
+                <Route path="/gallery" element={<PageTransition><Gallery /></PageTransition>} />
+                <Route path="/shop/:productId" element={<PageTransition><ProductDetail /></PageTransition>} />
+                <Route path="/about" element={<PageTransition><About /></PageTransition>} />
+                <Route path="/blog" element={<PageTransition><Blog /></PageTransition>} />
+                <Route path="/brand/*" element={<PageTransition><Brand /></PageTransition>} />
+                <Route path="/content/:slug" element={<PageTransition><ContentPage /></PageTransition>} />
+                <Route path="/hero-gallery-demo" element={<PageTransition><HeroGalleryDemo /></PageTransition>} />
+                <Route path="/our-story" element={<PageTransition><OurStory /></PageTransition>} />
+                <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
+                <Route path="/gift" element={<PageTransition><Gift /></PageTransition>} />
+                <Route path="/privacy-policy" element={<PageTransition><PrivacyPolicy /></PageTransition>} />
+                <Route path="/terms-of-service" element={<PageTransition><TermsOfService /></PageTransition>} />
+                <Route path="/accessibility" element={<PageTransition><Accessibility /></PageTransition>} />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
+              </Routes>
             </BrowserRouter>
           )}
         </CartProvider>
