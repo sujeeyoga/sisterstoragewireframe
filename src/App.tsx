@@ -40,13 +40,13 @@ const App = () => {
         <CartProvider>
           <Toaster />
           <Sonner />
-          <CartDrawer />
           
           {/* Screen Loader */}
           {isLoading && <ScreenLoader onComplete={handleLoadingComplete} />}
           
           <BrowserRouter>
-          <Routes>
+            <CartDrawer />
+            <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/shop" element={<Shop />} />
             <Route path="/gallery" element={<Gallery />} />
