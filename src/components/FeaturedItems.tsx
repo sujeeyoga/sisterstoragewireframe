@@ -126,7 +126,7 @@ const FeaturedItems = () => {
   };
 
   return (
-    <section id="menu" className="py-16 md:py-20 lg:py-24 bg-white">
+    <section id="menu" className="py-8 md:py-12 lg:py-16 bg-white">
       <div className="container mx-auto px-6 lg:px-8">
         <div className="text-center max-w-lg mx-auto mb-10 md:mb-12 px-4">
           <span className="text-[#E6007E] font-medium">Find Your Match</span>
