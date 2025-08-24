@@ -127,10 +127,10 @@ const FeaturedItems = () => {
 
   return (
     <section id="menu" className="py-16 md:py-20 lg:py-24 bg-white">
-      <div className="container-custom">
+      <div className="container mx-auto px-6 lg:px-8">
         <div className="text-center max-w-lg mx-auto mb-10 md:mb-12 px-4">
           <span className="text-[#E6007E] font-medium">Find Your Match</span>
-          <h2 className="text-6xl md:text-8xl lg:text-9xl font-thin font-poppins tracking-wide mt-2 mb-3 uppercase">Featured Collections</h2>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-thin font-poppins tracking-wide mt-2 mb-3 uppercase">Featured Collections</h2>
           <p className="text-gray-600">
             Discover storage that's designed for your bangles, jewelry, and keepsakes — made with the details that matter most.
           </p>

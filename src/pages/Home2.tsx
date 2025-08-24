@@ -90,7 +90,7 @@ const Home2 = () => {
 
       {/* Featured Grid */}
       <section className="py-24 lg:py-32">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 h-screen">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 min-h-[60vh]">
           <div className="relative overflow-hidden group">
             <img 
               src="/lovable-uploads/76c5f6ac-f27b-4f26-8377-759dfc17c71d.png" 
