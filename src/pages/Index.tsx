@@ -34,9 +34,7 @@ const Index = () => {
       
       {/* Buy Cards - Major product section */}
       <EnhancedScrollFade preset="medium" once={true}>
-        <Section spacing="lg" width="full">
-          <BestSeller />
-        </Section>
+        <BestSeller />
       </EnhancedScrollFade>
       
       {/* About Section - Brand story */}
