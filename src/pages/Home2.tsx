@@ -89,7 +89,7 @@ const Home2 = () => {
       </section>
 
       {/* Featured Grid */}
-      <section className="py-24 lg:py-32">
+      <section className="pb-16 lg:pb-20">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 min-h-[60vh]">
           <div className="relative overflow-hidden group">
             <img 
@@ -149,7 +149,7 @@ const Home2 = () => {
       <FeaturedItems />
 
       {/* About Section */}
-      <section className="pt-0 pb-16 lg:pb-24 bg-white">
+      <section className="pt-12 pb-16 lg:pb-24 bg-white">
         <div className="container mx-auto px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-20 items-center">
             <div className="space-y-10">

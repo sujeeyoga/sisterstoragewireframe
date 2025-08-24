@@ -84,7 +84,7 @@ const BestSeller = () => {
   };
 
   return (
-    <section className="py-16 md:py-24 bg-gradient-to-br from-gray-50 to-white">
+    <section className="py-12 md:py-16 bg-gradient-to-br from-gray-50 to-white">
       <div className="container-custom">
         <div className="text-center max-w-3xl mx-auto mb-12 md:mb-16 px-4">
           <span className="inline-block px-4 py-2 bg-[#E90064] text-white text-sm font-bold rounded-full mb-4">
