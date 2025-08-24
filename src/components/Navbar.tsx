@@ -153,10 +153,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
                 { name: 'HOME2', path: '/home2' },
                 { name: 'GALLERY', path: '/gallery' },
                 { name: 'ABOUT', path: '/about' },
-                { name: 'SHOP', path: '/shop' },
-                { name: 'OUR STORY', path: '/our-story' },
-                { name: 'BLOG', path: '/blog' },
-                { name: 'BRAND', path: '/brand' }
+                { name: 'SHOP', path: '/shop' }
               ].map((item) => {
                 const isActive = location.pathname === item.path;
                 const isHome = item.name === 'HOME';
@@ -169,6 +166,35 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
                       isHome 
                         ? 'bg-[hsl(var(--brand-pink))] text-white hover:bg-[hsl(var(--brand-pink))]/90' 
                         : isActive 
+                        ? 'text-[hsl(var(--brand-pink))] bg-[hsl(var(--brand-pink))]/10' 
+                        : 'text-black hover:text-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))]/5'
+                    }`}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {item.name}
+                  </Link>
+                );
+              })}
+            </div>
+
+            {/* Divider */}
+            <div className="mx-6 my-6 h-px bg-gray-200" />
+
+            {/* Additional Navigation Items */}
+            <div className="px-6 space-y-1">
+              {[
+                { name: 'OUR STORY', path: '/our-story' },
+                { name: 'BLOG', path: '/blog' },
+                { name: 'BRAND', path: '/brand' }
+              ].map((item) => {
+                const isActive = location.pathname === item.path;
+                
+                return (
+                  <Link
+                    key={item.name}
+                    to={item.path}
+                    className={`block w-full text-left px-4 py-3 rounded-full font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${
+                      isActive 
                         ? 'text-[hsl(var(--brand-pink))] bg-[hsl(var(--brand-pink))]/10' 
                         : 'text-black hover:text-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))]/5'
                     }`}
