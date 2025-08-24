@@ -149,7 +149,7 @@ const Home2 = () => {
       <FeaturedItems />
 
       {/* About Section */}
-      <section className="py-24 lg:py-32 bg-white">
+      <section className="pt-8 pb-24 lg:pb-32 bg-white">
         <div className="container mx-auto px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-20 items-center">
             <div className="space-y-10">
