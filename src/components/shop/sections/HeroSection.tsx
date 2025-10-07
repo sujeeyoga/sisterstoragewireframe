@@ -26,7 +26,7 @@ interface HeroSectionProps {
 
 const HeroSection: React.FC<HeroSectionProps> = ({ product }) => {
   return (
-    <section className="hero-section">
+    <section className="w-full">
       <ShopHeroProduct product={product} />
     </section>
   );

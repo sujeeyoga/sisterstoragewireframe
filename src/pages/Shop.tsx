@@ -17,11 +17,9 @@ const Shop = () => {
   return (
     <BaseLayout variant="standard" pageId="shop" spacing="normal">
       <div className="bg-background min-h-screen">
-        <div className="mx-auto max-w-[1200px] p-4 md:p-6 lg:p-8 grid gap-8">
-          <HeroSection product={featuredProduct} />
-          <ProductsSection products={sortedProducts} />
-          <FooterSection />
-        </div>
+        <HeroSection product={featuredProduct} />
+        <ProductsSection products={sortedProducts} />
+        <FooterSection />
       </div>
     </BaseLayout>
   );

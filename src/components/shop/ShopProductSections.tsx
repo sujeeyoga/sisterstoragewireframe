@@ -17,77 +17,83 @@ const ShopProductSections = ({ products }: ShopProductSectionsProps) => {
     <div className="grid gap-8">
       {/* Section 1: Top-Selling Bundles */}
       {bundles.length > 0 && (
-        <section className="shop-section p-5 md:p-6 lg:p-8 bg-[#FFF7F5]" style={{ borderRadius: '0px' }}>
-          <header className="flex items-end justify-between gap-4 mb-6">
-            <div>
-              <h2 className="text-xl md:text-2xl font-bold text-foreground uppercase tracking-wide">
-                Top-Selling Bundles
-              </h2>
-              <p className="text-sm text-muted-foreground uppercase tracking-wide mt-1">
-                Complete collections for every Sister
-              </p>
+        <section className="w-full bg-[#FFF7F5]" style={{ borderRadius: '0px' }}>
+          <div className="container-custom py-8 md:py-12">
+            <header className="flex items-end justify-between gap-4 mb-6">
+              <div>
+                <h2 className="text-xl md:text-2xl font-bold text-foreground uppercase tracking-wide">
+                  Top-Selling Bundles
+                </h2>
+                <p className="text-sm text-muted-foreground uppercase tracking-wide mt-1">
+                  Complete collections for every Sister
+                </p>
+              </div>
+            </header>
+            
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {bundles.map((product) => (
+                <BundleCard key={product.id} product={product} isBundle />
+              ))}
             </div>
-          </header>
-          
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {bundles.map((product) => (
-              <BundleCard key={product.id} product={product} isBundle />
-            ))}
           </div>
         </section>
       )}
       
       {/* Section 2: Individual Boxes */}
       {bangleBoxes.length > 0 && (
-        <section className="shop-section p-5 md:p-6 lg:p-8 bg-[#F6F7FB]" style={{ borderRadius: '0px' }}>
-          <header className="flex items-end justify-between gap-4 mb-6">
-            <div>
-              <h2 className="text-xl md:text-2xl font-bold text-foreground uppercase tracking-wide">
-                Individual Boxes
-              </h2>
-              <p className="text-sm text-muted-foreground uppercase tracking-wide mt-1">
-                Build your own perfect collection
-              </p>
+        <section className="w-full bg-[#F6F7FB]" style={{ borderRadius: '0px' }}>
+          <div className="container-custom py-8 md:py-12">
+            <header className="flex items-end justify-between gap-4 mb-6">
+              <div>
+                <h2 className="text-xl md:text-2xl font-bold text-foreground uppercase tracking-wide">
+                  Individual Boxes
+                </h2>
+                <p className="text-sm text-muted-foreground uppercase tracking-wide mt-1">
+                  Build your own perfect collection
+                </p>
+              </div>
+            </header>
+            
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              {bangleBoxes.map((product) => (
+                <SimpleProductCard key={product.id} product={product} />
+              ))}
             </div>
-          </header>
-          
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {bangleBoxes.map((product) => (
-              <SimpleProductCard key={product.id} product={product} />
-            ))}
           </div>
         </section>
       )}
       
       {/* Section 3: Pouches & Bags */}
       {organizers.length > 0 && (
-        <section className="shop-section p-5 md:p-6 lg:p-8 bg-[#FFFDF2]" style={{ borderRadius: '0px' }}>
-          <header className="flex items-end justify-between gap-4 mb-6">
-            <div>
-              <h2 className="text-xl md:text-2xl font-bold text-foreground uppercase tracking-wide">
-                Jewelry Pouches
-              </h2>
-              <p className="text-sm text-muted-foreground uppercase tracking-wide mt-1">
-                Soft protection, travel-ready
-              </p>
+        <section className="w-full bg-[#FFFDF2]" style={{ borderRadius: '0px' }}>
+          <div className="container-custom py-8 md:py-12">
+            <header className="flex items-end justify-between gap-4 mb-6">
+              <div>
+                <h2 className="text-xl md:text-2xl font-bold text-foreground uppercase tracking-wide">
+                  Jewelry Pouches
+                </h2>
+                <p className="text-sm text-muted-foreground uppercase tracking-wide mt-1">
+                  Soft protection, travel-ready
+                </p>
+              </div>
+            </header>
+            
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {organizers.map((product) => {
+                // Define bullets for jewelry organizer
+                const bullets = product.id === 'jewelry-bag-organizer' 
+                  ? ['7 zip pouches', 'Flat fold for travel', 'Soft-touch lining']
+                  : undefined;
+                
+                return (
+                  <SimpleProductCard 
+                    key={product.id} 
+                    product={product}
+                    bullets={bullets}
+                  />
+                );
+              })}
             </div>
-          </header>
-          
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {organizers.map((product) => {
-              // Define bullets for jewelry organizer
-              const bullets = product.id === 'jewelry-bag-organizer' 
-                ? ['7 zip pouches', 'Flat fold for travel', 'Soft-touch lining']
-                : undefined;
-              
-              return (
-                <SimpleProductCard 
-                  key={product.id} 
-                  product={product}
-                  bullets={bullets}
-                />
-              );
-            })}
           </div>
         </section>
       )}
