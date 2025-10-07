@@ -169,12 +169,10 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
       </nav>
 
       <main className={`flex-grow ${getMainPadding()} -mt-[calc(var(--sticky-nav-offset,80px)+12px)]`}>
-        {/* Black promo banner - sits behind nav */}
-        {showSaleBanner && (
-          <div className="pt-[calc(var(--sticky-nav-offset,80px)+12px)]">
-            <PromoBanner />
-          </div>
-        )}
+        {/* Pink background section with black promo banner - sits behind nav */}
+        <div className="bg-[hsl(var(--brand-pink))] pt-[calc(var(--sticky-nav-offset,80px)+12px)] pb-4">
+          {showSaleBanner && <PromoBanner />}
+        </div>
         
         {children}
       </main>
