@@ -1,6 +1,5 @@
 import React from 'react';
-import { Card } from '@/components/ui/card';
-import PerformanceImage from '@/components/ui/performance-image';
+import FeaturedGridItem from './FeaturedGridItem';
 const gridItems = [
 // Row 1 - Start with normal normal
 {
@@ -79,25 +78,15 @@ const FeaturedGrid = () => {
       </div>
       
       <div className="grid grid-cols-2 gap-0 w-full auto-rows-min">
-        {gridItems.map(item => {
-        const getSpanClass = (span: string) => {
-          switch (span) {
-            case 'horizontal':
-              return 'col-span-2 aspect-[2/1]';
-            case 'vertical':
-              return 'row-span-2 aspect-[1/2]';
-            case 'normal':
-            default:
-              return 'aspect-square';
-          }
-        };
-        return <div key={item.id} className={`relative overflow-hidden bg-gray-100 cursor-pointer group ${getSpanClass(item.span)} opacity-0 animate-fade-in`} style={{
-          animationDelay: `${(item.id - 1) * 200}ms`,
-          animationFillMode: 'forwards'
-        }}>
-              <PerformanceImage src={item.image} alt={item.title} className="w-full h-full object-cover transition-opacity duration-200 group-hover:opacity-90" />
-            </div>;
-      })}
+        {gridItems.map((item, index) => (
+          <FeaturedGridItem
+            key={item.id}
+            image={item.image}
+            title={item.title}
+            span={item.span as 'normal' | 'horizontal' | 'vertical'}
+            delay={index * 200}
+          />
+        ))}
       </div>
     </div>;
 };
