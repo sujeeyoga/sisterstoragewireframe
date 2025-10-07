@@ -75,7 +75,7 @@ const CartDrawer = () => {
           </div>
           
           {/* Cart Items */}
-          <div className="flex-grow overflow-auto py-4 px-4">
+          <div className="flex-1 overflow-y-auto py-4 px-4" style={{ maxHeight: 'calc(100vh - 280px)' }}>
             {items.length === 0 ? (
               <div className="text-center py-12">
                 <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
@@ -168,9 +168,9 @@ const CartDrawer = () => {
             )}
           </div>
           
-          {/* Cart Summary */}
+          {/* Cart Summary - Always visible at bottom */}
           {items.length > 0 && (
-            <div className="border-t border-gray-200 p-4 bg-gray-50">
+            <div className="flex-shrink-0 border-t border-gray-200 p-4 bg-gray-50">
               {/* Itemized Breakdown */}
               <div className="space-y-2 mb-4">
                 <div className="flex justify-between text-sm text-gray-600">
