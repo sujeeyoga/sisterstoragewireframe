@@ -61,6 +61,18 @@ const ShopHeroProduct: React.FC<ShopHeroProductProps> = ({ product }) => {
         {/* Badge Container */}
         {product.badge && <HeroProductBadge badge={product.badge} />}
         
+        {/* Desktop: Shop Title Container (Left Side) */}
+        <div className="hidden md:flex absolute left-8 top-1/2 -translate-y-1/2 max-w-[400px]">
+          <div className="text-white">
+            <h1 className="text-6xl lg:text-7xl font-bold uppercase tracking-wider mb-4">
+              Shop
+            </h1>
+            <p className="text-lg lg:text-xl text-white/90 font-light tracking-wide">
+              Discover our curated collection
+            </p>
+          </div>
+        </div>
+        
         {/* Desktop: Floating Information Panel (Right Side) */}
         <div className="hidden md:flex absolute right-8 top-1/2 -translate-y-1/2 w-[450px] max-w-[40%]">
           <div className="bg-white shadow-2xl p-8 flex flex-col" style={{ borderRadius: '0px' }}>
