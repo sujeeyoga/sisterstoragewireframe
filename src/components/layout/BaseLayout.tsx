@@ -163,12 +163,9 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
 
   return (
     <div className={`min-h-screen flex flex-col overflow-visible ${getBackgroundClasses()} ${className}`}>
-      {/* Fixed pink background layer that extends to cover sticky nav area */}
-      <div className="fixed top-0 left-0 right-0 h-[200px] bg-[hsl(var(--brand-pink))] z-0" />
-      
-      <main className={`flex-grow ${getMainPadding()} relative z-10`}>
-        {/* Content section with proper spacing */}
-        <div className="pt-4">
+      <main className={`flex-grow ${getMainPadding()}`}>
+        {/* Pink background section extends behind nav */}
+        <div className="bg-[hsl(var(--brand-pink))] pt-4 pb-8">
           {/* Black announcement banner */}
           {showSaleBanner && (
             <div className="mb-4">
@@ -177,7 +174,7 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
           )}
           
           {/* Navigation - white background with margins */}
-          <nav ref={navRef} className="relative z-50 w-[min(1100px,calc(100%-40px))] mx-auto rounded-[25px] bg-white overflow-visible shadow-lg px-4 py-2 mb-4">
+          <nav ref={navRef} className="relative z-50 w-[min(1100px,calc(100%-40px))] mx-auto rounded-[25px] bg-white overflow-visible shadow-lg px-4 py-2">
             <Navbar position={position} />
           </nav>
         </div>
