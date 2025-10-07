@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SaleBanner from "../SaleBanner";
+import PromoBanner from "@/components/shop/PromoBanner";
 import useScrollDirection from "@/hooks/use-scroll-direction";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ArrowLeft } from "lucide-react";
@@ -167,21 +168,28 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
         <>
           {/* Full-bleed header wrapper */}
           <header className="relative inset-x-0 z-50 overflow-visible pb-1">
+            {/* Promo Banner (dismissible) */}
+            <div className="fixed top-0 inset-x-0 z-[60]">
+              <PromoBanner />
+            </div>
+            
             {/* Pink background layer (fixed, full-bleed) */}
             <div 
-              className="fixed top-0 inset-x-0 h-[140px] bg-[hsl(var(--brand-pink))] z-0 pointer-events-none"
+              className="fixed top-0 inset-x-0 h-[140px] bg-[hsl(var(--brand-pink))] z-0 pointer-events-none mt-[44px]"
             />
             
             {/* Announcement bar (scrolls away) */}
             {showSaleBanner && (
-              <SaleBanner position={position} />
+              <div className="mt-[44px]">
+                <SaleBanner position={position} />
+              </div>
             )}
           </header>
         </>
       )}
       
       {/* Pill navigation (sticky on all pages) */}
-      <nav ref={navRef} className="sticky top-3 z-50 w-[min(1100px,calc(100%-40px))] mx-auto rounded-[25px] bg-white overflow-visible transition-all duration-300 shadow-lg mt-2 px-4 py-2">
+      <nav ref={navRef} className="sticky top-[56px] z-50 w-[min(1100px,calc(100%-40px))] mx-auto rounded-[25px] bg-white overflow-visible transition-all duration-300 shadow-lg px-4 py-2">
         <Navbar position={position} />
       </nav>
 
