@@ -169,15 +169,20 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
         <PromoBanner />
       </div>
       
-      {/* Sticky navigation with pink background */}
-      <div className="sticky top-[44px] z-50 mt-[44px]">
-        <div className="bg-[hsl(var(--brand-pink))] pb-4 pt-1">
-          {/* Pill navigation */}
-          <nav ref={navRef} className="w-[min(1100px,calc(100%-40px))] mx-auto rounded-[25px] bg-white overflow-visible shadow-lg px-4 py-2">
-            <Navbar position={position} />
-          </nav>
-        </div>
+      {/* Pink background section - scrolls away */}
+      <div className="mt-[44px] bg-[hsl(var(--brand-pink))] pt-1 pb-4">
+        {/* Announcement banner (if shown) */}
+        {showSaleBanner && (
+          <div>
+            <SaleBanner position={position} />
+          </div>
+        )}
       </div>
+      
+      {/* Sticky navigation - white background */}
+      <nav ref={navRef} className="sticky top-[44px] z-50 w-[min(1100px,calc(100%-40px))] mx-auto rounded-[25px] bg-white overflow-visible shadow-lg px-4 py-2 -mt-2">
+        <Navbar position={position} />
+      </nav>
 
       <main className={`flex-grow ${getMainPadding()}`}>
         {children}
