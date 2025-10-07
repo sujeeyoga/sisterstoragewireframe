@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import SaleBanner from "../SaleBanner";
+import PromoBanner from "@/components/shop/PromoBanner";
 import useScrollDirection from "@/hooks/use-scroll-direction";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ArrowLeft } from "lucide-react";
@@ -169,14 +169,12 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
       </nav>
 
       <main className={`flex-grow ${getMainPadding()} -mt-[calc(var(--sticky-nav-offset,80px)+12px)]`}>
-        {/* Pink background section with announcement banner - sits behind nav */}
-        <div className="bg-[hsl(var(--brand-pink))] pt-[calc(var(--sticky-nav-offset,80px)+12px)] pb-4">
-          {showSaleBanner && (
-            <div>
-              <SaleBanner position={position} />
-            </div>
-          )}
-        </div>
+        {/* Black promo banner - sits behind nav */}
+        {showSaleBanner && (
+          <div className="pt-[calc(var(--sticky-nav-offset,80px)+12px)]">
+            <PromoBanner />
+          </div>
+        )}
         
         {children}
       </main>
