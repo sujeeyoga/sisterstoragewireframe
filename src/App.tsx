@@ -23,6 +23,7 @@ import Gift from "./pages/Gift";
 import { CartProvider } from "./contexts/CartContext";
 import CartDrawer from "../src/components/CartDrawer";
 import OurStory from "./pages/OurStory";
+import Admin from "./pages/Admin";
 import ScreenLoader from "./components/ui/ScreenLoader";
 import PageTransition from "./components/layout/PageTransition";
 import React, { useState } from "react";
@@ -62,6 +63,7 @@ const App = () => {
                 <Route path="/content/:slug" element={<PageTransition><ContentPage /></PageTransition>} />
                 <Route path="/hero-gallery-demo" element={<PageTransition><HeroGalleryDemo /></PageTransition>} />
                 <Route path="/our-story" element={<PageTransition><OurStory /></PageTransition>} />
+                <Route path="/admin" element={<PageTransition><Admin /></PageTransition>} />
                 <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
                 <Route path="/gift" element={<PageTransition><Gift /></PageTransition>} />
                 <Route path="/privacy-policy" element={<PageTransition><PrivacyPolicy /></PageTransition>} />
