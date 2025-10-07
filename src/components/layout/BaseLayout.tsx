@@ -164,22 +164,18 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
 
   return (
     <div className={`min-h-screen flex flex-col overflow-visible ${getBackgroundClasses()} ${className}`}>
-      {/* Merged Header - All elements in single structure */}
-      <div className="fixed top-0 inset-x-0 z-50">
-        {/* Promo Banner */}
+      {/* Promo Banner - Fixed at top */}
+      <div className="fixed top-0 inset-x-0 z-[60]">
         <PromoBanner />
-        
-        {/* Pink background for nav area */}
-        <div className="bg-[hsl(var(--brand-pink))] pb-4 pt-1">
-          {/* Pill navigation */}
-          <nav ref={navRef} className="w-[min(1100px,calc(100%-40px))] mx-auto rounded-[25px] bg-white overflow-visible shadow-lg px-4 py-2">
-            <Navbar position={position} />
-          </nav>
-        </div>
       </div>
       
-      {/* Spacer to prevent content from going under fixed header */}
-      <div className="h-[140px]" />
+      {/* Pink background and sticky navigation */}
+      <div className="sticky top-0 z-50 bg-[hsl(var(--brand-pink))] pb-4 pt-1 mt-[44px]">
+        {/* Pill navigation */}
+        <nav ref={navRef} className="w-[min(1100px,calc(100%-40px))] mx-auto rounded-[25px] bg-white overflow-visible shadow-lg px-4 py-2">
+          <Navbar position={position} />
+        </nav>
+      </div>
 
       <main className={`flex-grow ${getMainPadding()}`}>
         {children}
