@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ShoppingBag, CreditCard } from "lucide-react";
 import ProductFeatures from "./ProductFeatures";
 import QuantitySelector from "./QuantitySelector";
+import BundleContentsList from "./BundleContentsList";
 
 interface ProductInfoProps {
   product: {
@@ -14,6 +15,7 @@ interface ProductInfoProps {
     category: string;
     features?: string[];
     stock?: number;
+    bundleContents?: string;
   };
   quantity: number;
   setQuantity: (quantity: number) => void;
@@ -31,6 +33,11 @@ const ProductInfo = ({ product, quantity, setQuantity, onAddToCart, onBuyNow }: 
       <p className="text-xs font-semibold text-gray-800 mb-4">${product.price.toFixed(2)}</p>
       
       <p className="text-xs text-gray-700 mb-5">{product.description}</p>
+      
+      {/* Bundle Contents for bundles */}
+      {product.category === 'bundles' && product.bundleContents && (
+        <BundleContentsList contents={product.bundleContents} variant="full" />
+      )}
       
       <ProductFeatures features={product.features || []} />
       

@@ -6,6 +6,7 @@ import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
 import { Product } from "@/types/product";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import BundleContentsList from "@/components/product/BundleContentsList";
 
 interface BundleCardProps {
   product: Product;
@@ -63,12 +64,14 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
           </h3>
         </Link>
         
-        {/* Meta/Contents Line */}
-        {bundleContents && (
+        {/* Bundle Contents or Meta Line */}
+        {isBundle && bundleContents ? (
+          <BundleContentsList contents={bundleContents} variant="compact" />
+        ) : bundleContents ? (
           <p className="ss-card__meta text-sm text-muted-foreground line-clamp-2 min-h-[2.5rem]">
             {bundleContents}
           </p>
-        )}
+        ) : null}
         
         {/* Price Row */}
         <div className="ss-price flex items-baseline gap-2 mt-auto pt-2">
