@@ -163,22 +163,21 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
 
   return (
     <div className={`min-h-screen flex flex-col overflow-visible ${getBackgroundClasses()} ${className}`}>
-      {/* Pink background section with announcement banner */}
-      <div className="bg-[hsl(var(--brand-pink))] pt-1 pb-4">
-        {/* Announcement banner (if shown) */}
-        {showSaleBanner && (
-          <div>
-            <SaleBanner position={position} />
-          </div>
-        )}
-      </div>
-      
       {/* Sticky navigation - white background */}
-      <nav ref={navRef} className="sticky top-0 z-50 w-[min(1100px,calc(100%-40px))] mx-auto rounded-[25px] bg-white overflow-visible shadow-lg px-4 py-2">
+      <nav ref={navRef} className="sticky top-0 z-50 w-[min(1100px,calc(100%-40px))] mx-auto rounded-[25px] bg-white overflow-visible shadow-lg px-4 py-2 mt-3">
         <Navbar position={position} />
       </nav>
 
-      <main className={`flex-grow ${getMainPadding()}`}>
+      <main className={`flex-grow ${getMainPadding()} -mt-[calc(var(--sticky-nav-offset,80px)+12px)]`}>
+        {/* Pink background section with announcement banner - sits behind nav */}
+        <div className="bg-[hsl(var(--brand-pink))] pt-[calc(var(--sticky-nav-offset,80px)+12px)] pb-4">
+          {showSaleBanner && (
+            <div>
+              <SaleBanner position={position} />
+            </div>
+          )}
+        </div>
+        
         {children}
       </main>
       {showFooter && <Footer />}
