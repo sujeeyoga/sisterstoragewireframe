@@ -28,14 +28,25 @@ const HeroProductPrice: React.FC<HeroProductPriceProps> = ({
         </div>
       </div>
 
-      <Button 
-        className="w-full mt-4 h-12 bg-brand-black hover:bg-brand-pink text-white font-bold uppercase tracking-wide transition-colors"
-        onClick={onAddToCart}
-        style={{ borderRadius: '0px' }}
-      >
-        <ShoppingBag className="w-5 h-5 mr-2" />
-        ADD TO CART
-      </Button>
+      <div className="space-y-3 mt-4">
+        <Button 
+          className="w-full h-12 bg-brand-black hover:bg-brand-pink text-white font-bold uppercase tracking-wide transition-colors"
+          onClick={onAddToCart}
+          style={{ borderRadius: '0px' }}
+        >
+          <ShoppingBag className="w-5 h-5 mr-2" />
+          ADD TO CART
+        </Button>
+        
+        <Button 
+          variant="outline"
+          className="w-full h-12 border-2 border-brand-black hover:bg-brand-black hover:text-white font-bold uppercase tracking-wide transition-colors"
+          onClick={onAddToCart}
+          style={{ borderRadius: '0px' }}
+        >
+          BUY NOW
+        </Button>
+      </div>
       
       <p className="text-xs text-muted-foreground text-center mt-3 uppercase tracking-wide">
         Free shipping on orders $75+
