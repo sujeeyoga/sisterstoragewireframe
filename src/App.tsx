@@ -31,12 +31,6 @@ import React, { useState } from "react";
 const queryClient = new QueryClient();
 
 const App = () => {
-  const [isLoading, setIsLoading] = useState(true);
-
-  const handleLoadingComplete = () => {
-    setIsLoading(false);
-  };
-
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
@@ -44,36 +38,30 @@ const App = () => {
           <Toaster />
           <Sonner />
           
-          {/* Screen Loader */}
-          {isLoading && <ScreenLoader onComplete={handleLoadingComplete} />}
-          
-          {/* Hide navigation and content during loading */}
-          {!isLoading && (
-            <BrowserRouter>
-              <CartDrawer />
-              <Routes>
-                <Route path="/" element={<PageTransition><Index /></PageTransition>} />
-                <Route path="/home2" element={<PageTransition><Home2 /></PageTransition>} />
-                <Route path="/shop" element={<PageTransition><Shop /></PageTransition>} />
-                <Route path="/gallery" element={<PageTransition><Gallery /></PageTransition>} />
-                <Route path="/shop/:productId" element={<PageTransition><ProductDetail /></PageTransition>} />
-                <Route path="/about" element={<PageTransition><About /></PageTransition>} />
-                <Route path="/blog" element={<PageTransition><Blog /></PageTransition>} />
-                <Route path="/brand/*" element={<PageTransition><Brand /></PageTransition>} />
-                <Route path="/content/:slug" element={<PageTransition><ContentPage /></PageTransition>} />
-                <Route path="/hero-gallery-demo" element={<PageTransition><HeroGalleryDemo /></PageTransition>} />
-                <Route path="/our-story" element={<PageTransition><OurStory /></PageTransition>} />
-                <Route path="/admin" element={<PageTransition><Admin /></PageTransition>} />
-                <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
-                <Route path="/gift" element={<PageTransition><Gift /></PageTransition>} />
-                <Route path="/privacy-policy" element={<PageTransition><PrivacyPolicy /></PageTransition>} />
-                <Route path="/terms-of-service" element={<PageTransition><TermsOfService /></PageTransition>} />
-                <Route path="/accessibility" element={<PageTransition><Accessibility /></PageTransition>} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
-              </Routes>
-            </BrowserRouter>
-          )}
+          <BrowserRouter>
+            <CartDrawer />
+            <Routes>
+              <Route path="/" element={<PageTransition><Index /></PageTransition>} />
+              <Route path="/home2" element={<PageTransition><Home2 /></PageTransition>} />
+              <Route path="/shop" element={<PageTransition><Shop /></PageTransition>} />
+              <Route path="/gallery" element={<PageTransition><Gallery /></PageTransition>} />
+              <Route path="/shop/:productId" element={<PageTransition><ProductDetail /></PageTransition>} />
+              <Route path="/about" element={<PageTransition><About /></PageTransition>} />
+              <Route path="/blog" element={<PageTransition><Blog /></PageTransition>} />
+              <Route path="/brand/*" element={<PageTransition><Brand /></PageTransition>} />
+              <Route path="/content/:slug" element={<PageTransition><ContentPage /></PageTransition>} />
+              <Route path="/hero-gallery-demo" element={<PageTransition><HeroGalleryDemo /></PageTransition>} />
+              <Route path="/our-story" element={<PageTransition><OurStory /></PageTransition>} />
+              <Route path="/admin" element={<PageTransition><Admin /></PageTransition>} />
+              <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
+              <Route path="/gift" element={<PageTransition><Gift /></PageTransition>} />
+              <Route path="/privacy-policy" element={<PageTransition><PrivacyPolicy /></PageTransition>} />
+              <Route path="/terms-of-service" element={<PageTransition><TermsOfService /></PageTransition>} />
+              <Route path="/accessibility" element={<PageTransition><Accessibility /></PageTransition>} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
+            </Routes>
+          </BrowserRouter>
         </CartProvider>
       </TooltipProvider>
     </QueryClientProvider>
