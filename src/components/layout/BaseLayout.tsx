@@ -167,7 +167,7 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
       {shouldShowStandardHeader && (
         <>
           {/* Full-bleed header wrapper */}
-          <header className="relative inset-x-0 z-50 overflow-visible pb-1">
+          <header className="relative inset-x-0 z-50 overflow-visible pb-3">
             {/* Promo Banner (dismissible) */}
             <div className="fixed top-0 inset-x-0 z-[60]">
               <PromoBanner />
@@ -175,12 +175,12 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
             
             {/* Pink background layer (fixed, full-bleed) */}
             <div 
-              className="fixed top-0 inset-x-0 h-[140px] bg-[hsl(var(--brand-pink))] z-0 pointer-events-none mt-[44px]"
+              className="fixed top-0 inset-x-0 h-[120px] bg-[hsl(var(--brand-pink))] z-0 pointer-events-none mt-[44px]"
             />
             
             {/* Announcement bar (scrolls away) */}
             {showSaleBanner && (
-              <div className="mt-[44px]">
+              <div className="mt-[44px] mb-2">
                 <SaleBanner position={position} />
               </div>
             )}

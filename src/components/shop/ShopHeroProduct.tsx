@@ -50,7 +50,7 @@ const ShopHeroProduct: React.FC<ShopHeroProductProps> = ({ product }) => {
   return (
     <div className="relative w-full mx-auto" style={{ borderRadius: '0px' }}>
       {/* Background Image Container */}
-      <div className="relative h-[500px] md:h-[700px] overflow-hidden shadow-xl">
+      <div className="relative h-[calc(100vh-180px)] min-h-[500px] md:min-h-[600px] overflow-hidden shadow-xl">
         <img 
           src={product.image} 
           alt={`${product.title} product image`} 
