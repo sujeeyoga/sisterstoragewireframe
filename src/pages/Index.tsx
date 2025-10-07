@@ -26,11 +26,9 @@ const Index = () => {
       <ParallaxContainer />
       
       {/* Featured Grid - First major section after hero */}
-      <EnhancedScrollFade preset="medium" delay={0.1} once={true}>
-        <Section spacing="xl" width="contained">
-          <FeaturedGrid />
-        </Section>
-      </EnhancedScrollFade>
+      <Section spacing="xl" width="contained">
+        <FeaturedGrid />
+      </Section>
       
       {/* Buy Cards - Major product section */}
       <EnhancedScrollFade preset="medium" once={true}>
