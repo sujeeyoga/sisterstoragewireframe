@@ -6,31 +6,26 @@ interface HeroProductPriceProps {
   price: number;
   compareAt?: number;
   onAddToCart: () => void;
+  hideCompareAt?: boolean;
 }
 
 const HeroProductPrice: React.FC<HeroProductPriceProps> = ({ 
   price, 
   compareAt, 
-  onAddToCart 
+  onAddToCart,
+  hideCompareAt = false
 }) => {
   return (
     <div>
       <div className="bg-brand-gray p-5" style={{ borderRadius: '0px' }}>
-        <div className="flex items-baseline justify-between mb-3">
-          <div className="flex items-baseline space-x-3">
-            <p className="text-3xl md:text-4xl font-bold text-foreground">${price.toFixed(2)}</p>
-            {compareAt && (
-              <p className="text-lg text-muted-foreground line-through">
-                ${compareAt.toFixed(2)}
-              </p>
-            )}
-          </div>
+        <div className="flex items-baseline space-x-3">
+          <p className="text-3xl md:text-4xl font-bold text-foreground">${price.toFixed(2)}</p>
+          {compareAt && !hideCompareAt && (
+            <p className="text-lg text-muted-foreground line-through">
+              ${compareAt.toFixed(2)}
+            </p>
+          )}
         </div>
-        {compareAt && (
-          <div className="bg-brand-orange text-white text-sm font-bold uppercase px-4 py-2 text-center tracking-wide" style={{ borderRadius: '0px' }}>
-            SAVE ${(compareAt - price).toFixed(2)}!
-          </div>
-        )}
       </div>
 
       <Button 

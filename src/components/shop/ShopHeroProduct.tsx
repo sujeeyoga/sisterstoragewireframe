@@ -48,47 +48,68 @@ const ShopHeroProduct: React.FC<ShopHeroProductProps> = ({ product }) => {
   };
 
   return (
-    <div className="relative shadow-lg overflow-hidden max-w-6xl w-full mx-auto" style={{ borderRadius: '0px' }}>
+    <div className="relative w-full mx-auto" style={{ borderRadius: '0px' }}>
       {/* Background Image Container */}
-      <div className="absolute inset-0">
+      <div className="relative h-[500px] md:h-[700px] overflow-hidden shadow-xl">
         <img 
           src={product.image} 
           alt={`${product.title} product image`} 
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/20" />
+        
+        {/* Badge Container */}
+        {product.badge && <HeroProductBadge badge={product.badge} />}
+        
+        {/* Desktop: Floating Information Panel (Right Side) */}
+        <div className="hidden md:flex absolute right-8 top-1/2 -translate-y-1/2 w-[450px] max-w-[40%]">
+          <div className="bg-white shadow-2xl p-8 flex flex-col" style={{ borderRadius: '0px' }}>
+            {/* Rating Section */}
+            <HeroProductRating ratingCount={product.ratingCount} />
+
+            {/* Title Section */}
+            <h1 className="text-2xl lg:text-3xl font-bold text-foreground uppercase tracking-wide mb-2">
+              {product.title}
+            </h1>
+            <p className="text-muted-foreground mt-2 text-sm">{product.subtitle}</p>
+            <hr className="my-5 border-border" />
+
+            {/* Includes Section */}
+            <HeroProductIncludes contents={product.contents} />
+
+            {/* Price & CTA Section */}
+            <HeroProductPrice 
+              price={product.price}
+              compareAt={product.compareAt}
+              onAddToCart={handleAddToCart}
+              hideCompareAt={true}
+            />
+          </div>
+        </div>
       </div>
 
-      {/* Badge Container */}
-      {product.badge && <HeroProductBadge badge={product.badge} />}
+      {/* Mobile: Information Panel Below Image */}
+      <div className="md:hidden bg-white p-6 shadow-lg" style={{ borderRadius: '0px' }}>
+        {/* Rating Section */}
+        <HeroProductRating ratingCount={product.ratingCount} />
 
-      {/* Content Container */}
-      <div className="relative z-10 min-h-[500px] md:min-h-[600px] grid md:grid-cols-2">
-        {/* Left side - spacer */}
-        <div className="hidden md:block" />
-        
-        {/* Right side - Information Panel */}
-        <div className="bg-white/95 backdrop-blur-sm p-6 md:p-8 flex flex-col justify-center">
-          {/* Rating Section */}
-          <HeroProductRating ratingCount={product.ratingCount} />
+        {/* Title Section */}
+        <h1 className="text-2xl font-bold text-foreground uppercase tracking-wide mb-2">
+          {product.title}
+        </h1>
+        <p className="text-muted-foreground mt-2 text-base">{product.subtitle}</p>
+        <hr className="my-6 border-border" />
 
-          {/* Title Section */}
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground uppercase tracking-wide mb-2">
-            {product.title}
-          </h1>
-          <p className="text-muted-foreground mt-2 text-base">{product.subtitle}</p>
-          <hr className="my-6 border-border" />
+        {/* Includes Section */}
+        <HeroProductIncludes contents={product.contents} />
 
-          {/* Includes Section */}
-          <HeroProductIncludes contents={product.contents} />
-
-          {/* Price & CTA Section */}
-          <HeroProductPrice 
-            price={product.price}
-            compareAt={product.compareAt}
-            onAddToCart={handleAddToCart}
-          />
-        </div>
+        {/* Price & CTA Section */}
+        <HeroProductPrice 
+          price={product.price}
+          compareAt={product.compareAt}
+          onAddToCart={handleAddToCart}
+          hideCompareAt={true}
+        />
       </div>
     </div>
   );
