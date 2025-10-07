@@ -164,31 +164,22 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
 
   return (
     <div className={`min-h-screen flex flex-col overflow-visible ${getBackgroundClasses()} ${className}`}>
-      {shouldShowStandardHeader && (
-        <>
-          {/* Promo Banner (dismissible) - Fixed at top */}
-          <div className="fixed top-0 inset-x-0 z-[60]">
-            <PromoBanner />
-          </div>
-          
-          {/* Pink background layer (fixed, full-bleed) - starts after promo banner */}
-          <div 
-            className="fixed top-[44px] inset-x-0 h-[80px] bg-[hsl(var(--brand-pink))] z-0 pointer-events-none"
-          />
-          
-          {/* Announcement bar (scrolls away) - positioned after promo banner */}
-          {showSaleBanner && (
-            <div className="mt-[44px]">
-              <SaleBanner position={position} />
-            </div>
-          )}
-        </>
-      )}
+      {/* Merged Header - All elements in single structure */}
+      <div className="fixed top-0 inset-x-0 z-50">
+        {/* Promo Banner */}
+        <PromoBanner />
+        
+        {/* Pink background for nav area */}
+        <div className="bg-[hsl(var(--brand-pink))] pb-4 pt-1">
+          {/* Pill navigation */}
+          <nav ref={navRef} className="w-[min(1100px,calc(100%-40px))] mx-auto rounded-[25px] bg-white overflow-visible shadow-lg px-4 py-2">
+            <Navbar position={position} />
+          </nav>
+        </div>
+      </div>
       
-      {/* Pill navigation (sticky) - positioned to sit right after announcement */}
-      <nav ref={navRef} className="sticky top-3 z-50 w-[min(1100px,calc(100%-40px))] mx-auto rounded-[25px] bg-white overflow-visible transition-all duration-300 shadow-lg px-4 py-2 -mt-1">
-        <Navbar position={position} />
-      </nav>
+      {/* Spacer to prevent content from going under fixed header */}
+      <div className="h-[140px]" />
 
       <main className={`flex-grow ${getMainPadding()}`}>
         {children}
