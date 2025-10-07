@@ -1,5 +1,5 @@
 import React from "react";
-import { Product } from "./ProductCard";
+import { Product } from "@/types/product";
 import BundleCard from "./BundleCard";
 
 interface ShopProductSectionsProps {

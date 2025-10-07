@@ -58,6 +58,7 @@ export interface Product {
   attributes: Record<string, string[]>;
   caption?: string;
   funnelStage?: string;
+  bundleContents?: string;
 }
 
 // Transform database product to frontend product
@@ -99,5 +100,6 @@ export function transformProduct(dbProduct: DatabaseProduct): Product {
     attributes,
     caption: dbProduct.meta_data?.caption,
     funnelStage: dbProduct.meta_data?.funnelStage,
+    bundleContents: dbProduct.short_description || undefined,
   };
 }

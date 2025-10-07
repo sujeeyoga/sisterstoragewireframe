@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ShoppingBag } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
-import { Product } from "./ProductCard";
+import { Product } from "@/types/product";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 interface BundleCardProps {
@@ -31,8 +31,8 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
     });
   };
 
-  // Extract bundle contents from funnelStage or caption
-  const bundleContents = isBundle ? product.funnelStage : product.caption;
+  // Extract bundle contents - prioritize bundleContents field
+  const bundleContents = product.bundleContents || product.funnelStage || product.caption;
 
   return (
     <article className="ss-card group h-full flex flex-col rounded-2xl p-3.5 md:p-4 bg-card shadow-sm hover:shadow-md transition-all duration-300">
