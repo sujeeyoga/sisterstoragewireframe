@@ -3,7 +3,7 @@ import React from "react";
 import BaseLayout from "@/components/layout/BaseLayout";
 import ShopHero from "@/components/shop/ShopHero";
 import ShopHeader from "@/components/shop/ShopHeader";
-import ProductsGrid from "@/components/shop/ProductsGrid";
+import ShopProductSections from "@/components/shop/ShopProductSections";
 import { useShopFilters } from "@/hooks/useShopFilters";
 import { useShopSEO } from "@/hooks/useShopSEO";
 
@@ -28,7 +28,7 @@ const Shop = () => {
             productCount={sortedProducts.length}
           />
           
-          <ProductsGrid products={sortedProducts} />
+          <ShopProductSections products={sortedProducts} />
         </div>
       </div>
     </BaseLayout>
