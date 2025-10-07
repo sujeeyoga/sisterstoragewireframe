@@ -107,26 +107,33 @@ const ShopHeroProduct: React.FC<ShopHeroProductProps> = ({ product }) => {
 
       {/* Mobile: Information Panel Below Image */}
       <div className="md:hidden bg-white p-6 shadow-lg" style={{ borderRadius: '0px' }}>
-        {/* Rating Section */}
-        <HeroProductRating ratingCount={product.ratingCount} />
+        <div className="flex flex-col sm:flex-row gap-6">
+          {/* Left: Product Information */}
+          <div className="flex-1">
+            {/* Rating Section */}
+            <HeroProductRating ratingCount={product.ratingCount} />
 
-        {/* Title Section */}
-        <h1 className="text-2xl font-bold text-foreground uppercase tracking-wide mb-2">
-          {product.title}
-        </h1>
-        <p className="text-muted-foreground mt-2 text-base">{product.subtitle}</p>
-        <hr className="my-6 border-border" />
+            {/* Title Section */}
+            <h1 className="text-xl font-bold text-foreground uppercase tracking-wide mb-2">
+              {product.title}
+            </h1>
+            <p className="text-muted-foreground mt-2 text-sm">{product.subtitle}</p>
+            <hr className="my-4 border-border" />
 
-        {/* Includes Section */}
-        <HeroProductIncludes contents={product.contents} />
+            {/* Includes Section */}
+            <HeroProductIncludes contents={product.contents} />
+          </div>
 
-        {/* Price & CTA Section */}
-        <HeroProductPrice 
-          price={product.price}
-          compareAt={product.compareAt}
-          onAddToCart={handleAddToCart}
-          hideCompareAt={true}
-        />
+          {/* Right: Buy Section */}
+          <div className="flex-1 flex flex-col justify-center">
+            <HeroProductPrice 
+              price={product.price}
+              compareAt={product.compareAt}
+              onAddToCart={handleAddToCart}
+              hideCompareAt={true}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
