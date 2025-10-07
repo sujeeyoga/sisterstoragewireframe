@@ -33,13 +33,8 @@ const FeaturedGridItem: React.FC<FeaturedGridItemProps> = ({
     <div 
       className={cn(
         "relative overflow-hidden bg-muted cursor-pointer group",
-        "opacity-0 animate-fade-in",
         getSpanClass(span)
       )}
-      style={{
-        animationDelay: `${delay}ms`,
-        animationFillMode: 'forwards'
-      }}
     >
       {/* Loading skeleton */}
       {!isLoaded && !hasError && (
