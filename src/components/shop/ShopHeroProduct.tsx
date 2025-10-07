@@ -77,42 +77,47 @@ const ShopHeroProduct: React.FC<ShopHeroProductProps> = ({ product }) => {
   };
 
   return (
-    <div className="bg-card shadow-lg overflow-hidden max-w-4xl w-full mx-auto" style={{ borderRadius: '0px' }}>
-      {/* Image */}
-      <div className="relative">
-        <AspectRatio ratio={16 / 9}>
-          <img 
-            src={product.image} 
-            alt={`${product.title} product image`} 
-            className="w-full h-full object-cover"
-          />
-        </AspectRatio>
-        {product.badge && (
-          <div className="absolute top-4 left-4 bg-brand-pink text-white text-xs font-bold uppercase px-4 py-2 shadow-md" style={{ borderRadius: '0px' }}>
-            {product.badge}
-          </div>
-        )}
+    <div className="relative shadow-lg overflow-hidden max-w-6xl w-full mx-auto" style={{ borderRadius: '0px' }}>
+      {/* Background Image */}
+      <div className="absolute inset-0">
+        <img 
+          src={product.image} 
+          alt={`${product.title} product image`} 
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-transparent" />
       </div>
 
-      {/* Details */}
-      <div className="p-6 md:p-8">
-        {/* Rating */}
-        <div className="flex items-center justify-between mb-3">
-          <Stars />
-          <span className="text-sm text-muted-foreground font-medium uppercase tracking-wide">
-            {product.ratingCount} REVIEWS
-          </span>
+      {/* Badge */}
+      {product.badge && (
+        <div className="absolute top-4 left-4 bg-brand-pink text-white text-xs font-bold uppercase px-4 py-2 shadow-md z-10" style={{ borderRadius: '0px' }}>
+          {product.badge}
         </div>
+      )}
 
-        <h1 className="text-2xl md:text-3xl font-bold text-foreground uppercase tracking-wide mb-2">
-          {product.title}
-        </h1>
-        <p className="text-muted-foreground mt-2 text-base">{product.subtitle}</p>
-        <hr className="my-6 border-border" />
+      {/* Content Container */}
+      <div className="relative z-10 min-h-[500px] md:min-h-[600px] grid md:grid-cols-2">
+        {/* Left side - spacer */}
+        <div className="hidden md:block" />
+        
+        {/* Right side - Information on top of image */}
+        <div className="bg-white/95 backdrop-blur-sm p-6 md:p-8 flex flex-col justify-center">
+          {/* Rating */}
+          <div className="flex items-center justify-between mb-3">
+            <Stars />
+            <span className="text-sm text-muted-foreground font-medium uppercase tracking-wide">
+              {product.ratingCount} REVIEWS
+            </span>
+          </div>
 
-        <div className="md:flex md:items-start md:space-x-8">
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground uppercase tracking-wide mb-2">
+            {product.title}
+          </h1>
+          <p className="text-muted-foreground mt-2 text-base">{product.subtitle}</p>
+          <hr className="my-6 border-border" />
+
           {/* Included */}
-          <div className="md:w-1/2">
+          <div className="mb-6">
             <h2 className="text-xs font-bold text-brand-pink uppercase tracking-widest mb-4 letter-spacing-[0.1em]">
               WHAT'S INCLUDED
             </h2>
@@ -125,7 +130,7 @@ const ShopHeroProduct: React.FC<ShopHeroProductProps> = ({ product }) => {
           </div>
 
           {/* Price & CTA */}
-          <div className="md:w-1/2 mt-6 md:mt-0">
+          <div>
             <div className="bg-brand-gray p-5" style={{ borderRadius: '0px' }}>
               <div className="flex items-baseline justify-between mb-3">
                 <div className="flex items-baseline space-x-3">
