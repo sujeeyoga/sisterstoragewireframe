@@ -24,7 +24,14 @@ const SaleBanner = ({
     '--ss-slide-duration': '12s',
     '--ss-marquee-duration': '20s'
   } as React.CSSProperties}>
-      
+      <div className="flex items-center gap-8 animate-marquee-left">
+        {duplicatedContent.map((item, index) => (
+          <div key={index} className="flex items-center whitespace-nowrap text-xs font-medium tracking-wide uppercase">
+            {item.icon}
+            <span>{item.text}</span>
+          </div>
+        ))}
+      </div>
     </div>;
 };
 export default SaleBanner;
