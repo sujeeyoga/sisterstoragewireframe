@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ShoppingBag } from "lucide-react";
+import { ShoppingBag, Zap } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
 import { Product } from "@/types/product";
@@ -14,7 +14,7 @@ interface BundleCardProps {
 }
 
 const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
-  const { addItem } = useCart();
+  const { addItem, setIsOpen } = useCart();
   const { toast } = useToast();
 
   const handleAddToCart = (e: React.MouseEvent) => {
@@ -30,6 +30,23 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
       title: "Added to cart",
       description: `${product.name} has been added to your cart`,
     });
+  };
+
+  const handleBuyNow = (e: React.MouseEvent) => {
+    e.preventDefault();
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.color
+    });
+    
+    toast({
+      title: "Added to cart",
+      description: "Opening cart for checkout...",
+    });
+    
+    setIsOpen(true);
   };
 
   // Extract bundle contents - prioritize bundleContents field
@@ -64,17 +81,8 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
           </h3>
         </Link>
         
-        {/* Bundle Contents or Meta Line */}
-        {isBundle && bundleContents ? (
-          <BundleContentsList contents={bundleContents} variant="compact" />
-        ) : bundleContents ? (
-          <p className="ss-card__meta text-sm text-muted-foreground line-clamp-2 min-h-[2.5rem]">
-            {bundleContents}
-          </p>
-        ) : null}
-        
         {/* Price Row */}
-        <div className="ss-price flex items-baseline gap-2 mt-auto pt-2">
+        <div className="ss-price flex items-baseline gap-2">
           <span className="ss-price__regular text-lg font-bold text-foreground">
             ${product.price.toFixed(2)}
           </span>
@@ -85,19 +93,39 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
           )}
         </div>
         
-        {/* CTA Row */}
-        <div className="ss-cta flex items-center gap-2 mt-2">
-          <Button 
-            size="sm"
-            className="ss-btn flex-1 h-9 text-xs rounded-lg"
-            onClick={handleAddToCart}
-          >
-            <ShoppingBag className="h-3.5 w-3.5 mr-1.5" />
-            Add to Cart
-          </Button>
+        {/* Bundle Contents or Meta Line */}
+        {isBundle && bundleContents ? (
+          <BundleContentsList contents={bundleContents} variant="card" showTotals={true} />
+        ) : bundleContents ? (
+          <p className="ss-card__meta text-sm text-muted-foreground line-clamp-2 min-h-[2.5rem]">
+            {bundleContents}
+          </p>
+        ) : null}
+        
+        {/* CTA Row - Dual Buttons */}
+        <div className="ss-cta flex flex-col gap-2 mt-auto pt-2">
+          <div className="flex gap-2">
+            <Button 
+              size="sm"
+              variant="outline"
+              className="flex-1 h-9 text-xs rounded-lg"
+              onClick={handleAddToCart}
+            >
+              <ShoppingBag className="h-3.5 w-3.5 mr-1.5" />
+              Add to Cart
+            </Button>
+            <Button 
+              size="sm"
+              className="flex-1 h-9 text-xs rounded-lg"
+              onClick={handleBuyNow}
+            >
+              <Zap className="h-3.5 w-3.5 mr-1.5" />
+              Buy Now
+            </Button>
+          </div>
           <Link 
             to={`/shop/${product.id}`}
-            className="ss-link text-xs text-primary hover:text-primary/80 font-medium whitespace-nowrap transition-colors"
+            className="ss-link text-xs text-center text-primary hover:text-primary/80 font-medium transition-colors"
           >
             View details →
           </Link>

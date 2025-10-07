@@ -577,6 +577,61 @@
   font-size: 0.7rem;
 }
 
+/* Card variant - for bundle cards */
+.bundle-includes-card {
+  background: hsl(var(--muted) / 0.3);
+  border: 1px solid hsl(var(--border));
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-top: 8px;
+}
+
+.bundle-total-header {
+  font-weight: 700;
+  color: hsl(var(--primary));
+  font-size: 0.8rem;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.bundle-aggregate-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.bundle-aggregate-list li {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: hsl(var(--foreground));
+}
+
+.bundle-aggregate-list .bundle-size {
+  font-weight: 600;
+  min-width: 50px;
+}
+
+.bundle-aggregate-list .bundle-divider {
+  color: hsl(var(--muted-foreground) / 0.6);
+}
+
+.bundle-aggregate-list .bundle-count {
+  font-weight: 500;
+}
+
+.bundle-aggregate-list .bundle-total {
+  color: hsl(var(--muted-foreground));
+  font-size: 0.75rem;
+  margin-left: auto;
+}
+
 /* Respect user preference for reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *,
