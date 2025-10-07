@@ -165,7 +165,7 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
     <div className={`min-h-screen flex flex-col overflow-visible ${getBackgroundClasses()} ${className}`}>
       <main className={`flex-grow ${getMainPadding()}`}>
         {/* Pink background section extends behind nav */}
-        <div className="bg-[hsl(var(--brand-pink))] pt-4 pb-8">
+        <div className={`bg-[hsl(var(--brand-pink))] ${showSaleBanner ? 'pt-4' : 'pt-0'} pb-8`}>
           {/* Black announcement banner */}
           {showSaleBanner && (
             <div className="mb-4">
@@ -174,7 +174,7 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
           )}
           
           {/* Sticky floating navigation - white background with margins */}
-          <nav ref={navRef} className="sticky top-4 z-50 w-[min(1100px,calc(100%-40px))] mx-auto rounded-[25px] bg-white overflow-visible shadow-lg px-4 py-2">
+          <nav ref={navRef} className="sticky top-4 z-50 w-[min(1100px,calc(100%-40px))] mx-auto rounded-[25px] bg-white overflow-visible shadow-lg px-4 py-2 mt-4">
             <Navbar position={position} />
           </nav>
         </div>
