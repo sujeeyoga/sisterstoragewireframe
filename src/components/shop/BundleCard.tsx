@@ -53,83 +53,87 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
   const bundleContents = product.bundleContents || product.funnelStage || product.caption;
 
   return (
-    <article className="ss-card group h-full flex flex-col rounded-2xl p-3.5 md:p-4 bg-card shadow-sm hover:shadow-md transition-all duration-300">
-      {/* Media Section - 1:1 Aspect Ratio */}
-      <Link to={`/shop/${product.id}`} className="ss-card__media block mb-3 relative overflow-hidden rounded-lg">
-        <AspectRatio ratio={1}>
-          <div 
-            className="w-full h-full flex items-center justify-center text-white font-medium text-sm transition-transform duration-300 group-hover:scale-105"
-            style={{ backgroundColor: product.color }}
-          >
-            {/* Badge for bundles */}
-            {isBundle && (
-              <span className="ss-badge absolute top-2 left-2 bg-primary text-primary-foreground text-xs font-semibold px-2 py-1 rounded-full shadow-sm">
-                Bundle
+    <article className="bundle-card rounded-2xl overflow-hidden bg-card shadow-sm hover:shadow-md transition-shadow h-full flex flex-col">
+      {/* Header with Badge */}
+      {isBundle && (
+        <div className="flex items-center gap-2 px-4 pt-4">
+          <span className="text-xs px-2 py-1 rounded-full bg-primary text-primary-foreground font-semibold">
+            BUNDLE
+          </span>
+        </div>
+      )}
+      
+      {/* Image */}
+      <div className="p-4 pb-0">
+        <Link to={`/shop/${product.id}`} className="block">
+          <AspectRatio ratio={16 / 9}>
+            <div 
+              className="w-full h-full rounded-xl shadow-sm transition-transform duration-300 hover:scale-[1.02]"
+              style={{ 
+                background: `linear-gradient(135deg, ${product.color}20, ${product.color}60)`,
+              }}
+            />
+          </AspectRatio>
+        </Link>
+      </div>
+
+      {/* Details */}
+      <div className="px-4 py-4 grid gap-3 flex-1">
+        <div className="grid gap-1">
+          <Link to={`/shop/${product.id}`}>
+            <h3 className="text-base font-semibold leading-tight text-foreground hover:text-foreground/70 transition-colors">
+              {product.name}
+            </h3>
+          </Link>
+          <div className="flex items-baseline gap-2">
+            <span className="text-lg font-bold text-foreground">
+              ${product.price.toFixed(2)}
+            </span>
+            {product.originalPrice && product.originalPrice > product.price && (
+              <span className="text-sm text-muted-foreground line-through">
+                ${product.originalPrice.toFixed(2)}
               </span>
             )}
-            <span className="line-clamp-1 text-center px-2">{product.name}</span>
           </div>
-        </AspectRatio>
-      </Link>
-      
-      {/* Body Section */}
-      <div className="ss-card__body flex-1 flex flex-col gap-2">
-        {/* Title */}
-        <Link to={`/shop/${product.id}`}>
-          <h3 className="ss-card__title font-medium text-base md:text-lg text-foreground group-hover:text-foreground/70 transition-colors line-clamp-2 leading-tight">
-            {product.name}
-          </h3>
-        </Link>
-        
-        {/* Price Row */}
-        <div className="ss-price flex items-baseline gap-2">
-          <span className="ss-price__regular text-lg font-bold text-foreground">
-            ${product.price.toFixed(2)}
-          </span>
-          {product.originalPrice && product.originalPrice > product.price && (
-            <span className="ss-price__compare text-sm text-muted-foreground line-through">
-              ${product.originalPrice.toFixed(2)}
-            </span>
-          )}
         </div>
-        
-        {/* Bundle Contents or Meta Line */}
+
+        {/* Bundle Contents */}
         {isBundle && bundleContents ? (
           <BundleContentsList contents={bundleContents} variant="card" showTotals={true} />
         ) : bundleContents ? (
-          <p className="ss-card__meta text-sm text-muted-foreground line-clamp-2 min-h-[2.5rem]">
+          <p className="text-sm text-muted-foreground line-clamp-2">
             {bundleContents}
           </p>
         ) : null}
-        
-        {/* CTA Row - Dual Buttons */}
-        <div className="ss-cta flex flex-col gap-2 mt-auto pt-2">
-          <div className="flex gap-2">
-            <Button 
-              size="sm"
-              variant="outline"
-              className="flex-1 h-9 text-xs rounded-lg"
-              onClick={handleAddToCart}
-            >
-              <ShoppingBag className="h-3.5 w-3.5 mr-1.5" />
-              Add to Cart
-            </Button>
-            <Button 
-              size="sm"
-              className="flex-1 h-9 text-xs rounded-lg"
-              onClick={handleBuyNow}
-            >
-              <Zap className="h-3.5 w-3.5 mr-1.5" />
-              Buy Now
-            </Button>
-          </div>
-          <Link 
-            to={`/shop/${product.id}`}
-            className="ss-link text-xs text-center text-primary hover:text-primary/80 font-medium transition-colors"
+      </div>
+
+      {/* Actions */}
+      <div className="px-4 pb-4 grid gap-2 mt-auto">
+        <div className="grid grid-cols-2 gap-2">
+          <Button 
+            size="sm"
+            variant="outline"
+            className="h-9 text-xs rounded-lg"
+            onClick={handleAddToCart}
           >
-            View details →
-          </Link>
+            <ShoppingBag className="h-3.5 w-3.5 mr-1.5" />
+            Add to Cart
+          </Button>
+          <Button 
+            size="sm"
+            className="h-9 text-xs rounded-lg bg-amber-400 hover:bg-amber-500 text-black"
+            onClick={handleBuyNow}
+          >
+            <Zap className="h-3.5 w-3.5 mr-1.5" />
+            Buy Now
+          </Button>
         </div>
+        <Link 
+          to={`/shop/${product.id}`}
+          className="text-xs text-muted-foreground hover:text-foreground underline justify-self-end transition-colors"
+        >
+          View details →
+        </Link>
       </div>
     </article>
   );

@@ -481,6 +481,23 @@
     color: #FFA51E;
   }
 
+/* Shop Page Section Styling */
+.shop-section {
+  animation: fade-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.promo-banner {
+  animation: fade-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.bundle-card {
+  animation: fade-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.simple-product-card {
+  animation: fade-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 /* Bundle Contents List Styling */
 .bundle-includes {
   background: hsl(var(--muted));

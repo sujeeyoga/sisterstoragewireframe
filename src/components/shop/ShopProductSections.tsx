@@ -1,6 +1,7 @@
 import React from "react";
 import { Product } from "@/types/product";
 import BundleCard from "./BundleCard";
+import SimpleProductCard from "./SimpleProductCard";
 
 interface ShopProductSectionsProps {
   products: Product[];
@@ -13,20 +14,22 @@ const ShopProductSections = ({ products }: ShopProductSectionsProps) => {
   const organizers = products.filter(p => p.category === 'organizers');
 
   return (
-    <div className="max-w-[1200px] mx-auto px-4 md:px-6">
+    <div className="grid gap-8">
       {/* Section 1: Top-Selling Bundles */}
       {bundles.length > 0 && (
-        <section className="ss-section ss-bundles mb-12 md:mb-16">
-          <div className="mb-6 md:mb-8">
-            <h2 className="ss-heading text-2xl md:text-3xl font-bold text-foreground mb-2">
-              Top-Selling Bundles
-            </h2>
-            <p className="text-sm md:text-base text-muted-foreground">
-              Complete collections for every Sister
-            </p>
-          </div>
+        <section className="shop-section rounded-2xl p-5 md:p-6 lg:p-8 bg-[#FFF7F5]">
+          <header className="flex items-end justify-between gap-4 mb-5">
+            <div>
+              <h2 className="text-xl md:text-2xl font-bold text-foreground">
+                Top-Selling Bundles
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Complete collections for every Sister
+              </p>
+            </div>
+          </header>
           
-          <div className="ss-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {bundles.map((product) => (
               <BundleCard key={product.id} product={product} isBundle />
             ))}
@@ -36,19 +39,21 @@ const ShopProductSections = ({ products }: ShopProductSectionsProps) => {
       
       {/* Section 2: Individual Boxes */}
       {bangleBoxes.length > 0 && (
-        <section className="ss-section ss-products mb-12 md:mb-16">
-          <div className="mb-6 md:mb-8">
-            <h2 className="ss-heading text-2xl md:text-3xl font-bold text-foreground mb-2">
-              Individual Boxes
-            </h2>
-            <p className="text-sm md:text-base text-muted-foreground">
-              Build your own perfect collection
-            </p>
-          </div>
+        <section className="shop-section rounded-2xl p-5 md:p-6 lg:p-8 bg-[#F6F7FB]">
+          <header className="flex items-end justify-between gap-4 mb-5">
+            <div>
+              <h2 className="text-xl md:text-2xl font-bold text-foreground">
+                Individual Boxes
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Build your own perfect collection
+              </p>
+            </div>
+          </header>
           
-          <div className="ss-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {bangleBoxes.map((product) => (
-              <BundleCard key={product.id} product={product} />
+              <SimpleProductCard key={product.id} product={product} />
             ))}
           </div>
         </section>
@@ -56,20 +61,33 @@ const ShopProductSections = ({ products }: ShopProductSectionsProps) => {
       
       {/* Section 3: Pouches & Bags */}
       {organizers.length > 0 && (
-        <section className="ss-section ss-organizers mb-12">
-          <div className="mb-6 md:mb-8">
-            <h2 className="ss-heading text-2xl md:text-3xl font-bold text-foreground mb-2">
-              Pouches & Bags
-            </h2>
-            <p className="text-sm md:text-base text-muted-foreground">
-              Organize with style and care
-            </p>
-          </div>
+        <section className="shop-section rounded-2xl p-5 md:p-6 lg:p-8 bg-[#FFFDF2]">
+          <header className="flex items-end justify-between gap-4 mb-5">
+            <div>
+              <h2 className="text-xl md:text-2xl font-bold text-foreground">
+                Jewelry Pouches
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Soft protection, travel-ready
+              </p>
+            </div>
+          </header>
           
-          <div className="ss-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
-            {organizers.map((product) => (
-              <BundleCard key={product.id} product={product} />
-            ))}
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {organizers.map((product) => {
+              // Define bullets for jewelry organizer
+              const bullets = product.id === 'jewelry-bag-organizer' 
+                ? ['7 zip pouches', 'Flat fold for travel', 'Soft-touch lining']
+                : undefined;
+              
+              return (
+                <SimpleProductCard 
+                  key={product.id} 
+                  product={product}
+                  bullets={bullets}
+                />
+              );
+            })}
           </div>
         </section>
       )}
