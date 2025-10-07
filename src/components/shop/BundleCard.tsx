@@ -123,7 +123,7 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
           </Button>
           <Button 
             size="sm"
-            className="h-9 text-xs font-bold uppercase tracking-wide bg-brand-orange hover:bg-brand-gold text-white transition-colors"
+            className="h-9 text-xs font-bold uppercase tracking-wide bg-brand-black hover:bg-brand-pink text-white transition-colors"
             onClick={handleBuyNow}
             style={{ borderRadius: '0px' }}
           >

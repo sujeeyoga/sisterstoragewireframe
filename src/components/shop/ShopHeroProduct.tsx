@@ -145,7 +145,7 @@ const ShopHeroProduct: React.FC<ShopHeroProductProps> = ({ product }) => {
             </div>
 
             <Button 
-              className="w-full mt-4 h-12 bg-brand-black hover:bg-brand-orange text-white font-bold uppercase tracking-wide transition-colors"
+              className="w-full mt-4 h-12 bg-brand-black hover:bg-brand-pink text-white font-bold uppercase tracking-wide transition-colors"
               onClick={handleAddToCart}
               style={{ borderRadius: '0px' }}
             >
