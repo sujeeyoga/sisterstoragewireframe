@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { X, Trash2, Plus, Minus, ShoppingBag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -7,6 +6,11 @@ import { Link } from 'react-router-dom';
 
 const CartDrawer = () => {
   const { items, removeItem, updateQuantity, totalItems, subtotal, isOpen, setIsOpen } = useCart();
+
+  // Calculate tax (example: 8.5%)
+  const taxRate = 0.085;
+  const taxAmount = subtotal * taxRate;
+  const total = subtotal + taxAmount;
 
   if (!isOpen) return null;
 
@@ -26,96 +30,155 @@ const CartDrawer = () => {
       >
         <div className="flex flex-col h-full">
           {/* Drawer Header */}
-          <div className="flex justify-between items-center border-b border-gray-200 p-4">
-            <h2 className="font-bold flex items-center">
-              <ShoppingBag className="mr-2 h-3 w-3" />
-              Your Cart ({totalItems})
+          <div className="flex justify-between items-center border-b border-gray-200 p-4 bg-[hsl(var(--brand-pink))]/5">
+            <h2 className="text-lg font-bold flex items-center text-gray-900">
+              <ShoppingBag className="mr-2 h-5 w-5 text-[hsl(var(--brand-pink))]" />
+              Shopping Cart ({totalItems})
             </h2>
             <button 
               onClick={() => setIsOpen(false)}
               className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+              aria-label="Close cart"
             >
-              <X className="h-3 w-3" />
+              <X className="h-5 w-5" />
             </button>
           </div>
           
           {/* Cart Items */}
           <div className="flex-grow overflow-auto py-4 px-4">
             {items.length === 0 ? (
-              <div className="text-center py-8">
-                <div className="mx-auto w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center mb-3">
-                  <ShoppingBag className="h-6 w-6 text-gray-400" />
+              <div className="text-center py-12">
+                <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                  <ShoppingBag className="h-8 w-8 text-gray-400" />
                 </div>
-                <p className="text-gray-600 mb-4">Your cart is empty</p>
+                <p className="text-gray-600 mb-2 font-medium">Your cart is empty</p>
+                <p className="text-gray-500 text-sm mb-6">Add items to get started</p>
                 <Button
                   onClick={() => setIsOpen(false)}
-                  className="bg-purple-600 hover:bg-purple-500"
+                  variant="default"
+                  className="bg-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))]/90"
                 >
                   Continue Shopping
                 </Button>
               </div>
             ) : (
-              <ul className="space-y-3">
-                {items.map((item) => (
-                  <li key={item.id} className="flex items-center space-x-3 border-b border-gray-100 pb-3">
-                    <div 
-                      className="w-14 h-14 rounded flex-shrink-0 flex items-center justify-center"
-                      style={{ backgroundColor: item.image.startsWith('#') ? item.image : '#9b87f5' }}
-                    >
-                      <span className="text-white font-bold text-xs">SS</span>
-                    </div>
-                    <div className="flex-grow">
-                      <h3 className="font-medium mb-1">{item.name}</h3>
-                      <p className="text-purple-600 font-semibold">${item.price.toFixed(2)}</p>
-                    </div>
-                    <div className="flex items-center space-x-1">
+              <div className="space-y-4">
+                {items.map((item) => {
+                  const itemTotal = item.price * item.quantity;
+                  
+                  return (
+                    <div key={item.id} className="flex gap-4 pb-4 border-b border-gray-100">
+                      {/* Product Image */}
+                      <div className="flex-shrink-0">
+                        {item.image.startsWith('http') ? (
+                          <img 
+                            src={item.image} 
+                            alt={item.name}
+                            className="w-20 h-20 object-cover rounded-lg"
+                          />
+                        ) : (
+                          <div 
+                            className="w-20 h-20 rounded-lg flex items-center justify-center"
+                            style={{ backgroundColor: item.image.startsWith('#') ? item.image : '#e90064' }}
+                          >
+                            <span className="text-white font-bold text-sm">SS</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Product Info */}
+                      <div className="flex-grow min-w-0">
+                        <h3 className="font-medium text-sm text-gray-900 mb-1 line-clamp-2">
+                          {item.name}
+                        </h3>
+                        <p className="text-[hsl(var(--brand-pink))] font-semibold text-sm mb-2">
+                          ${item.price.toFixed(2)} each
+                        </p>
+                        
+                        {/* Quantity Controls */}
+                        <div className="flex items-center gap-2">
+                          <div className="flex items-center border border-gray-300 rounded-md">
+                            <button 
+                              className="w-8 h-8 flex items-center justify-center hover:bg-gray-100 transition-colors"
+                              onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                              aria-label="Decrease quantity"
+                            >
+                              <Minus className="h-3 w-3" />
+                            </button>
+                            <span className="w-10 text-center text-sm font-medium">
+                              {item.quantity}
+                            </span>
+                            <button 
+                              className="w-8 h-8 flex items-center justify-center hover:bg-gray-100 transition-colors"
+                              onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                              aria-label="Increase quantity"
+                            >
+                              <Plus className="h-3 w-3" />
+                            </button>
+                          </div>
+                          
+                          <span className="text-sm font-semibold text-gray-900">
+                            ${itemTotal.toFixed(2)}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Remove Button */}
                       <button 
-                        className="w-5 h-5 flex items-center justify-center border border-gray-300 rounded"
-                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                        onClick={() => removeItem(item.id)}
+                        className="flex-shrink-0 text-gray-400 hover:text-red-500 transition-colors p-1"
+                        aria-label="Remove item"
                       >
-                        <Minus className="h-2 w-2" />
-                      </button>
-                      <span className="w-5 text-center">{item.quantity}</span>
-                      <button 
-                        className="w-5 h-5 flex items-center justify-center border border-gray-300 rounded"
-                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                      >
-                        <Plus className="h-2 w-2" />
+                        <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
-                    <button 
-                      onClick={() => removeItem(item.id)}
-                      className="text-gray-400 hover:text-red-500 transition-colors"
-                    >
-                      <Trash2 className="h-3 w-3" />
-                    </button>
-                  </li>
-                ))}
-              </ul>
+                  );
+                })}
+              </div>
             )}
           </div>
           
           {/* Cart Summary */}
           {items.length > 0 && (
             <div className="border-t border-gray-200 p-4 bg-gray-50">
-              <div className="flex justify-between mb-2">
-                <span className="text-gray-600">Subtotal</span>
-                <span className="font-semibold">${subtotal.toFixed(2)}</span>
+              {/* Itemized Breakdown */}
+              <div className="space-y-2 mb-4">
+                <div className="flex justify-between text-sm text-gray-600">
+                  <span>Subtotal ({totalItems} items)</span>
+                  <span className="font-medium text-gray-900">${subtotal.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-sm text-gray-600">
+                  <span>Estimated Tax</span>
+                  <span className="font-medium text-gray-900">${taxAmount.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-sm text-gray-600">
+                  <span>Shipping</span>
+                  <span className="text-gray-600">Calculated at checkout</span>
+                </div>
               </div>
-              <div className="flex justify-between mb-3">
-                <span className="text-gray-600">Shipping</span>
-                <span className="text-gray-600">Calculated at checkout</span>
+
+              {/* Total */}
+              <div className="flex justify-between text-lg font-bold mb-4 pt-3 border-t border-gray-300">
+                <span>Total</span>
+                <span className="text-[hsl(var(--brand-pink))]">${total.toFixed(2)}</span>
               </div>
-              <Button className="bg-purple-600 hover:bg-purple-500 mb-2">
-                Proceed to Checkout
-              </Button>
-              <Button 
-                variant="secondary" 
-                className=""
-                onClick={() => setIsOpen(false)}
-              >
-                Continue Shopping
-              </Button>
+
+              {/* Action Buttons */}
+              <div className="space-y-2">
+                <Button 
+                  className="w-full bg-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))]/90 text-white"
+                  size="lg"
+                >
+                  Proceed to Checkout
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Continue Shopping
+                </Button>
+              </div>
             </div>
           )}
         </div>
