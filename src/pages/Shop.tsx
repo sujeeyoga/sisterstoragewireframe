@@ -28,7 +28,7 @@ const Shop = () => {
           <ShopProductSections products={sortedProducts} />
           
           {/* Footer */}
-          <footer className="text-center text-sm text-muted-foreground py-4">
+          <footer className="text-center text-xs text-muted-foreground py-6 uppercase tracking-widest border-t border-border mt-4">
             © 2025 Sister Storage — Culture without clutter.
           </footer>
         </div>

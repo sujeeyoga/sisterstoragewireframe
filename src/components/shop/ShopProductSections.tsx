@@ -17,19 +17,19 @@ const ShopProductSections = ({ products }: ShopProductSectionsProps) => {
     <div className="grid gap-8">
       {/* Section 1: Top-Selling Bundles */}
       {bundles.length > 0 && (
-        <section className="shop-section rounded-2xl p-5 md:p-6 lg:p-8 bg-[#FFF7F5]">
-          <header className="flex items-end justify-between gap-4 mb-5">
+        <section className="shop-section p-5 md:p-6 lg:p-8 bg-[#FFF7F5]" style={{ borderRadius: '0px' }}>
+          <header className="flex items-end justify-between gap-4 mb-6">
             <div>
-              <h2 className="text-xl md:text-2xl font-bold text-foreground">
+              <h2 className="text-xl md:text-2xl font-bold text-foreground uppercase tracking-wide">
                 Top-Selling Bundles
               </h2>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-muted-foreground uppercase tracking-wide mt-1">
                 Complete collections for every Sister
               </p>
             </div>
           </header>
           
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {bundles.map((product) => (
               <BundleCard key={product.id} product={product} isBundle />
             ))}
@@ -39,19 +39,19 @@ const ShopProductSections = ({ products }: ShopProductSectionsProps) => {
       
       {/* Section 2: Individual Boxes */}
       {bangleBoxes.length > 0 && (
-        <section className="shop-section rounded-2xl p-5 md:p-6 lg:p-8 bg-[#F6F7FB]">
-          <header className="flex items-end justify-between gap-4 mb-5">
+        <section className="shop-section p-5 md:p-6 lg:p-8 bg-[#F6F7FB]" style={{ borderRadius: '0px' }}>
+          <header className="flex items-end justify-between gap-4 mb-6">
             <div>
-              <h2 className="text-xl md:text-2xl font-bold text-foreground">
+              <h2 className="text-xl md:text-2xl font-bold text-foreground uppercase tracking-wide">
                 Individual Boxes
               </h2>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-muted-foreground uppercase tracking-wide mt-1">
                 Build your own perfect collection
               </p>
             </div>
           </header>
           
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {bangleBoxes.map((product) => (
               <SimpleProductCard key={product.id} product={product} />
             ))}
@@ -61,19 +61,19 @@ const ShopProductSections = ({ products }: ShopProductSectionsProps) => {
       
       {/* Section 3: Pouches & Bags */}
       {organizers.length > 0 && (
-        <section className="shop-section rounded-2xl p-5 md:p-6 lg:p-8 bg-[#FFFDF2]">
-          <header className="flex items-end justify-between gap-4 mb-5">
+        <section className="shop-section p-5 md:p-6 lg:p-8 bg-[#FFFDF2]" style={{ borderRadius: '0px' }}>
+          <header className="flex items-end justify-between gap-4 mb-6">
             <div>
-              <h2 className="text-xl md:text-2xl font-bold text-foreground">
+              <h2 className="text-xl md:text-2xl font-bold text-foreground uppercase tracking-wide">
                 Jewelry Pouches
               </h2>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-muted-foreground uppercase tracking-wide mt-1">
                 Soft protection, travel-ready
               </p>
             </div>
           </header>
           
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {organizers.map((product) => {
               // Define bullets for jewelry organizer
               const bullets = product.id === 'jewelry-bag-organizer' 
@@ -94,7 +94,7 @@ const ShopProductSections = ({ products }: ShopProductSectionsProps) => {
       
       {/* Empty State */}
       {bundles.length === 0 && bangleBoxes.length === 0 && organizers.length === 0 && (
-        <div className="text-center py-16 text-muted-foreground">
+        <div className="text-center py-16 text-muted-foreground uppercase tracking-wide">
           No products found.
         </div>
       )}

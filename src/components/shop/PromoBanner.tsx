@@ -10,9 +10,9 @@ const PromoBanner: React.FC<PromoBannerProps> = ({
   subText = "Free Shipping $75+ • Limited Time Only"
 }) => {
   return (
-    <div className="promo-banner rounded-xl bg-foreground text-background text-sm px-4 py-3 flex flex-wrap items-center justify-between gap-2">
-      <span className="font-semibold">{mainText}</span>
-      <span className="opacity-80">{subText}</span>
+    <div className="promo-banner bg-brand-black text-white text-sm px-5 py-4 flex flex-wrap items-center justify-center md:justify-between gap-3" style={{ borderRadius: '0px' }}>
+      <span className="font-bold uppercase tracking-wider text-brand-orange">{mainText}</span>
+      <span className="opacity-90 uppercase tracking-wide text-xs">{subText}</span>
     </div>
   );
 };
