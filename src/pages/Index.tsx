@@ -31,9 +31,7 @@ const Index = () => {
       </Section>
       
       {/* Buy Cards - Major product section */}
-      <EnhancedScrollFade preset="medium" once={true}>
-        <BestSeller />
-      </EnhancedScrollFade>
+      <BestSeller />
       
       {/* About Section - Brand story */}
       <EnhancedScrollFade preset="subtle" delay={0.2} once={true}>
