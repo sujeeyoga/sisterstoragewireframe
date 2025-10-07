@@ -19,7 +19,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
 
   // Scroll to top on route change
   useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   }, [location.pathname]);
 
   // Calculate scroll-based styling for sticky positioning
