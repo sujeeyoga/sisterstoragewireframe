@@ -1,6 +1,4 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { AdminDashboard } from '@/components/admin/AdminDashboard';
 import { ProductsTable } from '@/components/admin/ProductsTable';
@@ -9,44 +7,21 @@ import { SectionsManager } from '@/components/admin/SectionsManager';
 import { AdminSync } from '@/components/admin/AdminSync';
 
 const Admin = () => {
-  // Check if user has admin role
-  const { data: hasAdminRole, isLoading } = useQuery({
-    queryKey: ['user-role'],
-    queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return false;
-
-      const { data } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', user.id)
-        .eq('role', 'admin')
-        .single();
-
-      return !!data;
-    },
-  });
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p>Loading...</p>
-      </div>
-    );
-  }
-
-  if (!hasAdminRole) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-2">Access Denied</h1>
-          <p className="text-muted-foreground">
-            You need admin privileges to access this page.
-          </p>
-        </div>
-      </div>
-    );
-  }
+  // TODO: Re-enable admin role check when ready
+  // const { data: hasAdminRole, isLoading } = useQuery({
+  //   queryKey: ['user-role'],
+  //   queryFn: async () => {
+  //     const { data: { user } } = await supabase.auth.getUser();
+  //     if (!user) return false;
+  //     const { data } = await supabase
+  //       .from('user_roles')
+  //       .select('role')
+  //       .eq('user_id', user.id)
+  //       .eq('role', 'admin')
+  //       .single();
+  //     return !!data;
+  //   },
+  // });
 
   return (
     <AdminLayout>
