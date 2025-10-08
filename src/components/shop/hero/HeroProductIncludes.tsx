@@ -24,7 +24,7 @@ const IncludesList: React.FC<{ items: HeroProductContent[] }> = ({ items }) => (
               {it.label}
             </span>
           </span>
-          <span className="text-gray-600 text-sm">
+          <span className="text-gray-600 text-2xl">
             {it.detail}
           </span>
         </div>
