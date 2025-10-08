@@ -1,6 +1,6 @@
 // deno-lint-ignore-file no-explicit-any
-// WooCommerce -> Supabase sync (products)
-// Fetches products from WooCommerce and upserts them into woocommerce_products
+// WooCommerce -> Supabase sync (products & customers)
+// Fetches products and customers from WooCommerce and upserts them into Supabase
 // Run manually via Supabase Functions invoke or dashboard. Requires JWT by default.
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
@@ -32,6 +32,18 @@ interface WooProduct {
   categories?: WooCategory[];
   attributes?: WooAttribute[];
   meta_data?: any[];
+  date_created?: string;
+}
+
+interface WooCustomer {
+  id: number;
+  email: string;
+  first_name?: string;
+  last_name?: string;
+  billing?: any;
+  shipping?: any;
+  orders_count?: number;
+  total_spent?: string;
   date_created?: string;
 }
 
@@ -69,17 +81,20 @@ Deno.serve(async (req: Request) => {
   // Ensure no trailing slash
   const apiBase = `${url.origin}${url.pathname.replace(/\/$/, "")}`;
 
-  let page = 1;
-  let totalProcessed = 0;
+  let productsProcessed = 0;
+  let customersProcessed = 0;
 
   try {
+    // ===== SYNC PRODUCTS =====
+    console.log("Starting product sync...");
+    let page = 1;
     while (true) {
       const productsUrl = `${apiBase}/wp-json/wc/v3/products?per_page=${PER_PAGE}&page=${page}&consumer_key=${encodeURIComponent(consumerKey)}&consumer_secret=${encodeURIComponent(consumerSecret)}`;
 
       const res = await fetch(productsUrl);
       if (!res.ok) {
         const text = await res.text();
-        throw new Error(`Woo request failed (${res.status}): ${text}`);
+        throw new Error(`Products request failed (${res.status}): ${text}`);
       }
       const data: WooProduct[] = await res.json();
 
@@ -103,7 +118,6 @@ Deno.serve(async (req: Request) => {
         attributes: p.attributes ?? [],
         meta_data: p.meta_data ?? {},
         synced_at: new Date().toISOString(),
-        // created_at/updated_at are handled by defaults/triggers in DB
       }));
 
       const { error: upsertError } = await supabase
@@ -112,28 +126,82 @@ Deno.serve(async (req: Request) => {
 
       if (upsertError) throw upsertError;
 
-      totalProcessed += rows.length;
+      productsProcessed += rows.length;
 
-      if (data.length < PER_PAGE) break; // last page
+      if (data.length < PER_PAGE) break;
       page += 1;
     }
+    console.log(`Synced ${productsProcessed} products`);
 
+    // ===== SYNC CUSTOMERS =====
+    console.log("Starting customer sync...");
+    page = 1;
+    while (true) {
+      const customersUrl = `${apiBase}/wp-json/wc/v3/customers?per_page=${PER_PAGE}&page=${page}&consumer_key=${encodeURIComponent(consumerKey)}&consumer_secret=${encodeURIComponent(consumerSecret)}`;
+
+      const res = await fetch(customersUrl);
+      if (!res.ok) {
+        const text = await res.text();
+        console.error(`Customers request failed (${res.status}): ${text}`);
+        // Don't throw - we still want to log success for products
+        break;
+      }
+      const data: WooCustomer[] = await res.json();
+
+      if (!Array.isArray(data) || data.length === 0) break;
+
+      // Map to DB rows
+      const rows = data.map((c) => ({
+        id: c.id,
+        email: c.email,
+        first_name: c.first_name ?? null,
+        last_name: c.last_name ?? null,
+        billing: c.billing ?? {},
+        shipping: c.shipping ?? {},
+        orders_count: c.orders_count ?? 0,
+        total_spent: c.total_spent ? Number(c.total_spent) : 0,
+      }));
+
+      const { error: upsertError } = await supabase
+        .from("woocommerce_customers")
+        .upsert(rows, { onConflict: "id" });
+
+      if (upsertError) {
+        console.error("Customer upsert error:", upsertError);
+        // Continue anyway
+      } else {
+        customersProcessed += rows.length;
+      }
+
+      if (data.length < PER_PAGE) break;
+      page += 1;
+    }
+    console.log(`Synced ${customersProcessed} customers`);
+
+    // Log success
     await supabase.from("woocommerce_sync_log").insert({
       status: "success",
-      sync_type: "products",
-      records_processed: totalProcessed,
-      message: `Synced ${totalProcessed} products`,
+      sync_type: "products_and_customers",
+      records_processed: productsProcessed + customersProcessed,
+      message: `Synced ${productsProcessed} products and ${customersProcessed} customers`,
     });
 
     return new Response(
-      JSON.stringify({ status: "ok", processed: totalProcessed }),
+      JSON.stringify({ 
+        status: "ok", 
+        products: productsProcessed,
+        customers: customersProcessed,
+        total: productsProcessed + customersProcessed
+      }),
       { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
     );
   } catch (e) {
     const message = e instanceof Error ? e.message : String(e);
+    console.error("Sync error:", message);
+    
     await supabase.from("woocommerce_sync_log").insert({
       status: "error",
-      sync_type: "products",
+      sync_type: "products_and_customers",
       message,
     });
 
