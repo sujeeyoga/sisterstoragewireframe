@@ -63,7 +63,7 @@ const PromotionalSection = () => {
               <img 
                 src="/lovable-uploads/ff4988e3-c51c-4391-a440-95e03d111656.png" 
                 alt="Sister Storage organized jewelry collection"
-                className="w-full h-full object-contain"
+                className="w-full h-full object-cover"
                 loading="lazy"
               />
             </div>
