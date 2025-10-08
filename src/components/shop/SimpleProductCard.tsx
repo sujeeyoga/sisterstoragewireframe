@@ -98,22 +98,23 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
         {/* What's Included */}
         {(bullets || rodCount) && (
           <div className="bg-gray-50/80 rounded-xl p-4 border border-gray-100">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="w-2 h-2 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full"></div>
-              <p className="text-sm font-bold text-[hsl(var(--brand-pink))] uppercase tracking-wider">What's Included</p>
-            </div>
-            {rodCount && (
-              <p className="text-2xl text-gray-600 leading-relaxed font-medium">
-                {rodCount} Rod{rodCount !== '1' ? 's' : ''}
-              </p>
-            )}
-            {bullets && bullets.length > 0 && (
-              <ul className="space-y-1 mt-2">
-                {bullets.map((line, i) => (
-                  <li key={i} className="text-2xl text-gray-600 font-medium">• {line}</li>
-                ))}
-              </ul>
-            )}
+            <h3 className="text-sm font-bold text-[hsl(var(--brand-pink))] uppercase tracking-wider mb-2">
+              What's Included
+            </h3>
+            <ul className="space-y-2">
+              {rodCount && (
+                <li>
+                  <p className="text-gray-600 text-2xl leading-relaxed font-medium">
+                    {rodCount} Rod{rodCount !== '1' ? 's' : ''}
+                  </p>
+                </li>
+              )}
+              {bullets && bullets.map((line, i) => (
+                <li key={i}>
+                  <p className="text-gray-600 text-2xl leading-relaxed font-medium">{line}</p>
+                </li>
+              ))}
+            </ul>
           </div>
         )}
         
