@@ -105,13 +105,17 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
         
         {/* Bundle Contents */}
         {bundleContents && (
-          <div className="bg-gray-50/80 rounded-xl p-4 border border-gray-100">
-            <h3 className="text-sm font-bold text-[hsl(var(--brand-pink))] uppercase tracking-wider mb-2">
+          <div className="space-y-2">
+            <h3 className="text-sm font-bold text-[hsl(var(--brand-pink))] uppercase tracking-wider">
               Bundle Includes
             </h3>
-            <div className="space-y-2">
-              <p className="text-gray-600 text-2xl leading-relaxed font-medium">{bundleContents}</p>
-            </div>
+            <ul className="space-y-2">
+              <li>
+                <div className="flex items-baseline gap-3 flex-wrap">
+                  <span className="text-gray-600 text-2xl leading-relaxed font-medium">{bundleContents}</span>
+                </div>
+              </li>
+            </ul>
           </div>
         )}
         
