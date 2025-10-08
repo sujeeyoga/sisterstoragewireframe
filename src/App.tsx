@@ -18,6 +18,7 @@ import TermsOfService from "./pages/TermsOfService";
 import Accessibility from "./pages/Accessibility";
 import Contact from "./pages/Contact";
 import Gift from "./pages/Gift";
+import Checkout from "./pages/Checkout";
 import { CartProvider } from "./contexts/CartContext";
 import CartDrawer from "../src/components/CartDrawer";
 import OurStory from "./pages/OurStory";
@@ -41,6 +42,7 @@ const App = () => {
               <Route path="/shop" element={<PageTransition><Shop /></PageTransition>} />
               <Route path="/gallery" element={<PageTransition><Gallery /></PageTransition>} />
               <Route path="/shop/:productId" element={<PageTransition><ProductDetail /></PageTransition>} />
+              <Route path="/checkout" element={<PageTransition><Checkout /></PageTransition>} />
               <Route path="/blog" element={<PageTransition><Blog /></PageTransition>} />
               <Route path="/brand/*" element={<PageTransition><Brand /></PageTransition>} />
               <Route path="/content/:slug" element={<PageTransition><ContentPage /></PageTransition>} />

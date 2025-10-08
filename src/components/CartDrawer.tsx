@@ -195,12 +195,15 @@ const CartDrawer = () => {
 
               {/* Action Buttons */}
               <div className="space-y-2">
-                <Button 
-                  className="w-full bg-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))]/90 text-white"
-                  size="lg"
-                >
-                  Proceed to Checkout
-                </Button>
+                <Link to="/checkout" className="block">
+                  <Button 
+                    className="w-full bg-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))]/90 text-white"
+                    size="lg"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Proceed to Checkout
+                  </Button>
+                </Link>
                 <Button 
                   variant="outline" 
                   className="w-full"
