@@ -48,7 +48,7 @@ const ParallaxContainer = () => {
         style={{
           backgroundImage,
           backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          backgroundPosition: 'top center',
           backgroundRepeat: 'no-repeat',
           transform: !prefersReducedMotion && !isMobile && isVisible
             ? `translateY(${mainOffset * 0.5}px)`
