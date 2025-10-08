@@ -90,7 +90,7 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
         </div>
       </Link>
       
-      <CardContent className="p-3 space-y-3">
+      <CardContent className="p-3 space-y-3 flex flex-col h-full">
         {/* Rating */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1">
@@ -133,7 +133,7 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
         )}
         
         {/* Pricing */}
-        <div className="space-y-3">
+        <div className="space-y-3 mt-auto">
           {/* Buy Button */}
           <Button
             variant="buy"
