@@ -7,7 +7,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Shop from "./pages/Shop";
 import Gallery from "./pages/Gallery";
-import About from "./pages/About";
 import Blog from "./pages/Blog";
 import Brand from "./pages/Brand";
 import ProductDetail from "./pages/ProductDetail";
@@ -44,7 +43,6 @@ const App = () => {
               <Route path="/shop" element={<PageTransition><Shop /></PageTransition>} />
               <Route path="/gallery" element={<PageTransition><Gallery /></PageTransition>} />
               <Route path="/shop/:productId" element={<PageTransition><ProductDetail /></PageTransition>} />
-              <Route path="/about" element={<PageTransition><About /></PageTransition>} />
               <Route path="/blog" element={<PageTransition><Blog /></PageTransition>} />
               <Route path="/brand/*" element={<PageTransition><Brand /></PageTransition>} />
               <Route path="/content/:slug" element={<PageTransition><ContentPage /></PageTransition>} />

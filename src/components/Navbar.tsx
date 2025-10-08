@@ -63,7 +63,6 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
           <div className="hidden xl:flex items-center gap-8">
             <Link to="/" className={`px-6 py-2.5 rounded-full font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] focus:ring-offset-2 min-h-[44px] flex items-center ${location.pathname === '/' ? 'bg-brand-pink text-white' : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'}`}>HOME</Link>
             <Link to="/gallery" className={`px-4 py-2 rounded-full font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${location.pathname === '/gallery' ? 'bg-brand-pink text-white' : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'}`}>GALLERY</Link>
-            <Link to="/about" className={`px-4 py-2 rounded-full font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${location.pathname === '/about' ? 'bg-brand-pink text-white' : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'}`}>ABOUT</Link>
             <Link to="/shop" className={`px-4 py-2 rounded-full font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${location.pathname === '/shop' ? 'bg-brand-pink text-white' : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'}`}>SHOP</Link>
           </div>
           
@@ -149,7 +148,6 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
               {[
                 { name: 'HOME', path: '/' },
                 { name: 'GALLERY', path: '/gallery' },
-                { name: 'ABOUT', path: '/about' },
                 { name: 'SHOP', path: '/shop' }
               ].map((item) => {
                 const isActive = location.pathname === item.path;
