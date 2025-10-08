@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Bold, Italic, Underline } from 'lucide-react';
 
 type ProductFormData = {
   name: string;
@@ -132,6 +132,39 @@ export const ProductForm = () => {
   const manageStock = watch('manage_stock');
   const formValues = watch();
 
+  const handleTextFormat = (field: 'short_description' | 'description', formatType: 'bold' | 'italic' | 'underline') => {
+    const textarea = document.getElementById(field) as HTMLTextAreaElement;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = textarea.value.substring(start, end);
+    
+    if (!selectedText) return;
+
+    let formattedText = '';
+    switch (formatType) {
+      case 'bold':
+        formattedText = `<strong>${selectedText}</strong>`;
+        break;
+      case 'italic':
+        formattedText = `<em>${selectedText}</em>`;
+        break;
+      case 'underline':
+        formattedText = `<u>${selectedText}</u>`;
+        break;
+    }
+
+    const newValue = textarea.value.substring(0, start) + formattedText + textarea.value.substring(end);
+    textarea.value = newValue;
+    textarea.focus();
+    textarea.setSelectionRange(start + formattedText.length, start + formattedText.length);
+    
+    // Trigger form update
+    const event = new Event('input', { bubbles: true });
+    textarea.dispatchEvent(event);
+  };
+
   return (
     <div className="p-8">
       <Button
@@ -176,25 +209,99 @@ export const ProductForm = () => {
                 </div>
               </div>
 
-              <div className="space-y-2">
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
                 <Label htmlFor="short_description">Short Description</Label>
-                <Textarea
-                  id="short_description"
-                  {...register('short_description')}
-                  placeholder="Brief product description"
-                  rows={2}
-                />
+                <div className="flex gap-1">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="h-7 w-7 p-0"
+                    onClick={() => handleTextFormat('short_description', 'bold')}
+                    title="Bold"
+                  >
+                    <Bold className="h-3.5 w-3.5" />
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="h-7 w-7 p-0"
+                    onClick={() => handleTextFormat('short_description', 'italic')}
+                    title="Italic"
+                  >
+                    <Italic className="h-3.5 w-3.5" />
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="h-7 w-7 p-0"
+                    onClick={() => handleTextFormat('short_description', 'underline')}
+                    title="Underline"
+                  >
+                    <Underline className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
               </div>
+              <Textarea
+                id="short_description"
+                {...register('short_description')}
+                placeholder="Brief product description"
+                rows={2}
+              />
+              <p className="text-xs text-muted-foreground">
+                Select text and click formatting buttons to apply styles
+              </p>
+            </div>
 
-              <div className="space-y-2">
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
                 <Label htmlFor="description">Full Description</Label>
-                <Textarea
-                  id="description"
-                  {...register('description')}
-                  placeholder="Detailed product description"
-                  rows={5}
-                />
+                <div className="flex gap-1">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="h-7 w-7 p-0"
+                    onClick={() => handleTextFormat('description', 'bold')}
+                    title="Bold"
+                  >
+                    <Bold className="h-3.5 w-3.5" />
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="h-7 w-7 p-0"
+                    onClick={() => handleTextFormat('description', 'italic')}
+                    title="Italic"
+                  >
+                    <Italic className="h-3.5 w-3.5" />
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="h-7 w-7 p-0"
+                    onClick={() => handleTextFormat('description', 'underline')}
+                    title="Underline"
+                  >
+                    <Underline className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
               </div>
+              <Textarea
+                id="description"
+                {...register('description')}
+                placeholder="Detailed product description"
+                rows={5}
+              />
+              <p className="text-xs text-muted-foreground">
+                Select text and click formatting buttons to apply styles
+              </p>
+            </div>
 
               <div className="grid gap-4 md:grid-cols-3">
                 <div className="space-y-2">
