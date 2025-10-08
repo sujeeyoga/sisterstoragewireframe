@@ -144,8 +144,20 @@ export const ProductsTable = () => {
               </TableRow>
             ) : (
               products?.map((product) => (
-                <TableRow key={product.id}>
-                  <TableCell className="font-medium">{product.name}</TableCell>
+                <TableRow 
+                  key={product.id}
+                  className={!product.visible ? 'opacity-50 bg-muted/30' : ''}
+                >
+                  <TableCell className="font-medium">
+                    <div className="flex items-center gap-2">
+                      {product.name}
+                      {!product.visible && (
+                        <Badge variant="secondary" className="text-xs">
+                          Hidden
+                        </Badge>
+                      )}
+                    </div>
+                  </TableCell>
                   <TableCell>
                     ${product.sale_price || product.regular_price || product.price}
                   </TableCell>
