@@ -1,13 +1,14 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ShoppingBag, Star, Plus } from "lucide-react";
+import { ShoppingBag, Star, Plus, Package } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
 import { Product } from "@/types/product";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 interface SimpleProductCardProps {
   product: Product;
@@ -44,6 +45,16 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
     <Card className="group overflow-hidden border-none shadow-md hover:shadow-xl transition-all duration-500 bg-white relative transform hover:-translate-y-1 hover:scale-[1.02] h-full">
       {/* Product Image */}
       <Link to={`/shop/${product.id}`} className="block relative">
+        {/* Open Box Badge */}
+        {product.category === 'open-box' && (
+          <div className="absolute top-3 left-3 z-10">
+            <Badge className="bg-[#ff6b35] text-white border-none px-2.5 py-1 text-xs font-bold uppercase tracking-wider shadow-lg">
+              <Package className="w-3 h-3 mr-1 inline-block" />
+              OPEN BOX
+            </Badge>
+          </div>
+        )}
+        
         <div className="relative overflow-hidden">
           {!imageLoaded && (
             <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse" />

@@ -2,17 +2,15 @@ import React from "react";
 import { Product } from "@/types/product";
 import BundleCard from "./BundleCard";
 import SimpleProductCard from "./SimpleProductCard";
-import OpenBoxCard from "./OpenBoxCard";
 
 interface ShopProductSectionsProps {
   products: Product[];
 }
 
 const ShopProductSections = ({ products }: ShopProductSectionsProps) => {
-  // Split products into bundles, bangle boxes, organizers, and open box
+  // Split products into bundles, bangle boxes (including open box), and organizers
   const bundles = products.filter(p => p.category === 'bundles');
-  const openBox = products.filter(p => p.category === 'open-box');
-  const bangleBoxes = products.filter(p => p.category === 'bangle-boxes');
+  const bangleBoxes = products.filter(p => p.category === 'bangle-boxes' || p.category === 'open-box');
   const organizers = products.filter(p => p.category === 'organizers');
 
   return (
@@ -41,31 +39,7 @@ const ShopProductSections = ({ products }: ShopProductSectionsProps) => {
         </section>
       )}
       
-      {/* Section 2: Open Box Deals */}
-      {openBox.length > 0 && (
-        <section className="w-full bg-gradient-to-br from-orange-50 to-red-50" style={{ borderRadius: '0px' }}>
-          <div className="container-custom py-8 md:py-12">
-            <header className="flex items-end justify-between gap-4 mb-6">
-              <div>
-                <h2 className="text-3xl md:text-4xl font-bold text-foreground uppercase tracking-wide">
-                  Open Box Deals
-                </h2>
-                <p className="text-base text-muted-foreground uppercase tracking-wide mt-1">
-                  Like-new condition at incredible savings
-                </p>
-              </div>
-            </header>
-            
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {openBox.map((product) => (
-                <OpenBoxCard key={product.id} product={product} />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-      
-      {/* Section 3: Individual Boxes */}
+      {/* Section 2: Individual Boxes */}
       {bangleBoxes.length > 0 && (
         <section className="w-full bg-[#F6F7FB]" style={{ borderRadius: '0px' }}>
           <div className="container-custom py-8 md:py-12">
@@ -89,7 +63,7 @@ const ShopProductSections = ({ products }: ShopProductSectionsProps) => {
         </section>
       )}
       
-      {/* Section 4: Pouches & Bags */}
+      {/* Section 3: Pouches & Bags */}
       {organizers.length > 0 && (
         <section className="w-full bg-[#FFFDF2]" style={{ borderRadius: '0px' }}>
           <div className="container-custom py-8 md:py-12">
@@ -125,7 +99,7 @@ const ShopProductSections = ({ products }: ShopProductSectionsProps) => {
       )}
       
       {/* Empty State */}
-      {bundles.length === 0 && openBox.length === 0 && bangleBoxes.length === 0 && organizers.length === 0 && (
+      {bundles.length === 0 && bangleBoxes.length === 0 && organizers.length === 0 && (
         <div className="text-center py-16 text-muted-foreground uppercase tracking-wide">
           No products found.
         </div>
