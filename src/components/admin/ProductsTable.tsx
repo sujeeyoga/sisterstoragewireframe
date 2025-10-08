@@ -21,16 +21,28 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { Edit, Trash2, Plus, Search, Eye, EyeOff } from 'lucide-react';
+import { Edit, Trash2, Plus, Search, Eye, EyeOff, AlertCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { products as staticProducts } from '@/data/products';
 
 export const ProductsTable = () => {
   const [search, setSearch] = useState('');
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // Check if a product exists on the shop page (static products)
+  const isOnShopPage = (productSlug: string) => {
+    return staticProducts.some(p => p.slug === productSlug);
+  };
 
   const { data: products, isLoading } = useQuery({
     queryKey: ['admin-products', search],
@@ -170,23 +182,40 @@ export const ProductsTable = () => {
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() =>
-                        toggleVisibilityMutation.mutate({
-                          id: product.id,
-                          visible: !product.visible,
-                        })
-                      }
-                      title={product.visible ? 'Hide product' : 'Show product'}
-                    >
-                      {product.visible ? (
-                        <Eye className="h-4 w-4 text-green-600" />
-                      ) : (
-                        <EyeOff className="h-4 w-4 text-red-600" />
+                    <div className="flex items-center gap-2">
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() =>
+                          toggleVisibilityMutation.mutate({
+                            id: product.id,
+                            visible: !product.visible,
+                          })
+                        }
+                        title={product.visible ? 'Hide product' : 'Show product'}
+                      >
+                        {product.visible ? (
+                          <Eye className="h-4 w-4 text-green-600" />
+                        ) : (
+                          <EyeOff className="h-4 w-4 text-red-600" />
+                        )}
+                      </Button>
+                      {!isOnShopPage(product.slug) && (
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <AlertCircle className="h-4 w-4 text-red-600" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="max-w-xs">
+                                This product is not in the shop page's product list.
+                                It won't appear on the website even if visible.
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                       )}
-                    </Button>
+                    </div>
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
