@@ -100,7 +100,7 @@ export const SisterStoriesCarousel = () => {
   }
 
   return (
-    <div className="w-full py-8 md:py-12">
+    <div className="w-full py-8 md:py-12 bg-white">
       {/* Header */}
       <div className="container-custom mb-8">
         <h3 className="text-2xl md:text-3xl font-bold mb-2">Sister Stories</h3>
