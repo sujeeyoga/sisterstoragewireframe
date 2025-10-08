@@ -82,9 +82,9 @@ const ShopHeroProduct: React.FC<ShopHeroProductProps> = ({ product }) => {
         
         {/* Product Information Panel */}
         <div className="bg-gradient-to-br from-gray-50 to-white border border-gray-200 rounded-2xl p-8 md:p-10 shadow-lg">
-          <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
-            {/* Left: Product Information */}
-            <div className="flex-1 space-y-6">
+          <div className="space-y-8">
+            {/* Product Information */}
+            <div className="space-y-6">
               {/* Rating Section */}
               <HeroProductRating ratingCount={product.ratingCount} />
 
@@ -96,20 +96,20 @@ const ShopHeroProduct: React.FC<ShopHeroProductProps> = ({ product }) => {
                 <p className="text-gray-600 text-base leading-relaxed">{product.subtitle}</p>
               </div>
               
+              {/* Buy Section - Under Title */}
+              <div className="bg-white rounded-xl p-6 md:p-8 shadow-md border border-gray-100 max-w-xl">
+                <HeroProductPrice 
+                  price={product.price}
+                  compareAt={product.compareAt}
+                  onAddToCart={handleAddToCart}
+                  hideCompareAt={true}
+                />
+              </div>
+              
               <hr className="border-gray-300" />
 
               {/* Includes Section */}
               <HeroProductIncludes contents={product.contents} />
-            </div>
-
-            {/* Right: Buy Section */}
-            <div className="flex-1 flex flex-col justify-center bg-white rounded-xl p-6 md:p-8 shadow-md border border-gray-100">
-              <HeroProductPrice 
-                price={product.price}
-                compareAt={product.compareAt}
-                onAddToCart={handleAddToCart}
-                hideCompareAt={true}
-              />
             </div>
           </div>
         </div>
