@@ -5,16 +5,13 @@ interface FeaturedGridItemProps {
   image: string;
   title: string;
   span: 'normal' | 'horizontal' | 'vertical';
-  delay: number;
 }
 
 const FeaturedGridItem: React.FC<FeaturedGridItemProps> = ({ 
   image, 
   title, 
-  span, 
-  delay 
+  span
 }) => {
-  const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
 
   const getSpanClass = (spanType: string) => {
@@ -36,11 +33,6 @@ const FeaturedGridItem: React.FC<FeaturedGridItemProps> = ({
         getSpanClass(span)
       )}
     >
-      {/* Loading skeleton */}
-      {!isLoaded && !hasError && (
-        <div className="absolute inset-0 bg-muted animate-pulse" />
-      )}
-
       {/* Error state */}
       {hasError && (
         <div className="absolute inset-0 flex items-center justify-center bg-muted">
@@ -52,14 +44,9 @@ const FeaturedGridItem: React.FC<FeaturedGridItemProps> = ({
       <img
         src={image}
         alt={title}
-        className={cn(
-          "w-full h-full object-cover transition-all duration-300 transform-gpu",
-          "group-hover:opacity-90 group-hover:scale-105",
-          isLoaded ? "opacity-100" : "opacity-0"
-        )}
-        loading="lazy"
+        className="w-full h-full object-cover transition-all duration-300 transform-gpu group-hover:opacity-90 group-hover:scale-105"
+        loading="eager"
         decoding="async"
-        onLoad={() => setIsLoaded(true)}
         onError={() => setHasError(true)}
         style={{ backfaceVisibility: 'hidden' }}
       />

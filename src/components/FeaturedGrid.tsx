@@ -78,13 +78,12 @@ const FeaturedGrid = () => {
       </div>
       
       <div className="grid grid-cols-2 gap-0 w-full auto-rows-min">
-        {gridItems.map((item, index) => (
+        {gridItems.map((item) => (
           <FeaturedGridItem
             key={item.id}
             image={item.image}
             title={item.title}
             span={item.span as 'normal' | 'horizontal' | 'vertical'}
-            delay={index * 200}
           />
         ))}
       </div>

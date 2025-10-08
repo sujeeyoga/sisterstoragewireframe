@@ -121,6 +121,8 @@ const BestSeller = () => {
                   src={item.image} 
                   alt={`${item.name} - Bundle collection`}
                   className="w-full aspect-[4/5] object-cover transition-transform duration-700 group-hover:scale-105"
+                  loading="eager"
+                  decoding="async"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 
