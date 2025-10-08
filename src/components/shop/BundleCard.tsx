@@ -109,9 +109,29 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
             <h3 className="text-sm font-bold text-[hsl(var(--brand-pink))] uppercase tracking-wider">
               What's Included
             </h3>
-            <div className="text-gray-600 text-lg leading-relaxed">
-              {bundleContents}
-            </div>
+            <ul className="space-y-2">
+              {bundleContents.split(',').map((item, i) => {
+                const match = item.trim().match(/^(\d+)\s+(.+)$/);
+                if (match) {
+                  const [, qty, label] = match;
+                  return (
+                    <li key={i}>
+                      <div className="flex items-baseline gap-3 flex-wrap">
+                        <span className="inline-flex items-center gap-2">
+                          <span className="text-[hsl(var(--brand-pink))] font-bold text-3xl">
+                            {qty}×
+                          </span>
+                          <span className="font-bold text-gray-900 text-base uppercase tracking-wide">
+                            {label}
+                          </span>
+                        </span>
+                      </div>
+                    </li>
+                  );
+                }
+                return null;
+              })}
+            </ul>
           </div>
         )}
         
