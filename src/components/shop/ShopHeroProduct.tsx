@@ -89,6 +89,12 @@ const ShopHeroProduct: React.FC<ShopHeroProductProps> = ({ product }) => {
                 </p>
               </div>
 
+              {/* Includes */}
+              <HeroProductIncludes contents={product.contents} />
+
+              {/* Divider */}
+              <hr className="border-gray-300" />
+
               {/* Price & CTA */}
               <HeroProductPrice 
                 price={product.price}
@@ -96,12 +102,6 @@ const ShopHeroProduct: React.FC<ShopHeroProductProps> = ({ product }) => {
                 onAddToCart={handleAddToCart}
                 hideCompareAt={true}
               />
-
-              {/* Divider */}
-              <hr className="border-gray-300" />
-
-              {/* Includes */}
-              <HeroProductIncludes contents={product.contents} />
             </div>
           </div>
         </div>
