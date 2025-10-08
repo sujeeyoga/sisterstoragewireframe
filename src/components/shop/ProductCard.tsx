@@ -17,6 +17,7 @@ export interface Product {
   originalPrice?: number;
   category: string;
   color: string;
+  images?: string[];
   features: string[];
   material: string;
   bestSeller?: boolean;
@@ -46,7 +47,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
       id: product.id,
       name: product.name,
       price: product.price,
-      image: product.color
+      image: product.images?.[0] || product.color
     });
     
     toast({

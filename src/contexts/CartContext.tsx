@@ -38,10 +38,15 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       try {
         const parsedCart = JSON.parse(savedCart);
         if (Array.isArray(parsedCart)) {
+          console.log('Cart loaded from localStorage:', parsedCart);
           setItems(parsedCart);
+        } else {
+          console.warn('Invalid cart data in localStorage, clearing...');
+          localStorage.removeItem('cart');
         }
       } catch (error) {
         console.error('Failed to parse cart from localStorage:', error);
+        localStorage.removeItem('cart');
       }
     }
   }, []);
@@ -52,22 +57,30 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   }, [items]);
   
   const addItem = (newItem: Omit<CartItem, 'quantity'>) => {
-    setItems(currentItems => {
-      const existingItemIndex = currentItems.findIndex(item => item.id === newItem.id);
+    try {
+      console.log('Adding item to cart:', newItem);
+      setItems(currentItems => {
+        const existingItemIndex = currentItems.findIndex(item => item.id === newItem.id);
+        
+        if (existingItemIndex > -1) {
+          // Item exists, update quantity
+          const updatedItems = [...currentItems];
+          updatedItems[existingItemIndex].quantity += 1;
+          console.log('Updated existing item quantity:', updatedItems[existingItemIndex]);
+          return updatedItems;
+        } else {
+          // Item doesn't exist, add it
+          const newCartItem = { ...newItem, quantity: 1 };
+          console.log('Added new item to cart:', newCartItem);
+          return [...currentItems, newCartItem];
+        }
+      });
       
-      if (existingItemIndex > -1) {
-        // Item exists, update quantity
-        const updatedItems = [...currentItems];
-        updatedItems[existingItemIndex].quantity += 1;
-        return updatedItems;
-      } else {
-        // Item doesn't exist, add it
-        return [...currentItems, { ...newItem, quantity: 1 }];
-      }
-    });
-    
-    // Open cart when adding items
-    setIsOpen(true);
+      // Open cart when adding items
+      setIsOpen(true);
+    } catch (error) {
+      console.error('Error adding item to cart:', error);
+    }
   };
   
   const removeItem = (itemId: string) => {

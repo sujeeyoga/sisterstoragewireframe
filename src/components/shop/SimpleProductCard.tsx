@@ -27,7 +27,7 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
       id: product.id,
       name: product.name,
       price: product.price,
-      image: product.color,
+      image: product.images?.[0] || product.color,
     });
     
     toast({

@@ -26,7 +26,7 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
       id: product.id,
       name: product.name,
       price: product.price,
-      image: product.color
+      image: product.images?.[0] || product.color
     });
     
     toast({
