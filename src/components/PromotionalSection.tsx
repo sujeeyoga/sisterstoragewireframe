@@ -59,7 +59,7 @@ const PromotionalSection = () => {
             </div>
 
             {/* Image Side */}
-            <div className="flex-1 relative min-h-[300px] lg:min-h-[500px] p-8">
+            <div className="flex-1 relative min-h-[300px] lg:min-h-[500px] p-8" style={{ backgroundColor: '#FCF2FB' }}>
               <img 
                 src="/lovable-uploads/ff4988e3-c51c-4391-a440-95e03d111656.png" 
                 alt="Sister Storage organized jewelry collection"
