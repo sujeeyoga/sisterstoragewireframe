@@ -111,9 +111,15 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
             </h3>
             <ul className="space-y-2">
               {bundleContents.split(',').map((item, i) => {
-                const match = item.trim().match(/^(\d+)\s+(.+)$/);
+                const match = item.trim().match(/^(\d+)\s+(.+?)(?:\s+Boxes?)?$/i);
                 if (match) {
                   const [, qty, label] = match;
+                  // Determine rod count based on size
+                  let rodsEach = 1;
+                  if (label.toLowerCase().includes('large')) rodsEach = 4;
+                  else if (label.toLowerCase().includes('medium')) rodsEach = 2;
+                  else if (label.toLowerCase().includes('small')) rodsEach = 1;
+                  
                   return (
                     <li key={i}>
                       <div className="flex items-baseline gap-3 flex-wrap">
@@ -124,6 +130,9 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
                           <span className="font-bold text-gray-900 text-base uppercase tracking-wide">
                             {label}
                           </span>
+                        </span>
+                        <span className="text-gray-600 text-2xl">
+                          ({rodsEach} rod{rodsEach > 1 ? 's' : ''} each)
                         </span>
                       </div>
                     </li>
