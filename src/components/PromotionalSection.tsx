@@ -113,48 +113,6 @@ const PromotionalSection = () => {
             </div>
           </div>
         </div>
-
-        {/* Social Proof & Final CTA */}
-        <div className="text-center">
-          <div className="inline-flex items-center space-x-6 mb-12 p-6 bg-white/60 backdrop-blur-sm rounded-2xl border border-[hsl(var(--brand-pink)/0.1)] shadow-lg">
-            <div className="text-center">
-              <div className="text-3xl font-black text-[hsl(var(--brand-pink))] mb-1">10K+</div>
-              <div className="text-sm text-gray-600 font-medium">Happy Sisters</div>
-            </div>
-            <div className="w-px h-12 bg-[hsl(var(--brand-pink)/0.2)]" />
-            <div className="text-center">
-              <div className="text-3xl font-black text-[hsl(var(--brand-orange))] mb-1">5★</div>
-              <div className="text-sm text-gray-600 font-medium">Average Rating</div>
-            </div>
-            <div className="w-px h-12 bg-[hsl(var(--brand-pink)/0.2)]" />
-            <div className="text-center">
-              <div className="text-3xl font-black text-[hsl(var(--brand-pink))] mb-1">24/7</div>
-              <div className="text-sm text-gray-600 font-medium">Support</div>
-            </div>
-          </div>
-          
-          <p className="text-gray-600 mb-8 text-lg leading-relaxed max-w-2xl mx-auto">
-            Join thousands of sisters who've transformed their jewelry storage with our culturally-inspired solutions
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button 
-              size="lg" 
-              className="bg-gradient-to-r from-[hsl(var(--brand-pink))] to-[hsl(var(--brand-orange))] hover:from-[hsl(var(--brand-orange))] hover:to-[hsl(var(--brand-pink))] text-white border-none shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
-              asChild
-            >
-              <Link to="/shop">Start Your Journey</Link>
-            </Button>
-            <Button 
-              size="lg" 
-              variant="outline"
-              className="border-2 border-[hsl(var(--brand-pink))] text-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))] hover:text-white"
-              asChild
-            >
-              <Link to="/our-story">Our Story</Link>
-            </Button>
-          </div>
-        </div>
       </div>
     </section>
   );
