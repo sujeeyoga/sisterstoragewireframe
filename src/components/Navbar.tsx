@@ -94,6 +94,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
             className="lg:hidden p-3 text-black focus:outline-none hover:bg-[hsl(var(--brand-pink)/0.1)] rounded-full transition-all duration-300 min-h-[44px] min-w-[44px] flex items-center justify-center focus:ring-2 focus:ring-[hsl(var(--brand-pink))] transform hover:scale-110"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle menu"
+            aria-expanded={mobileMenuOpen}
           >
             <div className="relative">
               {mobileMenuOpen ? (
@@ -107,28 +108,23 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
       </div>
 
 
-      {/* Mobile Menu - Clean navbar style */}
-      <div 
-        className={`lg:hidden fixed inset-0 z-[60] transition-all duration-300 ease-out ${
-          mobileMenuOpen ? 'visible opacity-100' : 'invisible opacity-0'
-        }`}
-        role="dialog"
-        aria-modal="true"
-        aria-label="Mobile navigation menu"
-      >
-        {/* Backdrop */}
-        <div
-          className={`absolute inset-0 bg-black/40 backdrop-blur-sm transition-all duration-300 ${
-            mobileMenuOpen ? 'opacity-100' : 'opacity-0'
-          }`}
-          onClick={() => setMobileMenuOpen(false)}
-          aria-hidden="true"
-        />
-        
-        {/* Clean slide-in panel */}
-        <aside className={`absolute right-0 top-0 h-full w-[85%] max-w-sm bg-white shadow-2xl transform transition-transform duration-300 ease-out flex flex-col overflow-hidden ${
-          mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}>
+      {/* Mobile Menu - Render at root level to avoid transform issues */}
+      {mobileMenuOpen && (
+        <div 
+          className="lg:hidden fixed inset-0 z-[100] transition-all duration-300 ease-out"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Mobile navigation menu"
+        >
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm animate-fade-in"
+            onClick={() => setMobileMenuOpen(false)}
+            aria-hidden="true"
+          />
+          
+          {/* Clean slide-in panel */}
+          <aside className="absolute right-0 top-0 h-full w-[85%] max-w-sm bg-white shadow-2xl flex flex-col overflow-hidden animate-slide-in-right">
           
           {/* Header - Simple like navbar */}
           <div className="flex-shrink-0 p-6 border-b border-gray-100 bg-white">
@@ -250,6 +246,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
           </div>
         </aside>
       </div>
+      )}
     </>
   );
 };

@@ -170,7 +170,8 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
             ref={navRef} 
             className="w-[min(1100px,calc(100%-40px))] mx-auto rounded-[25px] bg-white overflow-visible shadow-lg px-4 py-2 transition-all duration-300"
             style={{
-              transform: headerVisibilityTransform
+              transform: headerVisibilityTransform,
+              willChange: 'transform'
             }}
           >
             <Navbar position={position} />
