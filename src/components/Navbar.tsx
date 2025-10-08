@@ -126,12 +126,12 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
         />
         
         {/* Clean slide-in panel */}
-        <aside className={`absolute right-0 top-0 h-full w-[85%] max-w-sm bg-white shadow-2xl transform transition-transform duration-300 ease-out flex flex-col ${
+        <aside className={`absolute right-0 top-0 h-full w-[85%] max-w-sm bg-white shadow-2xl transform transition-transform duration-300 ease-out flex flex-col overflow-hidden ${
           mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
         }`}>
           
           {/* Header - Simple like navbar */}
-          <div className="flex-shrink-0 p-6 border-b border-gray-100">
+          <div className="flex-shrink-0 p-6 border-b border-gray-100 bg-white">
             <div className="flex items-center justify-between">
               <EnhancedLogo size="lg" className="shrink-0" />
               <button
@@ -145,7 +145,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
           </div>
 
           {/* Navigation - Match navbar style */}
-          <nav className="flex-1 overflow-y-auto py-6" role="navigation" aria-label="Primary navigation">
+          <nav className="flex-1 overflow-y-auto py-6 bg-white" role="navigation" aria-label="Primary navigation">
             <div className="px-6 space-y-1">
               {[
                 { name: 'HOME', path: '/' },
@@ -223,7 +223,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
           </nav>
 
           {/* Footer - Simple */}
-          <div className="flex-shrink-0 p-6 border-t border-gray-100">
+          <div className="flex-shrink-0 p-6 border-t border-gray-100 bg-white">
             <div className="text-center">
               <p className="text-gray-600 text-sm mb-3">Follow Sister Storage</p>
               <div className="flex justify-center gap-3">
