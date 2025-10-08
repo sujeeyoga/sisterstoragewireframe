@@ -52,21 +52,21 @@ const BundleContentsList = ({ contents, variant = "full", showTotals = false }: 
   // Card variant - aggregate format
   if (isCard) {
     return (
-      <div className="bundle-includes-card">
+      <div className="space-y-3">
         {showTotals && (
-          <div className="bundle-total-header">
+          <div className="text-2xl font-bold text-gray-900">
             Total: {totalRods} rods
           </div>
         )}
-        <ul className="bundle-aggregate-list">
+        <ul className="space-y-2">
           {items.map((item, index) => {
             const totalRodsForSize = item.quantity * item.rods;
             return (
-              <li key={index}>
-                <span className="bundle-size">{item.size}</span>
-                <span className="bundle-divider">–</span>
-                <span className="bundle-count">{item.quantity} box{item.quantity > 1 ? 'es' : ''}</span>
-                <span className="bundle-total">({totalRodsForSize} rods total)</span>
+              <li key={index} className="text-2xl text-gray-700">
+                <span className="font-bold">{item.size}</span>
+                <span className="mx-2">–</span>
+                <span>{item.quantity} box{item.quantity > 1 ? 'es' : ''}</span>
+                <span className="text-lg text-gray-500 ml-2">({totalRodsForSize} rods total)</span>
               </li>
             );
           })}
@@ -77,17 +77,17 @@ const BundleContentsList = ({ contents, variant = "full", showTotals = false }: 
 
   // Compact and full variants
   return (
-    <div className={isCompact ? "bundle-includes-compact" : "bundle-includes"}>
-      <strong className="bundle-includes-heading">
+    <div className="space-y-3">
+      <strong className="text-2xl font-bold text-gray-900 block">
         Bundle Includes
       </strong>
-      <ul className="bundle-list">
+      <ul className="space-y-2">
         {items.map((item, index) => (
-          <li key={index}>
-            <span className="bundle-qty">{item.quantity}×</span>
-            <span className="bundle-item">{item.size}</span>
-            <span className="bundle-divider">—</span>
-            <span className="bundle-detail">
+          <li key={index} className="text-2xl text-gray-700">
+            <span className="font-bold">{item.quantity}×</span>
+            <span className="ml-2">{item.size}</span>
+            <span className="mx-2">—</span>
+            <span className="text-lg text-gray-600">
               {item.rods} rod{item.rods > 1 ? 's' : ''}{item.quantity > 1 ? ' each' : ''}
             </span>
           </li>
