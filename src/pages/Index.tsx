@@ -33,10 +33,7 @@ const Index = () => {
       {/* Community Stories - Combined carousel section with testimonials */}
       <CommunityStoriesCarousels />
       
-      {/* Promotional Section - Summer Sale & Storage Solutions */}
-      <EnhancedScrollFade preset="medium" delay={0.1} once={true}>
-        <PromotionalSection />
-      </EnhancedScrollFade>
+      <PromotionalSection />
     </BaseLayout>
   );
 };
