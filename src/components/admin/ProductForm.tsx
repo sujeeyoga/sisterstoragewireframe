@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Bold, Italic, Underline } from 'lucide-react';
+import { ArrowLeft, Bold, Italic, Underline, Type } from 'lucide-react';
 
 type ProductFormData = {
   name: string;
@@ -132,7 +132,7 @@ export const ProductForm = () => {
   const manageStock = watch('manage_stock');
   const formValues = watch();
 
-  const handleTextFormat = (field: 'short_description' | 'description', formatType: 'bold' | 'italic' | 'underline') => {
+  const handleTextFormat = (field: 'short_description' | 'description', formatType: 'bold' | 'italic' | 'underline' | 'small' | 'medium' | 'large') => {
     const textarea = document.getElementById(field) as HTMLTextAreaElement;
     if (!textarea) return;
 
@@ -152,6 +152,15 @@ export const ProductForm = () => {
         break;
       case 'underline':
         formattedText = `<u>${selectedText}</u>`;
+        break;
+      case 'small':
+        formattedText = `<span style="font-size: 0.875em">${selectedText}</span>`;
+        break;
+      case 'medium':
+        formattedText = `<span style="font-size: 1em">${selectedText}</span>`;
+        break;
+      case 'large':
+        formattedText = `<span style="font-size: 1.25em">${selectedText}</span>`;
         break;
     }
 
@@ -243,6 +252,37 @@ export const ProductForm = () => {
                   >
                     <Underline className="h-3.5 w-3.5" />
                   </Button>
+                  <div className="w-px h-7 bg-border mx-1" />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="h-7 px-2 text-xs"
+                    onClick={() => handleTextFormat('short_description', 'small')}
+                    title="Small text"
+                  >
+                    S
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="h-7 px-2 text-sm"
+                    onClick={() => handleTextFormat('short_description', 'medium')}
+                    title="Medium text"
+                  >
+                    M
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="h-7 px-2"
+                    onClick={() => handleTextFormat('short_description', 'large')}
+                    title="Large text"
+                  >
+                    L
+                  </Button>
                 </div>
               </div>
               <Textarea
@@ -289,6 +329,37 @@ export const ProductForm = () => {
                     title="Underline"
                   >
                     <Underline className="h-3.5 w-3.5" />
+                  </Button>
+                  <div className="w-px h-7 bg-border mx-1" />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="h-7 px-2 text-xs"
+                    onClick={() => handleTextFormat('description', 'small')}
+                    title="Small text"
+                  >
+                    S
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="h-7 px-2 text-sm"
+                    onClick={() => handleTextFormat('description', 'medium')}
+                    title="Medium text"
+                  >
+                    M
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="h-7 px-2"
+                    onClick={() => handleTextFormat('description', 'large')}
+                    title="Large text"
+                  >
+                    L
                   </Button>
                 </div>
               </div>
