@@ -1,6 +1,7 @@
 import React from 'react';
 import FeaturedGridItem from './FeaturedGridItem';
 const gridItems = [
+  // Row 1
   {
     id: 1,
     image: "/lovable-uploads/0e5fe1c0-12f8-439f-94d5-ec1da8ca09c8.png",
@@ -20,6 +21,48 @@ const gridItems = [
     id: 4,
     image: "/lovable-uploads/f9cf4a8d-2f00-4b1f-bbb3-4322491012ad.png",
     title: "Social Showcase"
+  },
+  // Row 2
+  {
+    id: 5,
+    image: "/lovable-uploads/e1ae51b5-7916-4137-825e-7f197dff06a3.png",
+    title: "Golden Treasures"
+  },
+  {
+    id: 6,
+    image: "/lovable-uploads/8620f7af-c089-458c-bef9-78d6cd77f04e.png",
+    title: "Storage Solutions"
+  },
+  {
+    id: 7,
+    image: "/lovable-uploads/ce6528ec-56be-4176-919f-4285946c18b2.png",
+    title: "Bangle Display"
+  },
+  {
+    id: 8,
+    image: "/lovable-uploads/160b5d30-ba2c-4e66-8423-c4a6288d1af0.png",
+    title: "Friend Goals"
+  },
+  // Row 3
+  {
+    id: 9,
+    image: "/lovable-uploads/c6544fac-3f2f-4a6a-a01e-5ca149720fcb.png",
+    title: "Jewelry Party"
+  },
+  {
+    id: 10,
+    image: "/lovable-uploads/b0963b41-dee1-4ccb-b8bc-7144c4ea6285.png",
+    title: "Golden Elegance"
+  },
+  {
+    id: 11,
+    image: "/lovable-uploads/e9628188-8ef0-426b-9858-08b2848fd690.png",
+    title: "Sister Collection"
+  },
+  {
+    id: 12,
+    image: "/lovable-uploads/0e5fe1c0-12f8-439f-94d5-ec1da8ca09c8.png",
+    title: "Organized Beauty"
   }
 ];
 const FeaturedGrid = () => {
