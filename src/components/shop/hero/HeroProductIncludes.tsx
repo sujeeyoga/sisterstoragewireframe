@@ -43,7 +43,7 @@ const HeroProductIncludes: React.FC<HeroProductIncludesProps> = ({ contents }) =
       </h3>
       <IncludesList items={contents} />
       <div className="pt-4 border-t border-gray-200">
-        <div className="inline-flex items-center gap-2 bg-gray-900 text-white px-4 py-2 rounded-lg">
+        <div className="inline-flex items-center gap-2 text-red-600">
           <span className="text-xs font-semibold uppercase tracking-wide">Total:</span>
           <span className="text-lg font-bold">{totalRods} Rods</span>
         </div>
