@@ -110,36 +110,53 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
               What's Included
             </h3>
             <ul className="space-y-2">
-              {bundleContents.split(',').map((item, i) => {
-                const match = item.trim().match(/^(\d+)\s+(.+?)(?:\s+Boxes?)?$/i);
-                if (match) {
-                  const [, qty, label] = match;
-                  // Determine rod count based on size
-                  let rodsEach = 1;
-                  if (label.toLowerCase().includes('large')) rodsEach = 4;
-                  else if (label.toLowerCase().includes('medium')) rodsEach = 2;
-                  else if (label.toLowerCase().includes('small')) rodsEach = 1;
-                  
-                  return (
-                    <li key={i}>
-                      <div className="flex items-baseline gap-3 flex-wrap">
-                        <span className="inline-flex items-center gap-2">
-                          <span className="text-[hsl(var(--brand-pink))] font-bold text-3xl">
-                            {qty}×
+              {(() => {
+                let totalRods = 0;
+                const items = bundleContents.split(',').map((item, i) => {
+                  const match = item.trim().match(/^(\d+)\s+(.+?)(?:\s+Boxes?)?$/i);
+                  if (match) {
+                    const [, qty, label] = match;
+                    // Determine rod count based on size
+                    let rodsEach = 1;
+                    if (label.toLowerCase().includes('large')) rodsEach = 4;
+                    else if (label.toLowerCase().includes('medium')) rodsEach = 2;
+                    else if (label.toLowerCase().includes('small')) rodsEach = 1;
+                    
+                    totalRods += parseInt(qty) * rodsEach;
+                    
+                    return (
+                      <li key={i}>
+                        <div className="flex items-baseline gap-3 flex-wrap">
+                          <span className="inline-flex items-center gap-2">
+                            <span className="text-[hsl(var(--brand-pink))] font-bold text-3xl">
+                              {qty}×
+                            </span>
+                            <span className="font-bold text-gray-900 text-base uppercase tracking-wide">
+                              {label}
+                            </span>
                           </span>
-                          <span className="font-bold text-gray-900 text-base uppercase tracking-wide">
-                            {label}
+                          <span className="text-gray-600 text-2xl">
+                            ({rodsEach} rod{rodsEach > 1 ? 's' : ''} each)
                           </span>
-                        </span>
-                        <span className="text-gray-600 text-2xl">
-                          ({rodsEach} rod{rodsEach > 1 ? 's' : ''} each)
-                        </span>
+                        </div>
+                      </li>
+                    );
+                  }
+                  return null;
+                });
+                
+                return (
+                  <>
+                    {items}
+                    <div className="pt-2 border-t border-gray-200">
+                      <div className="inline-flex items-center gap-2 text-[hsl(var(--brand-pink))] text-3xl font-bold">
+                        <span className="uppercase tracking-wide">Total:</span>
+                        <span>{totalRods} Rods</span>
                       </div>
-                    </li>
-                  );
-                }
-                return null;
-              })}
+                    </div>
+                  </>
+                );
+              })()}
             </ul>
           </div>
         )}
