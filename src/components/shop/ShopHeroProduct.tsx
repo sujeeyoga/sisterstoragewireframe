@@ -62,20 +62,22 @@ const ShopHeroProduct: React.FC<ShopHeroProductProps> = ({ product }) => {
                 className="w-full h-full object-cover"
               />
               {product.badge && <HeroProductBadge badge={product.badge} />}
+              
+              {/* Centered Shop Title */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="text-center">
+                  <h1 className="text-5xl md:text-6xl font-black uppercase tracking-tight text-white mb-2 drop-shadow-2xl">
+                    Shop
+                  </h1>
+                  <p className="text-lg md:text-xl text-white font-light drop-shadow-lg">
+                    Discover our curated collection of beautiful storage solutions
+                  </p>
+                </div>
+              </div>
             </div>
 
             {/* Content Side */}
             <div className="p-8 lg:p-12 flex flex-col justify-center space-y-4">
-              {/* Page Title */}
-              <div className="mb-2">
-                <h1 className="text-5xl md:text-6xl font-black uppercase tracking-tight text-gray-900 mb-2">
-                  Shop
-                </h1>
-                <p className="text-lg md:text-xl text-gray-600 font-light">
-                  Discover our curated collection of beautiful storage solutions
-                </p>
-              </div>
-
               {/* Rating */}
               <HeroProductRating ratingCount={product.ratingCount} />
 
