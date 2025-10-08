@@ -1,19 +1,19 @@
 import { Product } from "@/types/product";
 
-// Featured Hero Product
+// Best Seller Hero Product
 export const featuredProduct = {
-  id: "first-sister-set",
-  title: "FIRST SISTER SET",
-  subtitle: "Perfect starter collection for new Sister Storage lovers.",
-  price: 89.99,
-  compareAt: 120.99,
-  ratingCount: 89,
+  id: "bundle-3",
+  title: "FULL LUXE COLLECTION",
+  subtitle: "The ultimate set for you and yours. Complete storage solution.",
+  price: 174.00,
+  compareAt: 240.00,
+  ratingCount: 156,
   image: "https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=800&h=450&fit=crop",
-  badge: "STARTER BUNDLE",
+  badge: "BEST SELLER",
   contents: [
-    { qty: 2, label: "Large", rodsEach: 4, detail: "4 rods each" },
-    { qty: 1, label: "Medium", rodsEach: 2, detail: "2 rods" },
-    { qty: 1, label: "Small", rodsEach: 1, detail: "1 rod" },
+    { qty: 4, label: "Large", rodsEach: 4, detail: "4 rods each" },
+    { qty: 2, label: "Medium", rodsEach: 2, detail: "2 rods each" },
+    { qty: 2, label: "Small", rodsEach: 1, detail: "1 rod each" },
   ],
 };
 
