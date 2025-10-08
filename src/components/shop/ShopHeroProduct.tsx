@@ -51,16 +51,6 @@ const ShopHeroProduct: React.FC<ShopHeroProductProps> = ({ product }) => {
     <section className="w-full bg-white">
       {/* Hero Container */}
       <div className="container-custom py-16 md:py-20">
-        {/* Page Title */}
-        <div className="text-center mb-12 md:mb-16">
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-black uppercase tracking-tight text-gray-900 mb-4">
-            Shop
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-600 font-light max-w-2xl mx-auto">
-            Discover our curated collection of beautiful storage solutions
-          </p>
-        </div>
-
         {/* Featured Product Card */}
         <div className="max-w-6xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 bg-gray-50 rounded-3xl overflow-hidden shadow-xl">
@@ -76,6 +66,16 @@ const ShopHeroProduct: React.FC<ShopHeroProductProps> = ({ product }) => {
 
             {/* Content Side */}
             <div className="p-8 lg:p-12 flex flex-col justify-center space-y-4">
+              {/* Page Title */}
+              <div className="mb-2">
+                <h1 className="text-5xl md:text-6xl font-black uppercase tracking-tight text-gray-900 mb-2">
+                  Shop
+                </h1>
+                <p className="text-lg md:text-xl text-gray-600 font-light">
+                  Discover our curated collection of beautiful storage solutions
+                </p>
+              </div>
+
               {/* Rating */}
               <HeroProductRating ratingCount={product.ratingCount} />
 
