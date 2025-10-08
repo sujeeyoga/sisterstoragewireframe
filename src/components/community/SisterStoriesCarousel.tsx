@@ -35,9 +35,10 @@ export const SisterStoriesCarousel = () => {
       }
 
       const videoFiles = data?.filter(file => 
-        file.name.endsWith('.mp4') || 
+        (file.name.endsWith('.mp4') || 
         file.name.endsWith('.webm') || 
-        file.name.endsWith('.mov')
+        file.name.endsWith('.mov')) &&
+        file.name !== 'Video-345.mp4'
       ) || [];
 
       const stories: VideoStory[] = videoFiles.map((file, index) => ({
