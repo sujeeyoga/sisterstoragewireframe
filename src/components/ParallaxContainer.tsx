@@ -33,12 +33,12 @@ const ParallaxContainer = () => {
   return (
     <section 
       ref={mainRef}
-      className="fixed top-0 left-0 w-full h-screen overflow-hidden bg-no-repeat bg-cover bg-center"
+      className="relative h-screen overflow-hidden w-full bg-no-repeat bg-cover bg-center"
       aria-label="Parallax showcase section"
       style={{
         height: 'calc(var(--vh, 1vh) * 100)',
-        backgroundColor: 'hsl(var(--brand-pink))',
-        zIndex: 0
+        marginTop: '0',
+        backgroundColor: 'hsl(var(--brand-pink))'
       }}
     >
       {/* Optimized parallax background */}
