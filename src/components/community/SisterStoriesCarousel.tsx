@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { supabase } from '@/integrations/supabase/client';
@@ -15,6 +15,8 @@ export const SisterStoriesCarousel = () => {
   const [videoStories, setVideoStories] = useState<VideoStory[]>([]);
   const [loadingVideos, setLoadingVideos] = useState<Record<string, boolean>>({});
   const [isLoading, setIsLoading] = useState(true);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [isScrollingForward, setIsScrollingForward] = useState(true);
 
   console.log('SisterStoriesCarousel: Rendering with', videoStories.length, 'videos, loading:', isLoading);
 
@@ -71,6 +73,43 @@ export const SisterStoriesCarousel = () => {
     fetchVideos();
   }, [fetchVideos]);
 
+  // Ping pong auto-scroll effect
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container || videoStories.length === 0) return;
+
+    const scrollSpeed = 1; // pixels per frame
+    let animationFrameId: number;
+
+    const autoScroll = () => {
+      if (!container) return;
+
+      const maxScroll = container.scrollWidth - container.clientWidth;
+      
+      if (isScrollingForward) {
+        container.scrollLeft += scrollSpeed;
+        if (container.scrollLeft >= maxScroll) {
+          setIsScrollingForward(false);
+        }
+      } else {
+        container.scrollLeft -= scrollSpeed;
+        if (container.scrollLeft <= 0) {
+          setIsScrollingForward(true);
+        }
+      }
+
+      animationFrameId = requestAnimationFrame(autoScroll);
+    };
+
+    animationFrameId = requestAnimationFrame(autoScroll);
+
+    return () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+    };
+  }, [videoStories, isScrollingForward]);
+
   const handleVideoLoad = (storyId: string) => {
     setLoadingVideos(prev => ({ ...prev, [storyId]: false }));
   };
@@ -108,7 +147,10 @@ export const SisterStoriesCarousel = () => {
 
       {/* Horizontal Scrolling Container */}
       <div className="relative w-full overflow-hidden">
-        <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4 px-4 md:px-6 lg:px-8">
+        <div 
+          ref={scrollContainerRef}
+          className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4 px-4 md:px-6 lg:px-8"
+        >
           {videoStories.map((story) => (
             <div 
               key={story.id} 
