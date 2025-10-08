@@ -1,11 +1,7 @@
 import React from 'react';
 import { BadgePercent } from 'lucide-react';
-interface SaleBannerProps {
-  position?: number;
-}
-const SaleBanner = ({
-  position = 0
-}: SaleBannerProps) => {
+interface SaleBannerProps {}
+const SaleBanner = ({}: SaleBannerProps) => {
   // Create content items with separators - using exact requirements
   const contentItems = [{
     icon: <BadgePercent className="h-3 w-3 text-brand-pink mr-1 shrink-0" />,

@@ -22,9 +22,7 @@ import { CartProvider } from "./contexts/CartContext";
 import CartDrawer from "../src/components/CartDrawer";
 import OurStory from "./pages/OurStory";
 import Admin from "./pages/Admin";
-import ScreenLoader from "./components/ui/ScreenLoader";
 import PageTransition from "./components/layout/PageTransition";
-import React, { useState } from "react";
 
 const queryClient = new QueryClient();
 

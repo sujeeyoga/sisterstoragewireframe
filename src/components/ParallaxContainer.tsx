@@ -1,5 +1,3 @@
-
-import React from 'react';
 import { useOptimizedParallax } from '@/hooks/use-optimized-parallax';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useViewportHeight } from '@/hooks/use-viewport-height';

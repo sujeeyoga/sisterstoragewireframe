@@ -1,4 +1,3 @@
-import React from 'react';
 import { HeroGalleryDemo1, HeroGalleryDemo2, HeroGalleryDemo3 } from '@/components/hero/HeroGalleryDemo';
 import { Gallery4 } from '@/components/ui/gallery4';
 import { BentoGridGalleryDemo } from '@/components/ui/bento-gallery-demo';
