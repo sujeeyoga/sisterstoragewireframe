@@ -1,4 +1,5 @@
 import { Product } from "@/types/product";
+import bangleImage from "@/assets/bangles-top-view.jpg";
 
 // Best Seller Hero Product
 export const featuredProduct = {
@@ -8,7 +9,7 @@ export const featuredProduct = {
   price: 174.00,
   compareAt: 240.00,
   ratingCount: 156,
-  image: "https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=800&h=450&fit=crop",
+  image: bangleImage,
   badge: "BEST SELLER",
   contents: [
     { qty: 4, label: "Large", rodsEach: 4, detail: "4 rods each" },
