@@ -7,7 +7,6 @@ import BestSeller from "@/components/BestSeller";
 import About from "@/components/About";
 import Delivery from "@/components/Delivery";
 import Newsletter from "@/components/Newsletter";
-import CommunityStoriesCarousels from "@/components/community/CommunityStoriesCarousels";
 import FeaturedGrid from "@/components/FeaturedGrid";
 import PromotionalSection from "@/components/PromotionalSection";
 
@@ -39,11 +38,6 @@ const Index = () => {
           <About />
         </Section>
       </EnhancedScrollFade>
-      
-      {/* Community Stories - Combined carousel section with testimonials */}
-      <CommunityStoriesCarousels />
-      
-      
       
       {/* Newsletter - Email capture */}
       <EnhancedScrollFade preset="medium" delay={0.1} once={true}>
