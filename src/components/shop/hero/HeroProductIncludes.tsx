@@ -43,9 +43,9 @@ const HeroProductIncludes: React.FC<HeroProductIncludesProps> = ({ contents }) =
       </h3>
       <IncludesList items={contents} />
       <div className="pt-4 border-t border-gray-200">
-        <div className="inline-flex items-center gap-2 text-red-600">
-          <span className="text-xs font-semibold uppercase tracking-wide">Total:</span>
-          <span className="text-lg font-bold">{totalRods} Rods</span>
+        <div className="inline-flex items-center gap-2 text-red-600 text-3xl font-bold">
+          <span className="uppercase tracking-wide">Total:</span>
+          <span>{totalRods} Rods</span>
         </div>
       </div>
     </div>
