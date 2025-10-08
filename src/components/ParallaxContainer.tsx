@@ -55,7 +55,7 @@ const ParallaxContainer = () => {
         backgroundColor: 'hsl(var(--brand-pink))'
       }}
     >
-      {/* JS-driven parallax background for broad browser support */}
+      {/* Static background - no parallax movement */}
       <div
         aria-hidden="true"
         className="absolute inset-0"
@@ -64,11 +64,8 @@ const ParallaxContainer = () => {
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
-          transform: !prefersReducedMotion && !isMobile && isVisible
-            ? `translateY(${mainOffset * 0.4}px)`
-            : 'none',
-          transition: prefersReducedMotion || isMobile ? 'none' : 'transform 0.1s ease-out',
-          willChange: 'transform'
+          transform: 'none',
+          willChange: 'auto'
         }}
       />
 
