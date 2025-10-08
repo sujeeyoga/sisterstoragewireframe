@@ -22,7 +22,7 @@ export const products: Product[] = [
   // ============= BUNDLES (TOP SELLERS FIRST) =============
   {
     id: "bundle-3",
-    name: "Bundle 3 – Full Luxe Collection",
+    name: "Full Luxe Collection",
     description: "BIG. BUNDLE. LOVE.",
     shortDescription: "4 Large Boxes, 2 Medium Boxes, 2 Small Boxes",
     bundleContents: "4 Large Boxes, 2 Medium Boxes, 2 Small Boxes",
@@ -44,7 +44,7 @@ export const products: Product[] = [
   },
   {
     id: "bundle-2",
-    name: "Bundle 2 – Home & Away Set",
+    name: "Home & Away Set",
     description: "SMART. SET. READY.",
     shortDescription: "3 Large Boxes, 2 Medium Boxes, 1 Small Box",
     bundleContents: "3 Large Boxes, 2 Medium Boxes, 1 Small Box",
@@ -65,7 +65,7 @@ export const products: Product[] = [
   },
   {
     id: "bundle-1",
-    name: "Bundle 1 – Everyday Starter",
+    name: "Everyday Starter",
     description: "START. SAFE. STYLE.",
     shortDescription: "2 Large Boxes, 1 Medium Box, 1 Small Box",
     bundleContents: "2 Large Boxes, 1 Medium Box, 1 Small Box",
@@ -88,7 +88,7 @@ export const products: Product[] = [
   // ============= INDIVIDUAL PRODUCTS =============
   {
     id: "large-bangle-box",
-    name: "Large Bangle Box (4 Rods)",
+    name: "Large Bangle Box",
     description: "STACK. PROTECT. CHERISH.",
     shortDescription: "Large capacity bangle box with 4 rods",
     price: 30.00,
@@ -109,7 +109,7 @@ export const products: Product[] = [
   },
   {
     id: "medium-bangle-box",
-    name: "Medium Bangle Box (2 Rods)",
+    name: "Medium Bangle Box",
     description: "MIDDLE. PERFECT. READY.",
     shortDescription: "Medium bangle box with 2 rods",
     price: 25.00,
@@ -129,7 +129,7 @@ export const products: Product[] = [
   },
   {
     id: "travel-size-bangle-box",
-    name: "Small (Travel) Bangle Box (1 Rod)",
+    name: "Small Travel Bangle Box",
     description: "TRAVEL. LIGHT. BEAUTIFUL.",
     shortDescription: "Compact travel bangle box with 1 rod",
     price: 15.00,
@@ -169,7 +169,7 @@ export const products: Product[] = [
   },
   {
     id: "jewelry-bag-organizer",
-    name: "Jewelry Bag Organizer (7 Pouches)",
+    name: "Jewelry Bag Organizer",
     description: "HOLD. LOVE. KEEP.",
     shortDescription: "Jewelry organizer with 7 removable pouches",
     price: 20.00,
