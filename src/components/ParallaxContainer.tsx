@@ -55,7 +55,7 @@ const ParallaxContainer = () => {
         backgroundColor: 'hsl(var(--brand-pink))'
       }}
     >
-      {/* Static background - no parallax movement */}
+      {/* JS-driven parallax background for broad browser support */}
       <div
         aria-hidden="true"
         className="absolute inset-0"
@@ -64,14 +64,17 @@ const ParallaxContainer = () => {
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
-          transform: 'none',
-          willChange: 'auto'
+          transform: !prefersReducedMotion && !isMobile && isVisible
+            ? `translateY(${mainOffset * 0.4}px)`
+            : 'none',
+          transition: prefersReducedMotion || isMobile ? 'none' : 'transform 0.1s ease-out',
+          willChange: 'transform'
         }}
       />
 
       {/* Centered Instagram button only */}
       <section 
-        className="relative z-10 h-full flex items-center justify-center px-4 md:px-6"
+        className="relative z-10 h-[60vh] flex items-center justify-center px-4 md:px-6"
         style={{
           transform: !prefersReducedMotion && isVisible ? `translateY(${overlayOffset}px)` : 'none',
           transition: prefersReducedMotion ? 'none' : 'transform 0.1s ease-out',
