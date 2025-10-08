@@ -474,11 +474,78 @@ export const ProductForm = () => {
                   >
                     <span className="line-clamp-1 text-center px-2 tracking-wide">Sister Storage</span>
                   </div>
+                  
+                  {/* In Stock Badge */}
+                  {!formValues.in_stock && (
+                    <div className="absolute top-3 left-3">
+                      <span className="bg-destructive text-destructive-foreground px-3 py-1 rounded-md text-xs font-semibold">
+                        Out of Stock
+                      </span>
+                    </div>
+                  )}
+                  
+                  {/* Stock Warning */}
+                  {formValues.manage_stock && formValues.stock_quantity !== null && formValues.stock_quantity <= 5 && formValues.stock_quantity > 0 && (
+                    <div className="absolute top-3 left-3">
+                      <span className="bg-amber-500 text-white px-3 py-1 rounded-md text-xs font-semibold">
+                        Only {formValues.stock_quantity} left
+                      </span>
+                    </div>
+                  )}
                 </div>
                 
-                <CardContent className="p-3 space-y-3">
+                <CardContent className="p-4 space-y-3">
+                  {/* Title & Price */}
+                  <div className="flex justify-between items-start gap-2">
+                    <h3 className="font-bold text-2xl line-clamp-2 flex-1 uppercase">
+                      {formValues.name || 'Product Name'}
+                    </h3>
+                    <div className="text-right flex-shrink-0">
+                      {formValues.sale_price && formValues.sale_price < formValues.regular_price ? (
+                        <div className="flex flex-col items-end">
+                          <span className="text-sm text-muted-foreground line-through">
+                            ${Number(formValues.regular_price || 0).toFixed(2)}
+                          </span>
+                          <span className="font-bold text-xl text-primary">
+                            ${Number(formValues.sale_price).toFixed(2)}
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="font-bold text-xl">
+                          ${Number(formValues.price || 0).toFixed(2)}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  
+                  {/* Short Description */}
+                  {formValues.short_description && (
+                    <div 
+                      className="text-sm text-muted-foreground line-clamp-2"
+                      dangerouslySetInnerHTML={{ __html: formValues.short_description }}
+                    />
+                  )}
+                  
+                  {/* Full Description */}
+                  {formValues.description && (
+                    <div 
+                      className="text-sm text-muted-foreground line-clamp-3 border-t pt-2"
+                      dangerouslySetInnerHTML={{ __html: formValues.description }}
+                    />
+                  )}
+                  
+                  {/* Stock Info */}
+                  {formValues.manage_stock && formValues.stock_quantity !== null && (
+                    <div className="text-xs text-muted-foreground border-t pt-2">
+                      <div className="flex items-center justify-between">
+                        <span>Stock:</span>
+                        <span className="font-semibold">{formValues.stock_quantity} units</span>
+                      </div>
+                    </div>
+                  )}
+                  
                   {/* Rating */}
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between border-t pt-2">
                     <div className="flex items-center gap-1">
                       {[...Array(5)].map((_, i) => (
                         <span key={i} className="text-amber-400">★</span>
