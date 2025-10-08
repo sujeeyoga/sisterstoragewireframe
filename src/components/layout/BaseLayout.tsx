@@ -166,10 +166,10 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
       <main className={`flex-grow ${getMainPadding()}`}>
         {/* Pink background section */}
         <div className={`bg-[hsl(var(--brand-pink))] relative ${showSaleBanner ? 'pt-4' : 'pt-4'}`}>
-          {/* Black announcement banner */}
+          {/* White space at top */}
           {showSaleBanner && (
-            <div className="pb-4">
-              <PromoBanner />
+            <div className="pb-4 bg-white">
+              <div className="h-12"></div>
             </div>
           )}
           
