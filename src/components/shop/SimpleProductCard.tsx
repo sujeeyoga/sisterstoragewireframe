@@ -42,7 +42,10 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
   const reviews = Math.floor(Math.random() * 150) + 30;
 
   return (
-    <Card className="group overflow-hidden border-none shadow-md hover:shadow-xl transition-all duration-500 bg-white relative transform hover:-translate-y-1 hover:scale-[1.02] h-full">
+    <Card className={cn(
+      "group overflow-hidden border-none shadow-md hover:shadow-xl transition-all duration-500 relative transform hover:-translate-y-1 hover:scale-[1.02] h-full",
+      product.category === 'open-box' ? "bg-gradient-to-br from-orange-50 to-red-50" : "bg-white"
+    )}>
       {/* Product Image */}
       <Link to={`/shop/${product.id}`} className="block relative">
         {/* Open Box Badge */}
