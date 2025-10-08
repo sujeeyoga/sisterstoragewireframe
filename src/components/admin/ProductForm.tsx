@@ -315,7 +315,7 @@ export const ProductForm = () => {
                       {formValues.name || 'Product Name'}
                     </h3>
                     <p className="text-gray-600 text-lg leading-relaxed line-clamp-2">
-                      {formValues.short_description || 'Product description goes here'}
+                      {(formValues.short_description || 'Product description goes here').replace(/<[^>]*>/g, '')}
                     </p>
                   </div>
                   
