@@ -31,6 +31,9 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
     });
   };
 
+  // Extract rod count from attributes
+  const rodCount = product.attributes?.rodCount?.[0];
+
   return (
     <article className="simple-product-card bg-card shadow-sm hover:shadow-md transition-shadow p-4 grid gap-3 h-full" style={{ borderRadius: '0px' }}>
       {/* Image */}
@@ -52,15 +55,32 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
         </h3>
       </Link>
       
-      {/* Bullets (optional) */}
-      {bullets && bullets.length > 0 && (
-        <ul className="space-y-3">
-          {bullets.map((line, i) => (
-            <li key={i} className="text-gray-900 text-2xl font-medium">
-              {line}
-            </li>
-          ))}
-        </ul>
+      {/* What's Included */}
+      {(bullets || rodCount) && (
+        <div className="space-y-3">
+          <h4 className="text-xs font-bold text-[hsl(var(--brand-pink))] uppercase tracking-wider">
+            What's Included
+          </h4>
+          {rodCount && (
+            <div className="flex items-baseline gap-2">
+              <span className="text-[hsl(var(--brand-pink))] font-bold text-3xl">
+                {rodCount}×
+              </span>
+              <span className="text-gray-600 text-2xl">
+                Rod{rodCount !== '1' ? 's' : ''}
+              </span>
+            </div>
+          )}
+          {bullets && bullets.length > 0 && (
+            <ul className="space-y-2">
+              {bullets.map((line, i) => (
+                <li key={i} className="text-gray-900 text-lg font-medium">
+                  {line}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       )}
       
       {/* Price and CTA */}
