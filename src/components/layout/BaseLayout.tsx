@@ -165,16 +165,9 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
     <div className={`min-h-screen flex flex-col overflow-visible ${getBackgroundClasses()} ${className}`}>
       <main className={`flex-grow ${getMainPadding()}`}>
         {/* Pink background section */}
-        <div className={`bg-[hsl(var(--brand-pink))] relative ${showSaleBanner ? 'pt-4' : 'pt-4'}`}>
-          {/* White space at top */}
-          {showSaleBanner && (
-            <div className="pb-4 bg-white">
-              <div className="h-12"></div>
-            </div>
-          )}
-          
+        <div className="bg-[hsl(var(--brand-pink))] relative">
           {/* Sticky floating navigation - white background with margins */}
-          <div className="sticky top-4 z-50 pb-4">
+          <div className="sticky top-4 z-50 py-4">
             <nav 
               ref={navRef} 
               className="w-[min(1100px,calc(100%-40px))] mx-auto rounded-[25px] bg-white overflow-visible shadow-lg px-4 py-2 transition-all duration-300"
