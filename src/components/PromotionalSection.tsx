@@ -13,7 +13,7 @@ const PromotionalSection = () => {
       <div className="container-custom relative z-10">
         {/* Header */}
         <div className="text-center mb-12 md:mb-16">
-          <div className="inline-flex items-center space-x-2 px-4 py-2 bg-[hsl(var(--brand-pink))] text-white text-sm font-bold rounded-full mb-6 animate-pulse">
+          <div className="inline-flex items-center space-x-2 px-4 py-2 bg-[hsl(var(--brand-pink))] text-white text-sm font-bold rounded-full mb-6">
             <Sparkles className="h-4 w-4" />
             <span>BY SISTERS / FOR SISTERS</span>
             <Sparkles className="h-4 w-4" />
@@ -26,26 +26,26 @@ const PromotionalSection = () => {
           <div className="relative bg-gradient-to-br from-white via-[hsl(var(--brand-pink)/0.02)] to-[hsl(var(--brand-orange)/0.05)] rounded-3xl md:rounded-4xl overflow-hidden shadow-2xl border border-[hsl(var(--brand-pink)/0.1)] group hover:shadow-3xl transition-all duration-700">
             
             {/* Floating Elements */}
-            <div className="absolute top-6 right-6 w-16 h-16 bg-[hsl(var(--brand-orange)/0.1)] rounded-full animate-bounce delay-100" />
-            <div className="absolute top-20 right-20 w-8 h-8 bg-[hsl(var(--brand-pink)/0.2)] rounded-full animate-pulse delay-300" />
-            <div className="absolute bottom-8 left-8 w-12 h-12 bg-[hsl(var(--brand-orange)/0.15)] rounded-full animate-bounce delay-500" />
+            <div className="absolute top-6 right-6 w-16 h-16 bg-[hsl(var(--brand-orange)/0.1)] rounded-full" />
+            <div className="absolute top-20 right-20 w-8 h-8 bg-[hsl(var(--brand-pink)/0.2)] rounded-full" />
+            <div className="absolute bottom-8 left-8 w-12 h-12 bg-[hsl(var(--brand-orange)/0.15)] rounded-full" />
             
             <div className="flex flex-col lg:flex-row min-h-[400px] lg:min-h-[500px]">
               {/* Text Content */}
               <div className="flex-1 flex flex-col justify-center p-8 md:p-12 lg:p-16 relative z-10">
                 {/* Sale Badge */}
-                <div className="inline-flex items-center space-x-2 px-6 py-3 bg-[hsl(var(--brand-pink))] text-white rounded-full mb-6 w-fit animate-fade-in">
+                <div className="inline-flex items-center space-x-2 px-6 py-3 bg-[hsl(var(--brand-pink))] text-white rounded-full mb-6 w-fit">
                   <Star className="h-5 w-5 fill-current" />
                   <span className="font-bold text-sm tracking-wide">LIMITED TIME</span>
                 </div>
                 
                 {/* Main Heading */}
                 <div className="mb-8">
-                  <h2 className="text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-black text-gray-900 leading-[0.85] mb-4 animate-fade-in animate-delay-200">
+                  <h2 className="text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-black text-gray-900 leading-[0.85] mb-4">
                     SISTERS<br />
                     <span className="text-[hsl(var(--brand-pink))] drop-shadow-sm">SUMMER</span><br />
                     <span className="text-[hsl(var(--brand-orange))] drop-shadow-sm">END</span><br />
-                    <span className="bg-gradient-to-r from-[hsl(var(--brand-pink))] to-[hsl(var(--brand-orange))] bg-clip-text text-transparent animate-pulse">SALE!</span>
+                    <span className="bg-gradient-to-r from-[hsl(var(--brand-pink))] to-[hsl(var(--brand-orange))] bg-clip-text text-transparent">SALE!</span>
                   </h2>
                   <div className="flex items-center space-x-4 mb-6">
                     <div className="px-4 py-2 bg-[hsl(var(--brand-orange)/0.1)] text-[hsl(var(--brand-orange))] rounded-full">
@@ -56,7 +56,7 @@ const PromotionalSection = () => {
                 </div>
 
                 {/* CTA Buttons */}
-                <div className="flex flex-col sm:flex-row gap-4 animate-fade-in animate-delay-400">
+                <div className="flex flex-col sm:flex-row gap-4">
                   <Button 
                     size="lg" 
                     className="bg-gradient-to-r from-[hsl(var(--brand-pink))] to-[hsl(var(--brand-orange))] hover:from-[hsl(var(--brand-pink))] hover:to-[hsl(var(--brand-pink))] text-white border-none shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 px-8 py-4 text-lg font-bold"
@@ -81,14 +81,14 @@ const PromotionalSection = () => {
                 </div>
 
                 {/* Sale Details */}
-                <div className="mt-8 p-4 bg-white/50 backdrop-blur-sm rounded-2xl border border-[hsl(var(--brand-pink)/0.1)] animate-fade-in animate-delay-600">
+                <div className="mt-8 p-4 bg-white/50 backdrop-blur-sm rounded-2xl border border-[hsl(var(--brand-pink)/0.1)]">
                   <div className="flex flex-wrap items-center justify-between text-sm text-gray-600">
                     <div className="flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-[hsl(var(--brand-pink))] rounded-full animate-pulse" />
+                      <div className="w-2 h-2 bg-[hsl(var(--brand-pink))] rounded-full" />
                       <span>Free shipping on orders $75+</span>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-[hsl(var(--brand-orange))] rounded-full animate-pulse" />
+                      <div className="w-2 h-2 bg-[hsl(var(--brand-orange))] rounded-full" />
                       <span>Ends September 30th</span>
                     </div>
                   </div>
