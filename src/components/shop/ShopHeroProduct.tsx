@@ -51,7 +51,7 @@ const ShopHeroProduct: React.FC<ShopHeroProductProps> = ({ product }) => {
     <div className="relative w-full bg-white">
       <div className="container-custom py-16 md:py-20 lg:py-24">
         {/* Top Section: Shop Title + Image */}
-        <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-center mb-16">
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start mb-12 lg:mb-16">
           {/* Left: Shop Title */}
           <div className="flex-1 text-center lg:text-left">
             <h1 className="text-6xl md:text-7xl lg:text-8xl font-black uppercase tracking-tight mb-6 text-gray-900">
