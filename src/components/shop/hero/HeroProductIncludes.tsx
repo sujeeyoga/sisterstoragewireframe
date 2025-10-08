@@ -12,7 +12,7 @@ interface HeroProductIncludesProps {
 }
 
 const IncludesList: React.FC<{ items: HeroProductContent[] }> = ({ items }) => (
-  <ul className="space-y-4">
+  <ul className="space-y-2">
     {items.map((it, i) => (
       <li key={i}>
         <div className="flex items-baseline gap-3 flex-wrap">
@@ -37,12 +37,12 @@ const HeroProductIncludes: React.FC<HeroProductIncludesProps> = ({ contents }) =
   const totalRods = contents.reduce((sum, c) => sum + c.qty * c.rodsEach, 0);
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-2">
       <h3 className="text-sm font-bold text-[hsl(var(--brand-pink))] uppercase tracking-wider">
         What's Included
       </h3>
       <IncludesList items={contents} />
-      <div className="pt-4 border-t border-gray-200">
+      <div className="pt-2 border-t border-gray-200">
         <div className="inline-flex items-center gap-2 text-[hsl(var(--brand-pink))] text-3xl font-bold">
           <span className="uppercase tracking-wide">Total:</span>
           <span>{totalRods} Rods</span>

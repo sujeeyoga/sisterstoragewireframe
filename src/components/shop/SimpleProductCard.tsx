@@ -57,7 +57,7 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
       
       {/* What's Included */}
       {(bullets || rodCount) && (
-        <div className="space-y-3">
+        <div className="space-y-2">
           <h4 className="text-xs font-bold text-[hsl(var(--brand-pink))] uppercase tracking-wider">
             What's Included
           </h4>
