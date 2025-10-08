@@ -14,8 +14,15 @@ export const useOptimizedScroll = ({
 }: OptimizedScrollOptions) => {
   const rafRef = useRef<number>();
   const lastScrollY = useRef(0);
+  const lastCallRef = useRef(0);
 
   const handleScroll = useCallback(() => {
+    const now = typeof performance !== 'undefined' ? performance.now() : Date.now();
+    if (now - lastCallRef.current < throttle) {
+      return;
+    }
+    lastCallRef.current = now;
+
     if (rafRef.current) {
       cancelAnimationFrame(rafRef.current);
     }
@@ -29,7 +36,7 @@ export const useOptimizedScroll = ({
         lastScrollY.current = scrollY;
       }
     });
-  }, [onScroll]);
+  }, [onScroll, throttle]);
 
   useEffect(() => {
     // Check for reduced motion preference
