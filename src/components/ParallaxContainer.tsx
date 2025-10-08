@@ -59,7 +59,7 @@ const ParallaxContainer = () => {
 
       {/* Centered Instagram button only */}
       <section 
-        className="relative z-10 h-full flex items-center justify-center px-4 md:px-6"
+        className="relative z-10 h-full flex items-start justify-center px-4 md:px-6 pt-20"
       >
         <Button
           asChild
