@@ -56,7 +56,10 @@ const ShopHeroProduct: React.FC<ShopHeroProductProps> = ({ product }) => {
           alt={`${product.title} product image`} 
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/20" />
+        {/* Gradient Overlay Container */}
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/20" />
+        </div>
         
         {/* Badge Container */}
         {product.badge && <HeroProductBadge badge={product.badge} />}
