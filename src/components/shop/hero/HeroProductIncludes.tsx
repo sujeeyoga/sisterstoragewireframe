@@ -21,7 +21,7 @@ const IncludesList: React.FC<{ items: HeroProductContent[] }> = ({ items }) => (
         <div className="flex-1">
           <div className="flex items-baseline gap-3 flex-wrap">
             <span className="inline-flex items-center gap-2">
-              <span className="px-3 py-1 bg-[hsl(var(--brand-pink))] text-white font-bold text-sm rounded">
+              <span className="text-[hsl(var(--brand-pink))] font-bold text-sm">
                 {it.qty}×
               </span>
               <span className="font-bold text-gray-900 text-base uppercase tracking-wide">
