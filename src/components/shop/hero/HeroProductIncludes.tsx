@@ -14,24 +14,19 @@ interface HeroProductIncludesProps {
 const IncludesList: React.FC<{ items: HeroProductContent[] }> = ({ items }) => (
   <ul className="space-y-4">
     {items.map((it, i) => (
-      <li key={i} className="flex items-start gap-4">
-        <svg className="w-5 h-5 text-[hsl(var(--brand-orange))] flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path>
-        </svg>
-        <div className="flex-1">
-          <div className="flex items-baseline gap-3 flex-wrap">
-            <span className="inline-flex items-center gap-2">
-              <span className="text-[hsl(var(--brand-pink))] font-bold text-sm">
-                {it.qty}×
-              </span>
-              <span className="font-bold text-gray-900 text-base uppercase tracking-wide">
-                {it.label}
-              </span>
+      <li key={i}>
+        <div className="flex items-baseline gap-3 flex-wrap">
+          <span className="inline-flex items-center gap-2">
+            <span className="text-[hsl(var(--brand-pink))] font-bold text-sm">
+              {it.qty}×
             </span>
-            <span className="text-gray-600 text-sm">
-              {it.detail}
+            <span className="font-bold text-gray-900 text-base uppercase tracking-wide">
+              {it.label}
             </span>
-          </div>
+          </span>
+          <span className="text-gray-600 text-sm">
+            {it.detail}
+          </span>
         </div>
       </li>
     ))}
