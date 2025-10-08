@@ -3,9 +3,11 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { useViewportHeight } from '@/hooks/use-viewport-height';
 import { Button } from '@/components/ui/button';
 import { Instagram } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 const ParallaxContainer = () => {
   const isMobile = useIsMobile();
+  const [imageLoaded, setImageLoaded] = useState(false);
   useViewportHeight();
   
   // Disable parallax on all devices to prevent scroll flicker
@@ -24,7 +26,22 @@ const ParallaxContainer = () => {
 
   const imageUrlDesktop = "https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-27-scaled.jpg";
   const imageUrlMobile = "/lovable-uploads/b0963b41-dee1-4ccb-b8bc-7144c4ea6285.png";
-  const backgroundImage = `url(${isMobile ? imageUrlMobile : imageUrlDesktop})`;
+  const currentImageUrl = isMobile ? imageUrlMobile : imageUrlDesktop;
+  const backgroundImage = `url(${currentImageUrl})`;
+
+  // Preload the image for faster display
+  useEffect(() => {
+    const img = new Image();
+    img.onload = () => {
+      console.log('Parallax image loaded successfully');
+      setImageLoaded(true);
+    };
+    img.onerror = () => {
+      console.error('Failed to load parallax image');
+      setImageLoaded(true); // Show content anyway
+    };
+    img.src = currentImageUrl;
+  }, [currentImageUrl]);
 
   // Use CSS variable-driven viewport height for reliable mobile VH
   // Fallback to h-screen via class; inline style uses --vh
@@ -39,10 +56,18 @@ const ParallaxContainer = () => {
         backgroundColor: 'hsl(var(--brand-pink))'
       }}
     >
+      {/* Loading placeholder */}
+      {!imageLoaded && (
+        <div 
+          className="absolute inset-0 bg-gradient-to-br from-pink-100 to-pink-200 animate-pulse"
+          aria-hidden="true"
+        />
+      )}
+
       {/* Optimized parallax background */}
       <div
         aria-hidden="true"
-        className="absolute inset-0"
+        className="absolute inset-0 transition-opacity duration-500"
         style={{
           backgroundImage,
           backgroundSize: 'cover',
@@ -51,7 +76,8 @@ const ParallaxContainer = () => {
           transform: !prefersReducedMotion && !isMobile && isVisible
             ? `translateY(${mainOffset * 0.5}px)`
             : 'none',
-          willChange: isVisible && !isMobile ? 'transform' : 'auto'
+          willChange: isVisible && !isMobile ? 'transform' : 'auto',
+          opacity: imageLoaded ? 1 : 0
         }}
       />
 
