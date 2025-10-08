@@ -112,7 +112,7 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
             <ul className="space-y-2">
               <li>
                 <div className="flex items-baseline gap-3 flex-wrap">
-                  <span className="text-gray-600 text-2xl leading-relaxed font-medium">{bundleContents}</span>
+                  <span className="text-gray-600 text-lg leading-relaxed">{bundleContents}</span>
                 </div>
               </li>
             </ul>
