@@ -73,11 +73,27 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
           )}
           {bullets && bullets.length > 0 && (
             <ul className="space-y-2">
-              {bullets.map((line, i) => (
-                <li key={i} className="text-gray-900 text-lg font-medium">
-                  {line}
-                </li>
-              ))}
+              {bullets.map((line, i) => {
+                // Parse if starts with number (e.g., "7 zip pouches")
+                const match = line.match(/^(\d+)\s+(.+)$/);
+                if (match) {
+                  return (
+                    <li key={i} className="flex items-baseline gap-2">
+                      <span className="text-[hsl(var(--brand-pink))] font-bold text-3xl">
+                        {match[1]}×
+                      </span>
+                      <span className="text-gray-600 text-2xl">
+                        {match[2]}
+                      </span>
+                    </li>
+                  );
+                }
+                return (
+                  <li key={i} className="text-gray-900 text-2xl font-medium">
+                    {line}
+                  </li>
+                );
+              })}
             </ul>
           )}
         </div>
