@@ -184,6 +184,7 @@ export type Database = {
           stock_quantity: number | null
           synced_at: string | null
           updated_at: string | null
+          visible: boolean
         }
         Insert: {
           attributes?: Json | null
@@ -204,6 +205,7 @@ export type Database = {
           stock_quantity?: number | null
           synced_at?: string | null
           updated_at?: string | null
+          visible?: boolean
         }
         Update: {
           attributes?: Json | null
@@ -224,6 +226,7 @@ export type Database = {
           stock_quantity?: number | null
           synced_at?: string | null
           updated_at?: string | null
+          visible?: boolean
         }
         Relationships: []
       }

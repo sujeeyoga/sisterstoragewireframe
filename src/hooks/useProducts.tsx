@@ -25,7 +25,7 @@ export function useProducts() {
         return fallbackProducts;
       }
 
-      return data.map((dbProduct: DatabaseProduct) => transformProduct(dbProduct));
+      return data.map((dbProduct: any) => transformProduct(dbProduct));
     },
     staleTime: 1000 * 60 * 5, // 5 minutes
     gcTime: 1000 * 60 * 10, // 10 minutes
@@ -58,7 +58,7 @@ export function useProduct(idOrSlug: string) {
         return fallback;
       }
 
-      return transformProduct(data as DatabaseProduct);
+      return transformProduct(data as any);
     },
     enabled: !!idOrSlug,
     staleTime: 1000 * 60 * 5,
@@ -81,7 +81,7 @@ export function useProductsByCategory(category: string) {
           return fallbackProducts;
         }
 
-        return data.map((dbProduct: DatabaseProduct) => transformProduct(dbProduct));
+        return data.map((dbProduct: any) => transformProduct(dbProduct));
       }
 
       const { data, error } = await supabase
@@ -96,7 +96,7 @@ export function useProductsByCategory(category: string) {
         return fallbackProducts.filter(p => p.category === category);
       }
 
-      return data.map((dbProduct: DatabaseProduct) => transformProduct(dbProduct));
+        return data.map((dbProduct: any) => transformProduct(dbProduct));
     },
     staleTime: 1000 * 60 * 5,
   });
@@ -119,7 +119,7 @@ export function useBestSellers(limit: number = 4) {
         return fallbackProducts.filter(p => p.bestSeller).slice(0, limit);
       }
 
-      return data.map((dbProduct: DatabaseProduct) => transformProduct(dbProduct));
+      return data.map((dbProduct: any) => transformProduct(dbProduct));
     },
     staleTime: 1000 * 60 * 5,
   });

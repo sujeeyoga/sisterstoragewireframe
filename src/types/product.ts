@@ -11,6 +11,7 @@ export interface DatabaseProduct {
   stock_quantity: number | null;
   manage_stock: boolean;
   in_stock: boolean;
+  visible: boolean;
   images: Array<{
     id: number;
     src: string;
@@ -62,19 +63,24 @@ export interface Product {
 }
 
 // Transform database product to frontend product
-export function transformProduct(dbProduct: DatabaseProduct): Product {
-  const primaryImage = dbProduct.images[0]?.src || '';
-  const category = dbProduct.categories[0]?.slug || 'uncategorized';
+export function transformProduct(dbProduct: any): Product {
+  const images = Array.isArray(dbProduct.images) ? dbProduct.images : [];
+  const categories = Array.isArray(dbProduct.categories) ? dbProduct.categories : [];
+  const attributes = Array.isArray(dbProduct.attributes) ? dbProduct.attributes : [];
+  
+  const primaryImage = images[0]?.src || '';
+  const category = categories[0]?.slug || 'uncategorized';
   
   // Extract attributes
-  const attributes: Record<string, string[]> = {};
-  dbProduct.attributes.forEach(attr => {
-    attributes[attr.name.toLowerCase()] = attr.options;
+  const attributesMap: Record<string, string[]> = {};
+  attributes.forEach((attr: any) => {
+    attributesMap[attr.name.toLowerCase()] = attr.options;
   });
 
   // Get features from attributes or meta_data
-  const features = dbProduct.meta_data?.features || 
-    dbProduct.attributes.map(attr => `${attr.name}: ${attr.options.join(', ')}`);
+  const metaData = dbProduct.meta_data || {};
+  const features = metaData.features || 
+    attributes.map((attr: any) => `${attr.name}: ${attr.options.join(', ')}`);
 
   return {
     id: dbProduct.id.toString(),
@@ -85,21 +91,21 @@ export function transformProduct(dbProduct: DatabaseProduct): Product {
     originalPrice: dbProduct.regular_price || undefined,
     salePrice: dbProduct.sale_price || undefined,
     category,
-    categories: dbProduct.categories.map(cat => cat.slug),
-    color: dbProduct.meta_data?.color || '#e90064',
+    categories: categories.map((cat: any) => cat.slug),
+    color: metaData.color || '#e90064',
     features: Array.isArray(features) ? features : [],
-    material: dbProduct.meta_data?.material || 'Premium materials',
-    bestSeller: dbProduct.meta_data?.bestSeller || false,
-    newArrival: dbProduct.meta_data?.newArrival || false,
-    limitedEdition: dbProduct.meta_data?.limitedEdition || false,
+    material: metaData.material || 'Premium materials',
+    bestSeller: metaData.bestSeller || false,
+    newArrival: metaData.newArrival || false,
+    limitedEdition: metaData.limitedEdition || false,
     stock: dbProduct.stock_quantity || 0,
     inStock: dbProduct.in_stock,
-    sku: dbProduct.meta_data?.sku,
+    sku: metaData.sku,
     slug: dbProduct.slug,
-    images: dbProduct.images.map(img => img.src),
-    attributes,
-    caption: dbProduct.meta_data?.caption,
-    funnelStage: dbProduct.meta_data?.funnelStage,
+    images: images.map((img: any) => img.src),
+    attributes: attributesMap,
+    caption: metaData.caption,
+    funnelStage: metaData.funnelStage,
     bundleContents: dbProduct.short_description || undefined,
   };
 }

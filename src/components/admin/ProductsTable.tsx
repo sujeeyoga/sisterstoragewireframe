@@ -23,7 +23,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { Edit, Trash2, Plus, Search } from 'lucide-react';
+import { Edit, Trash2, Plus, Search, Eye, EyeOff } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export const ProductsTable = () => {
@@ -69,6 +69,27 @@ export const ProductsTable = () => {
     },
   });
 
+  const toggleVisibilityMutation = useMutation({
+    mutationFn: async ({ id, visible }: { id: number; visible: boolean }) => {
+      const { error } = await supabase
+        .from('woocommerce_products')
+        .update({ visible })
+        .eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast({ title: 'Product visibility updated' });
+      queryClient.invalidateQueries({ queryKey: ['admin-products'] });
+    },
+    onError: (error) => {
+      toast({
+        title: 'Failed to update visibility',
+        description: error.message,
+        variant: 'destructive',
+      });
+    },
+  });
+
   return (
     <div className="p-8">
       <div className="mb-6 flex justify-between items-center">
@@ -104,19 +125,20 @@ export const ProductsTable = () => {
               <TableHead>Price</TableHead>
               <TableHead>Stock</TableHead>
               <TableHead>Status</TableHead>
+              <TableHead>Visibility</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell colSpan={5} className="text-center py-8">
+                <TableCell colSpan={6} className="text-center py-8">
                   Loading products...
                 </TableCell>
               </TableRow>
             ) : products?.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="text-center py-8">
+                <TableCell colSpan={6} className="text-center py-8">
                   No products found
                 </TableCell>
               </TableRow>
@@ -134,6 +156,25 @@ export const ProductsTable = () => {
                     <Badge variant={product.in_stock ? 'default' : 'destructive'}>
                       {product.in_stock ? 'In Stock' : 'Out of Stock'}
                     </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() =>
+                        toggleVisibilityMutation.mutate({
+                          id: product.id,
+                          visible: !product.visible,
+                        })
+                      }
+                      title={product.visible ? 'Hide product' : 'Show product'}
+                    >
+                      {product.visible ? (
+                        <Eye className="h-4 w-4 text-green-600" />
+                      ) : (
+                        <EyeOff className="h-4 w-4 text-gray-400" />
+                      )}
+                    </Button>
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
