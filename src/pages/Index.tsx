@@ -26,7 +26,7 @@ const Index = () => {
       <ParallaxContainer />
       
       {/* Featured Grid - First major section after hero */}
-      <Section spacing="xl" width="contained">
+      <Section spacing="xl" width="contained" background="white">
         <FeaturedGrid />
       </Section>
       
