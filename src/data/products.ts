@@ -8,7 +8,7 @@ export const featuredProduct = {
   price: 174.00,
   compareAt: 240.00,
   ratingCount: 156,
-  image: "/lovable-uploads/e9628188-8ef0-426b-9858-08b2848fd690.png",
+  image: "/lovable-uploads/b32a7860-b957-41e7-9c5c-cbd348260cf2.png",
   badge: "BEST SELLER",
   contents: [
     { qty: 4, label: "Large", rodsEach: 4, detail: "4 rods each" },
