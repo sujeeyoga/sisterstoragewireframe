@@ -16,9 +16,6 @@ export const SisterStoriesCarousel = () => {
   const [loadingVideos, setLoadingVideos] = useState<Record<string, boolean>>({});
   const [isLoading, setIsLoading] = useState(true);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [isScrollingForward, setIsScrollingForward] = useState(true);
-  const [isPaused, setIsPaused] = useState(false);
-  const userScrollTimeout = useRef<number>();
 
   console.log('SisterStoriesCarousel: Rendering with', videoStories.length, 'videos, loading:', isLoading);
 
@@ -75,56 +72,6 @@ export const SisterStoriesCarousel = () => {
     fetchVideos();
   }, [fetchVideos]);
 
-  // Ping pong auto-scroll effect with pause on interaction
-  useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (!container || videoStories.length === 0 || isPaused) return;
-
-    const scrollSpeed = 0.5; // Slower, smoother scrolling
-    let animationFrameId: number;
-
-    const autoScroll = () => {
-      if (!container || isPaused) return;
-
-      const maxScroll = container.scrollWidth - container.clientWidth;
-      
-      if (isScrollingForward) {
-        container.scrollLeft += scrollSpeed;
-        if (container.scrollLeft >= maxScroll) {
-          setIsScrollingForward(false);
-        }
-      } else {
-        container.scrollLeft -= scrollSpeed;
-        if (container.scrollLeft <= 0) {
-          setIsScrollingForward(true);
-        }
-      }
-
-      animationFrameId = requestAnimationFrame(autoScroll);
-    };
-
-    animationFrameId = requestAnimationFrame(autoScroll);
-
-    return () => {
-      if (animationFrameId) {
-        cancelAnimationFrame(animationFrameId);
-      }
-    };
-  }, [videoStories, isScrollingForward, isPaused]);
-
-  // Handle user scroll interaction
-  const handleUserScroll = () => {
-    setIsPaused(true);
-    
-    if (userScrollTimeout.current) {
-      clearTimeout(userScrollTimeout.current);
-    }
-    
-    userScrollTimeout.current = window.setTimeout(() => {
-      setIsPaused(false);
-    }, 3000); // Resume after 3 seconds of no interaction
-  };
-
   const handleVideoLoad = (storyId: string) => {
     setLoadingVideos(prev => ({ ...prev, [storyId]: false }));
   };
@@ -164,12 +111,7 @@ export const SisterStoriesCarousel = () => {
       <div className="relative w-full overflow-hidden">
         <div 
           ref={scrollContainerRef}
-          onScroll={handleUserScroll}
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-          onTouchStart={() => setIsPaused(true)}
-          onTouchEnd={() => setIsPaused(false)}
-          className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4 px-4 md:px-6 lg:px-8"
+          className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4 px-4 md:px-6 lg:px-8 scroll-smooth"
         >
           {videoStories.map((story) => (
             <div 
