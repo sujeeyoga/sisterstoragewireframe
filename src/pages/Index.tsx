@@ -22,11 +22,14 @@ const Index = () => {
       {/* Hero Section - No wrapper needed, has built-in spacing */}
       <Hero />
       
-      {/* Parallax Transition - No additional spacing */}
+      {/* Parallax Transition - Fixed background */}
       <ParallaxContainer />
       
+      {/* Spacer to push content down */}
+      <div className="h-screen" />
+      
       {/* Featured Grid - First major section after hero */}
-      <Section spacing="xl" width="contained" background="white">
+      <Section spacing="xl" width="contained" background="white" className="relative z-10">
         <FeaturedGrid />
       </Section>
       
