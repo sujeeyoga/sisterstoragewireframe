@@ -10,32 +10,17 @@ const ParallaxContainer = () => {
   const isMobile = useIsMobile();
   useViewportHeight();
   
-  // Optimized mobile parallax - disabled on mobile for better performance
-  const parallaxDisabled = false;
-  const mainParallaxSpeed = isMobile ? 0.12 : 0.6;
-  const overlayParallaxSpeed = isMobile ? 0.08 : 0.4;
+  // Disable parallax on mobile for better performance
+  const parallaxDisabled = isMobile;
   
   const { 
     ref: mainRef, 
-    offset: mainOffset, 
     isVisible,
     prefersReducedMotion 
   } = useOptimizedParallax({
-    speed: mainParallaxSpeed,
+    speed: 0,
     threshold: 0.1,
-    disabled: parallaxDisabled
-  });
-  
-  const { offset: overlayOffset } = useOptimizedParallax({
-    speed: overlayParallaxSpeed,
-    threshold: 0.1,
-    disabled: parallaxDisabled
-  });
-  
-  const { offset: foregroundOffset } = useOptimizedParallax({
-    speed: isMobile ? 0.16 : 0.8,
-    threshold: 0.1,
-    disabled: parallaxDisabled
+    disabled: true
   });
 
   const imageUrlDesktop = "https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-27-scaled.jpg";
@@ -55,7 +40,7 @@ const ParallaxContainer = () => {
         backgroundColor: 'hsl(var(--brand-pink))'
       }}
     >
-      {/* JS-driven parallax background for broad browser support */}
+      {/* Static background - no JS parallax to prevent scroll jank */}
       <div
         aria-hidden="true"
         className="absolute inset-0"
@@ -63,23 +48,13 @@ const ParallaxContainer = () => {
           backgroundImage,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          transform: !prefersReducedMotion && !isMobile && isVisible
-            ? `translateY(${mainOffset * 0.4}px)`
-            : 'none',
-          transition: prefersReducedMotion || isMobile ? 'none' : 'transform 0.1s ease-out',
-          willChange: 'transform'
+          backgroundRepeat: 'no-repeat'
         }}
       />
 
       {/* Centered Instagram button only */}
       <section 
-        className="relative z-10 h-[60vh] flex items-center justify-center px-4 md:px-6"
-        style={{
-          transform: !prefersReducedMotion && isVisible ? `translateY(${overlayOffset}px)` : 'none',
-          transition: prefersReducedMotion ? 'none' : 'transform 0.1s ease-out',
-          willChange: 'transform'
-        }}
+        className="relative z-10 h-full flex items-center justify-center px-4 md:px-6"
       >
         <Button
           asChild
