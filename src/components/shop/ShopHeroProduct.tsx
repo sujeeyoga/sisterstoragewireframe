@@ -48,46 +48,44 @@ const ShopHeroProduct: React.FC<ShopHeroProductProps> = ({ product }) => {
   };
 
   return (
-    <div className="relative w-full mx-auto" style={{ borderRadius: '0px' }}>
-      {/* Background Image Container */}
-      <div className="relative h-[70vh] min-h-[500px] md:min-h-[600px] overflow-hidden shadow-xl">
-        <img 
-          src={product.image} 
-          alt={`${product.title} product image`} 
-          className="w-full h-full object-cover"
-        />
-        {/* Gradient Overlay Container */}
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/20" />
-        </div>
-        
-        {/* Badge Container */}
-        {product.badge && <HeroProductBadge badge={product.badge} />}
-        
-        {/* Desktop: Shop Title Container (Left Side) */}
-        <div className="hidden md:flex absolute left-8 top-1/2 -translate-y-1/2 max-w-[400px]">
-          <div className="text-white">
-            <h1 className="text-6xl lg:text-7xl font-bold uppercase tracking-wider mb-4">
+    <div className="relative w-full bg-white">
+      <div className="container-custom py-12 md:py-16">
+        <div className="flex flex-col md:flex-row gap-8 items-center">
+          {/* Left: Shop Title */}
+          <div className="flex-1">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold uppercase tracking-wider mb-4 text-foreground">
               Shop
             </h1>
-            <p className="text-lg lg:text-xl text-white/90 font-light tracking-wide">
+            <p className="text-lg lg:text-xl text-muted-foreground font-light tracking-wide">
               Discover our curated collection
             </p>
           </div>
+          
+          {/* Right: Image Container */}
+          <div className="flex-1 relative h-[400px] md:h-[500px] w-full overflow-hidden shadow-xl">
+            <img 
+              src={product.image} 
+              alt={`${product.title} product image`} 
+              className="w-full h-full object-cover"
+            />
+            
+            {/* Badge Container */}
+            {product.badge && <HeroProductBadge badge={product.badge} />}
+          </div>
         </div>
         
-        {/* Desktop: Floating Information Panel (Right Side) */}
-        <div className="hidden md:flex absolute right-8 top-1/2 -translate-y-1/2 w-[600px] max-w-[50%]">
-          <div className="bg-white shadow-2xl p-8 flex gap-6 w-full" style={{ borderRadius: '0px' }}>
+        {/* Product Information Panel Below */}
+        <div className="bg-gray-50 p-6 md:p-8 mt-8 shadow-lg">
+          <div className="flex flex-col md:flex-row gap-6">
             {/* Left: Product Information */}
-            <div className="flex-1 flex flex-col">
+            <div className="flex-1">
               {/* Rating Section */}
               <HeroProductRating ratingCount={product.ratingCount} />
 
               {/* Title Section */}
-              <h1 className="text-xl lg:text-2xl font-bold text-foreground uppercase tracking-wide mb-2">
+              <h2 className="text-xl lg:text-2xl font-bold text-foreground uppercase tracking-wide mb-2">
                 {product.title}
-              </h1>
+              </h2>
               <p className="text-muted-foreground mt-2 text-sm">{product.subtitle}</p>
               <hr className="my-4 border-border" />
 
@@ -104,37 +102,6 @@ const ShopHeroProduct: React.FC<ShopHeroProductProps> = ({ product }) => {
                 hideCompareAt={true}
               />
             </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile: Information Panel Below Image */}
-      <div className="md:hidden bg-white p-6 shadow-lg" style={{ borderRadius: '0px' }}>
-        <div className="flex flex-col sm:flex-row gap-6">
-          {/* Left: Product Information */}
-          <div className="flex-1">
-            {/* Rating Section */}
-            <HeroProductRating ratingCount={product.ratingCount} />
-
-            {/* Title Section */}
-            <h1 className="text-xl font-bold text-foreground uppercase tracking-wide mb-2">
-              {product.title}
-            </h1>
-            <p className="text-muted-foreground mt-2 text-sm">{product.subtitle}</p>
-            <hr className="my-4 border-border" />
-
-            {/* Includes Section */}
-            <HeroProductIncludes contents={product.contents} />
-          </div>
-
-          {/* Right: Buy Section */}
-          <div className="flex-1 flex flex-col justify-center">
-            <HeroProductPrice 
-              price={product.price}
-              compareAt={product.compareAt}
-              onAddToCart={handleAddToCart}
-              hideCompareAt={true}
-            />
           </div>
         </div>
       </div>
