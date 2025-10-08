@@ -40,8 +40,6 @@ const Index = () => {
         </Section>
       </EnhancedScrollFade>
       
-      {/* Community Stories - Combined carousel section with testimonials */}
-      <CommunityStoriesCarousels />
       
       
       {/* Newsletter - Email capture */}
