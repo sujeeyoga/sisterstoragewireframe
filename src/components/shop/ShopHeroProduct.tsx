@@ -50,9 +50,9 @@ const ShopHeroProduct: React.FC<ShopHeroProductProps> = ({ product }) => {
   return (
     <section className="w-full bg-white">
       {/* Hero Container */}
-      <div className="container-custom py-16 md:py-20">
+      <div className="py-16 md:py-20 pl-1.5 pr-4 md:pr-8">
         {/* Featured Product Card */}
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl ml-0 mr-auto">
           <div className="grid lg:grid-cols-[7fr,3fr] gap-8 lg:gap-12 bg-gray-50 rounded-3xl overflow-hidden shadow-xl">
             {/* Image Side */}
             <div className="relative h-[400px] lg:h-[600px] overflow-hidden">
