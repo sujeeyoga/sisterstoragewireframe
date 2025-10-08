@@ -73,7 +73,7 @@ const ParallaxContainer = () => {
       />
 
       {/* Centered Instagram button only */}
-      <div 
+      <section 
         className="relative z-10 h-full flex items-center justify-center px-4 md:px-6"
         style={{
           transform: !prefersReducedMotion && isVisible ? `translateY(${overlayOffset}px)` : 'none',
@@ -98,7 +98,7 @@ const ParallaxContainer = () => {
             <span>Follow on Instagram</span>
           </a>
         </Button>
-      </div>
+      </section>
 
       {/* Optional subtle bottom gradient for contrast */}
       <div
