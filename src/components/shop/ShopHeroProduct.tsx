@@ -48,73 +48,65 @@ const ShopHeroProduct: React.FC<ShopHeroProductProps> = ({ product }) => {
   };
 
   return (
-    <div className="relative w-full bg-white">
-      <div className="container-custom py-16 md:py-20 lg:py-24">
-        {/* Top Section: Shop Title + Image */}
-        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start mb-12 lg:mb-16">
-          {/* Left: Shop Title */}
-          <div className="flex-1 text-center lg:text-left">
-            <h1 className="text-6xl md:text-7xl lg:text-8xl font-black uppercase tracking-tight mb-6 text-gray-900">
-              Shop
-            </h1>
-            <p className="text-xl lg:text-2xl text-gray-600 font-light leading-relaxed max-w-md mx-auto lg:mx-0">
-              Discover our curated collection of beautiful storage solutions
-            </p>
-          </div>
-          
-          {/* Right: Image Container */}
-          <div className="flex-1 w-full">
-            <div className="relative h-[450px] md:h-[550px] overflow-hidden rounded-2xl shadow-2xl group">
+    <section className="w-full bg-white">
+      {/* Hero Container */}
+      <div className="container-custom py-16 md:py-20">
+        {/* Page Title */}
+        <div className="text-center mb-12 md:mb-16">
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-black uppercase tracking-tight text-gray-900 mb-4">
+            Shop
+          </h1>
+          <p className="text-xl md:text-2xl text-gray-600 font-light max-w-2xl mx-auto">
+            Discover our curated collection of beautiful storage solutions
+          </p>
+        </div>
+
+        {/* Featured Product Card */}
+        <div className="max-w-6xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 bg-gray-50 rounded-3xl overflow-hidden shadow-xl">
+            {/* Image Side */}
+            <div className="relative h-[400px] lg:h-[600px] overflow-hidden">
               <img 
                 src={product.image} 
-                alt={`${product.title} product image`} 
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                alt={product.title}
+                className="w-full h-full object-cover"
               />
-              
-              {/* Subtle gradient overlay on hover */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              
-              {/* Badge Container */}
               {product.badge && <HeroProductBadge badge={product.badge} />}
             </div>
-          </div>
-        </div>
-        
-        {/* Product Information Panel */}
-        <div className="bg-gradient-to-br from-gray-50 to-white border border-gray-200 rounded-2xl p-8 md:p-10 shadow-lg">
-          <div className="space-y-8">
-            {/* Product Information */}
-            <div className="space-y-6">
-              {/* Rating Section */}
+
+            {/* Content Side */}
+            <div className="p-8 lg:p-12 flex flex-col justify-center space-y-6">
+              {/* Rating */}
               <HeroProductRating ratingCount={product.ratingCount} />
 
-              {/* Title Section */}
+              {/* Title */}
               <div>
-                <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 uppercase tracking-wide mb-3">
+                <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 uppercase mb-3">
                   {product.title}
                 </h2>
-                <p className="text-gray-600 text-base leading-relaxed">{product.subtitle}</p>
+                <p className="text-gray-600 text-lg leading-relaxed">
+                  {product.subtitle}
+                </p>
               </div>
-              
-              {/* Buy Section - Under Title */}
-              <div className="bg-white rounded-xl p-6 md:p-8 shadow-md border border-gray-100 max-w-xl">
-                <HeroProductPrice 
-                  price={product.price}
-                  compareAt={product.compareAt}
-                  onAddToCart={handleAddToCart}
-                  hideCompareAt={true}
-                />
-              </div>
-              
+
+              {/* Price & CTA */}
+              <HeroProductPrice 
+                price={product.price}
+                compareAt={product.compareAt}
+                onAddToCart={handleAddToCart}
+                hideCompareAt={true}
+              />
+
+              {/* Divider */}
               <hr className="border-gray-300" />
 
-              {/* Includes Section */}
+              {/* Includes */}
               <HeroProductIncludes contents={product.contents} />
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
