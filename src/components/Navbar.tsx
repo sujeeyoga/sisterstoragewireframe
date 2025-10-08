@@ -112,11 +112,13 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
         className={`lg:hidden fixed inset-0 z-[60] transition-all duration-300 ease-out ${
           mobileMenuOpen ? 'visible opacity-100' : 'invisible opacity-0'
         }`}
-        aria-hidden={!mobileMenuOpen}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Mobile navigation menu"
       >
         {/* Backdrop */}
         <div
-          className={`absolute inset-0 bg-black/20 transition-all duration-300 ${
+          className={`absolute inset-0 bg-black/40 backdrop-blur-sm transition-all duration-300 ${
             mobileMenuOpen ? 'opacity-100' : 'opacity-0'
           }`}
           onClick={() => setMobileMenuOpen(false)}
@@ -124,18 +126,18 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
         />
         
         {/* Clean slide-in panel */}
-        <aside className={`absolute right-0 top-0 h-full w-[85%] max-w-sm bg-white shadow-xl transform transition-transform duration-300 ease-out ${
+        <aside className={`absolute right-0 top-0 h-full w-[85%] max-w-sm bg-white shadow-2xl transform transition-transform duration-300 ease-out flex flex-col ${
           mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
         }`}>
           
           {/* Header - Simple like navbar */}
-          <div className="p-6 border-b border-gray-100">
+          <div className="flex-shrink-0 p-6 border-b border-gray-100">
             <div className="flex items-center justify-between">
               <EnhancedLogo size="lg" className="shrink-0" />
               <button
                 onClick={() => setMobileMenuOpen(false)}
-                className="p-2 text-black hover:text-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink)/0.1)] rounded-full transition-colors"
-                aria-label="Close menu"
+                className="p-2 text-black hover:text-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink)/0.1)] rounded-full transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+                aria-label="Close navigation menu"
               >
                 <X className="h-6 w-6" />
               </button>
@@ -143,7 +145,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
           </div>
 
           {/* Navigation - Match navbar style */}
-          <nav className="flex-1 overflow-y-auto py-6">
+          <nav className="flex-1 overflow-y-auto py-6" role="navigation" aria-label="Primary navigation">
             <div className="px-6 space-y-1">
               {[
                 { name: 'HOME', path: '/' },
@@ -221,23 +223,27 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
           </nav>
 
           {/* Footer - Simple */}
-          <div className="p-6 border-t border-gray-100">
+          <div className="flex-shrink-0 p-6 border-t border-gray-100">
             <div className="text-center">
               <p className="text-gray-600 text-sm mb-3">Follow Sister Storage</p>
-              <div className="flex justify-center space-x-3">
+              <div className="flex justify-center gap-3">
                 <a 
                   href="https://instagram.com/sisterstorage" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="w-10 h-10 bg-[hsl(var(--brand-pink))] rounded-full flex items-center justify-center text-white hover:bg-[hsl(var(--brand-pink))]/90 transition-colors"
+                  aria-label="Follow us on Instagram"
                 >
-                  <span className="text-sm font-bold">IG</span>
+                  <span className="text-sm font-bold" aria-hidden="true">IG</span>
                 </a>
                 <a 
-                  href="#" 
+                  href="https://facebook.com/sisterstorage" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
                   className="w-10 h-10 bg-[hsl(var(--brand-pink))] rounded-full flex items-center justify-center text-white hover:bg-[hsl(var(--brand-pink))]/90 transition-colors"
+                  aria-label="Follow us on Facebook"
                 >
-                  <span className="text-sm font-bold">FB</span>
+                  <span className="text-sm font-bold" aria-hidden="true">FB</span>
                 </a>
               </div>
             </div>
