@@ -108,9 +108,9 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
           <div className="bg-gray-50/80 rounded-xl p-4 border border-gray-100">
             <div className="flex items-center gap-2 mb-2">
               <div className="w-2 h-2 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full"></div>
-              <p className="text-xs font-semibold text-gray-700 uppercase tracking-wide">Bundle Includes</p>
+              <p className="text-sm font-bold text-[hsl(var(--brand-pink))] uppercase tracking-wider">Bundle Includes</p>
             </div>
-            <p className="text-xs text-gray-600 leading-relaxed font-medium">{bundleContents}</p>
+            <p className="text-2xl text-gray-600 leading-relaxed font-medium">{bundleContents}</p>
           </div>
         )}
         

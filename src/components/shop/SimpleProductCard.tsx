@@ -100,17 +100,17 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
           <div className="bg-gray-50/80 rounded-xl p-4 border border-gray-100">
             <div className="flex items-center gap-2 mb-2">
               <div className="w-2 h-2 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full"></div>
-              <p className="text-xs font-semibold text-gray-700 uppercase tracking-wide">What's Included</p>
+              <p className="text-sm font-bold text-[hsl(var(--brand-pink))] uppercase tracking-wider">What's Included</p>
             </div>
             {rodCount && (
-              <p className="text-xs text-gray-600 leading-relaxed font-medium">
+              <p className="text-2xl text-gray-600 leading-relaxed font-medium">
                 {rodCount} Rod{rodCount !== '1' ? 's' : ''}
               </p>
             )}
             {bullets && bullets.length > 0 && (
               <ul className="space-y-1 mt-2">
                 {bullets.map((line, i) => (
-                  <li key={i} className="text-xs text-gray-600 font-medium">• {line}</li>
+                  <li key={i} className="text-2xl text-gray-600 font-medium">• {line}</li>
                 ))}
               </ul>
             )}
