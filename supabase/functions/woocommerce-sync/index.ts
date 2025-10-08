@@ -87,15 +87,31 @@ Deno.serve(async (req: Request) => {
   try {
     // ===== SYNC PRODUCTS =====
     console.log("Starting product sync...");
+    console.log(`API Base URL: ${apiBase}`);
     let page = 1;
     while (true) {
       const productsUrl = `${apiBase}/wp-json/wc/v3/products?per_page=${PER_PAGE}&page=${page}&consumer_key=${encodeURIComponent(consumerKey)}&consumer_secret=${encodeURIComponent(consumerSecret)}`;
-
+      
+      console.log(`Fetching page ${page} from: ${apiBase}/wp-json/wc/v3/products`);
       const res = await fetch(productsUrl);
+      
+      console.log(`Response status: ${res.status}`);
+      console.log(`Response content-type: ${res.headers.get('content-type')}`);
+      
       if (!res.ok) {
         const text = await res.text();
-        throw new Error(`Products request failed (${res.status}): ${text}`);
+        console.error(`API Response: ${text.substring(0, 500)}`);
+        throw new Error(`Products request failed (${res.status}). Check that your WooCommerce URL is correct and REST API is enabled.`);
       }
+      
+      const contentType = res.headers.get('content-type');
+      if (!contentType?.includes('application/json')) {
+        const text = await res.text();
+        console.error(`Non-JSON response received. Content-Type: ${contentType}`);
+        console.error(`Response preview: ${text.substring(0, 500)}`);
+        throw new Error(`WooCommerce returned HTML instead of JSON. Verify your WOOCOMMERCE_BASE_URL is correct (should be like "https://yourdomain.com" without /wp-json).`);
+      }
+      
       const data: WooProduct[] = await res.json();
 
       if (!Array.isArray(data) || data.length === 0) break;
