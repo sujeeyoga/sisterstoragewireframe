@@ -194,7 +194,9 @@ export const ProductsTable = () => {
                         }
                         title={product.visible ? 'Hide product' : 'Show product'}
                       >
-                        {product.visible ? (
+                        {!isOnShopPage(product.slug) ? (
+                          <Eye className="h-4 w-4 text-red-600" />
+                        ) : product.visible ? (
                           <Eye className="h-4 w-4 text-green-600" />
                         ) : (
                           <EyeOff className="h-4 w-4 text-red-600" />
