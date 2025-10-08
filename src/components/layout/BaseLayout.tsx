@@ -163,7 +163,7 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
 
   return (
     <div className={`min-h-screen flex flex-col overflow-visible ${getBackgroundClasses()} ${className}`}>
-      <main className="bg-[hsl(var(--brand-pink))]">
+      <main className="bg-background">
         {/* Sticky floating navigation - white background with margins */}
         <div className="sticky top-4 z-50 py-4">
           <nav 

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Menu, X, ShoppingBag, Home, Package, Info, Image, Newspaper, Palette, BookOpen, ShoppingCart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -108,145 +109,148 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
       </div>
 
 
-      {/* Mobile Menu - Render at root level to avoid transform issues */}
-      {mobileMenuOpen && (
-        <div 
-          className="lg:hidden fixed inset-0 z-[100] transition-all duration-300 ease-out"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Mobile navigation menu"
-        >
-          {/* Backdrop */}
-          <div
-            className="absolute inset-0 bg-black/40 backdrop-blur-sm animate-fade-in"
-            onClick={() => setMobileMenuOpen(false)}
-            aria-hidden="true"
-          />
-          
-          {/* Clean slide-in panel */}
-          <aside className="absolute right-0 top-0 h-full w-[85%] max-w-sm bg-white shadow-2xl flex flex-col overflow-hidden animate-slide-in-right">
-          
-          {/* Header - Simple like navbar */}
-          <div className="flex-shrink-0 p-6 border-b border-gray-100 bg-white">
-            <div className="flex items-center justify-between">
-              <EnhancedLogo size="lg" className="shrink-0" />
-              <button
-                onClick={() => setMobileMenuOpen(false)}
-                className="p-2 text-black hover:text-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink)/0.1)] rounded-full transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
-                aria-label="Close navigation menu"
-              >
-                <X className="h-6 w-6" />
-              </button>
-            </div>
-          </div>
-
-          {/* Navigation - Match navbar style */}
-          <nav className="flex-1 overflow-y-auto py-6 bg-white" role="navigation" aria-label="Primary navigation">
-            <div className="px-6 space-y-1">
-              {[
-                { name: 'HOME', path: '/' },
-                { name: 'GALLERY', path: '/gallery' },
-                { name: 'SHOP', path: '/shop' }
-              ].map((item) => {
-                const isActive = location.pathname === item.path;
-                
-                return (
-                  <Link
-                    key={item.name}
-                    to={item.path}
-                    className={`block w-full text-left px-4 py-3 rounded-full font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${
-                      isActive 
-                        ? 'bg-brand-pink text-white' 
-                        : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'
-                    }`}
+      {/* Mobile Menu - Render via portal to avoid transform issues */}
+      {mobileMenuOpen && createPortal(
+        (
+          <div 
+            className="lg:hidden fixed inset-0 z-[1000] transition-all duration-300 ease-out"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Mobile navigation menu"
+          >
+            {/* Backdrop */}
+            <div
+              className="absolute inset-0 bg-black/40 backdrop-blur-sm animate-fade-in"
+              onClick={() => setMobileMenuOpen(false)}
+              aria-hidden="true"
+            />
+            
+            {/* Clean slide-in panel */}
+            <aside className="absolute right-0 top-0 h-full w-[85%] max-w-sm bg-white shadow-2xl flex flex-col overflow-hidden animate-slide-in-right">
+              {/* Header - Simple like navbar */}
+              <div className="flex-shrink-0 p-6 border-b border-gray-100 bg-white">
+                <div className="flex items-center justify-between">
+                  <EnhancedLogo size="lg" className="shrink-0" />
+                  <button
                     onClick={() => setMobileMenuOpen(false)}
+                    className="p-2 text-black hover:text-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink)/0.1)] rounded-full transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+                    aria-label="Close navigation menu"
                   >
-                    {item.name}
-                  </Link>
-                );
-              })}
-            </div>
-
-            {/* Divider */}
-            <div className="mx-6 my-6 h-px bg-gray-200" />
-
-            {/* Additional Navigation Items */}
-            <div className="px-6 space-y-1">
-              {[
-                { name: 'OUR STORY', path: '/our-story' },
-                { name: 'BLOG', path: '/blog' },
-                { name: 'BRAND', path: '/brand' }
-              ].map((item) => {
-                const isActive = location.pathname === item.path;
-                
-                return (
-                  <Link
-                    key={item.name}
-                    to={item.path}
-                    className={`block w-full text-left px-4 py-3 rounded-full font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${
-                      isActive 
-                        ? 'text-[hsl(var(--brand-pink))] bg-[hsl(var(--brand-pink))]/10' 
-                        : 'text-black hover:text-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))]/5'
-                    }`}
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    {item.name}
-                  </Link>
-                );
-              })}
-            </div>
-
-            {/* Divider */}
-            <div className="mx-6 my-6 h-px bg-gray-200" />
-
-            {/* Cart Section - Match navbar cart styling */}
-            <div className="px-6">
-              <button
-                onClick={() => { setMobileMenuOpen(false); setCartOpen(true); }}
-                className="w-full flex items-center justify-between p-4 text-black hover:text-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))]/5 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))]"
-              >
-                <div className="flex items-center gap-3">
-                  <ShoppingBag className="h-6 w-6" />
-                  <span className="font-medium">Shopping Cart</span>
+                    <X className="h-6 w-6" />
+                  </button>
                 </div>
-                {totalItems > 0 && (
-                  <span className="text-white rounded-full text-xs w-5 h-5 flex items-center justify-center font-semibold bg-[hsl(var(--brand-pink))]">
-                    {totalItems}
-                  </span>
-                )}
-              </button>
-            </div>
-          </nav>
-
-          {/* Footer - Simple */}
-          <div className="flex-shrink-0 p-6 border-t border-gray-100 bg-white">
-            <div className="text-center">
-              <p className="text-gray-600 text-sm mb-3">Follow Sister Storage</p>
-              <div className="flex justify-center gap-3">
-                <a 
-                  href="https://instagram.com/sisterstorage" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 bg-[hsl(var(--brand-pink))] rounded-full flex items-center justify-center text-white hover:bg-[hsl(var(--brand-pink))]/90 transition-colors"
-                  aria-label="Follow us on Instagram"
-                >
-                  <span className="text-sm font-bold" aria-hidden="true">IG</span>
-                </a>
-                <a 
-                  href="https://facebook.com/sisterstorage" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 bg-[hsl(var(--brand-pink))] rounded-full flex items-center justify-center text-white hover:bg-[hsl(var(--brand-pink))]/90 transition-colors"
-                  aria-label="Follow us on Facebook"
-                >
-                  <span className="text-sm font-bold" aria-hidden="true">FB</span>
-                </a>
               </div>
-            </div>
+
+              {/* Navigation - Match navbar style */}
+              <nav className="flex-1 overflow-y-auto py-6 bg-white" role="navigation" aria-label="Primary navigation">
+                <div className="px-6 space-y-1">
+                  {[
+                    { name: 'HOME', path: '/' },
+                    { name: 'GALLERY', path: '/gallery' },
+                    { name: 'SHOP', path: '/shop' }
+                  ].map((item) => {
+                    const isActive = location.pathname === item.path;
+                    
+                    return (
+                      <Link
+                        key={item.name}
+                        to={item.path}
+                        className={`block w-full text-left px-4 py-3 rounded-full font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${
+                          isActive 
+                            ? 'bg-brand-pink text-white' 
+                            : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'
+                        }`}
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        {item.name}
+                      </Link>
+                    );
+                  })}
+                </div>
+
+                {/* Divider */}
+                <div className="mx-6 my-6 h-px bg-gray-200" />
+
+                {/* Additional Navigation Items */}
+                <div className="px-6 space-y-1">
+                  {[
+                    { name: 'OUR STORY', path: '/our-story' },
+                    { name: 'BLOG', path: '/blog' },
+                    { name: 'BRAND', path: '/brand' }
+                  ].map((item) => {
+                    const isActive = location.pathname === item.path;
+                    
+                    return (
+                      <Link
+                        key={item.name}
+                        to={item.path}
+                        className={`block w-full text-left px-4 py-3 rounded-full font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${
+                          isActive 
+                            ? 'text-[hsl(var(--brand-pink))] bg-[hsl(var(--brand-pink))]/10' 
+                            : 'text-black hover:text-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))]/5'
+                        }`}
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        {item.name}
+                      </Link>
+                    );
+                  })}
+                </div>
+
+                {/* Divider */}
+                <div className="mx-6 my-6 h-px bg-gray-200" />
+
+                {/* Cart Section - Match navbar cart styling */}
+                <div className="px-6">
+                  <button
+                    onClick={() => { setMobileMenuOpen(false); setCartOpen(true); }}
+                    className="w-full flex items-center justify-between p-4 text-black hover:text-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))]/5 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))]"
+                  >
+                    <div className="flex items-center gap-3">
+                      <ShoppingBag className="h-6 w-6" />
+                      <span className="font-medium">Shopping Cart</span>
+                    </div>
+                    {totalItems > 0 && (
+                      <span className="text-white rounded-full text-xs w-5 h-5 flex items-center justify-center font-semibold bg-[hsl(var(--brand-pink))]">
+                        {totalItems}
+                      </span>
+                    )}
+                  </button>
+                </div>
+              </nav>
+
+              {/* Footer - Simple */}
+              <div className="flex-shrink-0 p-6 border-t border-gray-100 bg-white">
+                <div className="text-center">
+                  <p className="text-gray-600 text-sm mb-3">Follow Sister Storage</p>
+                  <div className="flex justify-center gap-3">
+                    <a 
+                      href="https://instagram.com/sisterstorage" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="w-10 h-10 bg-[hsl(var(--brand-pink))] rounded-full flex items-center justify-center text-white hover:bg-[hsl(var(--brand-pink))]/90 transition-colors"
+                      aria-label="Follow us on Instagram"
+                    >
+                      <span className="text-sm font-bold" aria-hidden="true">IG</span>
+                    </a>
+                    <a 
+                      href="https://facebook.com/sisterstorage" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="w-10 h-10 bg-[hsl(var(--brand-pink))] rounded-full flex items-center justify-center text-white hover:bg-[hsl(var(--brand-pink))]/90 transition-colors"
+                      aria-label="Follow us on Facebook"
+                    >
+                      <span className="text-sm font-bold" aria-hidden="true">FB</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </aside>
           </div>
-        </aside>
-      </div>
+        ),
+        document.body
       )}
+
     </>
   );
 };
