@@ -21,10 +21,10 @@ const ShopProductSections = ({ products }: ShopProductSectionsProps) => {
           <div className="container-custom py-8 md:py-12">
             <header className="flex items-end justify-between gap-4 mb-6">
               <div>
-                <h2 className="text-xl md:text-2xl font-bold text-foreground uppercase tracking-wide">
+                <h2 className="text-3xl md:text-4xl font-bold text-foreground uppercase tracking-wide">
                   Top-Selling Bundles
                 </h2>
-                <p className="text-sm text-muted-foreground uppercase tracking-wide mt-1">
+                <p className="text-base text-muted-foreground uppercase tracking-wide mt-1">
                   Complete collections for every Sister
                 </p>
               </div>
@@ -45,10 +45,10 @@ const ShopProductSections = ({ products }: ShopProductSectionsProps) => {
           <div className="container-custom py-8 md:py-12">
             <header className="flex items-end justify-between gap-4 mb-6">
               <div>
-                <h2 className="text-xl md:text-2xl font-bold text-foreground uppercase tracking-wide">
+                <h2 className="text-3xl md:text-4xl font-bold text-foreground uppercase tracking-wide">
                   Individual Boxes
                 </h2>
-                <p className="text-sm text-muted-foreground uppercase tracking-wide mt-1">
+                <p className="text-base text-muted-foreground uppercase tracking-wide mt-1">
                   Build your own perfect collection
                 </p>
               </div>
@@ -69,10 +69,10 @@ const ShopProductSections = ({ products }: ShopProductSectionsProps) => {
           <div className="container-custom py-8 md:py-12">
             <header className="flex items-end justify-between gap-4 mb-6">
               <div>
-                <h2 className="text-xl md:text-2xl font-bold text-foreground uppercase tracking-wide">
+                <h2 className="text-3xl md:text-4xl font-bold text-foreground uppercase tracking-wide">
                   Jewelry Pouches
                 </h2>
-                <p className="text-sm text-muted-foreground uppercase tracking-wide mt-1">
+                <p className="text-base text-muted-foreground uppercase tracking-wide mt-1">
                   Soft protection, travel-ready
                 </p>
               </div>

@@ -51,8 +51,8 @@ const SingleProductCard = ({ product }: SingleProductCardProps) => {
         {/* Product Info - Flex Layout */}
         <div className="flex-1 flex flex-col space-y-2">
           {/* Title - Fixed Height */}
-          <div className="min-h-[2.5rem]">
-            <h3 className="font-medium text-sm text-gray-900 group-hover:text-gray-600 transition-colors line-clamp-2">
+          <div className="min-h-[3rem]">
+            <h3 className="font-bold text-lg text-gray-900 group-hover:text-gray-600 transition-colors line-clamp-2">
               {product.name}
             </h3>
           </div>
@@ -60,14 +60,14 @@ const SingleProductCard = ({ product }: SingleProductCardProps) => {
           {/* Attributes - Fixed Height */}
           <div className="min-h-[1.5rem] mb-2">
             {(rodCount || size) && (
-              <div className="flex gap-2 text-xs text-gray-500">
+              <div className="flex gap-2 text-sm text-gray-500">
                 {rodCount && (
-                  <span className="bg-gray-100 px-2 py-1 rounded-full h-6 flex items-center">
+                  <span className="bg-gray-100 px-3 py-1.5 rounded-full flex items-center">
                     {rodCount} rod{Array.isArray(rodCount) ? 's' : rodCount !== '1' ? 's' : ''}
                   </span>
                 )}
                 {size && (
-                  <span className="bg-gray-100 px-2 py-1 rounded-full h-6 flex items-center">
+                  <span className="bg-gray-100 px-3 py-1.5 rounded-full flex items-center">
                     {size}
                   </span>
                 )}
@@ -77,21 +77,21 @@ const SingleProductCard = ({ product }: SingleProductCardProps) => {
           
           {/* Price & Action - Fixed at Bottom */}
           <div className="mt-auto">
-            <div className="flex items-center justify-between h-8">
+            <div className="flex items-center justify-between h-10">
               <div className="flex items-baseline gap-2">
-                <span className="text-base font-medium text-gray-900">${product.price}</span>
+                <span className="text-xl font-bold text-gray-900">${product.price}</span>
                 {product.originalPrice && (
-                  <span className="text-xs text-gray-400 line-through">${product.originalPrice}</span>
+                  <span className="text-sm text-gray-400 line-through">${product.originalPrice}</span>
                 )}
               </div>
               
               <Button 
                 size="sm" 
                 variant="outline"
-                className="opacity-0 group-hover:opacity-100 transition-opacity h-8 px-3 text-xs min-w-[4rem]"
+                className="opacity-0 group-hover:opacity-100 transition-opacity h-10 px-4 text-sm min-w-[5rem]"
                 onClick={handleAddToCart}
               >
-                <ShoppingBag className="h-3 w-3 mr-1" />
+                <ShoppingBag className="h-4 w-4 mr-1" />
                 Add
               </Button>
             </div>

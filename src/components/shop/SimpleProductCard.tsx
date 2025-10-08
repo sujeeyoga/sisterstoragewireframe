@@ -47,14 +47,14 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
       
       {/* Title */}
       <Link to={`/shop/${product.id}`}>
-        <h3 className="text-sm font-bold leading-tight text-foreground hover:text-brand-pink transition-colors line-clamp-2 uppercase tracking-wide">
+        <h3 className="text-3xl font-bold leading-tight text-foreground hover:text-brand-pink transition-colors line-clamp-2 uppercase tracking-wide">
           {product.name}
         </h3>
       </Link>
       
       {/* Bullets (optional) */}
       {bullets && bullets.length > 0 && (
-        <ul className="text-xs text-muted-foreground space-y-1">
+        <ul className="text-sm text-muted-foreground space-y-1">
           {bullets.map((line, i) => (
             <li key={i} className="flex items-start gap-2">
               <span className="text-brand-orange mt-0.5">•</span>
@@ -67,22 +67,22 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
       {/* Price and CTA */}
       <div className="flex items-baseline justify-between pt-2 mt-auto border-t border-border">
         <div className="space-x-2">
-          <span className="text-lg font-bold text-foreground">
+          <span className="text-2xl font-bold text-foreground">
             ${product.price.toFixed(2)}
           </span>
           {product.originalPrice && product.originalPrice > product.price && (
-            <span className="text-xs text-muted-foreground line-through">
+            <span className="text-base text-muted-foreground line-through">
               ${product.originalPrice.toFixed(2)}
             </span>
           )}
         </div>
         <Button 
           size="sm"
-          className="h-8 px-3 text-xs bg-brand-black hover:bg-brand-orange text-white font-bold uppercase tracking-wide transition-colors"
+          className="h-10 px-4 text-sm bg-brand-black hover:bg-brand-orange text-white font-bold uppercase tracking-wide transition-colors"
           onClick={handleAddToCart}
           style={{ borderRadius: '0px' }}
         >
-          <ShoppingBag className="h-3 w-3 mr-1" />
+          <ShoppingBag className="h-4 w-4 mr-1" />
           Add
         </Button>
       </div>
