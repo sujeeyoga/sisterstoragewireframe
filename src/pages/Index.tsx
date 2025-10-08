@@ -5,7 +5,6 @@ import Hero from "@/components/Hero";
 import BestSeller from "@/components/BestSeller";
 
 import About from "@/components/About";
-import Newsletter from "@/components/Newsletter";
 import CommunityStoriesCarousels from "@/components/community/CommunityStoriesCarousels";
 import FeaturedGrid from "@/components/FeaturedGrid";
 import PromotionalSection from "@/components/PromotionalSection";
@@ -41,13 +40,6 @@ const Index = () => {
       
       {/* Community Stories - Combined carousel section with testimonials */}
       <CommunityStoriesCarousels />
-      
-      {/* Newsletter - Email capture */}
-      <EnhancedScrollFade preset="medium" delay={0.1} once={true}>
-        <Section spacing="lg" width="contained" background="white">
-          <Newsletter />
-        </Section>
-      </EnhancedScrollFade>
       
       {/* Promotional Section - Summer Sale & Storage Solutions */}
       <EnhancedScrollFade preset="medium" delay={0.1} once={true}>
