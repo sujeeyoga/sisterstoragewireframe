@@ -29,13 +29,18 @@ import {
 } from '@/components/ui/tooltip';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { Edit, Trash2, Plus, Search, Eye, EyeOff, AlertCircle } from 'lucide-react';
+import { Edit, Trash2, Plus, Search, Eye, EyeOff, AlertCircle, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { products as staticProducts } from '@/data/products';
+
+type SortField = 'name' | 'price' | 'stock' | 'visible';
+type SortDirection = 'asc' | 'desc' | null;
 
 export const ProductsTable = () => {
   const [search, setSearch] = useState('');
   const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [sortField, setSortField] = useState<SortField | null>(null);
+  const [sortDirection, setSortDirection] = useState<SortDirection>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -44,7 +49,32 @@ export const ProductsTable = () => {
     return staticProducts.some(p => p.slug === productSlug);
   };
 
-  const { data: products, isLoading } = useQuery({
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      // Cycle through: asc -> desc -> null
+      if (sortDirection === 'asc') {
+        setSortDirection('desc');
+      } else if (sortDirection === 'desc') {
+        setSortField(null);
+        setSortDirection(null);
+      }
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+
+  const getSortIcon = (field: SortField) => {
+    if (sortField !== field) {
+      return <ArrowUpDown className="h-4 w-4 ml-1 opacity-50" />;
+    }
+    if (sortDirection === 'asc') {
+      return <ArrowUp className="h-4 w-4 ml-1" />;
+    }
+    return <ArrowDown className="h-4 w-4 ml-1" />;
+  };
+
+  const { data: rawProducts, isLoading } = useQuery({
     queryKey: ['admin-products', search],
     queryFn: async () => {
       let query = supabase.from('woocommerce_products').select('*').order('name');
@@ -58,6 +88,39 @@ export const ProductsTable = () => {
       return data;
     },
   });
+
+  // Apply client-side sorting
+  const products = rawProducts ? [...rawProducts].sort((a, b) => {
+    if (!sortField || !sortDirection) return 0;
+
+    let aValue: any;
+    let bValue: any;
+
+    switch (sortField) {
+      case 'name':
+        aValue = a.name.toLowerCase();
+        bValue = b.name.toLowerCase();
+        break;
+      case 'price':
+        aValue = a.sale_price || a.regular_price || a.price || 0;
+        bValue = b.sale_price || b.regular_price || b.price || 0;
+        break;
+      case 'stock':
+        aValue = a.manage_stock ? (a.stock_quantity || 0) : Infinity;
+        bValue = b.manage_stock ? (b.stock_quantity || 0) : Infinity;
+        break;
+      case 'visible':
+        aValue = a.visible ? 1 : 0;
+        bValue = b.visible ? 1 : 0;
+        break;
+      default:
+        return 0;
+    }
+
+    if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
+    if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
+    return 0;
+  }) : rawProducts;
 
   const deleteMutation = useMutation({
     mutationFn: async (id: number) => {
@@ -133,11 +196,51 @@ export const ProductsTable = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Price</TableHead>
-              <TableHead>Stock</TableHead>
+              <TableHead>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleSort('name')}
+                  className="h-8 px-2 hover:bg-muted"
+                >
+                  Name
+                  {getSortIcon('name')}
+                </Button>
+              </TableHead>
+              <TableHead>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleSort('price')}
+                  className="h-8 px-2 hover:bg-muted"
+                >
+                  Price
+                  {getSortIcon('price')}
+                </Button>
+              </TableHead>
+              <TableHead>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleSort('stock')}
+                  className="h-8 px-2 hover:bg-muted"
+                >
+                  Stock
+                  {getSortIcon('stock')}
+                </Button>
+              </TableHead>
               <TableHead>Status</TableHead>
-              <TableHead>Visibility</TableHead>
+              <TableHead>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleSort('visible')}
+                  className="h-8 px-2 hover:bg-muted"
+                >
+                  Visibility
+                  {getSortIcon('visible')}
+                </Button>
+              </TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
