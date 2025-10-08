@@ -134,22 +134,8 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
         
         {/* Pricing */}
         <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-black text-gray-900">${product.price.toFixed(2)}</span>
-              {product.originalPrice && product.originalPrice > product.price && (
-                <span className="text-sm text-gray-400 line-through">${product.originalPrice.toFixed(2)}</span>
-              )}
-            </div>
-            {product.originalPrice && product.originalPrice > product.price && (
-              <div className="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-lg">
-                Save ${(product.originalPrice - product.price).toFixed(2)}
-              </div>
-            )}
-          </div>
-          
           {/* Buy Button */}
-          <Button 
+          <Button
             variant="buy"
             size="buy"
             className="w-full font-bold text-sm py-3 shadow-lg hover:shadow-xl transition-all duration-300"
