@@ -9,8 +9,6 @@ const PromotionalSection = () => {
     <section className="relative py-16 md:py-24 overflow-hidden">
       {/* Animated Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-[hsl(var(--brand-pink)/0.05)] via-white to-[hsl(var(--brand-orange)/0.05)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,hsl(var(--brand-pink)/0.1),transparent_50%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,hsl(var(--brand-orange)/0.08),transparent_50%)]" />
       
       <div className="container-custom relative z-10">
         {/* Header */}
