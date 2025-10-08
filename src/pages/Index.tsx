@@ -5,7 +5,6 @@ import Hero from "@/components/Hero";
 import BestSeller from "@/components/BestSeller";
 
 import About from "@/components/About";
-import Delivery from "@/components/Delivery";
 import Newsletter from "@/components/Newsletter";
 import CommunityStoriesCarousels from "@/components/community/CommunityStoriesCarousels";
 import FeaturedGrid from "@/components/FeaturedGrid";
@@ -53,13 +52,6 @@ const Index = () => {
       {/* Promotional Section - Summer Sale & Storage Solutions */}
       <EnhancedScrollFade preset="medium" delay={0.1} once={true}>
         <PromotionalSection />
-      </EnhancedScrollFade>
-      
-      {/* Delivery - Final service details */}
-      <EnhancedScrollFade preset="subtle" once={true}>
-        <Section spacing="md" width="contained" background="white" id="delivery">
-          <Delivery />
-        </Section>
       </EnhancedScrollFade>
     </BaseLayout>
   );
