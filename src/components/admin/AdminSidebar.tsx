@@ -1,4 +1,4 @@
-import { LayoutDashboard, Package, Layout, RefreshCw, Settings } from 'lucide-react';
+import { LayoutDashboard, Package, Layout, RefreshCw, Settings, Users } from 'lucide-react';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
   Sidebar,
@@ -16,6 +16,7 @@ import {
 const menuItems = [
   { title: 'Dashboard', url: '/admin', icon: LayoutDashboard, end: true },
   { title: 'Products', url: '/admin/products', icon: Package, end: false },
+  { title: 'Customers', url: '/admin/customers', icon: Users, end: false },
   { title: 'Sections', url: '/admin/sections', icon: Layout, end: false },
   { title: 'WooCommerce Sync', url: '/admin/sync', icon: RefreshCw, end: false },
   { title: 'Settings', url: '/admin/settings', icon: Settings, end: false },
