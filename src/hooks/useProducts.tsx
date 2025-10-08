@@ -12,6 +12,7 @@ export function useProducts() {
         .from('woocommerce_products')
         .select('*')
         .eq('in_stock', true)
+        .eq('visible', true)
         .order('name');
 
       if (error) {
@@ -75,6 +76,7 @@ export function useProductsByCategory(category: string) {
           .from('woocommerce_products')
           .select('*')
           .eq('in_stock', true)
+          .eq('visible', true)
           .order('name');
 
         if (error || !data) {
@@ -88,6 +90,7 @@ export function useProductsByCategory(category: string) {
         .from('woocommerce_products')
         .select('*')
         .eq('in_stock', true)
+        .eq('visible', true)
         .contains('categories', [{ slug: category }])
         .order('name');
 
@@ -111,6 +114,7 @@ export function useBestSellers(limit: number = 4) {
         .from('woocommerce_products')
         .select('*')
         .eq('in_stock', true)
+        .eq('visible', true)
         .order('id')
         .limit(limit);
 
