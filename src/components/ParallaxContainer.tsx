@@ -10,8 +10,8 @@ const ParallaxContainer = () => {
   const isMobile = useIsMobile();
   useViewportHeight();
   
-  // Disable parallax on mobile for better performance
-  const parallaxDisabled = isMobile;
+  // Disable parallax on all devices to prevent scroll flicker
+  const parallaxDisabled = true;
   
   const { 
     ref: mainRef, 

@@ -111,7 +111,7 @@ export const SisterStoriesCarousel = () => {
       <div className="relative w-full overflow-hidden">
         <div 
           ref={scrollContainerRef}
-          className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4 px-4 md:px-6 lg:px-8 scroll-smooth"
+          className="flex gap-4 overflow-x-auto overscroll-x-contain touch-pan-y snap-x snap-mandatory scrollbar-hide pb-4 px-4 md:px-6 lg:px-8 scroll-smooth"
         >
           {videoStories.map((story) => (
             <div 
