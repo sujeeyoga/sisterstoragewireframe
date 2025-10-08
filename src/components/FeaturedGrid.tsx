@@ -69,7 +69,7 @@ const gridItems = [
   span: "normal"
 }];
 const FeaturedGrid = () => {
-  return <div className="w-full">
+  return <div className="w-full" style={{ contain: 'layout paint' }}>
       <div className="text-center mb-8 md:mb-12 px-4">
         <h2 className="text-6xl md:text-8xl lg:text-9xl font-thin font-poppins tracking-wide mb-4 uppercase">SUMMER END ORGANIZATION</h2>
         <p className="text-muted-foreground max-w-2xl mx-auto">

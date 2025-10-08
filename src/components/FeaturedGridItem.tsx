@@ -53,13 +53,15 @@ const FeaturedGridItem: React.FC<FeaturedGridItemProps> = ({
         src={image}
         alt={title}
         className={cn(
-          "w-full h-full object-cover transition-all duration-300",
+          "w-full h-full object-cover transition-all duration-300 transform-gpu",
           "group-hover:opacity-90 group-hover:scale-105",
           isLoaded ? "opacity-100" : "opacity-0"
         )}
         loading="lazy"
+        decoding="async"
         onLoad={() => setIsLoaded(true)}
         onError={() => setHasError(true)}
+        style={{ backfaceVisibility: 'hidden' }}
       />
     </div>
   );
