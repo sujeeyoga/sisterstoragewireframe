@@ -118,30 +118,30 @@ const ProductCard = ({ product }: ProductCardProps) => {
         {/* All product information underneath */}
         <CardContent className="px-4 py-4 flex flex-col h-full">
           {/* Title & Price - Fixed Height */}
-          <div className="mb-2 flex justify-between items-start min-h-[3rem]">
-            <h3 className="font-semibold text-lg line-clamp-2 flex-1">{product.name}</h3>
+          <div className="mb-2 flex justify-between items-start min-h-[5rem]">
+            <h3 className="font-bold text-3xl lg:text-4xl line-clamp-2 flex-1 uppercase">{product.name}</h3>
             <div className="text-right flex-shrink-0 ml-2">
               {product.originalPrice && product.originalPrice > product.price ? (
                 <div className="flex flex-col items-end">
-                  <span className="text-xs text-muted-foreground line-through">${product.originalPrice.toFixed(2)}</span>
-                  <span className="font-bold text-lg text-[hsl(var(--primary))]">${product.price.toFixed(2)}</span>
+                  <span className="text-sm text-muted-foreground line-through">${product.originalPrice.toFixed(2)}</span>
+                  <span className="font-bold text-2xl text-[hsl(var(--primary))]">${product.price.toFixed(2)}</span>
                 </div>
               ) : (
-                <span className="font-bold text-lg">${product.price.toFixed(2)}</span>
+                <span className="font-bold text-2xl">${product.price.toFixed(2)}</span>
               )}
             </div>
           </div>
           
           {/* Sister Caption - Fixed Height */}
-          <div className="min-h-[1.5rem] mb-2">
+          <div className="min-h-[2rem] mb-2">
             {product.caption && (
-              <p className="text-[hsl(var(--primary))] text-sm font-medium italic line-clamp-1">"{product.caption}"</p>
+              <p className="text-[hsl(var(--primary))] text-lg font-medium italic line-clamp-1">"{product.caption}"</p>
             )}
           </div>
           
           {/* Description - Fixed Height */}
           <div className="h-[3rem] mb-3">
-            <p className="text-muted-foreground text-sm line-clamp-2">{product.description}</p>
+            <p className="text-muted-foreground text-lg line-clamp-2">{product.description}</p>
           </div>
           
           {/* Material - Fixed Height */}

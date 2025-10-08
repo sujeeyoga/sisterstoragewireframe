@@ -90,9 +90,9 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
         {/* Title */}
         <div className="space-y-2">
           <Link to={`/shop/${product.id}`}>
-            <h3 className="text-lg font-bold text-gray-900 leading-tight line-clamp-2 hover:text-pink-600 transition-colors">{product.name}</h3>
+            <h3 className="text-3xl lg:text-4xl font-bold text-gray-900 leading-tight line-clamp-2 hover:text-pink-600 transition-colors uppercase">{product.name}</h3>
           </Link>
-          <p className="text-gray-600 text-sm leading-relaxed line-clamp-2">{product.description}</p>
+          <p className="text-gray-600 text-lg leading-relaxed line-clamp-2">{product.description}</p>
         </div>
         
         {/* What's Included */}

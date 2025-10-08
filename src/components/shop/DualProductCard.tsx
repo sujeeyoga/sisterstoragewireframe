@@ -53,17 +53,17 @@ const DualProductCard = ({ products }: DualProductCardProps) => {
         </div>
         
         {/* Title - Fixed Height */}
-        <div className="min-h-[2.5rem] mb-2">
+        <div className="min-h-[4rem] mb-2">
           <Link to={`/shop/${product.id}`}>
-            <h3 className="font-bold text-gray-900 text-sm hover:text-pink-600 transition-colors line-clamp-2">
+            <h3 className="font-bold text-gray-900 text-xl hover:text-pink-600 transition-colors line-clamp-2 uppercase">
               {product.name}
             </h3>
           </Link>
         </div>
         
         {/* Description - Fixed Height */}
-        <div className="h-[2.5rem] mb-3">
-          <p className="text-xs text-gray-600 line-clamp-2">
+        <div className="h-[3rem] mb-3">
+          <p className="text-sm text-gray-600 line-clamp-2">
             {product.description || "Premium storage solution for your jewelry collection"}
           </p>
         </div>

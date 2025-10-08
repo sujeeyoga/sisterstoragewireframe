@@ -51,8 +51,8 @@ const SingleProductCard = ({ product }: SingleProductCardProps) => {
         {/* Product Info - Flex Layout */}
         <div className="flex-1 flex flex-col space-y-2">
           {/* Title - Fixed Height */}
-          <div className="min-h-[3rem]">
-            <h3 className="font-bold text-lg text-gray-900 group-hover:text-gray-600 transition-colors line-clamp-2">
+          <div className="min-h-[5rem]">
+            <h3 className="font-bold text-3xl lg:text-4xl text-gray-900 group-hover:text-gray-600 transition-colors line-clamp-2 uppercase">
               {product.name}
             </h3>
           </div>
