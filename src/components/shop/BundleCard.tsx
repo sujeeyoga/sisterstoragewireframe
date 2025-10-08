@@ -82,7 +82,7 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
       <div className="px-4 py-4 grid gap-3 flex-1">
         <div className="grid gap-2">
           <Link to={`/shop/${product.id}`}>
-            <h3 className="text-lg font-bold leading-tight text-foreground hover:text-brand-pink transition-colors uppercase tracking-wide">
+            <h3 className="text-3xl font-bold leading-tight text-foreground hover:text-brand-pink transition-colors uppercase tracking-wide">
               {product.name}
             </h3>
           </Link>
