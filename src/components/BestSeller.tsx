@@ -100,7 +100,7 @@ const BestSeller = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 px-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 px-4">
           {buyCards.map((item, index) => (
             <Card key={item.id} className="group overflow-hidden border-none shadow-md hover:shadow-xl transition-all duration-500 bg-white relative transform hover:-translate-y-1 hover:scale-[1.02]">
               {/* Bundle Badge */}
@@ -138,7 +138,7 @@ const BestSeller = () => {
                 </div>
               </div>
               
-              <CardContent className="p-5 space-y-4">
+              <CardContent className="p-3 space-y-3">
                 {/* Rating */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1">
