@@ -46,7 +46,7 @@ const App = () => {
               <Route path="/content/:slug" element={<PageTransition><ContentPage /></PageTransition>} />
               <Route path="/hero-gallery-demo" element={<PageTransition><HeroGalleryDemo /></PageTransition>} />
               <Route path="/our-story" element={<PageTransition><OurStory /></PageTransition>} />
-              <Route path="/admin" element={<PageTransition><Admin /></PageTransition>} />
+              <Route path="/admin/*" element={<Admin />} />
               <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
               <Route path="/gift" element={<PageTransition><Gift /></PageTransition>} />
               <Route path="/privacy-policy" element={<PageTransition><PrivacyPolicy /></PageTransition>} />
