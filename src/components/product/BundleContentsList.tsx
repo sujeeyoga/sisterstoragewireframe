@@ -52,9 +52,9 @@ const BundleContentsList = ({ contents, variant = "full", showTotals = false }: 
   // Card variant - aggregate format
   if (isCard) {
     return (
-      <div className="space-y-5">
+      <div className="space-y-3">
         {showTotals && (
-          <div className="pb-4 border-b border-gray-200">
+          <div className="pb-3 border-b border-gray-200">
             <div className="inline-flex items-center gap-2 text-[hsl(var(--brand-pink))] text-3xl font-bold">
               <span className="uppercase tracking-wide">Total:</span>
               <span>{totalRods} Rods</span>
@@ -64,7 +64,7 @@ const BundleContentsList = ({ contents, variant = "full", showTotals = false }: 
         <h3 className="text-sm font-bold text-[hsl(var(--brand-pink))] uppercase tracking-wider">
           What's Included
         </h3>
-        <ul className="space-y-4">
+        <ul className="space-y-3">
           {items.map((item, index) => {
             const totalRodsForSize = item.quantity * item.rods;
             return (
