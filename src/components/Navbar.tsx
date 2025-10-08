@@ -51,7 +51,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
         {/* Left: Logo */}
         <div className="justify-self-start shrink-0">
           <EnhancedLogo 
-            size={isSticky ? "md" : "lg"} 
+            size={isSticky ? "lg" : "xl"} 
             scrolled={isSticky}
             className="animate-fade-in transition-all duration-300"
             loading="eager"
@@ -131,7 +131,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
           {/* Header - Simple like navbar */}
           <div className="p-6 border-b border-gray-100">
             <div className="flex items-center justify-between">
-              <EnhancedLogo size="md" className="shrink-0" />
+              <EnhancedLogo size="lg" className="shrink-0" />
               <button
                 onClick={() => setMobileMenuOpen(false)}
                 className="p-2 text-black hover:text-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink)/0.1)] rounded-full transition-colors"
