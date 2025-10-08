@@ -4,7 +4,6 @@ import Section from "@/components/layout/Section";
 import Hero from "@/components/Hero";
 import BestSeller from "@/components/BestSeller";
 
-import About from "@/components/About";
 import CommunityStoriesCarousels from "@/components/community/CommunityStoriesCarousels";
 import FeaturedGrid from "@/components/FeaturedGrid";
 import PromotionalSection from "@/components/PromotionalSection";
@@ -30,13 +29,6 @@ const Index = () => {
       
       {/* Buy Cards - Major product section */}
       <BestSeller />
-      
-      {/* About Section - Brand story */}
-      <EnhancedScrollFade preset="subtle" delay={0.2} once={true}>
-        <Section spacing="lg" width="contained" background="gray">
-          <About />
-        </Section>
-      </EnhancedScrollFade>
       
       {/* Community Stories - Combined carousel section with testimonials */}
       <CommunityStoriesCarousels />
