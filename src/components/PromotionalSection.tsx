@@ -104,8 +104,6 @@ const PromotionalSection = () => {
                     className="w-full h-full object-contain object-center drop-shadow-2xl transition-transform duration-700 group-hover:scale-105"
                     loading="lazy"
                   />
-                  {/* Decorative glow effect */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--brand-pink)/0.1)] via-transparent to-transparent rounded-2xl" />
                 </div>
               </div>
             </div>
