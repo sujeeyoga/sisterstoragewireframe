@@ -75,7 +75,7 @@ const ShopHeroProduct: React.FC<ShopHeroProductProps> = ({ product }) => {
             </div>
 
             {/* Content Side */}
-            <div className="p-8 lg:p-12 flex flex-col justify-center space-y-6">
+            <div className="p-8 lg:p-12 flex flex-col justify-center space-y-4">
               {/* Rating */}
               <HeroProductRating ratingCount={product.ratingCount} />
 
