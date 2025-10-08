@@ -1,10 +1,11 @@
-
+import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ShoppingBag, Star, Heart, Plus } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { useToast } from '@/components/ui/use-toast';
 import { Link } from 'react-router-dom';
+import { cn } from '@/lib/utils';
 
 const buyCards = [
   {
@@ -64,9 +65,14 @@ const buyCards = [
 const BestSeller = () => {
   const { addItem } = useCart();
   const { toast } = useToast();
+  const [loadedImages, setLoadedImages] = React.useState<Record<string, boolean>>({});
   
   console.log('BestSeller component rendering');
   console.log('BestSeller buyCards length:', buyCards.length);
+  
+  const handleImageLoad = (itemId: string) => {
+    setLoadedImages(prev => ({ ...prev, [itemId]: true }));
+  };
   
   const handleBuyNow = (item: { id: string; name: string; price: number; image: string }) => {
     console.log('handleBuyNow called with:', item);
@@ -117,12 +123,21 @@ const BestSeller = () => {
               
               {/* Product Image */}
               <div className="relative overflow-hidden">
+                {/* Loading skeleton */}
+                {!loadedImages[item.id] && (
+                  <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse" />
+                )}
+                
                 <img 
                   src={item.image} 
                   alt={`${item.name} - Bundle collection`}
-                  className="w-full aspect-[4/5] object-cover transition-transform duration-700 group-hover:scale-105"
+                  className={cn(
+                    "w-full aspect-[4/5] object-cover transition-all duration-700 group-hover:scale-105",
+                    loadedImages[item.id] ? "opacity-100" : "opacity-0"
+                  )}
                   loading="eager"
                   decoding="async"
+                  onLoad={() => handleImageLoad(item.id)}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 
