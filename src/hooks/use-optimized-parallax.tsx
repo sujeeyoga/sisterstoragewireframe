@@ -55,8 +55,8 @@ export const useOptimizedParallax = ({
     const scrollY = window.pageYOffset;
     const deltaY = Math.abs(scrollY - lastScrollY.current);
     
-    // Only update if there's meaningful change
-    if (deltaY > 1) {
+    // Only update if there's meaningful change (increased threshold)
+    if (deltaY > 5) {
       const newOffset = scrollY * speed;
       setOffset(newOffset);
       lastScrollY.current = scrollY;

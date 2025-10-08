@@ -15,12 +15,13 @@ const ParallaxContainer = () => {
   
   const { 
     ref: mainRef, 
+    offset: mainOffset,
     isVisible,
     prefersReducedMotion 
   } = useOptimizedParallax({
-    speed: 0,
+    speed: 0.3, // Reduced speed for smoother effect
     threshold: 0.1,
-    disabled: true
+    disabled: parallaxDisabled
   });
 
   const imageUrlDesktop = "https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-27-scaled.jpg";
@@ -40,7 +41,7 @@ const ParallaxContainer = () => {
         backgroundColor: 'hsl(var(--brand-pink))'
       }}
     >
-      {/* Static background - no JS parallax to prevent scroll jank */}
+      {/* Optimized parallax background */}
       <div
         aria-hidden="true"
         className="absolute inset-0"
@@ -48,7 +49,11 @@ const ParallaxContainer = () => {
           backgroundImage,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
+          backgroundRepeat: 'no-repeat',
+          transform: !prefersReducedMotion && !isMobile && isVisible
+            ? `translateY(${mainOffset * 0.5}px)`
+            : 'none',
+          willChange: isVisible && !isMobile ? 'transform' : 'auto'
         }}
       />
 
