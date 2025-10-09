@@ -3,6 +3,7 @@ import { X, Trash2, Plus, Minus, ShoppingBag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/contexts/CartContext';
 import { Link } from 'react-router-dom';
+import Logo from '@/components/ui/Logo';
 
 const CartDrawer = () => {
   const { items, removeItem, updateQuantity, totalItems, subtotal, isOpen, setIsOpen } = useCart();
@@ -60,18 +61,23 @@ const CartDrawer = () => {
       >
         <div className="flex flex-col h-full">
           {/* Drawer Header */}
-          <div className="flex justify-between items-center border-b border-gray-200 p-4 bg-[hsl(var(--brand-pink))]/5">
+          <div className="border-b border-gray-200 p-4 bg-[hsl(var(--brand-pink))]/5">
+            <div className="flex justify-between items-center mb-3">
+              <Link to="/" onClick={() => setIsOpen(false)}>
+                <Logo size="sm" />
+              </Link>
+              <button 
+                onClick={() => setIsOpen(false)}
+                className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                aria-label="Close cart"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
             <h2 className="text-lg font-bold flex items-center text-gray-900">
               <ShoppingBag className="mr-2 h-5 w-5 text-[hsl(var(--brand-pink))]" />
               Shopping Cart ({totalItems})
             </h2>
-            <button 
-              onClick={() => setIsOpen(false)}
-              className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-              aria-label="Close cart"
-            >
-              <X className="h-5 w-5" />
-            </button>
           </div>
           
           {/* Cart Items */}
