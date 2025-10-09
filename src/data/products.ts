@@ -184,7 +184,13 @@ export const products: Product[] = [
     inStock: true,
     sku: "JEW-ORG-001",
     slug: "jewelry-bag-organizer",
-    images: ["/lovable-uploads/c80056-placeholder.png"],
+    images: [
+      "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/Sister%20Storage%20Assets/jewlery%20bag/1759979154371-4bikx.jpg",
+      "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/Sister%20Storage%20Assets/jewlery%20bag/1759979153457-8ip49p.jpg",
+      "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/Sister%20Storage%20Assets/jewlery%20bag/1759979152374-09505.jpg",
+      "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/Sister%20Storage%20Assets/jewlery%20bag/1759979151269-2i6rrm.jpg",
+      "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/Sister%20Storage%20Assets/jewlery%20bag/1759979150294-wvvbmd.jpg"
+    ],
     attributes: {},
     caption: "All your pieces, organized and loved.",
     funnelStage: "Everyday Sister Staples – No rods"
