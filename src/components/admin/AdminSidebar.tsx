@@ -27,9 +27,14 @@ const menuItems = [
 ];
 
 export function AdminSidebar() {
-  const { state } = useSidebar();
+  const { state, setOpenMobile } = useSidebar();
   const location = useLocation();
   const isCollapsed = state === 'collapsed';
+
+  const handleNavClick = () => {
+    // Close sidebar on mobile when nav item is clicked
+    setOpenMobile(false);
+  };
 
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
     isActive ? 'bg-pink-50 text-pink-700 font-medium' : 'text-muted-foreground hover:bg-muted/50';
@@ -50,7 +55,12 @@ export function AdminSidebar() {
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <NavLink to={item.url} end={item.end} className={getNavCls}>
+                    <NavLink 
+                      to={item.url} 
+                      end={item.end} 
+                      className={getNavCls}
+                      onClick={handleNavClick}
+                    >
                       <item.icon className="h-4 w-4" />
                       {!isCollapsed && <span>{item.title}</span>}
                     </NavLink>
