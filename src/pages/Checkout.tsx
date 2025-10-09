@@ -235,10 +235,14 @@ const Checkout = () => {
 
       if (error) throw error;
 
+      console.log('Stripe checkout response:', data);
+
       if (data?.url) {
-        // Redirect to Stripe Checkout
+        console.log('Redirecting to Stripe:', data.url);
+        // Redirect to Stripe Checkout in same window
         window.location.href = data.url;
       } else {
+        console.error('No URL in response:', data);
         throw new Error('No checkout URL received');
       }
     } catch (error) {
