@@ -22,6 +22,7 @@ export const ImageUploader = () => {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState({ current: 0, total: 0 });
   const [images, setImages] = useState<UploadedImage[]>([]);
+  const [selectedImages, setSelectedImages] = useState<Set<string>>(new Set());
   const { toast } = useToast();
 
   // Fetch uploaded images
@@ -238,6 +239,58 @@ export const ImageUploader = () => {
     });
   };
 
+  const toggleSelectImage = (imageId: string) => {
+    const newSelected = new Set(selectedImages);
+    if (newSelected.has(imageId)) {
+      newSelected.delete(imageId);
+    } else {
+      newSelected.add(imageId);
+    }
+    setSelectedImages(newSelected);
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedImages.size === images.length) {
+      setSelectedImages(new Set());
+    } else {
+      setSelectedImages(new Set(images.map(img => img.id)));
+    }
+  };
+
+  const deleteSelected = async () => {
+    if (selectedImages.size === 0) return;
+
+    const imagesToDelete = images.filter(img => selectedImages.has(img.id));
+    
+    for (const image of imagesToDelete) {
+      try {
+        // Delete from storage
+        const { error: storageError } = await supabase.storage
+          .from('images')
+          .remove([image.file_path]);
+
+        if (storageError) throw storageError;
+
+        // Delete from database
+        const { error: dbError } = await supabase
+          .from('uploaded_images')
+          .delete()
+          .eq('id', image.id);
+
+        if (dbError) throw dbError;
+      } catch (error) {
+        console.error('Delete error:', error);
+      }
+    }
+
+    toast({
+      title: `Deleted ${selectedImages.size} image(s)`
+    });
+
+    setSelectedImages(new Set());
+    fetchImages();
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -247,19 +300,21 @@ export const ImageUploader = () => {
             Upload and optimize images. Drag & drop or click to select files or folders.
           </p>
         </div>
-        <label>
-          <input
-            type="file"
-            multiple
-            {...({ webkitdirectory: '', directory: '' } as any)}
-            className="hidden"
-            onChange={handleFolderSelect}
-            disabled={uploading}
-          />
-          <Button variant="outline" disabled={uploading} asChild>
-            <span className="cursor-pointer">Upload Folder</span>
-          </Button>
-        </label>
+        <div className="flex gap-2">
+          <label>
+            <input
+              type="file"
+              multiple
+              {...({ webkitdirectory: '', directory: '' } as any)}
+              className="hidden"
+              onChange={handleFolderSelect}
+              disabled={uploading}
+            />
+            <Button variant="outline" disabled={uploading} asChild>
+              <span className="cursor-pointer">Upload Folder</span>
+            </Button>
+          </label>
+        </div>
       </div>
 
       {/* Upload Area */}
@@ -305,21 +360,56 @@ export const ImageUploader = () => {
       {/* Image Gallery */}
       {images.length > 0 && (
         <div>
-          <h3 className="text-lg font-semibold mb-4">Uploaded Images ({images.length})</h3>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold">Uploaded Images ({images.length})</h3>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={toggleSelectAll}
+              >
+                {selectedImages.size === images.length ? 'Deselect All' : 'Select All'}
+              </Button>
+              {selectedImages.size > 0 && (
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={deleteSelected}
+                >
+                  Delete Selected ({selectedImages.size})
+                </Button>
+              )}
+            </div>
+          </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {images.map((image) => (
-              <Card key={image.id} className="overflow-hidden group relative">
+              <Card 
+                key={image.id} 
+                className={cn(
+                  "overflow-hidden group relative cursor-pointer transition-all",
+                  selectedImages.has(image.id) && "ring-2 ring-primary"
+                )}
+                onClick={() => toggleSelectImage(image.id)}
+              >
                 <div className="aspect-square relative bg-muted">
                   <img
                     src={image.url}
                     alt={image.file_name}
                     className="w-full h-full object-cover"
                   />
+                  {selectedImages.has(image.id) && (
+                    <div className="absolute top-2 left-2 bg-primary text-primary-foreground rounded-full p-1">
+                      <X className="h-4 w-4" />
+                    </div>
+                  )}
                   <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                     <Button
                       size="sm"
                       variant="secondary"
-                      onClick={() => copyUrl(image.url)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        copyUrl(image.url);
+                      }}
                     >
                       <ImageIcon className="h-4 w-4 mr-1" />
                       Copy URL
@@ -327,7 +417,10 @@ export const ImageUploader = () => {
                     <Button
                       size="sm"
                       variant="destructive"
-                      onClick={() => handleDelete(image)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(image);
+                      }}
                     >
                       <X className="h-4 w-4" />
                     </Button>
