@@ -82,12 +82,12 @@ const ShopHeroProduct: React.FC<ShopHeroProductProps> = ({ product }) => {
               {product.badge && <HeroProductBadge badge={product.badge} />}
               
               {/* Centered Shop Title */}
-              <div className="absolute inset-0 flex items-center justify-center bg-[radial-gradient(circle,transparent_0%,white_100%)]">
+              <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center">
-                  <h1 className="text-5xl md:text-6xl font-black uppercase tracking-tight text-[hsl(var(--brand-pink))] mb-2 drop-shadow-2xl">
+                  <h1 className="text-5xl md:text-6xl font-black uppercase tracking-tight text-[hsl(var(--brand-pink))] mb-2" style={{ textShadow: '0 4px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1)' }}>
                     Shop
                   </h1>
-                  <p className="text-lg md:text-xl text-[hsl(var(--brand-pink))] font-light drop-shadow-lg">
+                  <p className="text-lg md:text-xl text-[hsl(var(--brand-pink))] font-light" style={{ textShadow: '0 2px 8px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)' }}>
                     Discover our curated collection of beautiful storage solutions
                   </p>
                 </div>
