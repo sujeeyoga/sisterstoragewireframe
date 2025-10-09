@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { ShoppingBag, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
 
 const PromotionalSection = () => {
   return (
@@ -61,7 +62,7 @@ const PromotionalSection = () => {
             {/* Image Side */}
             <div className="flex-1 relative min-h-[300px] lg:min-h-[500px] p-8" style={{ backgroundColor: '#FCF2FB' }}>
               <img 
-                src="/lovable-uploads/ff4988e3-c51c-4391-a440-95e03d111656.png" 
+                src={supabase.storage.from('images').getPublicUrl('hero-images/ff4988e3-c51c-4391-a440-95e03d111656.png').data.publicUrl} 
                 alt="Sister Storage organized jewelry collection"
                 className="w-full h-full object-cover"
                 loading="lazy"
