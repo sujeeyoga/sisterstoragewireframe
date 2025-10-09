@@ -41,6 +41,7 @@ export function BulkImageOptimizer() {
 
   // Known homepage static images (Featured Grid + Promotional Section)
   const HOMEPAGE_STATIC_IMAGES: { path: string; label: string }[] = [
+    { path: '/src/assets/sister-storage-logo.png', label: 'Sister Storage Logo' },
     { path: '/lovable-uploads/0e5fe1c0-12f8-439f-94d5-ec1da8ca09c8.png', label: 'SUMMER END ORGANIZATION' },
     { path: '/lovable-uploads/c44d4b5c-0104-4077-99dd-904d87ec4d8b.png', label: 'SUMMER END ORGANIZATION' },
     { path: '/lovable-uploads/56a20345-d9f3-47ac-a645-23d19194af78.png', label: 'SUMMER END ORGANIZATION' },

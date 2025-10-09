@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+import logoImage from '@/assets/sister-storage-logo.png';
 
 interface LogoProps {
   className?: string;
@@ -31,9 +32,11 @@ const Logo: React.FC<LogoProps> = ({
           transform: `scale(${scale})`,
         }}
       >
-        <span className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
-          SISTER STORAGE
-        </span>
+        <img 
+          src={logoImage} 
+          alt="SISTER STORAGE" 
+          className="h-full w-auto object-contain"
+        />
       </div>
     </Link>
   );
