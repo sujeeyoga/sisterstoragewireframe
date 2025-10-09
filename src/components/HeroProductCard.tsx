@@ -1,6 +1,8 @@
 import { Card, CardContent } from '@/components/ui/card';
-import { Star } from 'lucide-react';
+import { Star, Tag } from 'lucide-react';
 import AddToCartBar from '@/components/cart/AddToCartBar';
+import { useStoreDiscount } from '@/hooks/useStoreDiscount';
+import { Badge } from '@/components/ui/badge';
 
 interface HeroProductCardProps {
   id: string;
@@ -27,11 +29,21 @@ const HeroProductCard = ({
   reviews,
   href
 }: HeroProductCardProps) => {
+  const { discount, applyDiscount } = useStoreDiscount();
+  
+  const discountedPrice = discount?.enabled ? applyDiscount(price) : price;
+  const hasDiscount = discount?.enabled && discount.percentage > 0;
 
   return (
     <Card className="group overflow-hidden border-none shadow-md hover:shadow-xl transition-all duration-500 bg-white relative transform hover:-translate-y-1 hover:scale-[1.02] max-w-sm">
-      {/* Bundle Badge */}
-      <div className="absolute top-3 left-3 z-10">
+      {/* Badges */}
+      <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
+        {hasDiscount && (
+          <Badge className="bg-green-600 text-white px-2.5 py-1">
+            <Tag className="h-3 w-3 mr-1" />
+            {discount.percentage}% OFF
+          </Badge>
+        )}
         <span className="px-3 py-1.5 text-xs font-bold rounded-full shadow-lg bg-gradient-to-r from-pink-500 to-rose-500 text-white">
           {badge}
         </span>
@@ -72,11 +84,23 @@ const HeroProductCard = ({
         <div className="mt-auto space-y-3">
           <div className="flex items-center justify-between min-h-[2rem]">
             <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-black text-gray-900">${price}</span>
-              <span className="text-sm text-gray-400 line-through">${originalPrice}</span>
+              {hasDiscount ? (
+                <>
+                  <span className="text-2xl font-black text-green-600">${discountedPrice.toFixed(2)}</span>
+                  <span className="text-sm text-gray-400 line-through">${price}</span>
+                </>
+              ) : (
+                <>
+                  <span className="text-2xl font-black text-gray-900">${price}</span>
+                  <span className="text-sm text-gray-400 line-through">${originalPrice}</span>
+                </>
+              )}
             </div>
             <div className="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-lg min-w-[4rem] text-center">
-              Save ${(originalPrice - price).toFixed(2)}
+              {hasDiscount 
+                ? `Save $${(price - discountedPrice).toFixed(2)}`
+                : `Save $${(originalPrice - price).toFixed(2)}`
+              }
             </div>
           </div>
           
@@ -84,8 +108,8 @@ const HeroProductCard = ({
             product={{
               id,
               name,
-              price,
-              originalPrice,
+              price: hasDiscount ? discountedPrice : price,
+              originalPrice: hasDiscount ? price : originalPrice,
               description,
               category: 'bundle',
               color: '#E90064',

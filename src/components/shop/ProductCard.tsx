@@ -2,12 +2,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ShoppingBag, Check, Bookmark } from "lucide-react";
+import { ShoppingBag, Check, Bookmark, Tag } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useCart } from "@/contexts/CartContext";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { productTaxonomyMap } from "@/data/product-taxonomy";
+import { useStoreDiscount } from "@/hooks/useStoreDiscount";
 
 export interface Product {
   id: string;
@@ -36,8 +37,12 @@ interface ProductCardProps {
 const ProductCard = ({ product }: ProductCardProps) => {
   const { addItem, setIsOpen } = useCart();
   const { toast } = useToast();
+  const { discount, applyDiscount } = useStoreDiscount();
   const taxonomy = productTaxonomyMap[product.id] ?? undefined;
   const attrs = taxonomy?.attributes;
+  
+  const discountedPrice = discount?.enabled ? applyDiscount(product.price) : product.price;
+  const hasDiscount = discount?.enabled && discount.percentage > 0;
   
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -46,7 +51,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
     addItem({
       id: product.id,
       name: product.name,
-      price: product.price,
+      price: discountedPrice,
       image: product.images?.[0] || product.color
     });
     
@@ -104,6 +109,12 @@ const ProductCard = ({ product }: ProductCardProps) => {
           
           {/* Product badges */}
           <div className="absolute top-3 left-3 flex flex-col gap-2">
+            {hasDiscount && (
+              <Badge className="bg-green-600 text-white">
+                <Tag className="h-3 w-3 mr-1" />
+                {discount.percentage}% OFF
+              </Badge>
+            )}
             {product.bestSeller && (
               <Badge>Best Seller</Badge>
             )}
@@ -125,7 +136,12 @@ const ProductCard = ({ product }: ProductCardProps) => {
           <div className="mb-2 flex justify-between items-start min-h-[5rem]">
             <h3 className="font-bold text-3xl lg:text-4xl line-clamp-2 flex-1 uppercase">{product.name}</h3>
             <div className="text-right flex-shrink-0 ml-2">
-              {product.originalPrice && product.originalPrice > product.price ? (
+              {hasDiscount ? (
+                <div className="flex flex-col items-end">
+                  <span className="text-sm text-muted-foreground line-through">${product.price.toFixed(2)}</span>
+                  <span className="font-bold text-2xl text-green-600">${discountedPrice.toFixed(2)}</span>
+                </div>
+              ) : product.originalPrice && product.originalPrice > product.price ? (
                 <div className="flex flex-col items-end">
                   <span className="text-sm text-muted-foreground line-through">${product.originalPrice.toFixed(2)}</span>
                   <span className="font-bold text-2xl text-[hsl(var(--primary))]">${product.price.toFixed(2)}</span>

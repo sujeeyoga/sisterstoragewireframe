@@ -34,7 +34,7 @@ const AddToCartBar: React.FC<AddToCartBarProps> = ({ product, className }) => {
       addItem({
         id: product.id,
         name: product.name,
-        price: product.price,
+        price: product.price, // Price should already be discounted when passed to this component
         image: product.images?.[0] || product.color || '',
       });
 

@@ -1,11 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Star, Package } from "lucide-react";
+import { Star, Package, Tag } from "lucide-react";
 import { Product } from "@/types/product";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import AddToCartBar from "@/components/cart/AddToCartBar";
+import { useStoreDiscount } from "@/hooks/useStoreDiscount";
 
 interface SimpleProductCardProps {
   product: Product;
@@ -14,6 +15,7 @@ interface SimpleProductCardProps {
 
 const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets }) => {
   const [imageLoaded, setImageLoaded] = React.useState(false);
+  const { discount, applyDiscount } = useStoreDiscount();
 
   // Extract rod count from attributes
   const rodCount = product.attributes?.rodCount?.[0];
@@ -23,6 +25,9 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
     const hash = product.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
     return (hash % 150) + 50;
   }, [product.id]);
+  
+  const discountedPrice = discount?.enabled ? applyDiscount(product.price) : product.price;
+  const hasDiscount = discount?.enabled && discount.percentage > 0;
 
   return (
     <Card className={cn(
@@ -31,15 +36,21 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
     )}>
       {/* Product Image */}
       <Link to={`/shop/${product.id}`} className="block relative">
-        {/* Open Box Badge */}
-        {product.category === 'open-box' && (
-          <div className="absolute top-3 left-3 z-10">
+        {/* Badges */}
+        <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
+          {hasDiscount && product.category !== 'open-box' && (
+            <Badge className="bg-green-600 text-white border-none px-2.5 py-1 text-xs font-bold uppercase tracking-wider shadow-lg">
+              <Tag className="w-3 h-3 mr-1 inline-block" />
+              {discount.percentage}% OFF
+            </Badge>
+          )}
+          {product.category === 'open-box' && (
             <Badge className="bg-[#ff6b35] text-white border-none px-2.5 py-1 text-xs font-bold uppercase tracking-wider shadow-lg">
               <Package className="w-3 h-3 mr-1 inline-block" />
               OPEN BOX
             </Badge>
-          </div>
-        )}
+          )}
+        </div>
         
         <div className="relative overflow-hidden">
           {!imageLoaded && (
@@ -138,16 +149,29 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
             ) : (
               <>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-3xl font-bold text-gray-900">${product.price.toFixed(2)}</span>
-                  {product.originalPrice && (
-                    <span className="text-lg text-gray-400 line-through">${product.originalPrice.toFixed(2)}</span>
+                  {hasDiscount ? (
+                    <>
+                      <span className="text-3xl font-bold text-green-600">${discountedPrice.toFixed(2)}</span>
+                      <span className="text-lg text-gray-400 line-through">${product.price.toFixed(2)}</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-3xl font-bold text-gray-900">${product.price.toFixed(2)}</span>
+                      {product.originalPrice && (
+                        <span className="text-lg text-gray-400 line-through">${product.originalPrice.toFixed(2)}</span>
+                      )}
+                    </>
                   )}
                 </div>
-                {product.originalPrice && (
+                {hasDiscount ? (
+                  <Badge className="bg-green-600 text-white">
+                    SAVE ${(product.price - discountedPrice).toFixed(2)}
+                  </Badge>
+                ) : product.originalPrice ? (
                   <Badge variant="destructive" className="bg-red-500 text-white">
                     SAVE ${(product.originalPrice - product.price).toFixed(2)}
                   </Badge>
-                )}
+                ) : null}
               </>
             )}
           </div>
@@ -161,7 +185,7 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
               </button>
             </Link>
           ) : (
-            <AddToCartBar product={product} />
+            <AddToCartBar product={{ ...product, price: discountedPrice }} />
           )}
         </div>
       </CardContent>

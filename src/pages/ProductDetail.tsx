@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
+import { useStoreDiscount } from "@/hooks/useStoreDiscount";
 import ProductImage from "@/components/product/ProductImage";
 import ProductInfo from "@/components/product/ProductInfo";
 import Breadcrumbs from "@/components/product/Breadcrumbs";
@@ -11,12 +12,14 @@ import Layout from "@/components/layout/Layout";
 
 import { products as shopProducts } from "@/data/products";
 import { productTaxonomyMap } from "@/data/product-taxonomy";
+
 const ProductDetail = () => {
   const { productId } = useParams<{ productId: string }>();
   const [quantity, setQuantity] = useState(1);
   const { addItem, setIsOpen } = useCart();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { discount, applyDiscount } = useStoreDiscount();
   
   // Find the product based on the URL parameter
   const product = shopProducts.find(p => p.id === productId);
@@ -43,12 +46,14 @@ const ProductDetail = () => {
   const relatedProducts = shopProducts
     .filter((p) => p.category === product.category && p.id !== product.id)
     .slice(0, 3);
+  
+  const discountedPrice = discount?.enabled ? applyDiscount(product.price) : product.price;
 
   const handleAddToCart = () => {
     addItem({
       id: product.id,
       name: product.name,
-      price: product.price,
+      price: discountedPrice,
       image: product.images?.[0] || product.color
     });
     
@@ -64,7 +69,7 @@ const ProductDetail = () => {
     addItem({
       id: product.id,
       name: product.name,
-      price: product.price,
+      price: discountedPrice,
       image: product.images?.[0] || product.color
     });
     
@@ -91,7 +96,7 @@ const ProductDetail = () => {
               name={product.name}
             />
             <ProductInfo 
-              product={product}
+              product={{ ...product, price: discountedPrice }}
               quantity={quantity}
               setQuantity={setQuantity}
               onAddToCart={handleAddToCart}

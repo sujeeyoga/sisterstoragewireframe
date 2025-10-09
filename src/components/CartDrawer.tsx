@@ -1,12 +1,14 @@
 import React, { useEffect } from 'react';
-import { X, Trash2, Plus, Minus, ShoppingBag } from 'lucide-react';
+import { X, Trash2, Plus, Minus, ShoppingBag, Tag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/contexts/CartContext';
 import { Link } from 'react-router-dom';
 import Logo from '@/components/ui/Logo';
+import { useStoreDiscount } from '@/hooks/useStoreDiscount';
 
 const CartDrawer = () => {
   const { items, removeItem, updateQuantity, totalItems, subtotal, isOpen, setIsOpen } = useCart();
+  const { discount, applyDiscount, getDiscountAmount } = useStoreDiscount();
 
   // Prevent body scroll when drawer is open
   useEffect(() => {
@@ -38,10 +40,14 @@ const CartDrawer = () => {
     };
   }, [isOpen]);
 
+  // Calculate discount and totals
+  const discountedSubtotal = discount?.enabled ? applyDiscount(subtotal) : subtotal;
+  const discountAmount = discount?.enabled ? getDiscountAmount(subtotal) : 0;
+  
   // Calculate tax (example: 8.5%)
   const taxRate = 0.085;
-  const taxAmount = subtotal * taxRate;
-  const total = subtotal + taxAmount;
+  const taxAmount = discountedSubtotal * taxRate;
+  const total = discountedSubtotal + taxAmount;
 
   return (
     <div className={`fixed inset-0 z-[1200] transition-opacity duration-300 ${isOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'}`}>
@@ -179,6 +185,17 @@ const CartDrawer = () => {
                   <span>Subtotal ({totalItems} items)</span>
                   <span className="font-medium text-gray-900">${subtotal.toFixed(2)}</span>
                 </div>
+                
+                {discount?.enabled && discountAmount > 0 && (
+                  <div className="flex justify-between text-sm text-green-600">
+                    <span className="flex items-center gap-1">
+                      <Tag className="h-3 w-3" />
+                      {discount.name} ({discount.percentage}% off)
+                    </span>
+                    <span className="font-medium">-${discountAmount.toFixed(2)}</span>
+                  </div>
+                )}
+                
                 <div className="flex justify-between text-sm text-gray-600">
                   <span>Estimated Tax</span>
                   <span className="font-medium text-gray-900">${taxAmount.toFixed(2)}</span>
