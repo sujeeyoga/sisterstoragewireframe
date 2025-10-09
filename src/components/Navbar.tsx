@@ -78,7 +78,10 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
         {/* Right: Cart and Menu */}
         <div className="justify-self-end shrink-0 flex items-center gap-2">
           <button
-            onClick={() => setCartOpen(true)}
+            onClick={() => {
+              setCartOpen(true);
+              setMobileMenuOpen(false);
+            }}
             className="p-2 text-black hover:bg-black/10 rounded transition-colors relative focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] min-h-[44px] min-w-[44px] flex items-center justify-center"
             aria-label="Open cart"
           >
@@ -203,7 +206,10 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
                 {/* Cart Section - Match navbar cart styling */}
                 <div className="px-6">
                   <button
-                    onClick={() => { setMobileMenuOpen(false); setCartOpen(true); }}
+                    onClick={() => { 
+                      setMobileMenuOpen(false); 
+                      setTimeout(() => setCartOpen(true), 100);
+                    }}
                     className="w-full flex items-center justify-between p-4 text-black hover:text-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))]/5 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))]"
                   >
                     <div className="flex items-center gap-3">
