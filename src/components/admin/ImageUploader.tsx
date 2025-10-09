@@ -512,6 +512,21 @@ export const ImageUploader = () => {
                   Delete Selected ({selectedImages.size})
                 </Button>
               )}
+              {deletedImages.size > 0 && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    if (undoTimeout) clearTimeout(undoTimeout);
+                    setDeletedImages(new Set());
+                    toast({
+                      title: 'Deletion cancelled'
+                    });
+                  }}
+                >
+                  Undo ({deletedImages.size})
+                </Button>
+              )}
             </div>
           </div>
 
