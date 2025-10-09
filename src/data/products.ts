@@ -44,7 +44,7 @@ export const products: Product[] = [
   },
   {
     id: "bundle-2",
-    name: "Home & Away Set",
+    name: "Together Bundle",
     description: "SMART. SET. READY.",
     shortDescription: "3 Large Boxes, 2 Medium Boxes, 1 Small Box",
     bundleContents: "3 Large Boxes, 2 Medium Boxes, 1 Small Box",
