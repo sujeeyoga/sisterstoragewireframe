@@ -9,6 +9,7 @@ import { CustomersTable } from '@/components/admin/CustomersTable';
 import { OrdersTable } from '@/components/admin/OrdersTable';
 import { StoreSettings } from '@/components/admin/StoreSettings';
 import { ImageUploader } from '@/components/admin/ImageUploader';
+import { PagesManager } from '@/components/admin/PagesManager';
 import Uploads from '@/pages/Uploads';
 
 const Admin = () => {
@@ -37,6 +38,7 @@ const Admin = () => {
         <Route path="products/:id" element={<ProductForm />} />
         <Route path="customers" element={<CustomersTable />} />
         <Route path="sections" element={<SectionsManager />} />
+        <Route path="pages" element={<PagesManager />} />
         <Route path="sync" element={<AdminSync />} />
         <Route path="settings" element={<StoreSettings />} />
         <Route path="images" element={<ImageUploader />} />
