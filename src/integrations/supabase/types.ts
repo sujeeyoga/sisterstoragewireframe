@@ -89,6 +89,7 @@ export type Database = {
           file_name: string
           file_path: string
           file_size: number
+          folder_path: string | null
           height: number | null
           id: string
           mime_type: string
@@ -102,6 +103,7 @@ export type Database = {
           file_name: string
           file_path: string
           file_size: number
+          folder_path?: string | null
           height?: number | null
           id?: string
           mime_type: string
@@ -115,6 +117,7 @@ export type Database = {
           file_name?: string
           file_path?: string
           file_size?: number
+          folder_path?: string | null
           height?: number | null
           id?: string
           mime_type?: string

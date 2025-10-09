@@ -13,6 +13,7 @@ interface UploadedImage {
   file_path: string;
   file_size: number;
   original_size: number;
+  folder_path?: string;
   url: string;
   created_at: string;
 }
@@ -88,7 +89,7 @@ export const ImageUploader = () => {
 
       if (uploadError) throw uploadError;
 
-      // Save metadata to database
+      // Save metadata to database with folder path
       const { error: dbError } = await supabase
         .from('uploaded_images')
         .insert({
@@ -98,7 +99,8 @@ export const ImageUploader = () => {
           original_size: originalSize,
           mime_type: 'image/jpeg',
           width,
-          height
+          height,
+          folder_path: folderPath
         });
 
       if (dbError) throw dbError;
@@ -127,24 +129,24 @@ export const ImageUploader = () => {
     setUploading(true);
 
     const items = Array.from(e.dataTransfer.items);
-    const allFiles: File[] = [];
+    const allFiles: { file: File; folderPath: string }[] = [];
 
     // Process all items (files and folders)
     for (const item of items) {
       if (item.kind === 'file') {
         const entry = item.webkitGetAsEntry();
         if (entry) {
-          await processEntry(entry, allFiles);
+          await processEntry(entry, allFiles, '');
         }
       }
     }
 
-    const imageFiles = allFiles.filter(file => file.type.startsWith('image/'));
+    const imageFiles = allFiles.filter(({ file }) => file.type.startsWith('image/'));
     setUploadProgress({ current: 0, total: imageFiles.length });
 
     for (let i = 0; i < imageFiles.length; i++) {
       setUploadProgress({ current: i + 1, total: imageFiles.length });
-      await uploadImage(imageFiles[i]);
+      await uploadImage(imageFiles[i].file, imageFiles[i].folderPath);
     }
 
     setUploading(false);
@@ -152,20 +154,21 @@ export const ImageUploader = () => {
   }, []);
 
   // Helper to process directory entries recursively
-  const processEntry = async (entry: any, files: File[], path = ''): Promise<void> => {
+  const processEntry = async (entry: any, files: { file: File; folderPath: string }[], path = ''): Promise<void> => {
     if (entry.isFile) {
       const file = await new Promise<File>((resolve) => {
         entry.file(resolve);
       });
-      files.push(file);
+      files.push({ file, folderPath: path });
     } else if (entry.isDirectory) {
       const dirReader = entry.createReader();
       const entries = await new Promise<any[]>((resolve) => {
         dirReader.readEntries(resolve);
       });
       
+      const newPath = path ? `${path}/${entry.name}` : entry.name;
       for (const subEntry of entries) {
-        await processEntry(subEntry, files, `${path}${entry.name}/`);
+        await processEntry(subEntry, files, newPath);
       }
     }
   };
@@ -190,9 +193,13 @@ export const ImageUploader = () => {
     setUploading(true);
     setUploadProgress({ current: 0, total: files.length });
 
+    // Extract folder path from webkitRelativePath
     for (let i = 0; i < files.length; i++) {
       setUploadProgress({ current: i + 1, total: files.length });
-      await uploadImage(files[i]);
+      const file = files[i];
+      const relativePath = (file as any).webkitRelativePath || '';
+      const folderPath = relativePath.split('/').slice(0, -1).join('/');
+      await uploadImage(file, folderPath);
     }
 
     setUploading(false);
@@ -381,8 +388,23 @@ export const ImageUploader = () => {
               )}
             </div>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {images.map((image) => (
+
+          {/* Group images by folder */}
+          {(() => {
+            const grouped = images.reduce((acc, img) => {
+              const folder = img.folder_path || 'Ungrouped';
+              if (!acc[folder]) acc[folder] = [];
+              acc[folder].push(img);
+              return acc;
+            }, {} as Record<string, UploadedImage[]>);
+
+            return Object.entries(grouped).map(([folder, folderImages]) => (
+              <div key={folder} className="mb-8">
+                <h4 className="text-md font-semibold mb-3 text-muted-foreground">
+                  {folder === 'Ungrouped' ? '📁 Ungrouped' : `📁 ${folder}`} ({folderImages.length})
+                </h4>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {folderImages.map((image) => (
               <Card 
                 key={image.id} 
                 className={cn(
@@ -439,7 +461,10 @@ export const ImageUploader = () => {
                 </div>
               </Card>
             ))}
-          </div>
+                </div>
+              </div>
+            ));
+          })()}
         </div>
       )}
     </div>
