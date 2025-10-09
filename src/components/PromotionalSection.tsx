@@ -64,7 +64,7 @@ const PromotionalSection = () => {
               <img 
                 src={supabase.storage.from('images').getPublicUrl('hero-images/ff4988e3-c51c-4391-a440-95e03d111656.png').data.publicUrl} 
                 alt="Sister Storage organized jewelry collection"
-                className="w-full h-full object-cover"
+                className="absolute inset-0 w-full h-full object-cover"
                 loading="lazy"
               />
             </div>
