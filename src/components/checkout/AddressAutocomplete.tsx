@@ -78,7 +78,28 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
     // Handle place selection
     autocompleteRef.current.addListener('place_changed', () => {
       const place = autocompleteRef.current?.getPlace();
-      if (!place?.address_components) return;
+      if (!place?.address_components) {
+        // Fallback: parse from freeform string when Places API is unavailable
+        const raw = inputRef.current?.value || '';
+        const parts = raw.split(',').map(p => p.trim()).filter(Boolean);
+        const street = parts[0] || raw.trim();
+
+        const provinceMatch = raw.match(/\b(AB|BC|MB|NB|NL|NT|NS|NU|ON|PE|QC|SK|YT)\b/i);
+        const postalMatch = raw.match(/([A-Za-z]\d[A-Za-z])\s?\d[A-Za-z]\d/i);
+        const city = parts.length > 1 ? parts[1] : '';
+        const province = provinceMatch ? provinceMatch[1].toUpperCase() : '';
+        let postalCode = postalMatch ? postalMatch[0].toUpperCase().replace(/\s/g, '') : '';
+        if (postalCode.length === 6) {
+          postalCode = `${postalCode.slice(0,3)} ${postalCode.slice(3)}`;
+        }
+
+        if (street && city && province) {
+          onChange(street);
+          onAddressSelect({ address: street, city, province, postalCode });
+          inputRef.current?.blur();
+        }
+        return;
+      }
 
       const components: any = {};
       
@@ -125,6 +146,8 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
           province,
           postalCode
         });
+        // Close suggestions
+        inputRef.current?.blur();
       }
     });
 
