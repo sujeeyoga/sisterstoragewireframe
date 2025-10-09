@@ -227,7 +227,7 @@ export function HeroImagesManager() {
                   <div className="absolute inset-0 flex flex-col gap-2 items-center justify-center opacity-0 group-hover:opacity-100 transition bg-black/50 rounded-lg">
                     <Button
                       size="sm"
-                      onClick={() => addNewImage(`/lovable-uploads/${img.file_path}`, 'gallery')}
+                      onClick={() => addNewImage(imageUrl, 'gallery')}
                     >
                       Add to Gallery
                     </Button>
