@@ -107,8 +107,8 @@ const FeaturedGrid = () => {
 
   return (
     <>
-      <div className="w-full">
-      <div className="text-center mb-6 md:mb-8 px-4">
+      <div className="w-full px-4 md:px-8 py-12 md:py-16">
+      <div className="text-center mb-6 md:mb-8">
         <h2 className="text-4xl md:text-6xl lg:text-7xl font-thin font-poppins tracking-wide mb-3 uppercase">SUMMER END ORGANIZATION</h2>
         <p className="text-muted-foreground max-w-2xl mx-auto">
           Discover our curated selection of storage solutions designed for the modern sister.
