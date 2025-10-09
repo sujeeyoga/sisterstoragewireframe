@@ -48,6 +48,29 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
     }
   };
 
+  const handleBuyNow = (e?: React.MouseEvent) => {
+    e?.preventDefault();
+    e?.stopPropagation();
+    
+    try {
+      addItem({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        image: product.images?.[0] || product.color
+      });
+      
+      navigate('/checkout');
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      toast({
+        title: "Error",
+        description: "Failed to add item to cart",
+        variant: "destructive"
+      });
+    }
+  };
+
   // Extract bundle contents and rod count
   const bundleContents = product.bundleContents || product.funnelStage || product.caption;
   const rodCount = product.attributes?.rodCount?.[0];
@@ -211,25 +234,34 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
             )}
           </div>
           
-          {/* Rod Count & Buy Button Row */}
-          <div className="flex items-center gap-3">
-            {rodCount && (
-              <div className="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-4 py-2 rounded-lg flex-shrink-0">
-                <div className="text-center">
-                  <span className="text-xs font-bold uppercase tracking-wider block">Rods</span>
-                  <span className="text-2xl font-thin">{rodCount}</span>
-                </div>
+          {/* Rod Count Display */}
+          {rodCount && (
+            <div className="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-4 py-2 rounded-lg">
+              <div className="text-center">
+                <span className="text-xs font-bold uppercase tracking-wider block">Rods</span>
+                <span className="text-2xl font-thin">{rodCount}</span>
               </div>
-            )}
+            </div>
+          )}
+          
+          {/* Action Buttons Row */}
+          <div className="flex items-center gap-3">
+            <Button 
+              variant="outline"
+              className="flex-1 font-bold text-sm py-3 shadow-md hover:shadow-lg transition-all duration-300"
+              onClick={handleAddToCart}
+            >
+              <ShoppingBag className="h-4 w-4 mr-2" />
+              Add to Cart
+            </Button>
             
             <Button 
               variant="buy"
               size="buy"
               className="flex-1 font-bold text-sm py-3 shadow-lg hover:shadow-xl transition-all duration-300"
-              onClick={handleAddToCart}
+              onClick={handleBuyNow}
             >
-              <ShoppingBag className="h-4 w-4 mr-2" />
-              GET THIS BUNDLE
+              Buy Now
             </Button>
           </div>
         </div>
