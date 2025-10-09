@@ -59,15 +59,22 @@ const Checkout = () => {
   if (items.length === 0) {
     return (
       <div className="min-h-screen bg-gray-50 py-12 px-4">
-        <div className="max-w-2xl mx-auto text-center">
-          <div className="mx-auto w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-            <ShoppingBag className="h-10 w-10 text-gray-400" />
+        <div className="max-w-2xl mx-auto">
+          <div className="flex justify-center mb-8">
+            <Link to="/">
+              <Logo size="lg" />
+            </Link>
           </div>
-          <h2 className="text-2xl font-bold mb-4">Your cart is empty</h2>
-          <p className="text-gray-600 mb-6">Add some items to your cart before checking out</p>
-          <Button onClick={() => navigate('/shop')}>
-            Continue Shopping
-          </Button>
+          <div className="text-center">
+            <div className="mx-auto w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+              <ShoppingBag className="h-10 w-10 text-gray-400" />
+            </div>
+            <h2 className="text-2xl font-bold mb-4">Your cart is empty</h2>
+            <p className="text-gray-600 mb-6">Add some items to your cart before checking out</p>
+            <Button onClick={() => navigate('/shop')}>
+              Continue Shopping
+            </Button>
+          </div>
         </div>
       </div>
     );
