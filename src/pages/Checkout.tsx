@@ -37,7 +37,27 @@ const Checkout = () => {
     phone: '',
   });
 
-  const taxRate = 0.085;
+  // Calculate tax based on province
+  const getTaxRate = (province: string): number => {
+    const taxRates: { [key: string]: number } = {
+      'ON': 0.13,  // HST 13%
+      'BC': 0.12,  // GST + PST
+      'AB': 0.05,  // GST only
+      'QC': 0.14975, // GST + QST
+      'NS': 0.15,  // HST 15%
+      'NB': 0.15,  // HST 15%
+      'MB': 0.12,  // GST + PST
+      'PE': 0.15,  // HST 15%
+      'SK': 0.11,  // GST + PST
+      'NL': 0.15,  // HST 15%
+      'YT': 0.05,  // GST only
+      'NT': 0.05,  // GST only
+      'NU': 0.05,  // GST only
+    };
+    return taxRates[province.toUpperCase()] || 0.13; // Default to ON HST
+  };
+
+  const taxRate = getTaxRate(formData.province);
   const discountedSubtotal = discount?.enabled ? applyDiscount(subtotal) : subtotal;
   const discountAmount = discount?.enabled ? getDiscountAmount(subtotal) : 0;
   const taxAmount = discountedSubtotal * taxRate;
@@ -207,6 +227,9 @@ const Checkout = () => {
           },
           shippingCost: shippingCost,
           shippingMethod: selectedRate?.postage_type || 'Standard Shipping',
+          taxAmount: taxAmount,
+          taxRate: taxRate,
+          province: formData.province,
         },
       });
 

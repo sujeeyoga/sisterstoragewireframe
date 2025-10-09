@@ -12,9 +12,9 @@ serve(async (req) => {
   }
 
   try {
-    const { items, customerEmail, shippingAddress, shippingCost, shippingMethod } = await req.json();
+    const { items, customerEmail, shippingAddress, shippingCost, shippingMethod, taxAmount, taxRate, province } = await req.json();
     
-    console.log('Checkout request:', { items, customerEmail, shippingAddress, shippingCost, shippingMethod });
+    console.log('Checkout request:', { items, customerEmail, shippingAddress, shippingCost, shippingMethod, taxAmount, taxRate, province });
     
     if (!items || items.length === 0) {
       throw new Error("Cart items are required");
@@ -65,6 +65,21 @@ serve(async (req) => {
             name: shippingMethod || 'Shipping',
           },
           unit_amount: Math.round(shippingCost * 100), // Convert to cents
+        },
+        quantity: 1,
+      });
+    }
+
+    // Add tax as a line item if provided
+    if (taxAmount && taxAmount > 0) {
+      const taxLabel = province ? `Tax (${province} - ${(taxRate * 100).toFixed(2)}%)` : 'Tax';
+      lineItems.push({
+        price_data: {
+          currency: 'cad',
+          product_data: {
+            name: taxLabel,
+          },
+          unit_amount: Math.round(taxAmount * 100), // Convert to cents
         },
         quantity: 1,
       });
