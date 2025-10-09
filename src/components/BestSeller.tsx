@@ -158,63 +158,58 @@ const BestSeller = () => {
                 </div>
               </div>
               
-              <CardContent className="p-3 space-y-3">
-                {/* Rating */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1">
-                    {[...Array(item.rating)].map((_, i) => (
-                      <Star key={i} className="h-3.5 w-3.5 text-amber-400 fill-amber-400" />
-                    ))}
-                  </div>
-                  <span className="text-gray-500 text-xs font-medium">({item.reviews})</span>
-                </div>
+              <CardContent className="p-4 space-y-3">
+                {/* Badge */}
+                <span className="inline-block px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
+                  {item.badge}
+                </span>
                 
-                {/* Bundle Title & Description */}
-                <div className="space-y-2">
-                  <h3 className="text-lg font-bold text-gray-900 leading-tight line-clamp-2">{item.name}</h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">{item.description}</p>
-                </div>
-                
-                {/* Bundle Contents */}
-                <div className="bg-gray-50/80 rounded-xl p-4 border border-gray-100">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-2 h-2 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full"></div>
-                    <p className="text-xs font-semibold text-gray-700 uppercase tracking-wide">Bundle Includes</p>
-                  </div>
-                  <p className="text-xs text-gray-600 leading-relaxed font-medium">{item.bundleContents}</p>
-                </div>
+                {/* Bundle Title */}
+                <h3 className="text-base font-bold text-gray-900 leading-tight">{item.name}</h3>
                 
                 {/* Pricing */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-2xl font-black text-gray-900">${item.price}</span>
-                      <span className="text-sm text-gray-400 line-through">${item.originalPrice}</span>
-                    </div>
-                    <div className="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-lg">
-                      Save ${(item.originalPrice - item.price).toFixed(2)}
-                    </div>
+                <div className="flex items-baseline gap-2">
+                  <p className="text-base font-semibold text-gray-800">${item.price}</p>
+                  <p className="text-xs text-gray-400 line-through">${item.originalPrice}</p>
+                </div>
+                
+                {/* Description */}
+                <p className="text-xs text-gray-700 leading-relaxed">{item.description}</p>
+                
+                {/* Bundle Contents */}
+                <div className="bg-gray-50 rounded p-3 border border-gray-200">
+                  <p className="text-xs font-semibold text-gray-700 mb-1">Bundle Includes:</p>
+                  <p className="text-xs text-gray-600">{item.bundleContents}</p>
+                </div>
+                
+                {/* Rating */}
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-0.5">
+                    {[...Array(item.rating)].map((_, i) => (
+                      <Star key={i} className="h-3 w-3 text-amber-400 fill-amber-400" />
+                    ))}
                   </div>
+                  <span className="text-gray-600 text-xs">({item.reviews} reviews)</span>
+                </div>
+                
+                {/* Buttons */}
+                <div className="grid grid-cols-2 gap-2">
+                  <Button 
+                    variant="buy"
+                    size="buy"
+                    onClick={() => handleBuyNow(item)}
+                  >
+                    <ShoppingBag className="h-4 w-4" />
+                    Add to Cart
+                  </Button>
                   
-                  {/* Rod Count & Buy Button Row */}
-                  <div className="flex items-center gap-3">
-                    <div className="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-4 py-2 rounded-lg flex-shrink-0">
-                      <div className="text-center">
-                        <span className="text-xs font-bold uppercase tracking-wider block">Rods</span>
-                        <span className="text-2xl font-thin">{item.rodCount}</span>
-                      </div>
-                    </div>
-                    
-                    <Button 
-                      variant="buy"
-                      size="buy"
-                      className="flex-1 font-bold text-sm py-3 shadow-lg hover:shadow-xl transition-all duration-300"
-                      onClick={() => handleBuyNow(item)}
-                    >
-                      <ShoppingBag className="h-4 w-4 mr-2" />
-                      GET THIS BUNDLE
-                    </Button>
-                  </div>
+                  <Button 
+                    variant="buy"
+                    size="buy"
+                    onClick={() => handleBuyNow(item)}
+                  >
+                    Buy Now
+                  </Button>
                 </div>
               </CardContent>
             </Card>
