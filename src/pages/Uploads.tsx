@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { LayoutGrid, List, Copy, Trash2, Eye } from 'lucide-react';
+import { LayoutGrid, List, Copy, Trash2, Eye, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
@@ -32,11 +33,59 @@ const Uploads = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
   const [selectedImage, setSelectedImage] = useState<UploadedImage | null>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [selectionMode, setSelectionMode] = useState(false);
+  const [selectedImages, setSelectedImages] = useState<Set<string>>(new Set());
+  const containerRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
   useEffect(() => {
     fetchImages();
   }, []);
+
+  // Two-finger tap detection for mobile
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    let touchStartTime = 0;
+    let touchCount = 0;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      if (e.touches.length === 2) {
+        touchStartTime = Date.now();
+        touchCount = e.touches.length;
+      }
+    };
+
+    const handleTouchEnd = (e: TouchEvent) => {
+      const touchDuration = Date.now() - touchStartTime;
+      
+      // Detect two-finger tap (quick touch with 2 fingers, less than 300ms)
+      if (touchCount === 2 && touchDuration < 300 && e.changedTouches.length === 2) {
+        e.preventDefault();
+        setSelectionMode(prev => {
+          const newMode = !prev;
+          if (!newMode) {
+            setSelectedImages(new Set());
+          }
+          toast({
+            title: newMode ? 'Selection mode enabled' : 'Selection mode disabled',
+            description: newMode ? 'Tap images to select them' : undefined,
+          });
+          return newMode;
+        });
+      }
+      touchCount = 0;
+    };
+
+    container.addEventListener('touchstart', handleTouchStart, { passive: false });
+    container.addEventListener('touchend', handleTouchEnd, { passive: false });
+
+    return () => {
+      container.removeEventListener('touchstart', handleTouchStart);
+      container.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [toast]);
 
   const fetchImages = async () => {
     const { data, error } = await supabase
@@ -103,20 +152,81 @@ const Uploads = () => {
   };
 
   const previewImage = (image: UploadedImage) => {
-    setSelectedImage(image);
-    setPreviewOpen(true);
+    if (selectionMode) {
+      toggleImageSelection(image.id);
+    } else {
+      setSelectedImage(image);
+      setPreviewOpen(true);
+    }
+  };
+
+  const toggleImageSelection = (imageId: string) => {
+    setSelectedImages(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(imageId)) {
+        newSet.delete(imageId);
+      } else {
+        newSet.add(imageId);
+      }
+      return newSet;
+    });
+  };
+
+  const deleteSelectedImages = async () => {
+    const imagesToDelete = images.filter(img => selectedImages.has(img.id));
+    
+    try {
+      for (const image of imagesToDelete) {
+        await supabase.storage.from('images').remove([image.file_path]);
+        await supabase.from('uploaded_images').delete().eq('id', image.id);
+      }
+
+      toast({
+        title: `${imagesToDelete.length} images deleted`,
+      });
+
+      setSelectedImages(new Set());
+      setSelectionMode(false);
+      fetchImages();
+    } catch (error) {
+      console.error('Bulk delete error:', error);
+      toast({
+        title: 'Delete failed',
+        description: error instanceof Error ? error.message : 'Failed to delete images',
+        variant: 'destructive',
+      });
+    }
   };
 
   return (
-    <div className="space-y-6 p-6">
+    <div ref={containerRef} className="space-y-6 p-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Uploads</h1>
           <p className="text-muted-foreground mt-1">
             View and manage all uploaded images ({images.length} total)
+            {selectionMode && ` • ${selectedImages.size} selected`}
           </p>
+          {!selectionMode && (
+            <p className="text-xs text-muted-foreground mt-1">
+              💡 Tip: Use two-finger tap on mobile to enable multi-select
+            </p>
+          )}
         </div>
         <div className="flex gap-2">
+          {selectionMode && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setSelectionMode(false);
+                setSelectedImages(new Set());
+              }}
+            >
+              <X className="h-4 w-4 mr-2" />
+              Cancel Selection
+            </Button>
+          )}
           <Button
             variant={viewMode === 'grid' ? 'default' : 'outline'}
             size="sm"
@@ -154,7 +264,22 @@ const Uploads = () => {
                 </h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                   {folderImages.map((image) => (
-                    <Card key={image.id} className="overflow-hidden group">
+                    <Card 
+                      key={image.id} 
+                      className={cn(
+                        "overflow-hidden group relative",
+                        selectedImages.has(image.id) && "ring-2 ring-primary"
+                      )}
+                    >
+                      {selectionMode && (
+                        <div className="absolute top-2 left-2 z-10">
+                          <Checkbox
+                            checked={selectedImages.has(image.id)}
+                            onCheckedChange={() => toggleImageSelection(image.id)}
+                            className="bg-white border-2"
+                          />
+                        </div>
+                      )}
                       <div className="aspect-square relative bg-muted">
                         <img
                           src={image.url}
@@ -162,29 +287,31 @@ const Uploads = () => {
                           className="w-full h-full object-cover cursor-pointer"
                           onClick={() => previewImage(image)}
                         />
-                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1">
-                          <Button
-                            size="sm"
-                            variant="secondary"
-                            onClick={() => previewImage(image)}
-                          >
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="secondary"
-                            onClick={() => copyUrl(image.url)}
-                          >
-                            <Copy className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            onClick={() => deleteImage(image)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
+                        {!selectionMode && (
+                          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1">
+                            <Button
+                              size="sm"
+                              variant="secondary"
+                              onClick={() => previewImage(image)}
+                            >
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="secondary"
+                              onClick={() => copyUrl(image.url)}
+                            >
+                              <Copy className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              onClick={() => deleteImage(image)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        )}
                       </div>
                       <div className="p-2">
                         <p className="text-xs font-medium truncate">{image.file_name}</p>
@@ -345,6 +472,34 @@ const Uploads = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Bulk Actions Bar */}
+      {selectionMode && selectedImages.size > 0 && (
+        <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur border-t p-4 z-50">
+          <div className="container mx-auto flex items-center justify-between">
+            <div className="text-sm font-medium">
+              {selectedImages.size} image{selectedImages.size !== 1 ? 's' : ''} selected
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setSelectedImages(new Set());
+                }}
+              >
+                Deselect All
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={deleteSelectedImages}
+              >
+                <Trash2 className="h-4 w-4 mr-2" />
+                Delete Selected
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
