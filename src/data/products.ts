@@ -98,7 +98,13 @@ export const products: Product[] = [
     category: "bangle-boxes",
     categories: ["bangle-boxes", "large-4-rods"],
     color: "#e90064",
-    features: ["4 rod capacity", "Maximum protection", "Elegant storage"],
+    features: [
+      "4 rod capacity", 
+      "Capacity: Approx. 348 regular size bangles", 
+      "Dimensions: 38cm (L) × 25cm (W) × 9cm (H)",
+      "Maximum protection", 
+      "Elegant storage"
+    ],
     material: "Premium velvet with reinforced construction",
     bestSeller: true,
     stock: 35,
@@ -124,7 +130,13 @@ export const products: Product[] = [
     category: "bangle-boxes",
     categories: ["bangle-boxes", "medium-2-rods"],
     color: "#c80056",
-    features: ["2 rod capacity", "Daily use perfect", "Compact yet spacious"],
+    features: [
+      "2 rod capacity", 
+      "Capacity: Approx. 174 regular size bangles",
+      "Dimensions: 24.6cm (L) × 19cm (W) × 9cm (H)",
+      "Daily use perfect", 
+      "Compact yet spacious"
+    ],
     material: "Premium velvet with durable construction",
     stock: 40,
     inStock: true,
@@ -146,7 +158,13 @@ export const products: Product[] = [
     category: "bangle-boxes",
     categories: ["bangle-boxes", "travel-1-rod"],
     color: "#ff4d8d",
-    features: ["1 rod capacity", "Lightweight design", "Travel-optimized"],
+    features: [
+      "1 rod capacity", 
+      "Capacity: Approx. 87 regular size bangles",
+      "Dimensions: 24.6cm (L) × 9.8cm (W) × 9cm (H)",
+      "Lightweight design", 
+      "Travel-optimized"
+    ],
     material: "Durable composite with velvet lining",
     stock: 45,
     inStock: true,
