@@ -12,11 +12,8 @@ import heroMain32rem from '@/assets/hero-main-32rem.jpg';
 
 const Hero = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
-  const [galleryImages, setGalleryImages] = useState<string[]>([
-    '/lovable-uploads/a501115d-f6f4-4f74-bdbe-1b73ba1bc625.png',
-    '/lovable-uploads/fb8da55a-c9bb-419e-a96f-175a667875e1.png',
-    '/lovable-uploads/4ef08ea3-3380-4111-b4a1-eb939cba275b.png'
-  ]);
+  const [galleryImages, setGalleryImages] = useState<string[]>([]);
+  const [isLoadingImages, setIsLoadingImages] = useState(true);
 
   // Check for reduced motion preference
   const prefersReducedMotion = typeof window !== 'undefined' 
@@ -30,25 +27,60 @@ const Hero = () => {
     passive: true
   });
 
-  // Fetch gallery images from database
+  // Fetch gallery images from database or storage
   useEffect(() => {
     const fetchGalleryImages = async () => {
       try {
-        const { data, error } = await supabase
+        setIsLoadingImages(true);
+        
+        // First try to fetch from hero_images table
+        const { data: heroData, error: heroError } = await supabase
           .from('hero_images')
           .select('image_url')
           .eq('position', 'gallery')
           .eq('is_active', true)
           .order('display_order', { ascending: true });
 
-        if (error) throw error;
+        if (!heroError && heroData && heroData.length > 0) {
+          setGalleryImages(heroData.map(img => img.image_url));
+          setIsLoadingImages(false);
+          return;
+        }
         
-        if (data && data.length > 0) {
-          setGalleryImages(data.map(img => img.image_url));
+        // Fallback: fetch optimized images from storage bucket
+        const { data: storageData, error: storageError } = await supabase.storage
+          .from('images')
+          .list('hero-images', {
+            limit: 10,
+            sortBy: { column: 'created_at', order: 'desc' }
+          });
+
+        if (!storageError && storageData && storageData.length > 0) {
+          const imageUrls = storageData
+            .filter(file => file.name.match(/\.(jpg|jpeg|png|webp)$/i))
+            .map(file => 
+              supabase.storage.from('images').getPublicUrl(`hero-images/${file.name}`).data.publicUrl
+            );
+          
+          setGalleryImages(imageUrls);
+        } else {
+          // Final fallback to static images
+          setGalleryImages([
+            '/lovable-uploads/a501115d-f6f4-4f74-bdbe-1b73ba1bc625.png',
+            '/lovable-uploads/fb8da55a-c9bb-419e-a96f-175a667875e1.png',
+            '/lovable-uploads/4ef08ea3-3380-4111-b4a1-eb939cba275b.png'
+          ]);
         }
       } catch (error) {
         console.error('Error fetching hero images:', error);
-        // Keep default images if fetch fails
+        // Fallback to static images on error
+        setGalleryImages([
+          '/lovable-uploads/a501115d-f6f4-4f74-bdbe-1b73ba1bc625.png',
+          '/lovable-uploads/fb8da55a-c9bb-419e-a96f-175a667875e1.png',
+          '/lovable-uploads/4ef08ea3-3380-4111-b4a1-eb939cba275b.png'
+        ]);
+      } finally {
+        setIsLoadingImages(false);
       }
     };
 
@@ -85,24 +117,28 @@ const Hero = () => {
               />
               
               {/* XL Image Container - appears on desktop in right section, mobile after text */}
-              <div className="w-[48rem] max-w-full mx-auto lg:mx-0 lg:block hidden animate-breath-fade-up-6">
-                <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden">
-                  <RotatingImageGallery
-                    images={galleryImages}
-                    className="w-full h-full rounded-2xl"
-                  />
-                </div>
-              </div>
-              
-              {/* Mobile version - shows after hero text */}
-              <div className="w-[48rem] max-w-full mx-auto lg:hidden animate-breath-fade-up-6">
-                <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden">
-                  <RotatingImageGallery
-                    images={galleryImages}
-                    className="w-full h-full rounded-2xl"
-                  />
-                </div>
-              </div>
+              {!isLoadingImages && galleryImages.length > 0 && (
+                <>
+                  <div className="w-[48rem] max-w-full mx-auto lg:mx-0 lg:block hidden animate-breath-fade-up-6">
+                    <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden">
+                      <RotatingImageGallery
+                        images={galleryImages}
+                        className="w-full h-full rounded-2xl"
+                      />
+                    </div>
+                  </div>
+                  
+                  {/* Mobile version - shows after hero text */}
+                  <div className="w-[48rem] max-w-full mx-auto lg:hidden animate-breath-fade-up-6">
+                    <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden">
+                      <RotatingImageGallery
+                        images={galleryImages}
+                        className="w-full h-full rounded-2xl"
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
