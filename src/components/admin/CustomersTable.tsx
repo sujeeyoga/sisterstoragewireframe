@@ -37,55 +37,64 @@ export function CustomersTable() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center p-8">
-        <Loader2 className="h-8 w-8 animate-spin" />
+      <div className="p-8">
+        <div className="flex items-center justify-center p-8">
+          <Loader2 className="h-8 w-8 animate-spin" />
+        </div>
       </div>
     );
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Customers ({customers?.length || 0})</CardTitle>
-      </CardHeader>
-      <CardContent>
-        {!customers || customers.length === 0 ? (
-          <p className="text-muted-foreground text-center py-8">
-            No customers found. Run a WooCommerce sync to import customer data.
-          </p>
-        ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Orders</TableHead>
-                <TableHead>Total Spent</TableHead>
-                <TableHead>Created</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {customers.map((customer) => (
-                <TableRow key={customer.id}>
-                  <TableCell>{customer.id}</TableCell>
-                  <TableCell>
-                    {customer.first_name || customer.last_name
-                      ? `${customer.first_name || ''} ${customer.last_name || ''}`.trim()
-                      : '-'}
-                  </TableCell>
-                  <TableCell>{customer.email}</TableCell>
-                  <TableCell>{customer.orders_count}</TableCell>
-                  <TableCell>${Number(customer.total_spent).toFixed(2)}</TableCell>
-                  <TableCell>
-                    {new Date(customer.created_at).toLocaleDateString()}
-                  </TableCell>
+    <div className="p-8">
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold mb-2">Customers</h1>
+        <p className="text-muted-foreground">Manage your customer database</p>
+      </div>
+      
+      <Card>
+        <CardHeader>
+          <CardTitle>All Customers ({customers?.length || 0})</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {!customers || customers.length === 0 ? (
+            <p className="text-muted-foreground text-center py-8">
+              No customers found. Run a WooCommerce sync to import customer data.
+            </p>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>ID</TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Orders</TableHead>
+                  <TableHead>Total Spent</TableHead>
+                  <TableHead>Created</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        )}
-      </CardContent>
-    </Card>
+              </TableHeader>
+              <TableBody>
+                {customers.map((customer) => (
+                  <TableRow key={customer.id}>
+                    <TableCell>{customer.id}</TableCell>
+                    <TableCell>
+                      {customer.first_name || customer.last_name
+                        ? `${customer.first_name || ''} ${customer.last_name || ''}`.trim()
+                        : '-'}
+                    </TableCell>
+                    <TableCell>{customer.email}</TableCell>
+                    <TableCell>{customer.orders_count}</TableCell>
+                    <TableCell>${Number(customer.total_spent).toFixed(2)}</TableCell>
+                    <TableCell>
+                      {new Date(customer.created_at).toLocaleDateString()}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </CardContent>
+      </Card>
+    </div>
   );
 }
