@@ -25,6 +25,8 @@ export const ImageUploader = () => {
   const [images, setImages] = useState<UploadedImage[]>([]);
   const [selectedImages, setSelectedImages] = useState<Set<string>>(new Set());
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
+  const [deletedImages, setDeletedImages] = useState<Set<string>>(new Set());
+  const [undoTimeout, setUndoTimeout] = useState<NodeJS.Timeout | null>(null);
   const { toast } = useToast();
 
   // Fetch uploaded images
@@ -209,35 +211,79 @@ export const ImageUploader = () => {
   };
 
   const handleDelete = async (image: UploadedImage) => {
-    try {
-      // Delete from storage
-      const { error: storageError } = await supabase.storage
-        .from('images')
-        .remove([image.file_path]);
-
-      if (storageError) throw storageError;
-
-      // Delete from database
-      const { error: dbError } = await supabase
-        .from('uploaded_images')
-        .delete()
-        .eq('id', image.id);
-
-      if (dbError) throw dbError;
-
-      toast({
-        title: 'Image deleted'
-      });
-
-      fetchImages();
-    } catch (error) {
-      console.error('Delete error:', error);
-      toast({
-        title: 'Delete failed',
-        description: error instanceof Error ? error.message : 'Failed to delete image',
-        variant: 'destructive'
-      });
+    // Mark as deleted temporarily
+    setDeletedImages(prev => new Set([...prev, image.id]));
+    
+    // Clear any existing timeout
+    if (undoTimeout) {
+      clearTimeout(undoTimeout);
     }
+
+    // Show undo toast
+    const { dismiss } = toast({
+      title: 'Image deleted',
+      description: 'Click undo to restore',
+      action: (
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => {
+            setDeletedImages(prev => {
+              const newSet = new Set(prev);
+              newSet.delete(image.id);
+              return newSet;
+            });
+            if (undoTimeout) clearTimeout(undoTimeout);
+            dismiss();
+            toast({
+              title: 'Deletion cancelled'
+            });
+          }}
+        >
+          Undo
+        </Button>
+      ),
+    });
+
+    // Set timeout for permanent deletion
+    const timeout = setTimeout(async () => {
+      try {
+        const { error: storageError } = await supabase.storage
+          .from('images')
+          .remove([image.file_path]);
+
+        if (storageError) throw storageError;
+
+        const { error: dbError } = await supabase
+          .from('uploaded_images')
+          .delete()
+          .eq('id', image.id);
+
+        if (dbError) throw dbError;
+
+        setDeletedImages(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(image.id);
+          return newSet;
+        });
+
+        fetchImages();
+      } catch (error) {
+        console.error('Delete error:', error);
+        setDeletedImages(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(image.id);
+          return newSet;
+        });
+        toast({
+          title: 'Delete failed',
+          description: error instanceof Error ? error.message : 'Failed to delete image',
+          variant: 'destructive'
+        });
+      }
+    }, 5000); // 5 second delay
+
+    setUndoTimeout(timeout);
   };
 
   const copyUrl = (url: string) => {
@@ -295,33 +341,78 @@ export const ImageUploader = () => {
 
     const imagesToDelete = images.filter(img => selectedImages.has(img.id));
     
-    for (const image of imagesToDelete) {
-      try {
-        // Delete from storage
-        const { error: storageError } = await supabase.storage
-          .from('images')
-          .remove([image.file_path]);
-
-        if (storageError) throw storageError;
-
-        // Delete from database
-        const { error: dbError } = await supabase
-          .from('uploaded_images')
-          .delete()
-          .eq('id', image.id);
-
-        if (dbError) throw dbError;
-      } catch (error) {
-        console.error('Delete error:', error);
-      }
+    // Mark all as deleted temporarily
+    setDeletedImages(prev => new Set([...prev, ...imagesToDelete.map(img => img.id)]));
+    
+    // Clear any existing timeout
+    if (undoTimeout) {
+      clearTimeout(undoTimeout);
     }
 
-    toast({
-      title: `Deleted ${selectedImages.size} image(s)`
+    // Show undo toast
+    const { dismiss } = toast({
+      title: `Deleting ${selectedImages.size} image(s)`,
+      description: 'Click undo to restore',
+      action: (
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => {
+            setDeletedImages(prev => {
+              const newSet = new Set(prev);
+              imagesToDelete.forEach(img => newSet.delete(img.id));
+              return newSet;
+            });
+            if (undoTimeout) clearTimeout(undoTimeout);
+            dismiss();
+            toast({
+              title: 'Deletion cancelled'
+            });
+          }}
+        >
+          Undo
+        </Button>
+      ),
     });
 
-    setSelectedImages(new Set());
-    fetchImages();
+    // Set timeout for permanent deletion
+    const timeout = setTimeout(async () => {
+      for (const image of imagesToDelete) {
+        try {
+          // Delete from storage
+          const { error: storageError } = await supabase.storage
+            .from('images')
+            .remove([image.file_path]);
+
+          if (storageError) throw storageError;
+
+          // Delete from database
+          const { error: dbError } = await supabase
+            .from('uploaded_images')
+            .delete()
+            .eq('id', image.id);
+
+          if (dbError) throw dbError;
+        } catch (error) {
+          console.error('Delete error:', error);
+        }
+      }
+
+      setDeletedImages(prev => {
+        const newSet = new Set(prev);
+        imagesToDelete.forEach(img => newSet.delete(img.id));
+        return newSet;
+      });
+
+      toast({
+        title: `Deleted ${selectedImages.size} image(s)`
+      });
+
+      setSelectedImages(new Set());
+      fetchImages();
+    }, 5000); // 5 second delay
+
+    setUndoTimeout(timeout);
   };
 
   return (
@@ -439,14 +530,17 @@ export const ImageUploader = () => {
                   {folder === 'Ungrouped' ? '📁 Ungrouped' : `📁 ${folder}`} ({folderImages.length})
                 </h4>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" onContextMenu={handleContextMenu}>
-            {folderImages.map((image) => (
+            {folderImages.map((image) => {
+              const isDeleted = deletedImages.has(image.id);
+              return (
               <Card 
                 key={image.id} 
                 className={cn(
                   "overflow-hidden group relative cursor-pointer transition-all",
-                  selectedImages.has(image.id) && "ring-2 ring-primary"
+                  selectedImages.has(image.id) && "ring-2 ring-primary",
+                  isDeleted && "opacity-50"
                 )}
-                onClick={() => toggleSelectImage(image.id)}
+                onClick={() => !isDeleted && toggleSelectImage(image.id)}
               >
                 <div className="aspect-square relative bg-muted">
                   <img
@@ -454,7 +548,12 @@ export const ImageUploader = () => {
                     alt={image.file_name}
                     className="w-full h-full object-cover"
                   />
-                  {selectedImages.has(image.id) && (
+                  {isDeleted && (
+                    <div className="absolute inset-0 bg-black/80 flex items-center justify-center">
+                      <span className="text-white font-semibold">Deleting...</span>
+                    </div>
+                  )}
+                  {selectedImages.has(image.id) && !isDeleted && (
                     <div className="absolute top-2 left-2 bg-primary text-primary-foreground rounded-full p-1">
                       <X className="h-4 w-4" />
                     </div>
@@ -499,7 +598,8 @@ export const ImageUploader = () => {
                   </p>
                 </div>
               </Card>
-            ))}
+            );
+            })}
                 </div>
               </div>
             ));
