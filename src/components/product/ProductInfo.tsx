@@ -25,7 +25,7 @@ interface ProductInfoProps {
 
 const ProductInfo = ({ product, quantity, setQuantity, onAddToCart, onBuyNow }: ProductInfoProps) => {
   return (
-    <div className="space-y-3 max-h-[1080px] overflow-y-auto">
+    <div className="space-y-3 max-h-[1080px] max-w-[800px] overflow-y-auto">
       {/* Category Badge & Title Section */}
       <div className="space-y-2">
         <span className="inline-block px-2.5 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-semibold">
