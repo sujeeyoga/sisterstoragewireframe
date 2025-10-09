@@ -82,7 +82,7 @@ const ShopHeroProduct: React.FC<ShopHeroProductProps> = ({ product }) => {
               {product.badge && <HeroProductBadge badge={product.badge} />}
               
               {/* Centered Shop Title */}
-              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-b from-[hsl(var(--brand-pink))]/40 via-[hsl(var(--brand-pink))]/20 to-transparent">
+              <div className="absolute inset-0 flex items-center justify-center bg-[radial-gradient(circle,transparent_0%,white_100%)]">
                 <div className="text-center">
                   <h1 className="text-5xl md:text-6xl font-black uppercase tracking-tight text-white mb-2 drop-shadow-2xl">
                     Shop
