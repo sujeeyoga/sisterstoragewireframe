@@ -84,10 +84,10 @@ const ShopHeroProduct: React.FC<ShopHeroProductProps> = ({ product }) => {
               {/* Centered Shop Title */}
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center">
-                  <h1 className="text-5xl md:text-6xl font-black uppercase tracking-tight text-[hsl(var(--brand-pink))] mb-2" style={{ textShadow: '0 4px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1)' }}>
+                  <h1 className="text-5xl md:text-6xl font-black uppercase tracking-tight text-white mb-2" style={{ textShadow: '0 4px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1)' }}>
                     Shop
                   </h1>
-                  <p className="text-lg md:text-xl text-[hsl(var(--brand-pink))] font-light" style={{ textShadow: '0 2px 8px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)' }}>
+                  <p className="text-lg md:text-xl text-white font-light" style={{ textShadow: '0 2px 8px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)' }}>
                     Discover our curated collection of beautiful storage solutions
                   </p>
                 </div>
