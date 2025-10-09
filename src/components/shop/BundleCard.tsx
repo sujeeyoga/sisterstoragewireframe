@@ -252,11 +252,12 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
           )}
           
           {/* Action Buttons Row */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 relative z-10">
             <Button 
               variant="outline"
-              className="flex-1 font-bold text-sm py-3 shadow-md hover:shadow-lg transition-all duration-300"
+              className="flex-1 font-bold text-sm py-3 shadow-md hover:shadow-lg transition-all duration-300 pointer-events-auto"
               onClick={handleAddToCart}
+              type="button"
             >
               <ShoppingBag className="h-4 w-4 mr-2" />
               Add to Cart
@@ -265,8 +266,9 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
             <Button 
               variant="buy"
               size="buy"
-              className="flex-1 font-bold text-sm py-3 shadow-lg hover:shadow-xl transition-all duration-300"
+              className="flex-1 font-bold text-sm py-3 shadow-lg hover:shadow-xl transition-all duration-300 pointer-events-auto"
               onClick={handleBuyNow}
+              type="button"
             >
               Buy Now
             </Button>
