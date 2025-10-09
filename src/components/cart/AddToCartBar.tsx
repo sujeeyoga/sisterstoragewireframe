@@ -4,11 +4,17 @@ import { ShoppingBag } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
-import { Product } from "@/types/product";
 import { cn } from "@/lib/utils";
 
 interface AddToCartBarProps {
-  product: Product;
+  product: {
+    id: string;
+    name: string;
+    price: number;
+    images?: string[];
+    color?: string;
+    [key: string]: any;
+  };
   className?: string;
 }
 
@@ -26,7 +32,7 @@ const AddToCartBar: React.FC<AddToCartBarProps> = ({ product, className }) => {
         id: product.id,
         name: product.name,
         price: product.price,
-        image: product.images?.[0] || product.color,
+        image: product.images?.[0] || product.color || '',
       });
 
       toast({
@@ -54,7 +60,7 @@ const AddToCartBar: React.FC<AddToCartBarProps> = ({ product, className }) => {
         id: product.id,
         name: product.name,
         price: product.price,
-        image: product.images?.[0] || product.color,
+        image: product.images?.[0] || product.color || '',
       });
 
       navigate("/checkout");

@@ -1,12 +1,10 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { ShoppingBag, Star, Plus } from 'lucide-react';
-import { useCart } from '@/contexts/CartContext';
-import { useToast } from '@/components/ui/use-toast';
-import { Link, useNavigate } from 'react-router-dom';
+import { Star } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import BundleContentsList from '@/components/product/BundleContentsList';
+import AddToCartBar from '@/components/cart/AddToCartBar';
 
 const buyCards = [
   {
@@ -64,29 +62,10 @@ const buyCards = [
 ];
 
 const BestSeller = () => {
-  const { addItem } = useCart();
-  const { toast } = useToast();
-  const navigate = useNavigate();
   const [loadedImages, setLoadedImages] = React.useState<Record<string, boolean>>({});
   
   const handleImageLoad = (itemId: string) => {
     setLoadedImages(prev => ({ ...prev, [itemId]: true }));
-  };
-  
-  const handleBuyNow = (item: { id: string; name: string; price: number; image: string }) => {
-    addItem({
-      id: item.id,
-      name: item.name,
-      price: item.price,
-      image: item.image
-    });
-    
-    toast({
-      title: "Processing purchase",
-      description: `${item.name} added to your cart`,
-    });
-    
-    navigate('/checkout');
   };
 
   return (
@@ -180,24 +159,22 @@ const BestSeller = () => {
                 </div>
                 
                 {/* Buttons */}
-                <div className="grid grid-cols-2 gap-2">
-                  <Button 
-                    variant="buy"
-                    size="buy"
-                    onClick={() => handleBuyNow(item)}
-                  >
-                    <ShoppingBag className="h-4 w-4" />
-                    Add to Cart
-                  </Button>
-                  
-                  <Button 
-                    variant="buy"
-                    size="buy"
-                    onClick={() => handleBuyNow(item)}
-                  >
-                    Buy Now
-                  </Button>
-                </div>
+                <AddToCartBar 
+                  product={{
+                    id: item.id,
+                    name: item.name,
+                    price: item.price,
+                    originalPrice: item.originalPrice,
+                    description: item.description,
+                    category: 'bundle',
+                    color: '#E90064',
+                    images: [item.image],
+                    features: [],
+                    material: '',
+                    stock: 100,
+                    bundleContents: item.bundleContents
+                  }}
+                />
               </CardContent>
             </Card>
           ))}

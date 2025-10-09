@@ -1,8 +1,6 @@
 import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Star, ShoppingBag } from 'lucide-react';
-import { useCart } from '@/contexts/CartContext';
-import { useToast } from '@/hooks/use-toast';
+import { Star } from 'lucide-react';
+import AddToCartBar from '@/components/cart/AddToCartBar';
 
 interface HeroProductCardProps {
   id: string;
@@ -29,22 +27,6 @@ const HeroProductCard = ({
   reviews,
   href
 }: HeroProductCardProps) => {
-  const { addItem } = useCart();
-  const { toast } = useToast();
-  
-  const handleBuyNow = () => {
-    addItem({
-      id,
-      name,
-      price,
-      image
-    });
-    
-    toast({
-      title: "Added to cart!",
-      description: `${name} has been added to your cart.`,
-    });
-  };
 
   return (
     <Card className="group overflow-hidden border-none shadow-md hover:shadow-xl transition-all duration-500 bg-white relative transform hover:-translate-y-1 hover:scale-[1.02] max-w-sm">
@@ -98,15 +80,21 @@ const HeroProductCard = ({
             </div>
           </div>
           
-          <Button 
-            variant="buy"
-            size="buy"
-            className="w-full font-bold text-sm h-[3rem] shadow-lg hover:shadow-xl transition-all duration-300"
-            onClick={handleBuyNow}
-          >
-            <ShoppingBag className="h-4 w-4 mr-2" />
-            GET THIS PRODUCT
-          </Button>
+          <AddToCartBar 
+            product={{
+              id,
+              name,
+              price,
+              originalPrice,
+              description,
+              category: 'bundle',
+              color: '#E90064',
+              images: [image],
+              features: [],
+              material: '',
+              stock: 100
+            }}
+          />
         </div>
       </CardContent>
     </Card>

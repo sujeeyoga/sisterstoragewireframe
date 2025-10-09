@@ -1,14 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { ShoppingBag, Star, Plus, Package } from "lucide-react";
-import { useCart } from "@/contexts/CartContext";
-import { useToast } from "@/hooks/use-toast";
+import { Star, Package } from "lucide-react";
 import { Product } from "@/types/product";
 import { Card, CardContent } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import AddToCartBar from "@/components/cart/AddToCartBar";
 
 interface SimpleProductCardProps {
   product: Product;
@@ -16,27 +13,7 @@ interface SimpleProductCardProps {
 }
 
 const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets }) => {
-  const { addItem, setIsOpen } = useCart();
-  const { toast } = useToast();
   const [imageLoaded, setImageLoaded] = React.useState(false);
-
-  const handleAddToCart = (e?: React.MouseEvent) => {
-    e?.preventDefault();
-    e?.stopPropagation();
-    addItem({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      image: product.images?.[0] || product.color,
-    });
-    
-    toast({
-      title: "Added to cart",
-      description: `${product.name} has been added to your cart`,
-    });
-    
-    setIsOpen(true);
-  };
 
   // Extract rod count from attributes
   const rodCount = product.attributes?.rodCount?.[0];
@@ -178,25 +155,13 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
           {/* Buy Button */}
           {product.category === 'open-box' ? (
             <Link to="/open-box" className="block w-full">
-              <Button
-                variant="buy"
-                size="buy"
-                className="w-full font-bold text-sm py-3 shadow-lg hover:shadow-xl transition-all duration-300"
-              >
-                <ShoppingBag className="h-4 w-4 mr-2" />
+              <button className="w-full font-bold text-sm py-3 shadow-lg hover:shadow-xl transition-all duration-300 bg-[#ff6b35] text-white rounded-lg flex items-center justify-center gap-2">
+                <Package className="h-4 w-4" />
                 SEE WHAT'S AVAILABLE
-              </Button>
+              </button>
             </Link>
           ) : (
-            <Button
-              variant="buy"
-              size="buy"
-              className="w-full font-bold text-sm py-3 shadow-lg hover:shadow-xl transition-all duration-300"
-              onClick={handleAddToCart}
-            >
-              <ShoppingBag className="h-4 w-4 mr-2" />
-              ADD TO CART
-            </Button>
+            <AddToCartBar product={product} />
           )}
         </div>
       </CardContent>
