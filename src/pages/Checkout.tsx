@@ -384,40 +384,60 @@ const Checkout = () => {
                   
                   {/* Auto-calculating shipping indicator */}
                   {isLoadingRates && (
-                    <div className="flex items-center gap-2 text-sm text-gray-600 bg-blue-50 p-3 rounded-lg">
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      <span>Calculating shipping rates...</span>
+                    <div className="flex items-center gap-2 text-sm bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-lg border border-purple-200">
+                      <Loader2 className="h-5 w-5 animate-spin text-[hsl(var(--brand-pink))]" />
+                      <div>
+                        <p className="font-semibold text-gray-900">Calculating shipping rates...</p>
+                        <p className="text-xs text-gray-600">Finding the best shipping options for you</p>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {shippingRates.length > 0 && (
+                    <div className="bg-green-50 border border-green-200 p-3 rounded-lg">
+                      <p className="text-sm text-green-800 font-medium">
+                        ✓ Found {shippingRates.length} shipping options - Select your preferred method below
+                      </p>
                     </div>
                   )}
                 </CardContent>
               </Card>
 
-              {/* Shipping Options */}
+              {/* Shipping Options - Show prominently after address */}
               {shippingRates.length > 0 && (
-                <Card>
+                <Card className="border-2 border-[hsl(var(--brand-pink))]">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Truck className="h-5 w-5" />
-                      Select Shipping Method
+                    <CardTitle className="flex items-center gap-2 text-[hsl(var(--brand-pink))]">
+                      <Package className="h-5 w-5" />
+                      Available Shipping Options
                     </CardTitle>
+                    <p className="text-sm text-gray-600">
+                      Select your preferred shipping method based on price and delivery time
+                    </p>
                   </CardHeader>
                   <CardContent>
                     <RadioGroup value={selectedShippingRate} onValueChange={setSelectedShippingRate}>
                       <div className="space-y-3">
                         {shippingRates.map((rate: any) => (
-                           <div key={rate.postage_type} className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50 transition-colors">
+                          <div key={rate.postage_type} className="flex items-center space-x-2 border-2 rounded-lg p-4 hover:bg-gray-50 transition-colors hover:border-[hsl(var(--brand-pink))]">
                             <RadioGroupItem value={rate.postage_type} id={rate.postage_type} />
                             <Label htmlFor={rate.postage_type} className="flex-1 cursor-pointer">
                               <div className="flex justify-between items-center">
                                 <div>
-                                  <p className="font-medium">{rate.postage_type}</p>
-                                  <p className="text-xs text-gray-500">
-                                    Delivery: {rate.delivery_days} business days
+                                  <p className="font-semibold text-base">{rate.postage_type}</p>
+                                  <p className="text-sm text-gray-600 mt-1">
+                                    <span className="inline-flex items-center gap-1">
+                                      <Truck className="h-3 w-3" />
+                                      Delivery: {rate.delivery_days} business days
+                                    </span>
                                   </p>
                                 </div>
-                                <p className="font-semibold text-[hsl(var(--brand-pink))]">
-                                  ${parseFloat(rate.total).toFixed(2)}
-                                </p>
+                                <div className="text-right">
+                                  <p className="font-bold text-lg text-[hsl(var(--brand-pink))]">
+                                    ${parseFloat(rate.total).toFixed(2)}
+                                  </p>
+                                  <p className="text-xs text-gray-500">CAD</p>
+                                </div>
                               </div>
                             </Label>
                           </div>
