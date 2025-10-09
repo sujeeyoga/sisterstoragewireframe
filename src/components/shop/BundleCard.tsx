@@ -42,7 +42,10 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
   const reviews = Math.floor(Math.random() * 200) + 50;
 
   return (
-    <Card className="group overflow-hidden border-none shadow-md hover:shadow-xl transition-all duration-500 bg-white relative transform hover:-translate-y-1 hover:scale-[1.02] h-full">
+    <Card 
+      className="group overflow-hidden border-none shadow-md hover:shadow-xl transition-all duration-500 bg-white relative transform hover:-translate-y-1 hover:scale-[1.02] h-full cursor-pointer"
+      onClick={handleAddToCart}
+    >
       {/* Bundle Badge */}
       <div className="absolute top-3 left-3 z-10">
         <span className="px-3 py-1.5 text-xs font-bold rounded-full shadow-lg bg-white text-pink-600">
@@ -51,7 +54,7 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
       </div>
       
       {/* Product Image */}
-      <Link to={`/shop/${product.id}`} className="block relative">
+      <div className="block relative">
         <div className="relative overflow-hidden">
           {!imageLoaded && (
             <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse" />
@@ -74,15 +77,14 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
             <Button 
               variant="buy"
               size="buy"
-              className="transform scale-90 group-hover:scale-100 shadow-2xl"
-              onClick={handleAddToCart}
+              className="transform scale-90 group-hover:scale-100 shadow-2xl pointer-events-none"
             >
               <Plus className="h-4 w-4 mr-2" />
               Quick Add
             </Button>
           </div>
         </div>
-      </Link>
+      </div>
       
       <CardContent className="p-3 space-y-3">
         {/* Rating */}
@@ -97,7 +99,10 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
         
         {/* Bundle Title & Description */}
         <div className="space-y-2">
-          <Link to={`/shop/${product.id}`}>
+          <Link 
+            to={`/shop/${product.id}`}
+            onClick={(e) => e.stopPropagation()}
+          >
             <h3 className="text-3xl lg:text-4xl font-bold text-gray-900 leading-tight line-clamp-2 hover:text-pink-600 transition-colors uppercase">{product.name}</h3>
           </Link>
           <p className="text-gray-600 text-lg leading-relaxed line-clamp-2">{product.description}</p>
@@ -191,8 +196,7 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
             <Button 
               variant="buy"
               size="buy"
-              className="flex-1 font-bold text-sm py-3 shadow-lg hover:shadow-xl transition-all duration-300"
-              onClick={handleAddToCart}
+              className="flex-1 font-bold text-sm py-3 shadow-lg hover:shadow-xl transition-all duration-300 pointer-events-none"
             >
               <ShoppingBag className="h-4 w-4 mr-2" />
               GET THIS BUNDLE
