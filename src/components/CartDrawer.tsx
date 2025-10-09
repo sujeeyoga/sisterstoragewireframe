@@ -10,13 +10,17 @@ const CartDrawer = () => {
   const { items, removeItem, updateQuantity, totalItems, subtotal, isOpen, setIsOpen } = useCart();
   const { discount, applyDiscount, getDiscountAmount } = useStoreDiscount();
   const drawerContentRef = React.useRef<HTMLDivElement>(null);
+  const drawerRef = React.useRef<HTMLDivElement>(null);
 
-  // Scroll page and drawer to top when drawer opens
+  // Scroll viewport to show drawer when it opens
   useEffect(() => {
-    if (isOpen) {
-      // Scroll main page to top
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      // Scroll drawer content to top
+    if (isOpen && drawerRef.current) {
+      // Scroll the viewport to make drawer fully visible
+      drawerRef.current.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'start' 
+      });
+      // Also scroll drawer content to top
       if (drawerContentRef.current) {
         drawerContentRef.current.scrollTop = 0;
       }
@@ -60,6 +64,7 @@ const CartDrawer = () => {
       
       {/* Drawer */}
       <div 
+        ref={drawerRef}
         className={`fixed top-0 right-0 h-screen w-full sm:w-96 md:w-[750px] lg:w-[850px] max-w-full bg-white shadow-xl transform transition-transform duration-300 ease-in-out ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
