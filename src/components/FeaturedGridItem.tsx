@@ -5,12 +5,14 @@ interface FeaturedGridItemProps {
   image: string;
   title: string;
   span: 'normal' | 'horizontal' | 'vertical';
+  onClick?: () => void;
 }
 
 const FeaturedGridItem: React.FC<FeaturedGridItemProps> = ({ 
   image, 
   title, 
-  span
+  span,
+  onClick
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
@@ -33,6 +35,7 @@ const FeaturedGridItem: React.FC<FeaturedGridItemProps> = ({
         "relative overflow-hidden bg-muted cursor-pointer group",
         getSpanClass(span)
       )}
+      onClick={onClick}
     >
       {/* Loading skeleton */}
       {!isLoaded && !hasError && (

@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import FeaturedGridItem from './FeaturedGridItem';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { X } from 'lucide-react';
 
 const gridItems = [
   // Row 1
@@ -80,6 +82,8 @@ const gridItems = [
   }
 ];
 const FeaturedGrid = () => {
+  const [selectedImage, setSelectedImage] = useState<{ url: string; title: string } | null>(null);
+
   return <div className="w-full" style={{ contain: 'layout paint' }}>
       <div className="text-center mb-6 md:mb-8 px-4">
         <h2 className="text-4xl md:text-6xl lg:text-7xl font-thin font-poppins tracking-wide mb-3 uppercase">SUMMER END ORGANIZATION</h2>
@@ -95,9 +99,30 @@ const FeaturedGrid = () => {
             image={item.image}
             title={item.title}
             span={item.span as "normal" | "horizontal" | "vertical"}
+            onClick={() => setSelectedImage({ url: item.image, title: item.title })}
           />
         ))}
       </div>
+
+      {/* Lightbox Modal */}
+      <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
+        <DialogContent className="max-w-[95vw] max-h-[95vh] p-0 border-none bg-black/95">
+          <button
+            onClick={() => setSelectedImage(null)}
+            className="absolute top-4 right-4 z-50 p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors"
+            aria-label="Close"
+          >
+            <X className="h-6 w-6 text-white" />
+          </button>
+          {selectedImage && (
+            <img
+              src={selectedImage.url}
+              alt={selectedImage.title}
+              className="w-full h-full object-contain"
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>;
 };
 export default FeaturedGrid;
