@@ -1,4 +1,6 @@
 import Logo from "@/components/ui/Logo";
+import { Button } from "@/components/ui/button";
+import { Instagram } from "lucide-react";
 
 const ComingSoon = () => {
   return (
@@ -17,7 +19,26 @@ const ComingSoon = () => {
           </p>
         </div>
         
-        <div className="pt-8">
+        <div className="pt-8 space-y-6">
+          <div className="flex flex-col items-center gap-4">
+            <p className="text-sm text-muted-foreground">Follow us for updates</p>
+            <Button
+              asChild
+              size="lg"
+              className="bg-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))]/90 text-white"
+            >
+              <a 
+                href="https://www.instagram.com/sisterstorage" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center gap-2"
+              >
+                <Instagram className="h-5 w-5" />
+                Visit us on Instagram
+              </a>
+            </Button>
+          </div>
+          
           <div className="inline-flex items-center gap-2 text-sm text-muted-foreground">
             <div className="h-2 w-2 rounded-full bg-[hsl(var(--brand-pink))] animate-pulse" />
             <span>Under Construction</span>
