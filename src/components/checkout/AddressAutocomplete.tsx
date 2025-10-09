@@ -116,6 +116,9 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
       console.log('Address selected:', { fullAddress, city, province, postalCode });
 
       if (fullAddress && city && province && postalCode) {
+        // Update the input value to close the dropdown
+        onChange(fullAddress);
+        
         onAddressSelect({
           address: fullAddress,
           city,
