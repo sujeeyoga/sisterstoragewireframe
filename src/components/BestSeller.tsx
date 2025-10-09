@@ -160,21 +160,18 @@ const BestSeller = () => {
               
               <CardContent className="p-4 space-y-3">
                 {/* Badge */}
-                <span className="inline-block px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
+                <span className="inline-block px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs">
                   {item.badge}
                 </span>
                 
                 {/* Bundle Title */}
-                <h3 className="text-base font-bold text-gray-900 leading-tight">{item.name}</h3>
+                <h3 className="text-base font-bold mb-2">{item.name}</h3>
                 
                 {/* Pricing */}
-                <div className="flex items-baseline gap-2">
-                  <p className="text-base font-semibold text-gray-800">${item.price}</p>
-                  <p className="text-xs text-gray-400 line-through">${item.originalPrice}</p>
-                </div>
+                <p className="text-xs font-semibold text-gray-800 mb-4">${item.price}</p>
                 
                 {/* Description */}
-                <p className="text-xs text-gray-700 leading-relaxed">{item.description}</p>
+                <p className="text-xs text-gray-700 mb-5">{item.description}</p>
                 
                 {/* Bundle Contents */}
                 <div className="bg-gray-50 rounded p-3 border border-gray-200">
