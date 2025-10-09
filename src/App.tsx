@@ -28,6 +28,7 @@ import PageTransition from "./components/layout/PageTransition";
 import ComingSoon from "./pages/ComingSoon";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import AdminSetup from "./pages/AdminSetup";
+import { ProtectedRoutes } from "./components/auth/ProtectedRoutes";
 
 const queryClient = new QueryClient();
 
@@ -42,9 +43,31 @@ const App = () => {
           <BrowserRouter>
             <CartDrawer />
             <Routes>
+              {/* Public routes - always accessible */}
               <Route path="/admin-setup" element={<AdminSetup />} />
               <Route path="/payment-success" element={<PageTransition><PaymentSuccess /></PageTransition>} />
-              <Route path="*" element={<PageTransition><ComingSoon /></PageTransition>} />
+              
+              {/* Protected routes - show Coming Soon if not authenticated */}
+              <Route path="/" element={<ProtectedRoutes><PageTransition><Index /></PageTransition></ProtectedRoutes>} />
+              <Route path="/shop" element={<ProtectedRoutes><PageTransition><Shop /></PageTransition></ProtectedRoutes>} />
+              <Route path="/open-box" element={<ProtectedRoutes><PageTransition><OpenBox /></PageTransition></ProtectedRoutes>} />
+              <Route path="/gallery" element={<ProtectedRoutes><PageTransition><Gallery /></PageTransition></ProtectedRoutes>} />
+              <Route path="/shop/:productId" element={<ProtectedRoutes><PageTransition><ProductDetail /></PageTransition></ProtectedRoutes>} />
+              <Route path="/checkout" element={<ProtectedRoutes><PageTransition><Checkout /></PageTransition></ProtectedRoutes>} />
+              <Route path="/blog" element={<ProtectedRoutes><PageTransition><Blog /></PageTransition></ProtectedRoutes>} />
+              <Route path="/brand/*" element={<ProtectedRoutes><PageTransition><Brand /></PageTransition></ProtectedRoutes>} />
+              <Route path="/content/:slug" element={<ProtectedRoutes><PageTransition><ContentPage /></PageTransition></ProtectedRoutes>} />
+              <Route path="/hero-gallery-demo" element={<ProtectedRoutes><PageTransition><HeroGalleryDemo /></PageTransition></ProtectedRoutes>} />
+              <Route path="/our-story" element={<ProtectedRoutes><PageTransition><OurStory /></PageTransition></ProtectedRoutes>} />
+              <Route path="/admin/*" element={<Admin />} />
+              <Route path="/contact" element={<ProtectedRoutes><PageTransition><Contact /></PageTransition></ProtectedRoutes>} />
+              <Route path="/gift" element={<ProtectedRoutes><PageTransition><Gift /></PageTransition></ProtectedRoutes>} />
+              <Route path="/privacy-policy" element={<ProtectedRoutes><PageTransition><PrivacyPolicy /></PageTransition></ProtectedRoutes>} />
+              <Route path="/terms-of-service" element={<ProtectedRoutes><PageTransition><TermsOfService /></PageTransition></ProtectedRoutes>} />
+              <Route path="/accessibility" element={<ProtectedRoutes><PageTransition><Accessibility /></PageTransition></ProtectedRoutes>} />
+              
+              {/* Catch-all route */}
+              <Route path="*" element={<ProtectedRoutes><PageTransition><NotFound /></PageTransition></ProtectedRoutes>} />
             </Routes>
           </BrowserRouter>
         </CartProvider>
