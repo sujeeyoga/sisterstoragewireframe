@@ -32,7 +32,7 @@ export function AdminSidebar() {
   const isCollapsed = state === 'collapsed';
 
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
-    isActive ? 'bg-muted text-muted-foreground font-medium' : 'text-muted-foreground hover:bg-muted/50';
+    isActive ? 'bg-pink-50 text-pink-700 font-medium' : 'text-muted-foreground hover:bg-muted/50';
 
   return (
     <Sidebar className={isCollapsed ? 'w-14' : 'w-60'} collapsible="icon">
