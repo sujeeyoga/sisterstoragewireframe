@@ -147,7 +147,11 @@ export const products: Product[] = [
     inStock: true,
     sku: "travel",
     slug: "travel-size-bangle-box",
-    images: ["/lovable-uploads/ff4d8d-placeholder.png"],
+    images: [
+      "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/Sister%20Storage%20Assets/travel%20size/1759979156639-wffbli.jpg",
+      "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/Sister%20Storage%20Assets/travel%20size/1759979155834-hrflz.jpg",
+      "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/Sister%20Storage%20Assets/travel%20size/1759979155051-i3xg07.jpg"
+    ],
     attributes: { size: ["Small", "Travel"], rodCount: ["1"] },
     caption: "Pack light, keep your beauty with you.",
     funnelStage: "Small & Travel – 1 rod each"
