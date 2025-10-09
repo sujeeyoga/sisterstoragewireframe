@@ -246,6 +246,19 @@ export const ImageUploader = () => {
     });
   };
 
+  const copySelectedUrls = () => {
+    const selectedUrls = images
+      .filter(img => selectedImages.has(img.id))
+      .map(img => img.url)
+      .join('\n');
+    
+    navigator.clipboard.writeText(selectedUrls);
+    toast({
+      title: `Copied ${selectedImages.size} URL(s) to clipboard`,
+      description: 'Each URL is on a new line'
+    });
+  };
+
   const toggleSelectImage = (imageId: string) => {
     const newSelected = new Set(selectedImages);
     if (newSelected.has(imageId)) {
@@ -308,6 +321,15 @@ export const ImageUploader = () => {
           </p>
         </div>
         <div className="flex gap-2">
+          {selectedImages.size > 0 && (
+            <Button
+              variant="outline"
+              onClick={copySelectedUrls}
+            >
+              <ImageIcon className="h-4 w-4 mr-2" />
+              Copy {selectedImages.size} URL{selectedImages.size > 1 ? 's' : ''}
+            </Button>
+          )}
           <label>
             <input
               type="file"
