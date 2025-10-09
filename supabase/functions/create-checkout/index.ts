@@ -36,17 +36,25 @@ serve(async (req) => {
     }
 
     // Build line items for Stripe from cart items
-    const lineItems = items.map((item: any) => ({
-      price_data: {
-        currency: 'cad',
-        product_data: {
-          name: item.name,
-          description: item.description || '',
+    const lineItems = items.map((item: any) => {
+      const lineItem: any = {
+        price_data: {
+          currency: 'cad',
+          product_data: {
+            name: item.name,
+          },
+          unit_amount: Math.round(item.price * 100), // Convert to cents
         },
-        unit_amount: Math.round(item.price * 100), // Convert to cents
-      },
-      quantity: item.quantity,
-    }));
+        quantity: item.quantity,
+      };
+      
+      // Only add description if it's not empty
+      if (item.description && item.description.trim()) {
+        lineItem.price_data.product_data.description = item.description;
+      }
+      
+      return lineItem;
+    });
 
     // Add shipping as a line item if provided
     if (shippingCost && shippingCost > 0) {
