@@ -75,7 +75,7 @@ const AddToCartBar: React.FC<AddToCartBarProps> = ({ product, className }) => {
   };
 
   return (
-    <div className={cn("flex items-center gap-3 relative z-10", className)}>
+    <div className={cn("flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 relative z-10", className)}>
       <Button
         variant="outline"
         className="flex-1 font-bold text-sm py-3 shadow-md hover:shadow-lg transition-all duration-300 pointer-events-auto"
