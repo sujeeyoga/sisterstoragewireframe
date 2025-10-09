@@ -190,36 +190,33 @@ const Uploads = () => {
     });
   };
 
-  const useLongPress = (imageId: string) => {
-    const [longPressTriggered, setLongPressTriggered] = useState(false);
-    const timeout = useRef<NodeJS.Timeout>();
-    const target = useRef<EventTarget>();
+  const createLongPressHandlers = (imageId: string) => {
+    let timeout: NodeJS.Timeout;
+    let longPressTriggered = false;
 
-    const start = useCallback((event: React.TouchEvent | React.MouseEvent) => {
-      if (selectionMode) return; // Don't trigger long press in selection mode
+    const start = (event: React.TouchEvent | React.MouseEvent) => {
+      if (selectionMode) return;
       
-      target.current = event.target;
-      timeout.current = setTimeout(() => {
+      longPressTriggered = false;
+      timeout = setTimeout(() => {
         handleLongPress(imageId);
-        setLongPressTriggered(true);
-      }, 500); // 500ms long press
-    }, [imageId, selectionMode]);
+        longPressTriggered = true;
+      }, 500);
+    };
 
-    const clear = useCallback((event: React.TouchEvent | React.MouseEvent, shouldTriggerClick = true) => {
-      timeout.current && clearTimeout(timeout.current);
+    const clear = (event: React.TouchEvent | React.MouseEvent, shouldTriggerClick = true) => {
+      if (timeout) clearTimeout(timeout);
       
       if (shouldTriggerClick && !longPressTriggered) {
         handleCardPress(imageId, event);
       }
-      
-      setLongPressTriggered(false);
-    }, [imageId, longPressTriggered]);
+    };
 
     return {
-      onMouseDown: (e: React.MouseEvent) => start(e),
+      onMouseDown: start,
       onMouseUp: (e: React.MouseEvent) => clear(e),
       onMouseLeave: (e: React.MouseEvent) => clear(e, false),
-      onTouchStart: (e: React.TouchEvent) => start(e),
+      onTouchStart: start,
       onTouchEnd: (e: React.TouchEvent) => clear(e),
     };
   };
@@ -328,7 +325,7 @@ const Uploads = () => {
                 </h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                   {folderImages.map((image) => {
-                    const longPressHandlers = useLongPress(image.id);
+                    const longPressHandlers = createLongPressHandlers(image.id);
                     
                     return (
                       <Card 
