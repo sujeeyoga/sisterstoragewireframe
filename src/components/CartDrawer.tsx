@@ -61,10 +61,8 @@ const CartDrawer = () => {
           {/* Drawer Header */}
           <div className="border-b border-gray-200 p-4 bg-[hsl(var(--brand-pink))]/5">
             <div className="flex justify-between items-center mb-3">
-              <Link to="/" onClick={() => setIsOpen(false)}>
-                <Logo size="sm" />
-              </Link>
-              <button 
+              <Logo size="sm" onClick={() => setIsOpen(false)} />
+              <button
                 onClick={() => setIsOpen(false)}
                 className="p-2 rounded-full hover:bg-gray-100 transition-colors"
                 aria-label="Close cart"
