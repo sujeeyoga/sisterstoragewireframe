@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
 import { Button } from '@/components/ui/button';
@@ -14,12 +14,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import AddressAutocomplete from '@/components/checkout/AddressAutocomplete';
 import { useDebounce } from '@/hooks/useDebounce';
-import { loadStripe } from '@stripe/stripe-js';
-import { Elements } from '@stripe/react-stripe-js';
-import { PaymentForm } from '@/components/checkout/PaymentForm';
-
-// Initialize Stripe with publishable key
-const stripePromise = loadStripe('pk_live_51QXKjNKUj5UEV4Z9vLvF09u1l2ZJzqkF0LKcGTmPYSC1cYQzV7MmgfWk4z5tClCaBx41Vls0gDj1jxmK4jQxqQ3600lfNh3Lte');
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -31,9 +25,6 @@ const Checkout = () => {
   const [isLoadingRates, setIsLoadingRates] = useState(false);
   const [shippingRates, setShippingRates] = useState<any[]>([]);
   const [selectedShippingRate, setSelectedShippingRate] = useState<string>('');
-  const [clientSecret, setClientSecret] = useState<string>('');
-  const [showPayment, setShowPayment] = useState(false);
-  const paymentRef = useRef<HTMLDivElement>(null);
   const [formData, setFormData] = useState({
     email: '',
     firstName: '',
@@ -98,13 +89,6 @@ const Checkout = () => {
       calculateShipping();
     }
   }, [debouncedAddress, debouncedCity, debouncedProvince, debouncedPostalCode]);
-
-  // Scroll to payment form when it appears
-  useEffect(() => {
-    if (showPayment && paymentRef.current) {
-      paymentRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  }, [showPayment]);
 
   // Handle address selection from autocomplete
   const handleAddressSelect = (address: {
@@ -223,7 +207,7 @@ const Checkout = () => {
     setIsProcessing(true);
 
     try {
-      // Call Stripe checkout edge function to create payment intent
+      // Call Stripe checkout edge function
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: {
           items: items.map(item => ({
@@ -251,16 +235,11 @@ const Checkout = () => {
 
       if (error) throw error;
 
-      if (data?.clientSecret) {
-        setClientSecret(data.clientSecret);
-        setShowPayment(true);
-        
-        toast({
-          title: "Ready for Payment",
-          description: "Please complete your payment below.",
-        });
+      if (data?.url) {
+        // Redirect to Stripe Checkout
+        window.location.href = data.url;
       } else {
-        throw new Error('No payment client secret received');
+        throw new Error('No checkout URL received');
       }
     } catch (error) {
       console.error('Checkout error:', error);
@@ -491,16 +470,16 @@ const Checkout = () => {
                 </Card>
               )}
 
-              <Button
+              <Button 
                 type="submit" 
                 className="w-full bg-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))]/90"
                 size="lg"
-                disabled={isProcessing || showPayment}
+                disabled={isProcessing}
               >
                 {isProcessing ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Processing...
+                    Redirecting to Stripe...
                   </>
                 ) : (
                   <>
@@ -510,28 +489,6 @@ const Checkout = () => {
                 )}
               </Button>
             </form>
-
-            {/* Stripe Payment Form */}
-            {showPayment && clientSecret && (
-              <Card ref={paymentRef} className="mt-6">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <CreditCard className="h-5 w-5" />
-                    Complete Payment
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <Elements stripe={stripePromise} options={{ clientSecret }}>
-                    <PaymentForm 
-                      onBack={() => {
-                        setShowPayment(false);
-                        setClientSecret('');
-                      }} 
-                    />
-                  </Elements>
-                </CardContent>
-              </Card>
-            )}
           </div>
 
           {/* Order Summary */}

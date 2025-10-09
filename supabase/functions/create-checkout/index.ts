@@ -33,70 +33,68 @@ serve(async (req) => {
     const customers = await stripe.customers.list({ email: customerEmail, limit: 1 });
     if (customers.data.length > 0) {
       customerId = customers.data[0].id;
-    } else {
-      // Create customer if not exists
-      const customer = await stripe.customers.create({
-        email: customerEmail,
-        name: shippingAddress?.name,
-        address: shippingAddress ? {
-          line1: shippingAddress.address,
-          city: shippingAddress.city,
-          state: shippingAddress.state,
-          postal_code: shippingAddress.postal_code,
-          country: shippingAddress.country,
-        } : undefined,
-      });
-      customerId = customer.id;
     }
 
-    // Calculate total amount in cents
-    let totalAmount = 0;
-    
-    // Add item prices
-    items.forEach((item: any) => {
-      totalAmount += Math.round(item.price * 100) * item.quantity;
-    });
-    
-    // Add shipping
-    if (shippingCost && shippingCost > 0) {
-      totalAmount += Math.round(shippingCost * 100);
-    }
-    
-    // Add tax
-    if (taxAmount && taxAmount > 0) {
-      totalAmount += Math.round(taxAmount * 100);
-    }
-
-    console.log('Creating Payment Intent with amount:', totalAmount);
-
-    // Create a Payment Intent for embedded checkout
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: totalAmount,
-      currency: 'cad',
-      customer: customerId,
-      description: `Order from Sister Storage - ${items.length} item(s)`,
-      metadata: {
-        items: JSON.stringify(items.map((item: any) => ({
-          id: item.id,
+    // Build line items for Stripe from cart items
+    const lineItems = items.map((item: any) => ({
+      price_data: {
+        currency: 'cad',
+        product_data: {
           name: item.name,
-          quantity: item.quantity,
-          price: item.price,
-        }))),
+        },
+        unit_amount: Math.round(item.price * 100),
+      },
+      quantity: item.quantity,
+    }));
+
+    // Add shipping as a line item
+    if (shippingCost && shippingCost > 0) {
+      lineItems.push({
+        price_data: {
+          currency: 'cad',
+          product_data: {
+            name: shippingMethod || 'Shipping',
+          },
+          unit_amount: Math.round(shippingCost * 100),
+        },
+        quantity: 1,
+      });
+    }
+
+    // Add tax as a line item
+    if (taxAmount && taxAmount > 0) {
+      const taxLabel = province ? `Tax (${province} - ${(taxRate * 100).toFixed(2)}%)` : 'Tax';
+      lineItems.push({
+        price_data: {
+          currency: 'cad',
+          product_data: {
+            name: taxLabel,
+          },
+          unit_amount: Math.round(taxAmount * 100),
+        },
+        quantity: 1,
+      });
+    }
+
+    console.log('Creating Stripe checkout session');
+
+    // Create checkout session
+    const session = await stripe.checkout.sessions.create({
+      customer: customerId,
+      customer_email: customerId ? undefined : customerEmail,
+      line_items: lineItems,
+      mode: "payment",
+      success_url: `${req.headers.get("origin")}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${req.headers.get("origin")}/checkout`,
+      metadata: {
         shippingAddress: shippingAddress ? JSON.stringify(shippingAddress) : '',
         shippingMethod: shippingMethod || '',
-        shippingCost: shippingCost?.toString() || '0',
-        taxAmount: taxAmount?.toString() || '0',
-        taxRate: taxRate?.toString() || '0',
-        province: province || '',
       },
     });
 
-    console.log('Payment Intent created:', paymentIntent.id);
+    console.log('Checkout session created:', session.id);
 
-    return new Response(JSON.stringify({ 
-      clientSecret: paymentIntent.client_secret,
-      paymentIntentId: paymentIntent.id 
-    }), {
+    return new Response(JSON.stringify({ url: session.url }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });
