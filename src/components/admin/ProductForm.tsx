@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Bold, Italic, Underline, Type, History, Save, Check, Bookmark } from 'lucide-react';
+import { ArrowLeft, Bold, Italic, Underline, Type, History, Save, Check, Bookmark, ShoppingBag } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { products as staticProducts } from '@/data/products';
 import { productTaxonomyMap } from '@/data/product-taxonomy';
@@ -821,6 +821,16 @@ export const ProductForm = () => {
                           ) : null;
                         })()}
                       </div>
+                      
+                      {/* Add to Cart Button */}
+                      <Button
+                        className="w-full"
+                        size="lg"
+                        disabled
+                      >
+                        <ShoppingBag className="mr-2 h-4 w-4" />
+                        Add to Cart
+                      </Button>
                     </div>
                   </CardContent>
                 </div>
