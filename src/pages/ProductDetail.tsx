@@ -49,7 +49,7 @@ const ProductDetail = () => {
       id: product.id,
       name: product.name,
       price: product.price,
-      image: product.color // Now we're using the color instead of image
+      image: product.images?.[0] || product.color
     });
     
     toast({
@@ -63,7 +63,7 @@ const ProductDetail = () => {
       id: product.id,
       name: product.name,
       price: product.price,
-      image: product.color
+      image: product.images?.[0] || product.color
     });
     
     toast({
@@ -83,7 +83,11 @@ const ProductDetail = () => {
           
           {/* Product Details */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-            <ProductImage color={product.color} />
+            <ProductImage 
+              images={product.images} 
+              color={product.color} 
+              name={product.name}
+            />
             <ProductInfo 
               product={product}
               quantity={quantity}
