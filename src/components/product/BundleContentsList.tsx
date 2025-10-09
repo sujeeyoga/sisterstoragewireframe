@@ -53,14 +53,6 @@ const BundleContentsList = ({ contents, variant = "full", showTotals = false }: 
   if (isCard) {
     return (
       <div className="space-y-2">
-        {showTotals && (
-          <div className="pb-2 border-b border-gray-200">
-            <div className="inline-flex items-center gap-2 text-[hsl(var(--brand-pink))] text-3xl font-bold">
-              <span className="uppercase tracking-wide">Total:</span>
-              <span>{totalRods} Rods</span>
-            </div>
-          </div>
-        )}
         <h3 className="text-sm font-bold text-[hsl(var(--brand-pink))] uppercase tracking-wider">
           What's Included
         </h3>
@@ -93,14 +85,6 @@ const BundleContentsList = ({ contents, variant = "full", showTotals = false }: 
   // Compact and full variants
   return (
     <div className="space-y-5">
-      {showTotals && (
-        <div className="pb-2 border-b border-gray-200">
-          <div className="inline-flex items-center gap-2 text-[hsl(var(--brand-pink))] text-3xl font-bold">
-            <span className="uppercase tracking-wide">Total:</span>
-            <span>{totalRods} Rods</span>
-          </div>
-        </div>
-      )}
       <h3 className="text-sm font-bold text-[hsl(var(--brand-pink))] uppercase tracking-wider">
         Bundle Includes
       </h3>

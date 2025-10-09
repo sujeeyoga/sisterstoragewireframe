@@ -139,12 +139,6 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
                 return (
                   <>
                     {items}
-                    <div className="pt-2 border-t border-gray-200">
-                      <div className="inline-flex items-center gap-2 text-[hsl(var(--brand-pink))] text-3xl font-bold">
-                        <span className="uppercase tracking-wide">Total:</span>
-                        <span>{totalRods} Rods</span>
-                      </div>
-                    </div>
                   </>
                 );
               })()}

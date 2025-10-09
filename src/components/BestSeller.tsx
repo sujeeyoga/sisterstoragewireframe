@@ -23,7 +23,7 @@ const buyCards = [
   },
   {
     id: "bundle-2", 
-    name: 'Together Bundle',
+    name: 'Sister Staples',
     price: 137.00,
     originalPrice: null,
     stripePriceId: "price_1SGKRxDkJNZeOpMwdoeKbQQN",
@@ -37,7 +37,7 @@ const buyCards = [
   },
   {
     id: "bundle-3",
-    name: 'The Complete Family Set', 
+    name: 'Family Edition',
     price: 174.00,
     originalPrice: null,
     stripePriceId: "price_1SGKRyDkJNZeOpMwrEmPHrtg",
@@ -66,12 +66,10 @@ const BestSeller = () => {
             Shop Now
           </span>
           <h2 className="text-4xl md:text-6xl lg:text-7xl font-black text-gray-900 mb-6 leading-tight">
-            BUY SISTER<br />
-            <span className="text-[#E90064]">FAVORITES</span>
+            <span className="text-[#E90064]">BEST SELLERS</span>
           </h2>
           <p className="text-gray-600 text-lg leading-relaxed">
-            Get the storage solutions our community loves most. 
-            Limited stock, unlimited style.
+            Everyone's go-to organizers — and for good reason.
           </p>
         </div>
         
@@ -121,12 +119,6 @@ const BestSeller = () => {
                 
                 {/* Bundle Title */}
                 <h3 className="text-xl font-bold mb-2">{item.name}</h3>
-                
-                {/* Rod Count Badge */}
-                <div className="inline-flex items-center gap-2 text-[hsl(var(--brand-pink))] text-xl font-bold">
-                  <span className="uppercase tracking-wider">Total Rods:</span>
-                  <span className="text-2xl">{item.rodCount}</span>
-                </div>
                 
                 {/* Pricing */}
                 <p className="text-xl font-semibold text-gray-800 mb-4">${item.price}</p>

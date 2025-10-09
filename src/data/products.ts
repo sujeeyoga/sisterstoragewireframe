@@ -3,7 +3,7 @@ import { Product } from "@/types/product";
 // Best Seller Hero Product
 export const featuredProduct = {
   id: "bundle-3",
-  title: "The Complete Family Set",
+  title: "Family Edition",
   subtitle: "The ultimate set for you and yours. Complete storage solution.",
   price: 174.00,
   compareAt: 240.00,
@@ -22,7 +22,7 @@ export const products: Product[] = [
   // ============= BUNDLES (TOP SELLERS FIRST) =============
   {
     id: "bundle-3",
-    name: "The Complete Family Set",
+    name: "Family Edition",
     description: "BIG. BUNDLE. LOVE.",
     shortDescription: "4 Large Boxes, 2 Medium Boxes, 2 Small Boxes",
     bundleContents: "4 Large Boxes, 2 Medium Boxes, 2 Small Boxes",
@@ -45,7 +45,7 @@ export const products: Product[] = [
   },
   {
     id: "bundle-2",
-    name: "Together Bundle",
+    name: "Sister Staples",
     description: "SMART. SET. READY.",
     shortDescription: "3 Large Boxes, 2 Medium Boxes, 1 Small Box",
     bundleContents: "3 Large Boxes, 2 Medium Boxes, 1 Small Box",
@@ -139,7 +139,7 @@ export const products: Product[] = [
   },
   {
     id: "travel-size-bangle-box",
-    name: "Small Travel Bangle Box",
+    name: "Travel Bangle Box",
     description: "TRAVEL. LIGHT. BEAUTIFUL.",
     shortDescription: "Compact travel bangle box with 1 rod",
     price: 15.00,

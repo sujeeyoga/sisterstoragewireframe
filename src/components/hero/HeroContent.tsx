@@ -36,7 +36,7 @@ const HeroContent = ({ scrollPosition }: HeroContentProps) => {
         className="text-2xl md:text-4xl lg:text-5xl xl:text-6xl text-white mb-10 mt-8 font-black leading-none tracking-tight"
         animation="breath-fade-up-3"
       >
-        DESIGNED BY SISTERS — FOR SISTERS.
+        BROUGHT TO YOU BY SISTERS WHO GET IT.
       </AnimatedText>
 
       <div className="flex flex-col items-center gap-8 mb-6">

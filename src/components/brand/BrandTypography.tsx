@@ -32,7 +32,7 @@ const BrandTypography = () => {
         <div className="col-span-12 md:col-span-6 bg-white p-12 shadow-sm" style={{ borderRadius: '0px' }}>
           <p className="text-xs text-gray-500 uppercase tracking-wide mb-4 font-poppins">Heading</p>
           <h2 className="text-2xl md:text-3xl font-semibold text-gray-900 font-poppins">
-            Designed by sisters — for sisters
+            Brought to You by Sisters Who Get It
           </h2>
         </div>
         
