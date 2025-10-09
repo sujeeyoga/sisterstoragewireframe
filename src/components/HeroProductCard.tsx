@@ -1,6 +1,8 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Star, ShoppingBag } from 'lucide-react';
+import { useCart } from '@/contexts/CartContext';
+import { useToast } from '@/hooks/use-toast';
 
 interface HeroProductCardProps {
   id: string;
@@ -27,8 +29,21 @@ const HeroProductCard = ({
   reviews,
   href
 }: HeroProductCardProps) => {
+  const { addItem } = useCart();
+  const { toast } = useToast();
+  
   const handleBuyNow = () => {
-    window.location.href = href;
+    addItem({
+      id,
+      name,
+      price,
+      image
+    });
+    
+    toast({
+      title: "Added to cart!",
+      description: `${name} has been added to your cart.`,
+    });
   };
 
   return (
