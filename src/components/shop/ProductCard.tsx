@@ -62,12 +62,22 @@ const ProductCard = ({ product }: ProductCardProps) => {
         <div className="relative overflow-hidden">
           {/* Product Image with 3:2 aspect ratio */}
           <div 
-            className="aspect-square transition-transform duration-500 group-hover:scale-105 flex items-center justify-center"
-            style={{ 
-              backgroundColor: product.color,
-            }}
+            className="aspect-square transition-transform duration-500 group-hover:scale-105 overflow-hidden"
           >
-            <span className="text-background font-bold">Sister Storage</span>
+            {product.images && product.images[0] ? (
+              <img 
+                src={product.images[0]} 
+                alt={product.name}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div 
+                className="w-full h-full flex items-center justify-center"
+                style={{ backgroundColor: product.color }}
+              >
+                <span className="text-background font-bold">Sister Storage</span>
+              </div>
+            )}
           </div>
           
           {/* Hover Overlay */}
