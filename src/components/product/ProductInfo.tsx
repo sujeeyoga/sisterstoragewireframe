@@ -36,7 +36,31 @@ const ProductInfo = ({ product, quantity, setQuantity, onAddToCart, onBuyNow }: 
       
       {/* Bundle Contents for bundles */}
       {product.category === 'bundles' && product.bundleContents && (
-        <BundleContentsList contents={product.bundleContents} variant="full" />
+        <>
+          <BundleContentsList contents={product.bundleContents} variant="full" />
+          
+          {/* Sizing Information */}
+          <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 mb-4">
+            <h3 className="text-sm font-bold text-gray-900 mb-3">Box Dimensions</h3>
+            <div className="space-y-2 text-xs text-gray-700">
+              <div className="flex justify-between">
+                <span className="font-medium">Large Box:</span>
+                <span>10" L × 8" W × 4" H</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium">Medium Box:</span>
+                <span>8" L × 6" W × 3" H</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium">Small Box:</span>
+                <span>6" L × 4" W × 2.5" H</span>
+              </div>
+            </div>
+            <p className="text-xs text-gray-500 mt-3 italic">
+              Perfect for organizing bangles, bracelets, and jewelry of all sizes
+            </p>
+          </div>
+        </>
       )}
       
       <ProductFeatures features={product.features || []} />
