@@ -6,10 +6,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { ArrowLeft, ShoppingBag, CreditCard, Truck, Trash2, Tag } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, CreditCard, Truck, Trash2, Tag, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Logo from '@/components/ui/Logo';
 import { useStoreDiscount } from '@/hooks/useStoreDiscount';
+import { supabase } from '@/integrations/supabase/client';
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -26,9 +27,6 @@ const Checkout = () => {
     city: '',
     state: '',
     zipCode: '',
-    cardNumber: '',
-    expiryDate: '',
-    cvv: '',
   });
 
   const taxRate = 0.085;
@@ -47,17 +45,50 @@ const Checkout = () => {
     e.preventDefault();
     setIsProcessing(true);
 
-    // Simulate payment processing
-    setTimeout(() => {
-      toast({
-        title: "Order Placed Successfully!",
-        description: `Your order of $${total.toFixed(2)} has been confirmed. You'll receive a confirmation email shortly.`,
+    try {
+      // Call Stripe checkout edge function with cart items
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: {
+          items: items.map(item => ({
+            id: item.id,
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity,
+          })),
+          customerEmail: formData.email,
+          shippingAddress: {
+            name: `${formData.firstName} ${formData.lastName}`,
+            address: formData.address,
+            city: formData.city,
+            state: formData.state,
+            postal_code: formData.zipCode,
+          },
+        },
       });
-      
-      clearCart();
+
+      if (error) throw error;
+
+      if (data?.url) {
+        // Redirect to Stripe Checkout in new tab
+        window.open(data.url, '_blank');
+        
+        toast({
+          title: "Redirecting to Checkout",
+          description: "You'll be redirected to Stripe to complete your payment securely.",
+        });
+      } else {
+        throw new Error('No checkout URL received');
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+      toast({
+        title: "Checkout Error",
+        description: error instanceof Error ? error.message : "Failed to initialize checkout. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
       setIsProcessing(false);
-      navigate('/');
-    }, 2000);
+    }
   };
 
   if (items.length === 0) {
@@ -205,48 +236,40 @@ const Checkout = () => {
                 </CardContent>
               </Card>
 
-              {/* Payment Information */}
+              {/* Payment Information - Handled by Stripe */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <CreditCard className="h-5 w-5" />
-                    Payment Information
+                    Payment
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <Label htmlFor="cardNumber">Card Number</Label>
-                    <Input
-                      id="cardNumber"
-                      name="cardNumber"
-                      placeholder="1234 5678 9012 3456"
-                      value={formData.cardNumber}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="expiryDate">Expiry Date</Label>
-                      <Input
-                        id="expiryDate"
-                        name="expiryDate"
-                        placeholder="MM/YY"
-                        value={formData.expiryDate}
-                        onChange={handleInputChange}
-                        required
-                      />
+                <CardContent>
+                  <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg p-6 border border-purple-200">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
+                        <svg className="w-6 h-6 text-purple-600" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-gray-900">Secure Payment with Stripe</h3>
+                        <p className="text-sm text-gray-600">Your payment info is handled securely by Stripe</p>
+                      </div>
                     </div>
-                    <div>
-                      <Label htmlFor="cvv">CVV</Label>
-                      <Input
-                        id="cvv"
-                        name="cvv"
-                        placeholder="123"
-                        value={formData.cvv}
-                        onChange={handleInputChange}
-                        required
-                      />
+                    <div className="flex items-center gap-4 text-xs text-gray-500 mt-4 pt-4 border-t border-purple-100">
+                      <span className="flex items-center gap-1">
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd"/>
+                        </svg>
+                        SSL Encrypted
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
+                        </svg>
+                        PCI Compliant
+                      </span>
                     </div>
                   </div>
                 </CardContent>
@@ -258,7 +281,17 @@ const Checkout = () => {
                 size="lg"
                 disabled={isProcessing}
               >
-                {isProcessing ? 'Processing...' : `Place Order - $${total.toFixed(2)}`}
+                {isProcessing ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <CreditCard className="mr-2 h-4 w-4" />
+                    Continue to Payment - ${total.toFixed(2)}
+                  </>
+                )}
               </Button>
             </form>
           </div>
