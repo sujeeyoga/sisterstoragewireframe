@@ -109,11 +109,11 @@ const Checkout = () => {
           action: 'get-rates',
           data: {
             from_address: {
-              name: 'Sister Storage',
-              address1: '123 Business St', // TODO: Replace with actual warehouse address
-              city: 'Toronto',
+              name: 'Sister Storage Inc',
+              address1: '51 Cachia Lane',
+              city: 'Ajax',
               province_code: 'ON',
-              postal_code: 'M5V3A8',
+              postal_code: 'L1T0P8',
               country_code: 'CA',
             },
             to_address: {
