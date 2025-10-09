@@ -239,8 +239,17 @@ const Checkout = () => {
 
       if (data?.url) {
         console.log('Redirecting to Stripe:', data.url);
-        // Redirect to Stripe Checkout in same window
-        window.location.href = data.url;
+        try {
+          // Prefer top-level redirect to escape preview iframe
+          if (window.top) {
+            window.top.location.assign(data.url);
+          } else {
+            window.location.assign(data.url);
+          }
+        } catch (e) {
+          console.warn('Top-level redirect failed, opening new tab:', e);
+          window.open(data.url, '_blank', 'noopener,noreferrer');
+        }
       } else {
         console.error('No URL in response:', data);
         throw new Error('No checkout URL received');
