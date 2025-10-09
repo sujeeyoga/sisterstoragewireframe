@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
 import { Button } from '@/components/ui/button';
@@ -6,11 +6,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { ArrowLeft, ShoppingBag, CreditCard, Truck, Trash2, Tag, Loader2 } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, CreditCard, Truck, Trash2, Tag, Loader2, Package } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Logo from '@/components/ui/Logo';
 import { useStoreDiscount } from '@/hooks/useStoreDiscount';
 import { supabase } from '@/integrations/supabase/client';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -19,21 +20,30 @@ const Checkout = () => {
   const { discount, applyDiscount, getDiscountAmount } = useStoreDiscount();
   
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isLoadingRates, setIsLoadingRates] = useState(false);
+  const [shippingRates, setShippingRates] = useState<any[]>([]);
+  const [selectedShippingRate, setSelectedShippingRate] = useState<string>('');
   const [formData, setFormData] = useState({
     email: '',
     firstName: '',
     lastName: '',
     address: '',
     city: '',
-    state: '',
-    zipCode: '',
+    province: '',
+    postalCode: '',
+    country: 'CA',
+    phone: '',
   });
 
   const taxRate = 0.085;
   const discountedSubtotal = discount?.enabled ? applyDiscount(subtotal) : subtotal;
   const discountAmount = discount?.enabled ? getDiscountAmount(subtotal) : 0;
   const taxAmount = discountedSubtotal * taxRate;
-  const shippingCost = discountedSubtotal > 50 ? 0 : 9.99;
+  
+  // Get shipping cost from selected rate
+  const selectedRate = shippingRates.find(rate => rate.postage_type === selectedShippingRate);
+  const shippingCost = selectedRate ? parseFloat(selectedRate.total_cost) : 0;
+  
   const total = discountedSubtotal + taxAmount + shippingCost;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,8 +51,94 @@ const Checkout = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  // Calculate shipping when address is complete
+  const calculateShipping = async () => {
+    // Check if required fields are filled
+    if (!formData.address || !formData.city || !formData.province || !formData.postalCode) {
+      return;
+    }
+
+    setIsLoadingRates(true);
+    try {
+      // Calculate total weight based on cart items (estimate 0.5kg per item)
+      const totalWeight = items.reduce((sum, item) => sum + (item.quantity * 0.5), 0);
+
+      const { data, error } = await supabase.functions.invoke('stallion-express', {
+        body: {
+          action: 'get-rates',
+          data: {
+            from: {
+              name: 'Sister Storage',
+              street1: '123 Business St', // TODO: Replace with actual warehouse address
+              city: 'Toronto',
+              province: 'ON',
+              postal_code: 'M5V3A8',
+              country: 'CA',
+            },
+            to: {
+              name: `${formData.firstName} ${formData.lastName}`,
+              street1: formData.address,
+              city: formData.city,
+              province: formData.province,
+              postal_code: formData.postalCode,
+              country: formData.country,
+              phone: formData.phone,
+              email: formData.email,
+            },
+            packages: [{
+              weight: Math.max(totalWeight, 0.5), // Minimum 0.5kg
+              length: 30,
+              width: 20,
+              height: 10,
+              units: 'metric',
+            }],
+          },
+        },
+      });
+
+      if (error) throw error;
+
+      if (data?.success && data?.data?.rates) {
+        setShippingRates(data.data.rates);
+        // Auto-select the cheapest option
+        if (data.data.rates.length > 0) {
+          const cheapest = data.data.rates.reduce((prev: any, curr: any) => 
+            parseFloat(curr.total_cost) < parseFloat(prev.total_cost) ? curr : prev
+          );
+          setSelectedShippingRate(cheapest.postage_type);
+        }
+        
+        toast({
+          title: 'Shipping Rates Loaded',
+          description: `Found ${data.data.rates.length} shipping options`,
+        });
+      } else {
+        throw new Error('No rates available');
+      }
+    } catch (error) {
+      console.error('Error calculating shipping:', error);
+      toast({
+        title: 'Shipping Error',
+        description: 'Unable to calculate shipping rates. Using standard rate.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsLoadingRates(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!selectedShippingRate) {
+      toast({
+        title: 'Select Shipping Method',
+        description: 'Please calculate and select a shipping method',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setIsProcessing(true);
 
     try {
@@ -60,9 +156,12 @@ const Checkout = () => {
             name: `${formData.firstName} ${formData.lastName}`,
             address: formData.address,
             city: formData.city,
-            state: formData.state,
-            postal_code: formData.zipCode,
+            state: formData.province,
+            postal_code: formData.postalCode,
+            country: formData.country,
           },
+          shippingCost: shippingCost,
+          shippingMethod: selectedRate?.name || 'Standard Shipping',
         },
       });
 
@@ -213,28 +312,96 @@ const Checkout = () => {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="state">State</Label>
+                      <Label htmlFor="state">Province</Label>
                       <Input
-                        id="state"
-                        name="state"
-                        value={formData.state}
+                        id="province"
+                        name="province"
+                        value={formData.province}
                         onChange={handleInputChange}
+                        placeholder="ON"
                         required
                       />
                     </div>
                     <div>
-                      <Label htmlFor="zipCode">ZIP Code</Label>
+                      <Label htmlFor="postalCode">Postal Code</Label>
                       <Input
-                        id="zipCode"
-                        name="zipCode"
-                        value={formData.zipCode}
+                        id="postalCode"
+                        name="postalCode"
+                        value={formData.postalCode}
                         onChange={handleInputChange}
+                        placeholder="M5V 3A8"
                         required
                       />
                     </div>
                   </div>
+                  <div>
+                    <Label htmlFor="phone">Phone (optional)</Label>
+                    <Input
+                      id="phone"
+                      name="phone"
+                      type="tel"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      placeholder="555-1234"
+                    />
+                  </div>
+                  <Button
+                    type="button"
+                    onClick={calculateShipping}
+                    disabled={isLoadingRates || !formData.address || !formData.city || !formData.province || !formData.postalCode}
+                    className="w-full"
+                    variant="outline"
+                  >
+                    {isLoadingRates ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Calculating Rates...
+                      </>
+                    ) : (
+                      <>
+                        <Package className="mr-2 h-4 w-4" />
+                        Calculate Shipping
+                      </>
+                    )}
+                  </Button>
                 </CardContent>
               </Card>
+
+              {/* Shipping Options */}
+              {shippingRates.length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Truck className="h-5 w-5" />
+                      Select Shipping Method
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <RadioGroup value={selectedShippingRate} onValueChange={setSelectedShippingRate}>
+                      <div className="space-y-3">
+                        {shippingRates.map((rate: any) => (
+                          <div key={rate.postage_type} className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50 transition-colors">
+                            <RadioGroupItem value={rate.postage_type} id={rate.postage_type} />
+                            <Label htmlFor={rate.postage_type} className="flex-1 cursor-pointer">
+                              <div className="flex justify-between items-center">
+                                <div>
+                                  <p className="font-medium">{rate.name}</p>
+                                  <p className="text-xs text-gray-500">
+                                    Delivery: {rate.delivery_days} business days
+                                  </p>
+                                </div>
+                                <p className="font-semibold text-[hsl(var(--brand-pink))]">
+                                  ${parseFloat(rate.total_cost).toFixed(2)}
+                                </p>
+                              </div>
+                            </Label>
+                          </div>
+                        ))}
+                      </div>
+                    </RadioGroup>
+                  </CardContent>
+                </Card>
+              )}
 
               {/* Payment Information - Handled by Stripe */}
               <Card>
@@ -365,11 +532,17 @@ const Checkout = () => {
                   <div className="flex justify-between">
                     <span className="text-gray-600">Shipping</span>
                     <span className="font-medium">
-                      {shippingCost === 0 ? 'FREE' : `$${shippingCost.toFixed(2)}`}
+                      {shippingCost === 0 ? (
+                        <span className="text-gray-400">Calculate shipping</span>
+                      ) : (
+                        `$${shippingCost.toFixed(2)}`
+                      )}
                     </span>
                   </div>
-                  {shippingCost === 0 && (
-                    <p className="text-xs text-green-600">🎉 Free shipping on orders over $50!</p>
+                  {selectedRate && (
+                    <p className="text-xs text-gray-500">
+                      {selectedRate.name} - {selectedRate.delivery_days} business days
+                    </p>
                   )}
                 </div>
 
