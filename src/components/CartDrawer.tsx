@@ -11,10 +11,15 @@ const CartDrawer = () => {
   const { discount, applyDiscount, getDiscountAmount } = useStoreDiscount();
   const drawerContentRef = React.useRef<HTMLDivElement>(null);
 
-  // Scroll to top when drawer opens
+  // Scroll page and drawer to top when drawer opens
   useEffect(() => {
-    if (isOpen && drawerContentRef.current) {
-      drawerContentRef.current.scrollTop = 0;
+    if (isOpen) {
+      // Scroll main page to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Scroll drawer content to top
+      if (drawerContentRef.current) {
+        drawerContentRef.current.scrollTop = 0;
+      }
     }
   }, [isOpen]);
 
