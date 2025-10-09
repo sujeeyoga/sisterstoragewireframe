@@ -128,7 +128,7 @@ export const products: Product[] = [
     sku: "medium",
     slug: "medium-bangle-box",
     images: [
-      "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/medium/1759981042683-u89u4i.jpg"
+      "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/Sister%20Storage%20Assets/HERO%20IMAGE%20REPLACEMENT/1759979141544-6zp7u6.jpg"
     ],
     attributes: { size: ["Medium"], rodCount: ["2"] },
     caption: "Just the right size for your day.",
