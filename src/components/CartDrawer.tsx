@@ -51,9 +51,9 @@ const CartDrawer = () => {
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-full overflow-y-auto">
           {/* Drawer Header */}
-          <div className="sticky top-0 z-20 border-b border-gray-200 p-4 bg-[hsl(var(--brand-pink))]/5">
+          <div className="flex-shrink-0 border-b border-gray-200 p-4 bg-[hsl(var(--brand-pink))]/5">
             <div className="flex justify-between items-center mb-3">
               <Logo size="sm" onClick={() => setIsOpen(false)} />
               <button
@@ -70,9 +70,9 @@ const CartDrawer = () => {
             </h2>
           </div>
           
-          {/* Cart Summary - Sticky at top */}
+          {/* Cart Summary - Moved to top */}
           {items.length > 0 && (
-            <div className="sticky top-0 z-10 flex-shrink-0 border-b border-gray-200 p-4 bg-gray-50">
+            <div className="flex-shrink-0 border-b border-gray-200 p-4 bg-gray-50">
               {/* Itemized Breakdown */}
               <div className="space-y-2 mb-4">
                 <div className="flex justify-between text-sm text-gray-600">
@@ -129,7 +129,7 @@ const CartDrawer = () => {
           )}
           
           {/* Cart Items */}
-          <div className="flex-1 overflow-y-auto py-4 px-4 overscroll-contain">
+          <div className="flex-shrink-0 py-4 px-4">
             {items.length === 0 ? (
               <div className="text-center py-12">
                 <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
