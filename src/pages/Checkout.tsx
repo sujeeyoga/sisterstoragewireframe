@@ -142,18 +142,20 @@ const Checkout = () => {
       if (error) throw error;
 
       if (data?.success && data?.data?.rates) {
-        setShippingRates(data.data.rates);
+        // Sort rates by price (cheapest first)
+        const sortedRates = data.data.rates.sort((a: any, b: any) => 
+          parseFloat(a.total) - parseFloat(b.total)
+        );
+        setShippingRates(sortedRates);
+        
         // Auto-select the cheapest option
-        if (data.data.rates.length > 0) {
-          const cheapest = data.data.rates.reduce((prev: any, curr: any) => 
-            parseFloat(curr.total) < parseFloat(prev.total) ? curr : prev
-          );
-          setSelectedShippingRate(cheapest.postage_type);
+        if (sortedRates.length > 0) {
+          setSelectedShippingRate(sortedRates[0].postage_type);
         }
         
         toast({
           title: 'Shipping Rates Loaded',
-          description: `Found ${data.data.rates.length} shipping options`,
+          description: `Found ${sortedRates.length} shipping options. Cheapest: $${parseFloat(sortedRates[0].total).toFixed(2)}`,
         });
       } else {
         throw new Error('No rates available');
