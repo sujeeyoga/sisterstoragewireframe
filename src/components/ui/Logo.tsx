@@ -25,15 +25,16 @@ const Logo: React.FC<LogoProps> = ({
 
   return (
     <Link to="/" className={`relative z-10 ${className}`} onClick={onClick}>
-      <img
-        src="https://sisterstorage.com/wp-content/uploads/2025/02/Sister-Storage-Logo-Main-300x112.png"
-        alt="Sister Storage - Elegant jewelry and keepsake storage solutions"
-        className={`${sizeClasses[size]} w-auto transition-all duration-300 hover:opacity-90`}
+      <div 
+        className={`${sizeClasses[size]} flex items-center justify-center transition-all duration-300 hover:opacity-90`}
         style={{ 
           transform: `scale(${scale})`,
         }}
-        loading="eager"
-      />
+      >
+        <span className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
+          SISTER STORAGE
+        </span>
+      </div>
     </Link>
   );
 };
