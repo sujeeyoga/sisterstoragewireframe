@@ -50,7 +50,23 @@ const CartDrawer = () => {
   const total = discountedSubtotal + taxAmount;
 
   return (
-    <div className={`fixed inset-0 z-[9999] transition-opacity duration-300 ${isOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'}`}>
+    <>
+      {/* Floating Cart Button - Always Visible */}
+      <button
+        onClick={() => setIsOpen(true)}
+        className="fixed bottom-6 right-6 z-[9998] w-14 h-14 bg-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))]/90 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110"
+        aria-label="Open shopping cart"
+      >
+        <ShoppingBag className="h-6 w-6" />
+        {totalItems > 0 && (
+          <span className="absolute -top-1 -right-1 bg-white text-[hsl(var(--brand-pink))] rounded-full text-xs w-5 h-5 flex items-center justify-center font-semibold border-2 border-[hsl(var(--brand-pink))]">
+            {totalItems}
+          </span>
+        )}
+      </button>
+
+      {/* Cart Drawer */}
+      <div className={`fixed inset-0 z-[9999] transition-opacity duration-300 ${isOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'}`}>
       {/* Backdrop */}
       <div 
         className={`absolute inset-0 bg-black transition-opacity duration-300 ${isOpen ? 'bg-opacity-50' : 'bg-opacity-0'}`}
@@ -236,6 +252,7 @@ const CartDrawer = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
