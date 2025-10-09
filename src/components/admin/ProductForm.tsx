@@ -13,6 +13,7 @@ import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Bold, Italic, Underline, Type, History, Save, Check, Bookmark } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { products as staticProducts } from '@/data/products';
+import { productTaxonomyMap } from '@/data/product-taxonomy';
 
 type ProductFormData = {
   name: string;
@@ -752,7 +753,11 @@ export const ProductForm = () => {
                     <div className="min-h-[4rem] mb-3 flex justify-center">
                       {(() => {
                         const shopProduct = staticProducts.find(p => p.slug === formValues.slug);
-                        const rodCount = shopProduct?.attributes?.rodCount;
+                        if (!shopProduct) return null;
+                        
+                        const taxonomy = productTaxonomyMap[shopProduct.id];
+                        const rodCount = taxonomy?.attributes?.rodCount;
+                        
                         return rodCount ? (
                           <div className="inline-flex flex-col items-center bg-[hsl(var(--primary))] text-primary-foreground rounded-lg px-3 py-2">
                             <span className="text-xs font-medium">RODS</span>
@@ -766,7 +771,10 @@ export const ProductForm = () => {
                     <div className="min-h-[2rem] mb-3">
                       {(() => {
                         const shopProduct = staticProducts.find(p => p.slug === formValues.slug);
-                        const attrs = shopProduct?.attributes;
+                        if (!shopProduct) return null;
+                        
+                        const taxonomy = productTaxonomyMap[shopProduct.id];
+                        const attrs = taxonomy?.attributes;
                         if (!attrs) return null;
                         
                         const chips: React.ReactNode[] = [];
