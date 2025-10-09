@@ -1,87 +1,27 @@
-import { useOptimizedParallax } from '@/hooks/use-optimized-parallax';
-import { useIsMobile } from '@/hooks/use-mobile';
 import { useViewportHeight } from '@/hooks/use-viewport-height';
 import { Button } from '@/components/ui/button';
 import { Instagram } from 'lucide-react';
-import { useState, useEffect } from 'react';
 
 const ParallaxContainer = () => {
-  const isMobile = useIsMobile();
-  const [imageLoaded, setImageLoaded] = useState(false);
   useViewportHeight();
-  
-  // Disable parallax for static display
-  const parallaxDisabled = true;
-  
-  const { 
-    ref: mainRef, 
-    offset: mainOffset,
-    isVisible,
-    prefersReducedMotion 
-  } = useOptimizedParallax({
-    speed: 0.3, // Reduced speed for smoother effect
-    threshold: 0.1,
-    disabled: parallaxDisabled
-  });
 
-  const imageUrlDesktop = "/lovable-uploads/b0963b41-dee1-4ccb-b8bc-7144c4ea6285.png";
-  const imageUrlMobile = "/lovable-uploads/b0963b41-dee1-4ccb-b8bc-7144c4ea6285.png";
-  const currentImageUrl = isMobile ? imageUrlMobile : imageUrlDesktop;
-  const backgroundImage = `url(${currentImageUrl})`;
+  const imageUrl = "/lovable-uploads/b0963b41-dee1-4ccb-b8bc-7144c4ea6285.png";
 
-  // Preload the image for faster display
-  useEffect(() => {
-    const img = new Image();
-    img.onload = () => {
-      console.log('Parallax image loaded successfully');
-      setImageLoaded(true);
-    };
-    img.onerror = () => {
-      console.error('Failed to load parallax image');
-      setImageLoaded(true); // Show content anyway
-    };
-    img.src = currentImageUrl;
-  }, [currentImageUrl]);
-
-  // Use CSS variable-driven viewport height for reliable mobile VH
-  // Fallback to h-screen via class; inline style uses --vh
   return (
     <section 
-      ref={mainRef}
-      className="relative overflow-hidden w-full bg-no-repeat bg-cover bg-center"
+      className="relative w-full overflow-hidden"
       aria-label="Parallax showcase section"
       style={{
         height: 'calc(var(--vh, 1vh) * 70)',
-        marginTop: '0',
+        backgroundImage: `url(${imageUrl})`,
+        backgroundAttachment: 'fixed',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'cover',
         backgroundColor: 'hsl(var(--brand-pink))'
       }}
     >
-      {/* Loading placeholder */}
-      {!imageLoaded && (
-        <div 
-          className="absolute inset-0 bg-gradient-to-br from-pink-100 to-pink-200 animate-pulse"
-          aria-hidden="true"
-        />
-      )}
-
-      {/* Optimized parallax background */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 transition-opacity duration-500"
-        style={{
-          backgroundImage,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center 60%',
-          backgroundRepeat: 'no-repeat',
-          transform: !prefersReducedMotion && !isMobile && isVisible
-            ? `translateY(${mainOffset * 0.5}px)`
-            : 'none',
-          willChange: isVisible && !isMobile ? 'transform' : 'auto',
-          opacity: imageLoaded ? 1 : 0
-        }}
-      />
-
-      {/* Centered Instagram button only */}
+      {/* Centered Instagram button */}
       <section 
         className="relative z-10 h-full flex items-center justify-center px-4 md:px-6"
       >
