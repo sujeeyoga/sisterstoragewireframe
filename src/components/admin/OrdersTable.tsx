@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Card } from '@/components/ui/card';
-import { Loader2, Search, Eye, RotateCcw, Filter } from 'lucide-react';
+import { Loader2, Search, Eye, RotateCcw, Filter, Package } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
 import { OrderDrawer } from './OrderDrawer';
@@ -45,7 +45,7 @@ export function OrdersTable() {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const queryClient = useQueryClient();
 
-  const { data: orders, isLoading } = useQuery({
+  const { data: orders, isLoading, error } = useQuery({
     queryKey: ['admin-orders', statusFilter],
     queryFn: async () => {
       let query = supabase
@@ -58,7 +58,10 @@ export function OrdersTable() {
       }
 
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) {
+        console.error('Orders fetch error:', error);
+        throw error;
+      }
       return data as any as Order[];
     },
   });
@@ -113,8 +116,50 @@ export function OrdersTable() {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="flex flex-col justify-center items-center h-64 gap-4">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+        <p className="text-muted-foreground animate-pulse">Loading orders...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card className="p-8">
+        <div className="text-center space-y-4">
+          <p className="text-destructive font-semibold">Failed to load orders</p>
+          <p className="text-sm text-muted-foreground">
+            {error instanceof Error ? error.message : 'Unknown error occurred'}
+          </p>
+          <Button onClick={() => queryClient.invalidateQueries({ queryKey: ['admin-orders'] })}>
+            <RotateCcw className="h-4 w-4 mr-2" />
+            Retry
+          </Button>
+        </div>
+      </Card>
+    );
+  }
+
+  if (!orders || orders.length === 0) {
+    return (
+      <div className="space-y-4">
+        <div>
+          <h1 className="text-3xl font-bold">Orders</h1>
+          <p className="text-muted-foreground mt-1">
+            Manage and track all customer orders
+          </p>
+        </div>
+        <Card className="p-12">
+          <div className="text-center space-y-4">
+            <Package className="h-16 w-16 mx-auto text-muted-foreground/50" />
+            <div>
+              <h3 className="font-semibold text-lg">No orders yet</h3>
+              <p className="text-sm text-muted-foreground mt-2">
+                Orders will appear here once customers make purchases
+              </p>
+            </div>
+          </div>
+        </Card>
       </div>
     );
   }
