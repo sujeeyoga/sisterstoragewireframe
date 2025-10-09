@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
@@ -10,7 +10,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Bold, Italic, Underline, Type } from 'lucide-react';
+import { ArrowLeft, Bold, Italic, Underline, Type, History, Save, Check } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 
 type ProductFormData = {
   name: string;
@@ -25,12 +26,23 @@ type ProductFormData = {
   in_stock: boolean;
 };
 
+type VersionHistory = {
+  timestamp: number;
+  data: ProductFormData;
+};
+
 export const ProductForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const isEdit = id !== 'new';
+  
+  const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'unsaved'>('saved');
+  const [versionHistory, setVersionHistory] = useState<VersionHistory[]>([]);
+  const [showHistory, setShowHistory] = useState(false);
+  const autoSaveTimeout = useRef<NodeJS.Timeout>();
+  const lastSavedData = useRef<ProductFormData | null>(null);
 
   const { data: product } = useQuery({
     queryKey: ['admin-product', id],
@@ -56,7 +68,7 @@ export const ProductForm = () => {
 
   useEffect(() => {
     if (product) {
-      reset({
+      const initialData = {
         name: product.name,
         slug: product.slug,
         description: product.description || '',
@@ -67,9 +79,70 @@ export const ProductForm = () => {
         manage_stock: product.manage_stock || false,
         stock_quantity: product.stock_quantity,
         in_stock: product.in_stock,
-      });
+      };
+      reset(initialData);
+      lastSavedData.current = initialData;
+      setSaveStatus('saved');
     }
   }, [product, reset]);
+
+  // Auto-save effect
+  useEffect(() => {
+    if (!isEdit) return; // Only auto-save for existing products
+    
+    const subscription = watch((formData) => {
+      if (!lastSavedData.current) return;
+      
+      // Check if data has actually changed
+      const hasChanged = JSON.stringify(formData) !== JSON.stringify(lastSavedData.current);
+      
+      if (hasChanged) {
+        setSaveStatus('unsaved');
+        
+        // Clear existing timeout
+        if (autoSaveTimeout.current) {
+          clearTimeout(autoSaveTimeout.current);
+        }
+        
+        // Set new timeout for auto-save
+        autoSaveTimeout.current = setTimeout(() => {
+          const dataToSave = formData as ProductFormData;
+          
+          // Save current version to history before auto-saving
+          if (lastSavedData.current) {
+            setVersionHistory(prev => {
+              const newHistory = [
+                { timestamp: Date.now(), data: lastSavedData.current! },
+                ...prev.slice(0, 9) // Keep last 10 versions
+              ];
+              return newHistory;
+            });
+          }
+          
+          setSaveStatus('saving');
+          saveMutation.mutate(dataToSave);
+        }, 2000); // Auto-save after 2 seconds of no changes
+      }
+    });
+    
+    return () => {
+      subscription.unsubscribe();
+      if (autoSaveTimeout.current) {
+        clearTimeout(autoSaveTimeout.current);
+      }
+    };
+  }, [watch, isEdit]);
+
+  const restoreVersion = (version: VersionHistory) => {
+    reset(version.data);
+    lastSavedData.current = version.data;
+    setSaveStatus('unsaved');
+    setShowHistory(false);
+    toast({
+      title: 'Version restored',
+      description: 'Click Save to keep these changes',
+    });
+  };
 
   const saveMutation = useMutation({
     mutationFn: async (data: ProductFormData) => {
@@ -116,9 +189,17 @@ export const ProductForm = () => {
       }
     },
     onSuccess: () => {
-      toast({ title: `Product ${isEdit ? 'updated' : 'created'} successfully` });
+      const successMessage = isEdit ? 'Product auto-saved' : 'Product created successfully';
+      toast({ title: successMessage });
       queryClient.invalidateQueries({ queryKey: ['admin-products'] });
-      navigate('/admin/products');
+      
+      // Update last saved data reference
+      lastSavedData.current = formValues as ProductFormData;
+      setSaveStatus('saved');
+      
+      if (!isEdit) {
+        navigate('/admin/products');
+      }
     },
     onError: (error) => {
       toast({
@@ -176,14 +257,80 @@ export const ProductForm = () => {
 
   return (
     <div className="p-8">
-      <Button
-        variant="ghost"
-        onClick={() => navigate('/admin/products')}
-        className="mb-6"
-      >
-        <ArrowLeft className="mr-2 h-4 w-4" />
-        Back to Products
-      </Button>
+      <div className="flex items-center justify-between mb-6">
+        <Button
+          variant="ghost"
+          onClick={() => navigate('/admin/products')}
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back to Products
+        </Button>
+        
+        {isEdit && (
+          <div className="flex items-center gap-3">
+            {saveStatus === 'saved' && (
+              <Badge variant="outline" className="text-green-600 border-green-600">
+                <Check className="h-3 w-3 mr-1" />
+                Saved
+              </Badge>
+            )}
+            {saveStatus === 'saving' && (
+              <Badge variant="outline" className="text-blue-600 border-blue-600">
+                <Save className="h-3 w-3 mr-1 animate-pulse" />
+                Saving...
+              </Badge>
+            )}
+            {saveStatus === 'unsaved' && (
+              <Badge variant="outline" className="text-orange-600 border-orange-600">
+                Unsaved changes
+              </Badge>
+            )}
+            
+            {versionHistory.length > 0 && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowHistory(!showHistory)}
+              >
+                <History className="h-4 w-4 mr-2" />
+                History ({versionHistory.length})
+              </Button>
+            )}
+          </div>
+        )}
+      </div>
+
+      {showHistory && versionHistory.length > 0 && (
+        <Card className="mb-6 border-blue-200 bg-blue-50/50">
+          <CardHeader>
+            <CardTitle className="text-sm">Version History</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {versionHistory.map((version, index) => (
+                <div
+                  key={version.timestamp}
+                  className="flex items-center justify-between p-3 bg-white rounded-lg border"
+                >
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">{version.data.name}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {new Date(version.timestamp).toLocaleString()}
+                    </p>
+                  </div>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => restoreVersion(version)}
+                  >
+                    Restore
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
@@ -441,7 +588,7 @@ export const ProductForm = () => {
 
               <div className="flex gap-4">
                 <Button type="submit" disabled={saveMutation.isPending}>
-                  {saveMutation.isPending ? 'Saving...' : isEdit ? 'Update Product' : 'Create Product'}
+                  {saveMutation.isPending ? 'Saving...' : isEdit ? 'Save Now' : 'Create Product'}
                 </Button>
                 <Button
                   type="button"
@@ -450,6 +597,11 @@ export const ProductForm = () => {
                 >
                   Cancel
                 </Button>
+                {isEdit && (
+                  <p className="text-xs text-muted-foreground self-center ml-2">
+                    Auto-saves 2 seconds after changes
+                  </p>
+                )}
               </div>
             </form>
           </CardContent>
