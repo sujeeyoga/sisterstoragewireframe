@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import FeaturedGridItem from './FeaturedGridItem';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogOverlay } from '@/components/ui/dialog';
 import { X } from 'lucide-react';
 
 const gridItems = [
@@ -84,6 +84,18 @@ const gridItems = [
 const FeaturedGrid = () => {
   const [selectedImage, setSelectedImage] = useState<{ url: string; title: string } | null>(null);
 
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (selectedImage) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [selectedImage]);
+
   return (
     <>
       <div className="w-full">
@@ -110,7 +122,7 @@ const FeaturedGrid = () => {
     {/* Lightbox Modal */}
     <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
       <DialogContent 
-        className="max-w-[95vw] w-[95vw] h-[95vh] p-0 border-0 bg-black/95 flex items-center justify-center"
+        className="fixed inset-0 w-screen h-screen max-w-none p-0 m-0 border-0 bg-black/95 flex items-center justify-center"
         aria-describedby="lightbox-description"
       >
         <span id="lightbox-description" className="sr-only">
@@ -118,19 +130,17 @@ const FeaturedGrid = () => {
         </span>
         <button
           onClick={() => setSelectedImage(null)}
-          className="absolute top-4 right-4 z-[60] p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors"
+          className="fixed top-4 right-4 z-[100] p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors"
           aria-label="Close lightbox"
         >
           <X className="h-6 w-6 text-white" />
         </button>
         {selectedImage && (
-          <div className="w-full h-full flex items-center justify-center p-4">
-            <img
-              src={selectedImage.url}
-              alt={selectedImage.title}
-              className="max-w-full max-h-full object-contain"
-            />
-          </div>
+          <img
+            src={selectedImage.url}
+            alt={selectedImage.title}
+            className="max-w-[95vw] max-h-[95vh] w-auto h-auto object-contain"
+          />
         )}
       </DialogContent>
     </Dialog>
