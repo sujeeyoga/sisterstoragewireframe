@@ -85,6 +85,14 @@ export const ImageUploader = () => {
         ?.replace(/-+/g, '-')
         ?.trim();
       
+      // Sanitize file name
+      const sanitizedFileName = file.name
+        .replace(/[×]/g, 'x')
+        .replace(/[^\w\s\-\.]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
+        .trim();
+      
       // Generate unique file name with optional folder path
       const fileExt = file.name.split('.').pop();
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.jpg`;
@@ -100,11 +108,11 @@ export const ImageUploader = () => {
 
       if (uploadError) throw uploadError;
 
-      // Save metadata to database with folder path
+      // Save metadata to database with sanitized names
       const { error: dbError } = await supabase
         .from('uploaded_images')
         .insert({
-          file_name: file.name,
+          file_name: sanitizedFileName,
           file_path: filePath,
           file_size: blob.size,
           original_size: originalSize,
