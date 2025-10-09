@@ -8,6 +8,7 @@ import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { Trash2, MoveUp, MoveDown, Plus, Image as ImageIcon } from 'lucide-react';
+import { MigrateHeroImages } from './MigrateHeroImages';
 
 interface HeroImage {
   id: string;
@@ -210,6 +211,8 @@ export function HeroImagesManager() {
           Add Image
         </Button>
       </div>
+
+      <MigrateHeroImages />
 
       {showImagePicker && (
         <Card className="p-4">
