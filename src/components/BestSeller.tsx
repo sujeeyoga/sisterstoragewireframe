@@ -131,9 +131,9 @@ const BestSeller = () => {
                 <h3 className="text-xl font-bold mb-2">{item.name}</h3>
                 
                 {/* Rod Count Badge */}
-                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-pink-500 to-rose-500 text-white px-4 py-2 rounded-lg">
-                  <span className="text-xs font-bold uppercase tracking-wider">Total Rods:</span>
-                  <span className="text-2xl font-bold">{item.rodCount}</span>
+                <div className="inline-flex items-center gap-2 text-[hsl(var(--brand-pink))] text-xl font-bold">
+                  <span className="uppercase tracking-wider">Total Rods:</span>
+                  <span className="text-2xl">{item.rodCount}</span>
                 </div>
                 
                 {/* Pricing */}
