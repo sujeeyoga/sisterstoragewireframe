@@ -72,13 +72,13 @@ serve(async (req) => {
 
     console.log('Creating Stripe checkout session with line items:', lineItems);
 
-    // Create checkout session with mobile pay enabled
+    // Create checkout session with automatic payment methods (Apple/Google Pay via card)
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : customerEmail,
       line_items: lineItems,
       mode: "payment",
-      payment_method_types: ['card', 'apple_pay', 'google_pay', 'link'],
+      automatic_payment_methods: { enabled: true },
       shipping_address_collection: shippingAddress ? undefined : {
         allowed_countries: ['CA'],
       },
