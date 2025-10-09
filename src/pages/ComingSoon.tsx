@@ -97,6 +97,16 @@ const ComingSoon = () => {
             <div className="h-2 w-2 rounded-full bg-[hsl(var(--brand-pink))] animate-pulse" />
             <span>Under Construction</span>
           </div>
+          
+          {/* Admin Login Link */}
+          <div className="pt-4">
+            <a 
+              href="/admin-setup" 
+              className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Admin Access
+            </a>
+          </div>
         </div>
       </div>
     </div>
