@@ -51,7 +51,7 @@ const CartDrawer = () => {
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
-        <div className="sticky top-0 flex flex-col h-full">
+        <div className="flex flex-col h-full">
           {/* Drawer Header */}
           <div className="sticky top-0 z-20 border-b border-gray-200 p-4 bg-[hsl(var(--brand-pink))]/5">
             <div className="flex justify-between items-center mb-3">
@@ -129,7 +129,7 @@ const CartDrawer = () => {
           )}
           
           {/* Cart Items */}
-          <div className="sticky top-0 flex-1 overflow-y-auto py-4 px-4 overscroll-contain">
+          <div className="flex-1 overflow-y-auto py-4 px-4 overscroll-contain">
             {items.length === 0 ? (
               <div className="text-center py-12">
                 <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
