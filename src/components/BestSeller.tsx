@@ -88,25 +88,27 @@ const BestSeller = () => {
               </div>
               
               {/* Product Image */}
-              <div className="relative overflow-hidden">
-                {/* Loading skeleton */}
-                {!loadedImages[item.id] && (
-                  <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse" />
-                )}
-                
-                <img 
-                  src={item.image} 
-                  alt={`${item.name} - Bundle collection`}
-                  className={cn(
-                    "w-full aspect-[4/5] object-cover transition-all duration-700 group-hover:scale-105",
-                    loadedImages[item.id] ? "opacity-100" : "opacity-0"
+              <Link to={`/shop/${item.id}`} className="block">
+                <div className="relative overflow-hidden">
+                  {/* Loading skeleton */}
+                  {!loadedImages[item.id] && (
+                    <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse" />
                   )}
-                  loading="eager"
-                  decoding="async"
-                  onLoad={() => handleImageLoad(item.id)}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              </div>
+                  
+                  <img 
+                    src={item.image} 
+                    alt={`${item.name} - Bundle collection`}
+                    className={cn(
+                      "w-full aspect-[4/5] object-cover transition-all duration-700 group-hover:scale-105",
+                      loadedImages[item.id] ? "opacity-100" : "opacity-0"
+                    )}
+                    loading="eager"
+                    decoding="async"
+                    onLoad={() => handleImageLoad(item.id)}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                </div>
+              </Link>
               
               <CardContent className="p-4 space-y-3">
                 {/* Badge */}
