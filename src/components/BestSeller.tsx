@@ -160,33 +160,33 @@ const BestSeller = () => {
               
               <CardContent className="p-4 space-y-3">
                 {/* Badge */}
-                <span className="inline-block px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs">
+                <span className="inline-block px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xl">
                   {item.badge}
                 </span>
                 
                 {/* Bundle Title */}
-                <h3 className="text-base font-bold mb-2">{item.name}</h3>
+                <h3 className="text-xl font-bold mb-2">{item.name}</h3>
                 
                 {/* Pricing */}
-                <p className="text-xs font-semibold text-gray-800 mb-4">${item.price}</p>
+                <p className="text-xl font-semibold text-gray-800 mb-4">${item.price}</p>
                 
                 {/* Description */}
-                <p className="text-xs text-gray-700 mb-5">{item.description}</p>
+                <p className="text-xl text-gray-700 mb-5">{item.description}</p>
                 
                 {/* Bundle Contents */}
                 <div className="bg-gray-50 rounded p-3 border border-gray-200">
-                  <p className="text-xs font-semibold text-gray-700 mb-1">Bundle Includes:</p>
-                  <p className="text-xs text-gray-600">{item.bundleContents}</p>
+                  <p className="text-xl font-semibold text-gray-700 mb-1">Bundle Includes:</p>
+                  <p className="text-xl text-gray-600">{item.bundleContents}</p>
                 </div>
                 
                 {/* Rating */}
                 <div className="flex items-center gap-2">
                   <div className="flex items-center gap-0.5">
                     {[...Array(item.rating)].map((_, i) => (
-                      <Star key={i} className="h-3 w-3 text-amber-400 fill-amber-400" />
+                      <Star key={i} className="h-4 w-4 text-amber-400 fill-amber-400" />
                     ))}
                   </div>
-                  <span className="text-gray-600 text-xs">({item.reviews} reviews)</span>
+                  <span className="text-gray-600 text-xl">({item.reviews} reviews)</span>
                 </div>
                 
                 {/* Buttons */}
