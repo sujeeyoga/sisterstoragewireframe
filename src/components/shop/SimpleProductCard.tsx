@@ -122,13 +122,20 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
         </div>
         
         {/* What's Included */}
-        {(bullets || rodCount) && (
+        {(bullets || rodCount || product.originalPrice || product.bundleContents) && (
           <div className="bg-gray-50/80 rounded-xl p-4 border border-gray-100">
             <h3 className="text-sm font-bold text-[hsl(var(--brand-pink))] uppercase tracking-wider mb-2">
               What's Included
             </h3>
             <ul className="space-y-2">
-              {rodCount && (
+              {product.bundleContents && (
+                <li>
+                  <p className="text-gray-600 text-2xl leading-relaxed font-medium">
+                    {product.bundleContents}
+                  </p>
+                </li>
+              )}
+              {rodCount && !product.bundleContents && (
                 <li>
                   <p className="text-gray-600 text-2xl leading-relaxed font-medium">
                     {rodCount} Rod{rodCount !== '1' ? 's' : ''}
@@ -138,6 +145,11 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
               {bullets && bullets.map((line, i) => (
                 <li key={i}>
                   <p className="text-gray-600 text-2xl leading-relaxed font-medium">{line}</p>
+                </li>
+              ))}
+              {product.features && product.features.slice(0, 3).map((feature, i) => (
+                <li key={`feature-${i}`}>
+                  <p className="text-gray-600 text-2xl leading-relaxed font-medium">{feature}</p>
                 </li>
               ))}
             </ul>
