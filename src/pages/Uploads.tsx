@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -160,6 +160,70 @@ const Uploads = () => {
     }
   };
 
+  const handleCardPress = (imageId: string, e: React.TouchEvent | React.MouseEvent) => {
+    if (selectionMode) {
+      toggleImageSelection(imageId);
+      return;
+    }
+
+    // For regular clicks/taps when not in selection mode
+    const image = images.find(img => img.id === imageId);
+    if (image) {
+      setSelectedImage(image);
+      setPreviewOpen(true);
+    }
+  };
+
+  const handleLongPress = (imageId: string) => {
+    // Enable selection mode and select this image
+    setSelectionMode(true);
+    setSelectedImages(new Set([imageId]));
+    
+    // Haptic feedback on mobile
+    if ('vibrate' in navigator) {
+      navigator.vibrate(50);
+    }
+    
+    toast({
+      title: 'Selection mode enabled',
+      description: 'Tap images to select more',
+    });
+  };
+
+  const useLongPress = (imageId: string) => {
+    const [longPressTriggered, setLongPressTriggered] = useState(false);
+    const timeout = useRef<NodeJS.Timeout>();
+    const target = useRef<EventTarget>();
+
+    const start = useCallback((event: React.TouchEvent | React.MouseEvent) => {
+      if (selectionMode) return; // Don't trigger long press in selection mode
+      
+      target.current = event.target;
+      timeout.current = setTimeout(() => {
+        handleLongPress(imageId);
+        setLongPressTriggered(true);
+      }, 500); // 500ms long press
+    }, [imageId, selectionMode]);
+
+    const clear = useCallback((event: React.TouchEvent | React.MouseEvent, shouldTriggerClick = true) => {
+      timeout.current && clearTimeout(timeout.current);
+      
+      if (shouldTriggerClick && !longPressTriggered) {
+        handleCardPress(imageId, event);
+      }
+      
+      setLongPressTriggered(false);
+    }, [imageId, longPressTriggered]);
+
+    return {
+      onMouseDown: (e: React.MouseEvent) => start(e),
+      onMouseUp: (e: React.MouseEvent) => clear(e),
+      onMouseLeave: (e: React.MouseEvent) => clear(e, false),
+      onTouchStart: (e: React.TouchEvent) => start(e),
+      onTouchEnd: (e: React.TouchEvent) => clear(e),
+    };
+  };
+
   const toggleImageSelection = (imageId: string) => {
     setSelectedImages(prev => {
       const newSet = new Set(prev);
@@ -209,7 +273,7 @@ const Uploads = () => {
           </p>
           {!selectionMode && (
             <p className="text-xs text-muted-foreground mt-1">
-              💡 Tip: Use two-finger tap on mobile to enable multi-select
+              💡 Tip: Long-press any card or use two-finger tap to select multiple
             </p>
           )}
         </div>
@@ -263,64 +327,83 @@ const Uploads = () => {
                   {folder === 'Ungrouped' ? '📁 Ungrouped' : `📁 ${folder}`} ({folderImages.length})
                 </h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                  {folderImages.map((image) => (
-                    <Card 
-                      key={image.id} 
-                      className={cn(
-                        "overflow-hidden group relative",
-                        selectedImages.has(image.id) && "ring-2 ring-primary"
-                      )}
-                    >
-                      {selectionMode && (
-                        <div className="absolute top-2 left-2 z-10">
-                          <Checkbox
-                            checked={selectedImages.has(image.id)}
-                            onCheckedChange={() => toggleImageSelection(image.id)}
-                            className="bg-white border-2"
-                          />
-                        </div>
-                      )}
-                      <div className="aspect-square relative bg-muted">
-                        <img
-                          src={image.url}
-                          alt={image.file_name}
-                          className="w-full h-full object-cover cursor-pointer"
-                          onClick={() => previewImage(image)}
-                        />
-                        {!selectionMode && (
-                          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1">
-                            <Button
-                              size="sm"
-                              variant="secondary"
-                              onClick={() => previewImage(image)}
-                            >
-                              <Eye className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="secondary"
-                              onClick={() => copyUrl(image.url)}
-                            >
-                              <Copy className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="destructive"
-                              onClick={() => deleteImage(image)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
+                  {folderImages.map((image) => {
+                    const longPressHandlers = useLongPress(image.id);
+                    
+                    return (
+                      <Card 
+                        key={image.id} 
+                        className={cn(
+                          "overflow-hidden group relative",
+                          selectedImages.has(image.id) && "ring-2 ring-primary"
+                        )}
+                      >
+                        {selectionMode && (
+                          <div className="absolute top-2 left-2 z-10">
+                            <Checkbox
+                              checked={selectedImages.has(image.id)}
+                              onCheckedChange={() => toggleImageSelection(image.id)}
+                              className="bg-white border-2"
+                            />
                           </div>
                         )}
-                      </div>
-                      <div className="p-2">
-                        <p className="text-xs font-medium truncate">{image.file_name}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {(image.file_size / 1024).toFixed(1)}KB
-                        </p>
-                      </div>
-                    </Card>
-                  ))}
+                        <div 
+                          className="aspect-square relative bg-muted"
+                          {...longPressHandlers}
+                        >
+                          <img
+                            src={image.url}
+                            alt={image.file_name}
+                            className="w-full h-full object-cover cursor-pointer select-none"
+                            draggable={false}
+                          />
+                          {!selectionMode && (
+                            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1 pointer-events-none">
+                              <Button
+                                size="sm"
+                                variant="secondary"
+                                className="pointer-events-auto"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  previewImage(image);
+                                }}
+                              >
+                                <Eye className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="secondary"
+                                className="pointer-events-auto"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  copyUrl(image.url);
+                                }}
+                              >
+                                <Copy className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="destructive"
+                                className="pointer-events-auto"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  deleteImage(image);
+                                }}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          )}
+                        </div>
+                        <div className="p-2">
+                          <p className="text-xs font-medium truncate">{image.file_name}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {(image.file_size / 1024).toFixed(1)}KB
+                          </p>
+                        </div>
+                      </Card>
+                    );
+                  })}
                 </div>
               </div>
             ));
