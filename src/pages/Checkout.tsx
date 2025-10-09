@@ -6,12 +6,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { ArrowLeft, ShoppingBag, CreditCard, Truck } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, CreditCard, Truck, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const Checkout = () => {
   const navigate = useNavigate();
-  const { items, subtotal, clearCart } = useCart();
+  const { items, subtotal, clearCart, removeItem } = useCart();
   const { toast } = useToast();
   
   const [isProcessing, setIsProcessing] = useState(false);
@@ -282,6 +282,13 @@ const Checkout = () => {
                           ${(item.price * item.quantity).toFixed(2)}
                         </p>
                       </div>
+                      <button
+                        onClick={() => removeItem(item.id)}
+                        className="flex-shrink-0 text-gray-400 hover:text-red-500 transition-colors p-1 h-fit"
+                        aria-label="Remove item"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
                     </div>
                   ))}
                 </div>
