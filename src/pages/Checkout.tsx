@@ -44,7 +44,7 @@ const Checkout = () => {
   
   // Get shipping cost from selected rate
   const selectedRate = shippingRates.find(rate => rate.postage_type === selectedShippingRate);
-  const shippingCost = selectedRate ? parseFloat(selectedRate.total_cost) : 0;
+  const shippingCost = selectedRate ? parseFloat(selectedRate.total) : 0;
   
   const total = discountedSubtotal + taxAmount + shippingCost;
 
@@ -144,7 +144,7 @@ const Checkout = () => {
         // Auto-select the cheapest option
         if (data.data.rates.length > 0) {
           const cheapest = data.data.rates.reduce((prev: any, curr: any) => 
-            parseFloat(curr.total_cost) < parseFloat(prev.total_cost) ? curr : prev
+            parseFloat(curr.total) < parseFloat(prev.total) ? curr : prev
           );
           setSelectedShippingRate(cheapest.postage_type);
         }
@@ -202,7 +202,7 @@ const Checkout = () => {
             country: formData.country,
           },
           shippingCost: shippingCost,
-          shippingMethod: selectedRate?.name || 'Standard Shipping',
+          shippingMethod: selectedRate?.postage_type || 'Standard Shipping',
         },
       });
 
@@ -405,18 +405,18 @@ const Checkout = () => {
                     <RadioGroup value={selectedShippingRate} onValueChange={setSelectedShippingRate}>
                       <div className="space-y-3">
                         {shippingRates.map((rate: any) => (
-                          <div key={rate.postage_type} className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50 transition-colors">
+                           <div key={rate.postage_type} className="flex items-center space-x-2 border rounded-lg p-3 hover:bg-gray-50 transition-colors">
                             <RadioGroupItem value={rate.postage_type} id={rate.postage_type} />
                             <Label htmlFor={rate.postage_type} className="flex-1 cursor-pointer">
                               <div className="flex justify-between items-center">
                                 <div>
-                                  <p className="font-medium">{rate.name}</p>
+                                  <p className="font-medium">{rate.postage_type}</p>
                                   <p className="text-xs text-gray-500">
                                     Delivery: {rate.delivery_days} business days
                                   </p>
                                 </div>
                                 <p className="font-semibold text-[hsl(var(--brand-pink))]">
-                                  ${parseFloat(rate.total_cost).toFixed(2)}
+                                  ${parseFloat(rate.total).toFixed(2)}
                                 </p>
                               </div>
                             </Label>
