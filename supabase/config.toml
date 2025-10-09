@@ -8,3 +8,6 @@ verify_jwt = false
 
 [functions.woocommerce-sync]
 verify_jwt = false
+
+[functions.stallion-express]
+verify_jwt = true

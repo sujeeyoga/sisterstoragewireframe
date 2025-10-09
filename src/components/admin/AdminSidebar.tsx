@@ -1,4 +1,4 @@
-import { LayoutDashboard, Package, Layout, RefreshCw, Settings, Users, ShoppingCart, Image, FolderOpen, FileText, Sparkles } from 'lucide-react';
+import { LayoutDashboard, Package, Layout, RefreshCw, Settings, Users, ShoppingCart, Image, FolderOpen, FileText, Sparkles, Truck } from 'lucide-react';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
   Sidebar,
@@ -18,6 +18,7 @@ const menuItems = [
   { title: 'Orders', url: '/admin/orders', icon: ShoppingCart, end: false },
   { title: 'Products', url: '/admin/products', icon: Package, end: false },
   { title: 'Customers', url: '/admin/customers', icon: Users, end: false },
+  { title: 'Shipping', url: '/admin/shipping', icon: Truck, end: false },
   { title: 'Sections', url: '/admin/sections', icon: Layout, end: false },
   { title: 'Pages', url: '/admin/pages', icon: FileText, end: false },
   { title: 'Hero Images', url: '/admin/hero-images', icon: Image, end: false },

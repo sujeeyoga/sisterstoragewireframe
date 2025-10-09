@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import logoImage from '@/assets/sister-storage-logo.png';
+import logoImage from '@/assets/sister-storage-logo-new.jpg';
 
 interface LogoProps {
   className?: string;
