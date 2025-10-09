@@ -78,7 +78,7 @@ serve(async (req) => {
       customer_email: customerId ? undefined : customerEmail,
       line_items: lineItems,
       mode: "payment",
-      automatic_payment_methods: { enabled: true },
+      // payment methods: use Stripe Checkout defaults (card, Apple Pay/Google Pay via card when available)
       shipping_address_collection: shippingAddress ? undefined : {
         allowed_countries: ['CA'],
       },
