@@ -84,10 +84,10 @@ const ShopHeroProduct: React.FC<ShopHeroProductProps> = ({ product }) => {
               {/* Centered Shop Title */}
               <div className="absolute inset-0 flex items-center justify-center bg-[radial-gradient(circle,transparent_0%,white_100%)]">
                 <div className="text-center">
-                  <h1 className="text-5xl md:text-6xl font-black uppercase tracking-tight text-white mb-2 drop-shadow-2xl">
+                  <h1 className="text-5xl md:text-6xl font-black uppercase tracking-tight text-[hsl(var(--brand-pink))] mb-2 drop-shadow-2xl">
                     Shop
                   </h1>
-                  <p className="text-lg md:text-xl text-white font-light drop-shadow-lg">
+                  <p className="text-lg md:text-xl text-[hsl(var(--brand-pink))] font-light drop-shadow-lg">
                     Discover our curated collection of beautiful storage solutions
                   </p>
                 </div>
