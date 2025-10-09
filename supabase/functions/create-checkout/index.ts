@@ -12,10 +12,16 @@ serve(async (req) => {
   }
 
   try {
-    const { priceId, email } = await req.json();
+    const { items, customerEmail, shippingAddress, shippingCost, shippingMethod } = await req.json();
     
-    if (!priceId) {
-      throw new Error("Price ID is required");
+    console.log('Checkout request:', { items, customerEmail, shippingAddress, shippingCost, shippingMethod });
+    
+    if (!items || items.length === 0) {
+      throw new Error("Cart items are required");
+    }
+
+    if (!customerEmail) {
+      throw new Error("Customer email is required");
     }
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
@@ -24,28 +30,59 @@ serve(async (req) => {
 
     // Check if customer exists
     let customerId;
-    if (email) {
-      const customers = await stripe.customers.list({ email, limit: 1 });
-      if (customers.data.length > 0) {
-        customerId = customers.data[0].id;
-      }
+    const customers = await stripe.customers.list({ email: customerEmail, limit: 1 });
+    if (customers.data.length > 0) {
+      customerId = customers.data[0].id;
     }
+
+    // Build line items for Stripe from cart items
+    const lineItems = items.map((item: any) => ({
+      price_data: {
+        currency: 'cad',
+        product_data: {
+          name: item.name,
+          description: item.description || '',
+        },
+        unit_amount: Math.round(item.price * 100), // Convert to cents
+      },
+      quantity: item.quantity,
+    }));
+
+    // Add shipping as a line item if provided
+    if (shippingCost && shippingCost > 0) {
+      lineItems.push({
+        price_data: {
+          currency: 'cad',
+          product_data: {
+            name: shippingMethod || 'Shipping',
+          },
+          unit_amount: Math.round(shippingCost * 100), // Convert to cents
+        },
+        quantity: 1,
+      });
+    }
+
+    console.log('Creating Stripe checkout session with line items:', lineItems);
 
     // Create checkout session with mobile pay enabled
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
-      customer_email: customerId ? undefined : email,
-      line_items: [
-        {
-          price: priceId,
-          quantity: 1,
-        },
-      ],
+      customer_email: customerId ? undefined : customerEmail,
+      line_items: lineItems,
       mode: "payment",
       payment_method_types: ['card', 'apple_pay', 'google_pay', 'link'],
+      shipping_address_collection: shippingAddress ? undefined : {
+        allowed_countries: ['CA'],
+      },
       success_url: `${req.headers.get("origin")}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.headers.get("origin")}/shop`,
+      cancel_url: `${req.headers.get("origin")}/checkout`,
+      metadata: {
+        shippingAddress: shippingAddress ? JSON.stringify(shippingAddress) : '',
+        shippingMethod: shippingMethod || '',
+      },
     });
+
+    console.log('Checkout session created:', session.id);
 
     return new Response(JSON.stringify({ url: session.url }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
