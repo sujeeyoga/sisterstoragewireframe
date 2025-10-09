@@ -16,7 +16,7 @@ interface SimpleProductCardProps {
 }
 
 const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets }) => {
-  const { addItem } = useCart();
+  const { addItem, setIsOpen } = useCart();
   const { toast } = useToast();
   const [imageLoaded, setImageLoaded] = React.useState(false);
 
@@ -34,6 +34,8 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
       title: "Added to cart",
       description: `${product.name} has been added to your cart`,
     });
+    
+    setIsOpen(true);
   };
 
   // Extract rod count from attributes

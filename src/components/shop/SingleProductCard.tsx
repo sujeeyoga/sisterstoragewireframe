@@ -12,7 +12,7 @@ interface SingleProductCardProps {
 }
 
 const SingleProductCard = ({ product }: SingleProductCardProps) => {
-  const { addItem } = useCart();
+  const { addItem, setIsOpen } = useCart();
   const { toast } = useToast();
   
   // Get taxonomy info for rod count and other attributes
@@ -33,6 +33,8 @@ const SingleProductCard = ({ product }: SingleProductCardProps) => {
       title: "Added to cart",
       description: `${product.name} has been added to your cart`,
     });
+
+    setIsOpen(true);
   };
 
   return (

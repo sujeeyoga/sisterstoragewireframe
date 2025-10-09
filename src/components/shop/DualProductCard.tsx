@@ -12,7 +12,7 @@ interface DualProductCardProps {
 }
 
 const DualProductCard = ({ products }: DualProductCardProps) => {
-  const { addItem } = useCart();
+  const { addItem, setIsOpen } = useCart();
   const { toast } = useToast();
 
   const handleAddToCart = (product: Product) => {
@@ -27,6 +27,8 @@ const DualProductCard = ({ products }: DualProductCardProps) => {
       title: "Added to cart",
       description: `${product.name} has been added to your cart`,
     });
+
+    setIsOpen(true);
   };
 
   const ProductContent = ({ product }: { product: Product }) => (

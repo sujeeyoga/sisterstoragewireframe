@@ -34,7 +34,7 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ product }: ProductCardProps) => {
-  const { addItem } = useCart();
+  const { addItem, setIsOpen } = useCart();
   const { toast } = useToast();
   const taxonomy = productTaxonomyMap[product.id] ?? undefined;
   const attrs = taxonomy?.attributes;
@@ -54,6 +54,8 @@ const ProductCard = ({ product }: ProductCardProps) => {
       title: "Added to cart",
       description: `${product.name} added to your cart`,
     });
+
+    setIsOpen(true);
   };
 
   return (

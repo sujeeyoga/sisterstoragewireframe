@@ -53,10 +53,12 @@ const ProductDetail = () => {
       image: product.images?.[0] || product.color
     });
     
-    toast({
-      title: "Added to cart",
-      description: `${quantity} × ${product.name} added to your cart`,
-    });
+  toast({
+    title: "Added to cart",
+    description: `${quantity} × ${product.name} added to your cart`,
+  });
+
+  setIsOpen(true);
   };
 
   const handleBuyNow = () => {
