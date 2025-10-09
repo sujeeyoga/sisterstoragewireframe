@@ -79,7 +79,7 @@ export const products: Product[] = [
     inStock: true,
     sku: "bundle1",
     slug: "bundle-1",
-    images: ["/lovable-uploads/ff4d8d-placeholder.png"],
+    images: ["https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/Starter-Set-2x-Large-1x-Medium-Box-1x-Small-Box/1759980850863-5xgr2a.jpg"],
     attributes: {},
     caption: "Your first set, ready for everything.",
     funnelStage: "First Sister Set – 1 Medium (2 rods) part of bundle"
