@@ -22,7 +22,7 @@ export const products: Product[] = [
   // ============= BUNDLES (TOP SELLERS FIRST) =============
   {
     id: "bundle-3",
-    name: "Full Luxe Collection",
+    name: "The Complete Family Set",
     description: "BIG. BUNDLE. LOVE.",
     shortDescription: "4 Large Boxes, 2 Medium Boxes, 2 Small Boxes",
     bundleContents: "4 Large Boxes, 2 Medium Boxes, 2 Small Boxes",
@@ -37,7 +37,7 @@ export const products: Product[] = [
     inStock: true,
     sku: "bundle3",
     slug: "bundle-3",
-    images: ["/lovable-uploads/c80056-placeholder.png"],
+    images: ["https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/The-Complete-Family-Set-4-Large-2-Medium-2-Travel/1759980920453-ezsfq.jpg"],
     attributes: {},
     caption: "The ultimate set for you and yours.",
     funnelStage: "Forever Sister Collection – 2 Medium (2 rods each) part of bundle"
