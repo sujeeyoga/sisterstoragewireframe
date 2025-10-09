@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Bold, Italic, Underline, Type, History, Save, Check, Bookmark, ShoppingBag } from 'lucide-react';
+import { ArrowLeft, Bold, Italic, Underline, Type, History, Save, Check, Bookmark, ShoppingBag, Upload, X, Image as ImageIcon } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { products as staticProducts } from '@/data/products';
 import { productTaxonomyMap } from '@/data/product-taxonomy';
@@ -26,6 +26,7 @@ type ProductFormData = {
   manage_stock: boolean;
   stock_quantity: number | null;
   in_stock: boolean;
+  images: string[];
 };
 
 type VersionHistory = {
@@ -43,6 +44,9 @@ export const ProductForm = () => {
   const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'unsaved'>('saved');
   const [versionHistory, setVersionHistory] = useState<VersionHistory[]>([]);
   const [showHistory, setShowHistory] = useState(false);
+  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const autoSaveTimeout = useRef<NodeJS.Timeout>();
   const lastSavedData = useRef<ProductFormData | null>(null);
 
@@ -61,15 +65,21 @@ export const ProductForm = () => {
     enabled: isEdit && !!id,
   });
 
-  const { register, handleSubmit, reset, watch, formState: { errors } } = useForm<ProductFormData>({
+  const { register, handleSubmit, reset, watch, setValue, formState: { errors } } = useForm<ProductFormData>({
     defaultValues: {
       manage_stock: false,
       in_stock: true,
+      images: [],
     },
   });
 
   useEffect(() => {
     if (product) {
+      const productImages = product.images as any;
+      const imageUrls = Array.isArray(productImages) 
+        ? productImages.map((img: any) => img.src || img).filter(Boolean)
+        : [];
+      
       const initialData = {
         name: product.name,
         slug: product.slug,
@@ -81,8 +91,10 @@ export const ProductForm = () => {
         manage_stock: product.manage_stock || false,
         stock_quantity: product.stock_quantity,
         in_stock: product.in_stock,
+        images: imageUrls,
       };
       reset(initialData);
+      setUploadedImages(imageUrls);
       lastSavedData.current = initialData;
       setSaveStatus('saved');
     }
@@ -146,6 +158,59 @@ export const ProductForm = () => {
     });
   };
 
+  const handleImageUpload = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+
+    setIsUploading(true);
+    const newImages: string[] = [];
+
+    try {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+        const filePath = `products/${fileName}`;
+
+        const { error: uploadError, data } = await supabase.storage
+          .from('images')
+          .upload(filePath, file);
+
+        if (uploadError) throw uploadError;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('images')
+          .getPublicUrl(filePath);
+
+        newImages.push(publicUrl);
+      }
+
+      const updatedImages = [...uploadedImages, ...newImages];
+      setUploadedImages(updatedImages);
+      setValue('images', updatedImages);
+      setSaveStatus('unsaved');
+
+      toast({
+        title: 'Images uploaded successfully',
+        description: `${newImages.length} image(s) added`,
+      });
+    } catch (error: any) {
+      toast({
+        title: 'Upload failed',
+        description: error.message,
+        variant: 'destructive',
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const removeImage = (index: number) => {
+    const updatedImages = uploadedImages.filter((_, i) => i !== index);
+    setUploadedImages(updatedImages);
+    setValue('images', updatedImages);
+    setSaveStatus('unsaved');
+  };
+
   const saveMutation = useMutation({
     mutationFn: async (data: ProductFormData) => {
       if (isEdit && id) {
@@ -160,6 +225,7 @@ export const ProductForm = () => {
           manage_stock: data.manage_stock,
           stock_quantity: data.stock_quantity,
           in_stock: data.in_stock,
+          images: uploadedImages.map(url => ({ src: url })),
           updated_at: new Date().toISOString(),
         };
         
@@ -182,6 +248,7 @@ export const ProductForm = () => {
           manage_stock: data.manage_stock,
           stock_quantity: data.stock_quantity,
           in_stock: data.in_stock,
+          images: uploadedImages.map(url => ({ src: url })),
         };
         
         const { error } = await supabase
@@ -521,7 +588,69 @@ export const ProductForm = () => {
               <p className="text-xs text-muted-foreground">
                 Select text and click formatting buttons to apply styles
               </p>
-            </div>
+              </div>
+
+              {/* Image Upload Section */}
+              <div className="space-y-4 pt-4 border-t">
+                <Label>Product Images</Label>
+                <div className="space-y-3">
+                  {/* Upload Area */}
+                  <div
+                    onClick={() => fileInputRef.current?.click()}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      handleImageUpload(e.dataTransfer.files);
+                    }}
+                    className="border-2 border-dashed rounded-lg p-8 text-center cursor-pointer hover:border-primary transition-colors"
+                  >
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      className="hidden"
+                      onChange={(e) => handleImageUpload(e.target.files)}
+                    />
+                    <Upload className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+                    <p className="text-sm font-medium">
+                      {isUploading ? 'Uploading...' : 'Click or drag images to upload'}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      PNG, JPG, WEBP up to 10MB each
+                    </p>
+                  </div>
+
+                  {/* Image Grid */}
+                  {uploadedImages.length > 0 && (
+                    <div className="grid grid-cols-3 gap-3">
+                      {uploadedImages.map((url, index) => (
+                        <div key={index} className="relative group aspect-square">
+                          <img
+                            src={url}
+                            alt={`Product ${index + 1}`}
+                            className="w-full h-full object-cover rounded-lg border"
+                          />
+                          <Button
+                            type="button"
+                            size="icon"
+                            variant="destructive"
+                            className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                            onClick={() => removeImage(index)}
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                          {index === 0 && (
+                            <Badge className="absolute bottom-1 left-1 text-xs">
+                              Primary
+                            </Badge>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
 
               <div className="grid gap-4 md:grid-cols-3">
                 <div className="space-y-2">
@@ -625,6 +754,18 @@ export const ProductForm = () => {
                     {/* Product Image with aspect-square ratio */}
                     <div className="aspect-square transition-transform duration-500 overflow-hidden">
                       {(() => {
+                        // First try uploaded images
+                        if (uploadedImages.length > 0) {
+                          return (
+                            <img 
+                              src={uploadedImages[0]} 
+                              alt={formValues.name || 'Product'}
+                              className="w-full h-full object-cover"
+                            />
+                          );
+                        }
+                        
+                        // Then try shop product images
                         const shopProduct = staticProducts.find(p => p.slug === formValues.slug);
                         const imageUrl = shopProduct?.images?.[0];
                         
@@ -638,12 +779,13 @@ export const ProductForm = () => {
                           );
                         }
                         
+                        // Fallback to colored placeholder
                         return (
                           <div 
                             className="w-full h-full flex items-center justify-center"
                             style={{ backgroundColor: shopProduct?.color || '#E91E63' }}
                           >
-                            <span className="text-background font-bold">Sister Storage</span>
+                            <ImageIcon className="h-12 w-12 text-background/50" />
                           </div>
                         );
                       })()}
