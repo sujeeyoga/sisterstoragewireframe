@@ -35,26 +35,42 @@ export function BulkImageOptimizer() {
   const fetchImages = async () => {
     try {
       setLoading(true);
-      const { data: files, error } = await supabase.storage
-        .from('images')
-        .list('', {
-          limit: 1000,
-          sortBy: { column: 'created_at', order: 'desc' }
-        });
+      
+      // Fetch all folders and files recursively
+      const allImages: StorageImage[] = [];
+      
+      const fetchFolder = async (path: string = '') => {
+        const { data: items, error } = await supabase.storage
+          .from('images')
+          .list(path, {
+            limit: 1000,
+            sortBy: { column: 'created_at', order: 'desc' }
+          });
 
-      if (error) throw error;
+        if (error) throw error;
 
-      const imagesWithUrls = files
-        .filter(file => file.name.match(/\.(jpg|jpeg|png|webp)$/i))
-        .map(file => ({
-          name: file.name,
-          id: file.id,
-          size: file.metadata?.size || 0,
-          url: supabase.storage.from('images').getPublicUrl(file.name).data.publicUrl,
-          metadata: file.metadata,
-        }));
+        for (const item of items) {
+          const fullPath = path ? `${path}/${item.name}` : item.name;
+          
+          // If it's a folder (id is null), recurse into it
+          if (item.id === null) {
+            await fetchFolder(fullPath);
+          } 
+          // If it's an image file, add it to our list
+          else if (item.name.match(/\.(jpg|jpeg|png|webp)$/i)) {
+            allImages.push({
+              name: item.name,
+              id: item.id,
+              size: item.metadata?.size || 0,
+              url: supabase.storage.from('images').getPublicUrl(fullPath).data.publicUrl,
+              metadata: item.metadata,
+            });
+          }
+        }
+      };
 
-      setImages(imagesWithUrls);
+      await fetchFolder();
+      setImages(allImages);
     } catch (error) {
       console.error('Error fetching images:', error);
       toast({
