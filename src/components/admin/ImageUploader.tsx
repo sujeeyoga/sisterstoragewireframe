@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { Upload, X, Image as ImageIcon, Loader2 } from 'lucide-react';
+import { Upload, X, Image as ImageIcon, Loader2, Copy, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
@@ -24,6 +24,7 @@ export const ImageUploader = () => {
   const [uploadProgress, setUploadProgress] = useState({ current: 0, total: 0 });
   const [images, setImages] = useState<UploadedImage[]>([]);
   const [selectedImages, setSelectedImages] = useState<Set<string>>(new Set());
+  const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
   const { toast } = useToast();
 
   // Fetch uploaded images
@@ -257,6 +258,18 @@ export const ImageUploader = () => {
       title: `Copied ${selectedImages.size} URL(s) to clipboard`,
       description: 'Each URL is on a new line'
     });
+    setContextMenu(null);
+  };
+
+  const handleContextMenu = (e: React.MouseEvent) => {
+    if (selectedImages.size > 0) {
+      e.preventDefault();
+      setContextMenu({ x: e.clientX, y: e.clientY });
+    }
+  };
+
+  const handleCloseContextMenu = () => {
+    setContextMenu(null);
   };
 
   const toggleSelectImage = (imageId: string) => {
@@ -312,7 +325,7 @@ export const ImageUploader = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" onClick={handleCloseContextMenu}>
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold mb-2">Image Library</h2>
@@ -425,7 +438,7 @@ export const ImageUploader = () => {
                 <h4 className="text-md font-semibold mb-3 text-muted-foreground">
                   {folder === 'Ungrouped' ? '📁 Ungrouped' : `📁 ${folder}`} ({folderImages.length})
                 </h4>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" onContextMenu={handleContextMenu}>
             {folderImages.map((image) => (
               <Card 
                 key={image.id} 
