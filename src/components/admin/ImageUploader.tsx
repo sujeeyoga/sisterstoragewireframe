@@ -77,10 +77,18 @@ export const ImageUploader = () => {
       // Optimize the image
       const { blob, width, height, originalSize } = await optimizeImage(file);
       
+      // Sanitize folder path by removing invalid characters
+      const sanitizedFolderPath = folderPath
+        ?.replace(/[×]/g, 'x')
+        ?.replace(/[^\w\s\-\/]/g, '')
+        ?.replace(/\s+/g, '-')
+        ?.replace(/-+/g, '-')
+        ?.trim();
+      
       // Generate unique file name with optional folder path
       const fileExt = file.name.split('.').pop();
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.jpg`;
-      const filePath = folderPath ? `${folderPath}/${fileName}` : fileName;
+      const filePath = sanitizedFolderPath ? `${sanitizedFolderPath}/${fileName}` : fileName;
 
       // Upload to storage
       const { error: uploadError } = await supabase.storage
@@ -103,7 +111,7 @@ export const ImageUploader = () => {
           mime_type: 'image/jpeg',
           width,
           height,
-          folder_path: folderPath
+          folder_path: sanitizedFolderPath
         });
 
       if (dbError) throw dbError;
