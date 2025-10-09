@@ -318,6 +318,14 @@ export const ImageUploader = () => {
     setContextMenu(null);
   };
 
+  const handleClickOutside = (e: React.MouseEvent) => {
+    // Only clear selection if clicking on the background, not on images or buttons
+    if (e.target === e.currentTarget) {
+      setSelectedImages(new Set());
+      setContextMenu(null);
+    }
+  };
+
   const toggleSelectImage = (imageId: string) => {
     const newSelected = new Set(selectedImages);
     if (newSelected.has(imageId)) {
@@ -416,7 +424,7 @@ export const ImageUploader = () => {
   };
 
   return (
-    <div className="space-y-6" onClick={handleCloseContextMenu}>
+    <div className="space-y-6" onClick={handleClickOutside}>
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold mb-2">Image Library</h2>
