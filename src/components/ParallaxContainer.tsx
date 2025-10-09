@@ -10,8 +10,8 @@ const ParallaxContainer = () => {
   const [imageLoaded, setImageLoaded] = useState(false);
   useViewportHeight();
   
-  // Enable parallax for smooth scroll effect
-  const parallaxDisabled = false;
+  // Disable parallax for static display
+  const parallaxDisabled = true;
   
   const { 
     ref: mainRef, 
@@ -51,7 +51,7 @@ const ParallaxContainer = () => {
       className="relative overflow-hidden w-full bg-no-repeat bg-cover bg-center"
       aria-label="Parallax showcase section"
       style={{
-        height: 'calc(var(--vh, 1vh) * 50)',
+        height: 'calc(var(--vh, 1vh) * 70)',
         marginTop: '0',
         backgroundColor: 'hsl(var(--brand-pink))'
       }}
@@ -83,7 +83,7 @@ const ParallaxContainer = () => {
 
       {/* Centered Instagram button only */}
       <section 
-        className="relative z-10 h-1/4 flex items-center justify-center px-4 md:px-6"
+        className="relative z-10 h-full flex items-end justify-center px-4 md:px-6 pb-12"
       >
         <Button
           asChild
