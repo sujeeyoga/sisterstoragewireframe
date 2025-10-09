@@ -1,13 +1,10 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { ShoppingBag, Star, Plus } from "lucide-react";
-import { useCart } from "@/contexts/CartContext";
-import { useToast } from "@/hooks/use-toast";
-import { Product } from "@/types/product";
+import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Star } from "lucide-react";
+import { Product } from "@/types/product";
 import { cn } from "@/lib/utils";
+import AddToCartBar from "@/components/cart/AddToCartBar";
 
 interface BundleCardProps {
   product: Product;
@@ -15,68 +12,9 @@ interface BundleCardProps {
 }
 
 const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
-  const navigate = useNavigate();
-  const { addItem, setIsOpen } = useCart();
-  const { toast } = useToast();
   const [imageLoaded, setImageLoaded] = React.useState(false);
 
-  const handleAddToCart = (e?: React.MouseEvent) => {
-    e?.preventDefault();
-    e?.stopPropagation();
-    
-    console.log('[BundleCard] Add to Cart clicked', { productId: product.id, productName: product.name });
-    
-    try {
-      addItem({
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        image: product.images?.[0] || product.color
-      });
-      
-      console.log('[BundleCard] Item added to cart successfully');
-      
-      toast({
-        title: "Added to cart",
-        description: `${product.name} has been added to your cart`,
-      });
-      
-      setIsOpen(true);
-    } catch (error) {
-      console.error('[BundleCard] Error adding to cart:', error);
-      toast({
-        title: "Error",
-        description: "Failed to add item to cart",
-        variant: "destructive"
-      });
-    }
-  };
-
-  const handleBuyNow = (e?: React.MouseEvent) => {
-    e?.preventDefault();
-    e?.stopPropagation();
-    
-    console.log('[BundleCard] Buy Now clicked', { productId: product.id, productName: product.name });
-    
-    try {
-      addItem({
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        image: product.images?.[0] || product.color
-      });
-      
-      console.log('[BundleCard] Navigating to checkout');
-      navigate('/checkout');
-    } catch (error) {
-      console.error('[BundleCard] Error in Buy Now:', error);
-      toast({
-        title: "Error",
-        description: "Failed to add item to cart",
-        variant: "destructive"
-      });
-    }
-  };
+  // Cart actions are handled by AddToCartBar component
 
   // Extract bundle contents and rod count
   const bundleContents = product.bundleContents || product.funnelStage || product.caption;
@@ -130,18 +68,7 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           
-          {/* Quick Buy Overlay */}
-          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
-            <Button 
-              variant="buy"
-              size="buy"
-              className="transform scale-90 group-hover:scale-100 shadow-2xl"
-              onClick={handleAddToCart}
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Quick Add
-            </Button>
-          </div>
+          {/* Quick Buy removed to avoid overlay click issues */}
         </div>
       </div>
       
@@ -252,27 +179,7 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
           )}
           
           {/* Action Buttons Row */}
-          <div className="flex items-center gap-3 relative z-10">
-            <Button 
-              variant="outline"
-              className="flex-1 font-bold text-sm py-3 shadow-md hover:shadow-lg transition-all duration-300 pointer-events-auto"
-              onClick={handleAddToCart}
-              type="button"
-            >
-              <ShoppingBag className="h-4 w-4 mr-2" />
-              Add to Cart
-            </Button>
-            
-            <Button 
-              variant="buy"
-              size="buy"
-              className="flex-1 font-bold text-sm py-3 shadow-lg hover:shadow-xl transition-all duration-300 pointer-events-auto"
-              onClick={handleBuyNow}
-              type="button"
-            >
-              Buy Now
-            </Button>
-          </div>
+          <AddToCartBar product={product} />
         </div>
       </CardContent>
     </Card>
