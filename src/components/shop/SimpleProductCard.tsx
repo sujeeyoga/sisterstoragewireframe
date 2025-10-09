@@ -39,7 +39,11 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
   // Extract rod count from attributes
   const rodCount = product.attributes?.rodCount?.[0];
   const rating = 5;
-  const reviews = Math.floor(Math.random() * 150) + 30;
+  // Generate consistent review count based on product ID
+  const reviews = React.useMemo(() => {
+    const hash = product.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    return (hash % 150) + 50;
+  }, [product.id]);
 
   return (
     <Card className={cn(

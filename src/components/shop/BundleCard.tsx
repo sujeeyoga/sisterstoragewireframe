@@ -30,15 +30,21 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
       image: product.images?.[0] || product.color
     });
     
-    // Navigate to checkout immediately
-    navigate('/checkout');
+    toast({
+      title: "Added to cart",
+      description: `${product.name} has been added to your cart`,
+    });
   };
 
   // Extract bundle contents and rod count
   const bundleContents = product.bundleContents || product.funnelStage || product.caption;
   const rodCount = product.attributes?.rodCount?.[0];
   const rating = 5;
-  const reviews = Math.floor(Math.random() * 200) + 50;
+  // Generate consistent review count based on product ID
+  const reviews = React.useMemo(() => {
+    const hash = product.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    return (hash % 200) + 100;
+  }, [product.id]);
 
   return (
     <Card 

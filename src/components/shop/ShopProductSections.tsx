@@ -8,10 +8,21 @@ interface ShopProductSectionsProps {
 }
 
 const ShopProductSections = ({ products }: ShopProductSectionsProps) => {
-  // Split products into bundles, bangle boxes (including open box), and organizers
-  const bundles = products.filter(p => p.category === 'bundles');
-  const bangleBoxes = products.filter(p => p.category === 'bangle-boxes' || p.category === 'open-box');
-  const organizers = products.filter(p => p.category === 'organizers');
+  // Memoize filtered products to prevent unnecessary recalculations
+  const bundles = React.useMemo(() => 
+    products.filter(p => p.category === 'bundles'), 
+    [products]
+  );
+  
+  const bangleBoxes = React.useMemo(() => 
+    products.filter(p => p.category === 'bangle-boxes' || p.category === 'open-box'), 
+    [products]
+  );
+  
+  const organizers = React.useMemo(() => 
+    products.filter(p => p.category === 'organizers'), 
+    [products]
+  );
 
   return (
     <div className="grid gap-8">
