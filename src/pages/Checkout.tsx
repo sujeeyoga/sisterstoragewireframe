@@ -75,10 +75,19 @@ const Checkout = () => {
     province: string;
     postalCode: string;
   }) => {
+    console.log('Updating form with address:', address);
     setFormData(prev => ({
       ...prev,
-      ...address
+      address: address.address,
+      city: address.city,
+      province: address.province,
+      postalCode: address.postalCode
     }));
+    
+    // Trigger shipping calculation after address is populated
+    setTimeout(() => {
+      calculateShipping();
+    }, 100);
   };
 
   // Calculate shipping when address is complete
@@ -324,6 +333,7 @@ const Checkout = () => {
                   </div>
                   <AddressAutocomplete
                     value={formData.address}
+                    onChange={(value) => handleInputChange({ target: { name: 'address', value } } as any)}
                     onAddressSelect={handleAddressSelect}
                   />
                   <div className="grid grid-cols-3 gap-4">

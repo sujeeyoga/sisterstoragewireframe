@@ -7,6 +7,7 @@ const GOOGLE_PLACES_API_KEY = 'AIzaSyDvBbDzbTVIhYqSyKMLsTDjc89Rnaoy4Zc';
 
 interface AddressAutocompleteProps {
   value: string;
+  onChange: (value: string) => void;
   onAddressSelect: (address: {
     address: string;
     city: string;
@@ -42,6 +43,7 @@ declare global {
 
 const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
   value,
+  onChange,
   onAddressSelect,
   error
 }) => {
@@ -78,40 +80,39 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
       const place = autocompleteRef.current?.getPlace();
       if (!place?.address_components) return;
 
-      let streetNumber = '';
-      let route = '';
-      let city = '';
-      let province = '';
-      let postalCode = '';
-
-      // Parse address components
+      const components: any = {};
+      
+      // Parse address components into a simple object
       place.address_components.forEach((component: any) => {
-        const types = component.types;
-        
-        if (types.includes('street_number')) {
-          streetNumber = component.long_name;
-        }
-        if (types.includes('route')) {
-          route = component.long_name;
-        }
-        if (types.includes('locality')) {
-          city = component.long_name;
-        }
-        if (types.includes('administrative_area_level_1')) {
-          const provinceName = component.long_name;
-          province = PROVINCE_MAP[provinceName] || component.short_name;
-        }
-        if (types.includes('postal_code')) {
-          // Format Canadian postal code with space (e.g., M5V 3A8)
-          let pc = component.long_name.replace(/\s/g, '').toUpperCase();
-          if (pc.length === 6) {
-            pc = `${pc.slice(0, 3)} ${pc.slice(3)}`;
-          }
-          postalCode = pc;
-        }
+        const type = component.types[0];
+        components[type] = {
+          long: component.long_name,
+          short: component.short_name
+        };
       });
 
+      // Build address from components
+      const streetNumber = components.street_number?.long || '';
+      const route = components.route?.long || '';
       const fullAddress = `${streetNumber} ${route}`.trim();
+      
+      const city = components.locality?.long || '';
+      
+      // Get 2-letter province code (try mapping first, then short_name)
+      const provinceLong = components.administrative_area_level_1?.long || '';
+      const provinceShort = components.administrative_area_level_1?.short || '';
+      const province = PROVINCE_MAP[provinceLong] || provinceShort;
+      
+      // Format Canadian postal code with space
+      let postalCode = components.postal_code?.long || '';
+      if (postalCode) {
+        postalCode = postalCode.replace(/\s/g, '').toUpperCase();
+        if (postalCode.length === 6) {
+          postalCode = `${postalCode.slice(0, 3)} ${postalCode.slice(3)}`;
+        }
+      }
+
+      console.log('Address selected:', { fullAddress, city, province, postalCode });
 
       if (fullAddress && city && province && postalCode) {
         onAddressSelect({
@@ -141,7 +142,8 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
         id="address"
         name="address"
         placeholder="Start typing your address..."
-        defaultValue={value}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
         className={error ? 'border-red-500' : ''}
         autoComplete="off"
       />
