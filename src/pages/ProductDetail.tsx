@@ -19,6 +19,7 @@ const ProductDetail = () => {
   const navigate = useNavigate();
   
   // Find the product based on the URL parameter
+  console.debug('[ProductDetail] param productId:', productId);
   const product = shopProducts.find(p => p.id === productId);
   const taxonomy = product ? productTaxonomyMap[product.id] : undefined;
   const attributes = taxonomy?.attributes;
