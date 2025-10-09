@@ -9,8 +9,9 @@ import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { optimizeImage } from '@/lib/imageOptimizer';
-import { Loader2, Image as ImageIcon, RefreshCw } from 'lucide-react';
+import { Loader2, Image as ImageIcon, RefreshCw, X } from 'lucide-react';
 
 interface StorageImage {
   name: string;          // full path for display
@@ -34,6 +35,7 @@ export function BulkImageOptimizer() {
   const [maxDimension, setMaxDimension] = useState(1920);
   const [bucket, setBucket] = useState<'images' | 'sister'>('images');
   const [search, setSearch] = useState('');
+  const [previewImage, setPreviewImage] = useState<StorageImage | null>(null);
   const { toast } = useToast();
 
   // Known homepage static images (Featured Grid + Promotional Section)
@@ -414,17 +416,28 @@ export function BulkImageOptimizer() {
             className={`p-2 cursor-pointer transition-all ${
               selectedImages.has(image.id) ? 'ring-2 ring-primary' : ''
             } ${image.isStatic ? 'border-yellow-500 border-2' : ''}`}
-            onClick={() => !optimizing && toggleImageSelection(image.id)}
           >
-            <div className="relative">
+            <div 
+              className="relative"
+              onClick={(e) => {
+                // If clicking checkbox, handle selection
+                if ((e.target as HTMLElement).closest('[role="checkbox"]')) {
+                  e.stopPropagation();
+                  toggleImageSelection(image.id);
+                } else {
+                  // Otherwise, preview the image
+                  setPreviewImage(image);
+                }
+              }}
+            >
               <img
                 src={image.url}
                 alt={image.name}
-                className="w-full h-32 object-cover rounded-md mb-2"
+                className="w-full h-32 object-cover rounded-md mb-2 hover:opacity-90 transition"
               />
               <Checkbox
                 checked={selectedImages.has(image.id)}
-                className="absolute top-2 right-2"
+                className="absolute top-2 right-2 bg-white"
                 onClick={(e) => {
                   e.stopPropagation();
                   toggleImageSelection(image.id);
@@ -433,6 +446,11 @@ export function BulkImageOptimizer() {
               {image.isStatic && (
                 <div className="absolute top-2 left-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded">
                   Static
+                </div>
+              )}
+              {image.label && (
+                <div className="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+                  {image.label}
                 </div>
               )}
             </div>
@@ -452,6 +470,57 @@ export function BulkImageOptimizer() {
           <p className="text-muted-foreground">No images found in storage</p>
         </div>
       )}
+
+      {/* Preview Dialog */}
+      <Dialog open={!!previewImage} onOpenChange={(open) => !open && setPreviewImage(null)}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center justify-between">
+              <span className="truncate">{previewImage?.name}</span>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setPreviewImage(null)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </DialogTitle>
+          </DialogHeader>
+          {previewImage && (
+            <div className="space-y-4">
+              <img
+                src={previewImage.url}
+                alt={previewImage.name}
+                className="w-full h-auto rounded-lg"
+              />
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <p className="text-muted-foreground">Size</p>
+                  <p className="font-medium">
+                    {previewImage.size > 0 ? formatFileSize(previewImage.size) : 'Unknown'}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground">Type</p>
+                  <p className="font-medium">
+                    {previewImage.isStatic ? 'Static File' : 'Storage File'}
+                  </p>
+                </div>
+                {previewImage.label && (
+                  <div className="col-span-2">
+                    <p className="text-muted-foreground">Label</p>
+                    <p className="font-medium">{previewImage.label}</p>
+                  </div>
+                )}
+                <div className="col-span-2">
+                  <p className="text-muted-foreground">Path</p>
+                  <p className="font-mono text-xs break-all">{previewImage.url}</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
