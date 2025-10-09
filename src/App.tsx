@@ -27,6 +27,7 @@ import Admin from "./pages/Admin";
 import PageTransition from "./components/layout/PageTransition";
 import ComingSoon from "./pages/ComingSoon";
 import PaymentSuccess from "./pages/PaymentSuccess";
+import AdminSetup from "./pages/AdminSetup";
 
 const queryClient = new QueryClient();
 
@@ -41,6 +42,7 @@ const App = () => {
           <BrowserRouter>
             <CartDrawer />
             <Routes>
+              <Route path="/admin-setup" element={<AdminSetup />} />
               <Route path="/payment-success" element={<PageTransition><PaymentSuccess /></PageTransition>} />
               <Route path="*" element={<PageTransition><ComingSoon /></PageTransition>} />
             </Routes>
