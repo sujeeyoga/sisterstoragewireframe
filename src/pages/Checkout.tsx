@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { ArrowLeft, ShoppingBag, CreditCard, Truck, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import Logo from '@/components/ui/Logo';
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -77,14 +78,19 @@ const Checkout = () => {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <Button 
-            variant="ghost" 
-            onClick={() => navigate(-1)}
-            className="mb-4"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Cart
-          </Button>
+          <div className="flex items-center justify-between mb-6">
+            <Link to="/" className="block">
+              <Logo size="md" />
+            </Link>
+            <Button 
+              variant="ghost" 
+              onClick={() => navigate(-1)}
+              size="sm"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Cart
+            </Button>
+          </div>
           <h1 className="text-3xl font-bold">Checkout</h1>
         </div>
 
