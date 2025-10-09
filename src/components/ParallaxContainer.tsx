@@ -10,8 +10,8 @@ const ParallaxContainer = () => {
   const [imageLoaded, setImageLoaded] = useState(false);
   useViewportHeight();
   
-  // Disable parallax on all devices to prevent scroll flicker
-  const parallaxDisabled = true;
+  // Enable parallax for smooth scroll effect
+  const parallaxDisabled = false;
   
   const { 
     ref: mainRef, 
