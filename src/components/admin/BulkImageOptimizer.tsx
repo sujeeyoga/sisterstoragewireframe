@@ -7,15 +7,18 @@ import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
 import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { optimizeImage } from '@/lib/imageOptimizer';
 import { Loader2, Image as ImageIcon, RefreshCw } from 'lucide-react';
 
 interface StorageImage {
-  name: string;
-  id: string;
+  name: string;          // full path for display
+  id: string;            // unique per bucket+path
   size: number;
   url: string;
   metadata?: any;
+  path?: string;         // storage path within bucket
   isStatic?: boolean;
   staticPath?: string;
 }
@@ -28,11 +31,13 @@ export function BulkImageOptimizer() {
   const [progress, setProgress] = useState(0);
   const [quality, setQuality] = useState(0.8);
   const [maxDimension, setMaxDimension] = useState(1920);
+  const [bucket, setBucket] = useState<'images' | 'sister'>('images');
+  const [search, setSearch] = useState('');
   const { toast } = useToast();
 
   useEffect(() => {
     fetchImages();
-  }, []);
+  }, [bucket]);
 
   const fetchImages = async () => {
     try {
@@ -43,7 +48,7 @@ export function BulkImageOptimizer() {
       
       const fetchFolder = async (path: string = '') => {
         const { data: items, error } = await supabase.storage
-          .from('images')
+          .from(bucket)
           .list(path, {
             limit: 1000,
             sortBy: { column: 'created_at', order: 'desc' }
@@ -61,11 +66,12 @@ export function BulkImageOptimizer() {
           // If it's an image file, add it to our list
           else if (item.name.match(/\.(jpg|jpeg|png|webp)$/i)) {
             allImages.push({
-              name: item.name,
-              id: item.id,
+              name: fullPath,
+              id: `${bucket}:${fullPath}`,
               size: item.metadata?.size || 0,
-              url: supabase.storage.from('images').getPublicUrl(fullPath).data.publicUrl,
+              url: supabase.storage.from(bucket).getPublicUrl(fullPath).data.publicUrl,
               metadata: item.metadata,
+              path: fullPath,
               isStatic: false,
             });
           }
@@ -181,17 +187,22 @@ export function BulkImageOptimizer() {
 
         // Only upload if the optimized version is smaller
         if (newSize < originalSize) {
+          // Determine destination bucket and path
+          const destBucket = image.isStatic ? 'images' : bucket;
+          const baseName = image.name.split('/').pop() || image.name;
+          const destPath = image.isStatic ? `hero-images/${baseName}` : (image.path || image.name);
+
           // Upload the optimized image (replace the original)
           const { error: uploadError } = await supabase.storage
-            .from('images')
-            .upload(image.name, optimized.blob, {
+            .from(destBucket)
+            .upload(destPath, optimized.blob, {
               cacheControl: '3600',
               upsert: true,
             });
 
           if (uploadError) throw uploadError;
 
-          // Update the metadata in the database
+          // Update the metadata in the database (if tracked)
           const { error: updateError } = await supabase
             .from('uploaded_images')
             .update({
@@ -201,9 +212,9 @@ export function BulkImageOptimizer() {
               height: optimized.height,
               updated_at: new Date().toISOString(),
             })
-            .eq('file_path', image.name);
+            .eq('file_path', image.path || image.name);
 
-          if (updateError) console.error('Error updating metadata:', updateError);
+          if (updateError) console.warn('Metadata update skipped/failed:', updateError);
         }
 
         completed++;
@@ -249,6 +260,27 @@ export function BulkImageOptimizer() {
       </div>
 
       <Card className="p-6 space-y-4">
+        <div className="flex gap-4 flex-wrap items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Label>Bucket</Label>
+            <Select value={bucket} onValueChange={(v) => setBucket(v as 'images' | 'sister')}>
+              <SelectTrigger className="w-40">
+                <SelectValue placeholder="Bucket" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="images">images</SelectItem>
+                <SelectItem value="sister">sister</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="w-full md:w-64">
+            <Input
+              placeholder="Search filenames or folders"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+        </div>
         <div className="space-y-4">
           <div>
             <Label>Quality: {Math.round(quality * 100)}%</Label>
@@ -332,7 +364,9 @@ export function BulkImageOptimizer() {
       </Card>
 
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-        {images.map((image) => (
+        {images
+          .filter((img) => img.name.toLowerCase().includes(search.toLowerCase()))
+          .map((image) => (
           <Card
             key={image.id}
             className={`p-2 cursor-pointer transition-all ${
