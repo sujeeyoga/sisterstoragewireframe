@@ -82,7 +82,7 @@ const ComingSoon = () => {
               className="bg-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))]/90 text-white"
             >
               <a 
-                href="https://www.instagram.com/sisterstorage" 
+                href="https://www.instagram.com/sisterstoragein" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="flex items-center gap-2"
