@@ -65,9 +65,7 @@ const Checkout = () => {
       <div className="min-h-screen bg-gray-50 py-12 px-4">
         <div className="max-w-2xl mx-auto">
           <div className="flex justify-center mb-8">
-            <Link to="/">
-              <Logo size="lg" />
-            </Link>
+            <Logo size="lg" />
           </div>
           <div className="text-center">
             <div className="mx-auto w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-4">
@@ -90,9 +88,7 @@ const Checkout = () => {
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
-            <Link to="/" className="block">
-              <Logo size="md" />
-            </Link>
+            <Logo size="md" />
             <Button 
               variant="ghost" 
               onClick={() => navigate(-1)}
