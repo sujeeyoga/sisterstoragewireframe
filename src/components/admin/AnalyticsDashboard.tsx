@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
+import { ImageUploader } from '@/components/admin/ImageUploader';
 
 export function AnalyticsDashboard() {
   const { data: stats, isLoading: statsLoading } = useQuery({
@@ -245,6 +246,9 @@ export function AnalyticsDashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Image Uploader */}
+      <ImageUploader />
     </div>
   );
 }
