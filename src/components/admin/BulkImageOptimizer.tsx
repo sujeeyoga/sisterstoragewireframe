@@ -21,6 +21,7 @@ interface StorageImage {
   path?: string;         // storage path within bucket
   isStatic?: boolean;
   staticPath?: string;
+  label?: string;         // human-readable tag for grouping/search
 }
 
 export function BulkImageOptimizer() {
@@ -34,6 +35,22 @@ export function BulkImageOptimizer() {
   const [bucket, setBucket] = useState<'images' | 'sister'>('images');
   const [search, setSearch] = useState('');
   const { toast } = useToast();
+
+  // Known homepage static images (Featured Grid + Promotional Section)
+  const HOMEPAGE_STATIC_IMAGES: { path: string; label: string }[] = [
+    { path: '/lovable-uploads/0e5fe1c0-12f8-439f-94d5-ec1da8ca09c8.png', label: 'SUMMER END ORGANIZATION' },
+    { path: '/lovable-uploads/c44d4b5c-0104-4077-99dd-904d87ec4d8b.png', label: 'SUMMER END ORGANIZATION' },
+    { path: '/lovable-uploads/56a20345-d9f3-47ac-a645-23d19194af78.png', label: 'SUMMER END ORGANIZATION' },
+    { path: '/lovable-uploads/f9cf4a8d-2f00-4b1f-bbb3-4322491012ad.png', label: 'SUMMER END ORGANIZATION' },
+    { path: '/lovable-uploads/e1ae51b5-7916-4137-825e-7f197dff06a3.png', label: 'SUMMER END ORGANIZATION' },
+    { path: '/lovable-uploads/8620f7af-c089-458c-bef9-78d6cd77f04e.png', label: 'SUMMER END ORGANIZATION' },
+    { path: '/lovable-uploads/ce6528ec-56be-4176-919f-4285946c18b2.png', label: 'SUMMER END ORGANIZATION' },
+    { path: '/lovable-uploads/160b5d30-ba2c-4e66-8423-c4a6288d1af0.png', label: 'SUMMER END ORGANIZATION' },
+    { path: '/lovable-uploads/c6544fac-3f2f-4a6a-a01e-5ca149720fcb.png', label: 'SUMMER END ORGANIZATION' },
+    { path: '/lovable-uploads/b0963b41-dee1-4ccb-b8bc-7144c4ea6285.png', label: 'SUMMER END ORGANIZATION' },
+    { path: '/lovable-uploads/e9628188-8ef0-426b-9858-08b2848fd690.png', label: 'SUMMER END ORGANIZATION' },
+    { path: '/lovable-uploads/ff4988e3-c51c-4391-a440-95e03d111656.png', label: 'Summer End Sale' },
+  ];
 
   useEffect(() => {
     fetchImages();
@@ -79,6 +96,23 @@ export function BulkImageOptimizer() {
       };
 
       await fetchFolder();
+
+      // Also include homepage static images explicitly
+      for (const item of HOMEPAGE_STATIC_IMAGES) {
+        const filename = item.path.replace('/lovable-uploads/', '');
+        // Avoid duplicates
+        if (!allImages.some(img => img.url === item.path)) {
+          allImages.push({
+            name: filename,
+            id: `static-${filename}`,
+            size: 0,
+            url: item.path,
+            isStatic: true,
+            staticPath: item.path,
+            label: item.label,
+          });
+        }
+      }
 
       // Also fetch hero images from database to check for static files
       const { data: heroImages } = await supabase
@@ -365,7 +399,15 @@ export function BulkImageOptimizer() {
 
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
         {images
-          .filter((img) => img.name.toLowerCase().includes(search.toLowerCase()))
+          .filter((img) => {
+            const q = search.toLowerCase();
+            return (
+              q.length === 0 ||
+              img.name.toLowerCase().includes(q) ||
+              img.path?.toLowerCase().includes(q) ||
+              img.label?.toLowerCase().includes(q)
+            );
+          })
           .map((image) => (
           <Card
             key={image.id}
