@@ -70,8 +70,66 @@ const CartDrawer = () => {
             </h2>
           </div>
           
+          {/* Cart Summary - Moved to top */}
+          {items.length > 0 && (
+            <div className="flex-shrink-0 border-b border-gray-200 p-4 bg-gray-50">
+              {/* Itemized Breakdown */}
+              <div className="space-y-2 mb-4">
+                <div className="flex justify-between text-sm text-gray-600">
+                  <span>Subtotal ({totalItems} items)</span>
+                  <span className="font-medium text-gray-900">${subtotal.toFixed(2)}</span>
+                </div>
+                
+                {discount?.enabled && discountAmount > 0 && (
+                  <div className="flex justify-between text-sm text-green-600">
+                    <span className="flex items-center gap-1">
+                      <Tag className="h-3 w-3" />
+                      {discount.name} ({discount.percentage}% off)
+                    </span>
+                    <span className="font-medium">-${discountAmount.toFixed(2)}</span>
+                  </div>
+                )}
+                
+                <div className="flex justify-between text-sm text-gray-600">
+                  <span>Estimated Tax</span>
+                  <span className="font-medium text-gray-900">${taxAmount.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-sm text-gray-600">
+                  <span>Shipping</span>
+                  <span className="text-gray-600">Calculated at checkout</span>
+                </div>
+              </div>
+
+              {/* Total */}
+              <div className="flex justify-between text-lg font-bold mb-4 pt-3 border-t border-gray-300">
+                <span>Total</span>
+                <span className="text-[hsl(var(--brand-pink))]">${total.toFixed(2)}</span>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="space-y-2">
+                <Link to="/checkout" className="block">
+                  <Button 
+                    className="w-full bg-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))]/90 text-white"
+                    size="lg"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Proceed to Checkout
+                  </Button>
+                </Link>
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Continue Shopping
+                </Button>
+              </div>
+            </div>
+          )}
+          
           {/* Cart Items */}
-          <div className="flex-1 min-h-0 overflow-y-auto py-4 px-4 pb-40 overscroll-contain">
+          <div className="flex-1 min-h-0 overflow-y-auto py-4 px-4 overscroll-contain">
             {items.length === 0 ? (
               <div className="text-center py-12">
                 <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
@@ -163,64 +221,6 @@ const CartDrawer = () => {
               </div>
             )}
           </div>
-          
-          {/* Cart Summary - Always visible at bottom */}
-          {items.length > 0 && (
-            <div className="flex-shrink-0 border-t border-gray-200 p-4 pb-[env(safe-area-inset-bottom)] bg-gray-50">
-              {/* Itemized Breakdown */}
-              <div className="space-y-2 mb-4">
-                <div className="flex justify-between text-sm text-gray-600">
-                  <span>Subtotal ({totalItems} items)</span>
-                  <span className="font-medium text-gray-900">${subtotal.toFixed(2)}</span>
-                </div>
-                
-                {discount?.enabled && discountAmount > 0 && (
-                  <div className="flex justify-between text-sm text-green-600">
-                    <span className="flex items-center gap-1">
-                      <Tag className="h-3 w-3" />
-                      {discount.name} ({discount.percentage}% off)
-                    </span>
-                    <span className="font-medium">-${discountAmount.toFixed(2)}</span>
-                  </div>
-                )}
-                
-                <div className="flex justify-between text-sm text-gray-600">
-                  <span>Estimated Tax</span>
-                  <span className="font-medium text-gray-900">${taxAmount.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between text-sm text-gray-600">
-                  <span>Shipping</span>
-                  <span className="text-gray-600">Calculated at checkout</span>
-                </div>
-              </div>
-
-              {/* Total */}
-              <div className="flex justify-between text-lg font-bold mb-4 pt-3 border-t border-gray-300">
-                <span>Total</span>
-                <span className="text-[hsl(var(--brand-pink))]">${total.toFixed(2)}</span>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="space-y-2">
-                <Link to="/checkout" className="block">
-                  <Button 
-                    className="w-full bg-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))]/90 text-white"
-                    size="lg"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    Proceed to Checkout
-                  </Button>
-                </Link>
-                <Button 
-                  variant="outline" 
-                  className="w-full"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Continue Shopping
-                </Button>
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>
