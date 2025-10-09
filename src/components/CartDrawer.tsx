@@ -43,13 +43,11 @@ const CartDrawer = () => {
   const taxAmount = subtotal * taxRate;
   const total = subtotal + taxAmount;
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 z-[1200]">
+    <div className={`fixed inset-0 z-[1200] transition-opacity duration-300 ${isOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'}`}>
       {/* Backdrop */}
       <div 
-        className="absolute inset-0 bg-black bg-opacity-50 transition-opacity"
+        className={`absolute inset-0 bg-black transition-opacity duration-300 ${isOpen ? 'bg-opacity-50' : 'bg-opacity-0'}`}
         onClick={() => setIsOpen(false)}
       />
       
