@@ -20,6 +20,7 @@ interface UploadedImage {
 export const ImageUploader = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState({ current: 0, total: 0 });
   const [images, setImages] = useState<UploadedImage[]>([]);
   const { toast } = useToast();
 
@@ -66,15 +67,15 @@ export const ImageUploader = () => {
     setIsDragging(false);
   }, []);
 
-  const uploadImage = async (file: File) => {
+  const uploadImage = async (file: File, folderPath?: string) => {
     try {
       // Optimize the image
       const { blob, width, height, originalSize } = await optimizeImage(file);
       
-      // Generate unique file name
+      // Generate unique file name with optional folder path
       const fileExt = file.name.split('.').pop();
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.jpg`;
-      const filePath = `${fileName}`;
+      const filePath = folderPath ? `${folderPath}/${fileName}` : fileName;
 
       // Upload to storage
       const { error: uploadError } = await supabase.storage
@@ -124,26 +125,77 @@ export const ImageUploader = () => {
     setIsDragging(false);
     setUploading(true);
 
-    const files = Array.from(e.dataTransfer.files).filter(file =>
-      file.type.startsWith('image/')
-    );
+    const items = Array.from(e.dataTransfer.items);
+    const allFiles: File[] = [];
 
-    for (const file of files) {
-      await uploadImage(file);
+    // Process all items (files and folders)
+    for (const item of items) {
+      if (item.kind === 'file') {
+        const entry = item.webkitGetAsEntry();
+        if (entry) {
+          await processEntry(entry, allFiles);
+        }
+      }
+    }
+
+    const imageFiles = allFiles.filter(file => file.type.startsWith('image/'));
+    setUploadProgress({ current: 0, total: imageFiles.length });
+
+    for (let i = 0; i < imageFiles.length; i++) {
+      setUploadProgress({ current: i + 1, total: imageFiles.length });
+      await uploadImage(imageFiles[i]);
     }
 
     setUploading(false);
+    setUploadProgress({ current: 0, total: 0 });
   }, []);
+
+  // Helper to process directory entries recursively
+  const processEntry = async (entry: any, files: File[], path = ''): Promise<void> => {
+    if (entry.isFile) {
+      const file = await new Promise<File>((resolve) => {
+        entry.file(resolve);
+      });
+      files.push(file);
+    } else if (entry.isDirectory) {
+      const dirReader = entry.createReader();
+      const entries = await new Promise<any[]>((resolve) => {
+        dirReader.readEntries(resolve);
+      });
+      
+      for (const subEntry of entries) {
+        await processEntry(subEntry, files, `${path}${entry.name}/`);
+      }
+    }
+  };
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     setUploading(true);
+    setUploadProgress({ current: 0, total: files.length });
 
-    for (const file of files) {
-      await uploadImage(file);
+    for (let i = 0; i < files.length; i++) {
+      setUploadProgress({ current: i + 1, total: files.length });
+      await uploadImage(files[i]);
     }
 
     setUploading(false);
+    setUploadProgress({ current: 0, total: 0 });
+    e.target.value = '';
+  };
+
+  const handleFolderSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    setUploading(true);
+    setUploadProgress({ current: 0, total: files.length });
+
+    for (let i = 0; i < files.length; i++) {
+      setUploadProgress({ current: i + 1, total: files.length });
+      await uploadImage(files[i]);
+    }
+
+    setUploading(false);
+    setUploadProgress({ current: 0, total: 0 });
     e.target.value = '';
   };
 
@@ -188,11 +240,26 @@ export const ImageUploader = () => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold mb-2">Image Library</h2>
-        <p className="text-muted-foreground">
-          Upload and optimize images. Drag & drop or click to select files.
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold mb-2">Image Library</h2>
+          <p className="text-muted-foreground">
+            Upload and optimize images. Drag & drop or click to select files or folders.
+          </p>
+        </div>
+        <label>
+          <input
+            type="file"
+            multiple
+            {...({ webkitdirectory: '', directory: '' } as any)}
+            className="hidden"
+            onChange={handleFolderSelect}
+            disabled={uploading}
+          />
+          <Button variant="outline" disabled={uploading} asChild>
+            <span className="cursor-pointer">Upload Folder</span>
+          </Button>
+        </label>
       </div>
 
       {/* Upload Area */}
@@ -219,6 +286,11 @@ export const ImageUploader = () => {
             <>
               <Loader2 className="h-12 w-12 mb-4 animate-spin text-primary" />
               <p className="text-lg font-medium">Optimizing and uploading...</p>
+              {uploadProgress.total > 0 && (
+                <p className="text-sm text-muted-foreground">
+                  {uploadProgress.current} of {uploadProgress.total} images
+                </p>
+              )}
             </>
           ) : (
             <>
