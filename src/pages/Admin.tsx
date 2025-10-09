@@ -6,7 +6,7 @@ import { ProductForm } from '@/components/admin/ProductForm';
 import { SectionsManager } from '@/components/admin/SectionsManager';
 import { AdminSync } from '@/components/admin/AdminSync';
 import { CustomersTable } from '@/components/admin/CustomersTable';
-import { OrdersTable } from '@/components/admin/OrdersTable';
+import { OrdersList } from '@/components/admin/OrdersList';
 import { StoreSettings } from '@/components/admin/StoreSettings';
 import { ImageUploader } from '@/components/admin/ImageUploader';
 import { PagesManager } from '@/components/admin/PagesManager';
@@ -33,7 +33,7 @@ const Admin = () => {
     <AdminLayout>
       <Routes>
         <Route index element={<AnalyticsDashboard />} />
-        <Route path="orders" element={<OrdersTable />} />
+        <Route path="orders" element={<OrdersList />} />
         <Route path="products" element={<ProductsTable />} />
         <Route path="products/:id" element={<ProductForm />} />
         <Route path="customers" element={<CustomersTable />} />
