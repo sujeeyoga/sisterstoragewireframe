@@ -24,18 +24,33 @@ const AddToCartBar: React.FC<AddToCartBarProps> = ({ product, className }) => {
   const { addItem, setIsOpen } = useCart();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
 
-  const handleAddToCart = (e?: React.MouseEvent) => {
+  const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
+  const [isAdding, setIsAdding] = useState(false); // prevent double-add
+
+  const safePrice =
+    typeof product.price === "number" && !Number.isNaN(product.price)
+      ? product.price
+      : 0;
+
+  const imageSrc =
+    product.images?.[0] ||
+    (typeof product.color === "string" ? product.color : "") ||
+    "";
+
+  const handleAddToCart = async (e?: React.MouseEvent) => {
     e?.preventDefault();
     e?.stopPropagation();
 
+    if (isAdding) return;
+    setIsAdding(true);
+
     try {
       addItem({
-        id: product.id,
-        name: product.name,
-        price: product.price, // Price should already be discounted when passed to this component
-        image: product.images?.[0] || product.color || '',
+        id: String(product.id),
+        name: String(product.name ?? "Untitled"),
+        price: safePrice,
+        image: imageSrc, // supports http URL or color hex; drawer handles both
       });
 
       toast({
@@ -43,6 +58,7 @@ const AddToCartBar: React.FC<AddToCartBarProps> = ({ product, className }) => {
         description: `${product.name} has been added to your cart`,
       });
 
+      // Open drawer (drawer now has higher z-index than the fab)
       setIsOpen(true);
     } catch (error) {
       console.error("[AddToCartBar] Error adding to cart:", error);
@@ -51,6 +67,9 @@ const AddToCartBar: React.FC<AddToCartBarProps> = ({ product, className }) => {
         description: "Failed to add item to cart",
         variant: "destructive",
       });
+    } finally {
+      // small delay to avoid rapid double-clicks on slow devices
+      setTimeout(() => setIsAdding(false), 250);
     }
   };
 
@@ -58,22 +77,26 @@ const AddToCartBar: React.FC<AddToCartBarProps> = ({ product, className }) => {
     e?.preventDefault();
     e?.stopPropagation();
 
-    // If product has Stripe price ID, use Stripe checkout
+    // Stripe path
     if (product.stripePriceId) {
+      if (isCheckoutLoading) return;
       setIsCheckoutLoading(true);
-      
-      try {
-        const { data, error } = await supabase.functions.invoke('create-checkout', {
-          body: { priceId: product.stripePriceId }
-        });
 
+      try {
+        const { data, error } = await supabase.functions.invoke("create-checkout", {
+          body: { priceId: product.stripePriceId, quantity: 1 },
+        });
         if (error) throw error;
 
         if (data?.url) {
-          window.open(data.url, '_blank');
+          // Use same-tab navigation to avoid popup blockers
+          window.location.href = data.url as string;
+          return;
         }
+
+        throw new Error("No checkout URL returned.");
       } catch (error) {
-        console.error('Checkout error:', error);
+        console.error("Checkout error:", error);
         toast({
           title: "Checkout Error",
           description: "Failed to start checkout. Please try again.",
@@ -82,49 +105,56 @@ const AddToCartBar: React.FC<AddToCartBarProps> = ({ product, className }) => {
       } finally {
         setIsCheckoutLoading(false);
       }
-    } else {
-      // Fallback to cart checkout for products without Stripe integration
-      try {
-        addItem({
-          id: product.id,
-          name: product.name,
-          price: product.price,
-          image: product.images?.[0] || product.color || '',
-        });
+      return;
+    }
 
-        navigate("/checkout");
-      } catch (error) {
-        console.error("[AddToCartBar] Error in Buy Now:", error);
-        toast({
-          title: "Error",
-          description: "Failed to proceed to checkout",
-          variant: "destructive",
-        });
-      }
+    // Fallback: add to cart then go to local checkout
+    try {
+      addItem({
+        id: String(product.id),
+        name: String(product.name ?? "Untitled"),
+        price: safePrice,
+        image: imageSrc,
+      });
+      navigate("/checkout");
+    } catch (error) {
+      console.error("[AddToCartBar] Error in Buy Now:", error);
+      toast({
+        title: "Error",
+        description: "Failed to proceed to checkout",
+        variant: "destructive",
+      });
     }
   };
 
   return (
-    <div className={cn("flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 relative z-10", className)}>
+    <div
+      className={cn(
+        // keep this below the drawer/backdrop (which is z-[100000])
+        "flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 relative z-0",
+        className
+      )}
+    >
       <Button
         variant="outline"
-        className="flex-1 font-bold text-sm py-3 shadow-md hover:shadow-lg transition-all duration-300 pointer-events-auto"
+        className="flex-1 font-bold text-sm py-3 shadow-md hover:shadow-lg transition-all duration-300"
         onClick={handleAddToCart}
         type="button"
+        disabled={isAdding}
       >
         <ShoppingBag className="h-4 w-4 mr-2" />
-        Add to Cart
+        {isAdding ? "Adding…" : "Add to Cart"}
       </Button>
 
       <Button
         variant="buy"
         size="buy"
-        className="flex-1 font-bold text-sm py-3 shadow-lg hover:shadow-xl transition-all duration-300 pointer-events-auto"
+        className="flex-1 font-bold text-sm py-3 shadow-lg hover:shadow-xl transition-all duration-300"
         onClick={handleBuyNow}
         disabled={isCheckoutLoading}
         type="button"
       >
-        {isCheckoutLoading ? "Loading..." : "Buy Now"}
+        {isCheckoutLoading ? "Loading…" : "Buy Now"}
       </Button>
     </div>
   );
