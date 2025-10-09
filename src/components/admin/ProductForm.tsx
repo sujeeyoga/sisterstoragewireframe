@@ -10,8 +10,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Bold, Italic, Underline, Type, History, Save, Check } from 'lucide-react';
+import { ArrowLeft, Bold, Italic, Underline, Type, History, Save, Check, Bookmark } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { products as staticProducts } from '@/data/products';
 
 type ProductFormData = {
   name: string;
@@ -617,145 +618,204 @@ export const ProductForm = () => {
           </CardHeader>
           <CardContent>
             <div className="max-w-sm mx-auto">
-              <Card className="group overflow-hidden border-none shadow-md h-full bg-white">
-                {/* Product Image Preview */}
-                <div className="relative overflow-hidden">
-                  <div 
-                    className="w-full aspect-square flex items-center justify-center text-white font-bold text-xs uppercase"
-                    style={{ backgroundColor: '#E91E63' }}
-                  >
-                    <span className="line-clamp-1 text-center px-2 tracking-wide">Sister Storage</span>
+              <Card className="group overflow-hidden border-0 shadow-md hover:shadow-xl transition-all duration-300 rounded-lg h-full">
+                <div className="block relative">
+                  <div className="relative overflow-hidden">
+                    {/* Product Image with aspect-square ratio */}
+                    <div className="aspect-square transition-transform duration-500 overflow-hidden">
+                      {(() => {
+                        const shopProduct = staticProducts.find(p => p.slug === formValues.slug);
+                        const imageUrl = shopProduct?.images?.[0];
+                        
+                        if (imageUrl) {
+                          return (
+                            <img 
+                              src={imageUrl} 
+                              alt={formValues.name || 'Product'}
+                              className="w-full h-full object-cover"
+                            />
+                          );
+                        }
+                        
+                        return (
+                          <div 
+                            className="w-full h-full flex items-center justify-center"
+                            style={{ backgroundColor: shopProduct?.color || '#E91E63' }}
+                          >
+                            <span className="text-background font-bold">Sister Storage</span>
+                          </div>
+                        );
+                      })()}
+                    </div>
+                    
+                    {/* Hover Overlay */}
+                    <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/10 transition-all duration-300"></div>
+                    
+                    {/* Bookmark button */}
+                    <Button 
+                      size="icon"
+                      variant="ghost" 
+                      className="absolute top-2 right-2 rounded-full bg-background/70 hover:bg-background opacity-0 group-hover:opacity-100 transition-all duration-300"
+                      disabled
+                    >
+                      <Bookmark className="h-4 w-4" />
+                    </Button>
+                    
+                    {/* Product badges */}
+                    <div className="absolute top-3 left-3 flex flex-col gap-2">
+                      {(() => {
+                        const shopProduct = staticProducts.find(p => p.slug === formValues.slug);
+                        return (
+                          <>
+                            {shopProduct?.bestSeller && <Badge>Best Seller</Badge>}
+                            {formValues.manage_stock && formValues.stock_quantity !== null && formValues.stock_quantity <= 5 && formValues.stock_quantity > 0 && (
+                              <Badge variant="outline">Only {formValues.stock_quantity} left</Badge>
+                            )}
+                            {!formValues.in_stock && (
+                              <Badge variant="destructive">Out of Stock</Badge>
+                            )}
+                          </>
+                        );
+                      })()}
+                    </div>
                   </div>
                   
-                  {/* In Stock Badge */}
-                  {!formValues.in_stock && (
-                    <div className="absolute top-3 left-3">
-                      <span className="bg-destructive text-destructive-foreground px-3 py-1 rounded-md text-xs font-semibold">
-                        Out of Stock
-                      </span>
-                    </div>
-                  )}
-                  
-                  {/* Stock Warning */}
-                  {formValues.manage_stock && formValues.stock_quantity !== null && formValues.stock_quantity <= 5 && formValues.stock_quantity > 0 && (
-                    <div className="absolute top-3 left-3">
-                      <span className="bg-amber-500 text-white px-3 py-1 rounded-md text-xs font-semibold">
-                        Only {formValues.stock_quantity} left
-                      </span>
-                    </div>
-                  )}
-                </div>
-                
-                <CardContent className="p-4 space-y-3">
-                  {/* Title & Price */}
-                  <div className="flex justify-between items-start gap-2">
-                    <h3 className="font-bold text-2xl line-clamp-2 flex-1 uppercase">
-                      {formValues.name || 'Product Name'}
-                    </h3>
-                    <div className="text-right flex-shrink-0">
-                      {formValues.sale_price && formValues.sale_price < formValues.regular_price ? (
-                        <div className="flex flex-col items-end">
-                          <span className="text-sm text-muted-foreground line-through">
-                            ${Number(formValues.regular_price || 0).toFixed(2)}
-                          </span>
-                          <span className="font-bold text-xl text-primary">
-                            ${Number(formValues.sale_price).toFixed(2)}
-                          </span>
-                        </div>
-                      ) : (
-                        <span className="font-bold text-xl">
-                          ${Number(formValues.price || 0).toFixed(2)}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  
-                  {/* Short Description */}
-                  {formValues.short_description && (
-                    <div 
-                      className="text-sm text-muted-foreground line-clamp-2"
-                      dangerouslySetInnerHTML={{ __html: formValues.short_description }}
-                    />
-                  )}
-                  
-                  {/* Full Description */}
-                  {formValues.description && (
-                    <div 
-                      className="text-sm text-muted-foreground line-clamp-3 border-t pt-2"
-                      dangerouslySetInnerHTML={{ __html: formValues.description }}
-                    />
-                  )}
-                  
-                  {/* Stock Info */}
-                  {formValues.manage_stock && formValues.stock_quantity !== null && (
-                    <div className="text-xs text-muted-foreground border-t pt-2">
-                      <div className="flex items-center justify-between">
-                        <span>Stock:</span>
-                        <span className="font-semibold">{formValues.stock_quantity} units</span>
-                      </div>
-                    </div>
-                  )}
-                  
-                  {/* Rating */}
-                  <div className="flex items-center justify-between border-t pt-2">
-                    <div className="flex items-center gap-1">
-                      {[...Array(5)].map((_, i) => (
-                        <span key={i} className="text-amber-400">★</span>
-                      ))}
-                    </div>
-                    <span className="text-gray-500 text-xs font-medium">(124)</span>
-                  </div>
-                  
-                  {/* Title */}
-                  <div className="space-y-2">
-                    <h3 className="text-3xl lg:text-4xl font-bold text-gray-900 leading-tight line-clamp-2 uppercase">
-                      {formValues.name || 'Product Name'}
-                    </h3>
-                    <p className="text-gray-600 text-lg leading-relaxed line-clamp-2">
-                      {(formValues.short_description || 'Product description goes here').replace(/<[^>]*>/g, '')}
-                    </p>
-                  </div>
-                  
-                  {/* Price Display */}
-                  {formValues.price > 0 && (
-                    <div className="bg-gray-50/80 rounded-xl p-4 border border-gray-100">
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-3xl font-bold text-gray-900">
-                          ${formValues.sale_price || formValues.price}
-                        </span>
-                        {formValues.sale_price && formValues.regular_price && (
-                          <span className="text-lg text-gray-500 line-through">
-                            ${formValues.regular_price}
+                  {/* All product information underneath */}
+                  <CardContent className="px-4 py-4 flex flex-col h-full">
+                    {/* Title & Price - Fixed Height */}
+                    <div className="mb-2 flex justify-between items-start min-h-[5rem]">
+                      <h3 className="font-bold text-3xl lg:text-4xl line-clamp-2 flex-1 uppercase">
+                        {formValues.name || 'Product Name'}
+                      </h3>
+                      <div className="text-right flex-shrink-0 ml-2">
+                        {formValues.sale_price && formValues.sale_price < formValues.regular_price ? (
+                          <div className="flex flex-col items-end">
+                            <span className="text-sm text-muted-foreground line-through">
+                              ${Number(formValues.regular_price || 0).toFixed(2)}
+                            </span>
+                            <span className="font-bold text-2xl text-[hsl(var(--primary))]">
+                              ${Number(formValues.sale_price).toFixed(2)}
+                            </span>
+                          </div>
+                        ) : (
+                          <span className="font-bold text-2xl">
+                            ${Number(formValues.price || 0).toFixed(2)}
                           </span>
                         )}
                       </div>
                     </div>
-                  )}
-                  
-                  {/* Stock Status */}
-                  <div className="text-sm">
-                    {formValues.in_stock ? (
-                      <span className="text-green-600 font-medium">✓ In Stock</span>
-                    ) : (
-                      <span className="text-red-600 font-medium">✗ Out of Stock</span>
-                    )}
-                    {formValues.manage_stock && formValues.stock_quantity !== null && (
-                      <span className="text-gray-500 ml-2">
-                        ({formValues.stock_quantity} available)
-                      </span>
-                    )}
-                  </div>
-                  
-                  {/* Buy Button */}
-                  <Button
-                    variant="buy"
-                    size="buy"
-                    className="w-full font-bold text-sm py-3"
-                    disabled
-                  >
-                    ADD TO CART
-                  </Button>
-                </CardContent>
+                    
+                    {/* Sister Caption - Fixed Height */}
+                    <div className="min-h-[2rem] mb-2">
+                      {(() => {
+                        const shopProduct = staticProducts.find(p => p.slug === formValues.slug);
+                        return shopProduct?.caption ? (
+                          <p className="text-[hsl(var(--primary))] text-lg font-medium italic line-clamp-1">
+                            "{shopProduct.caption}"
+                          </p>
+                        ) : null;
+                      })()}
+                    </div>
+                    
+                    {/* Description - Fixed Height */}
+                    <div className="h-[3rem] mb-3">
+                      {formValues.description && (
+                        <p className="text-muted-foreground text-lg line-clamp-2">
+                          {formValues.description.replace(/<[^>]*>/g, '')}
+                        </p>
+                      )}
+                    </div>
+                    
+                    {/* Material - Fixed Height */}
+                    <div className="h-[1.5rem] mb-3 text-sm text-muted-foreground">
+                      {(() => {
+                        const shopProduct = staticProducts.find(p => p.slug === formValues.slug);
+                        return shopProduct?.material || 'Premium materials';
+                      })()}
+                    </div>
+                    
+                    {/* Feature - Fixed Height */}
+                    <div className="h-[1.5rem] mb-3">
+                      {(() => {
+                        const shopProduct = staticProducts.find(p => p.slug === formValues.slug);
+                        const feature = shopProduct?.features?.[0];
+                        return feature ? (
+                          <div className="text-sm text-muted-foreground flex items-center gap-1">
+                            <Check className="h-4 w-4 text-[hsl(var(--primary))]" /> 
+                            <span className="line-clamp-1">{feature}</span>
+                          </div>
+                        ) : null;
+                      })()}
+                    </div>
+                    
+                    {/* Rod Count - Fixed Height */}
+                    <div className="min-h-[4rem] mb-3 flex justify-center">
+                      {(() => {
+                        const shopProduct = staticProducts.find(p => p.slug === formValues.slug);
+                        const rodCount = shopProduct?.attributes?.rodCount;
+                        return rodCount ? (
+                          <div className="inline-flex flex-col items-center bg-[hsl(var(--primary))] text-primary-foreground rounded-lg px-3 py-2">
+                            <span className="text-xs font-medium">RODS</span>
+                            <span className="text-2xl font-bold">{rodCount}</span>
+                          </div>
+                        ) : null;
+                      })()}
+                    </div>
+                    
+                    {/* Attribute Chips - Fixed Height */}
+                    <div className="min-h-[2rem] mb-3">
+                      {(() => {
+                        const shopProduct = staticProducts.find(p => p.slug === formValues.slug);
+                        const attrs = shopProduct?.attributes;
+                        if (!attrs) return null;
+                        
+                        const chips: React.ReactNode[] = [];
+                        const push = (label: string, vals?: unknown) => {
+                          const arr = Array.isArray(vals) ? vals : vals ? [vals] : [];
+                          arr.forEach((v, i) =>
+                            chips.push(
+                              <Badge key={`${label}-${String(v)}-${i}`} variant="outline" className="text-xs h-6 px-2">
+                                {label}: {String(v)}
+                              </Badge>
+                            )
+                          );
+                        };
+                        push("Size", attrs.size);
+                        push("Use", attrs.useCase);
+                        push("Bundle", attrs.bundleSize);
+                        
+                        return chips.length > 0 ? (
+                          <div className="flex flex-wrap gap-2">{chips}</div>
+                        ) : null;
+                      })()}
+                    </div>
+                    
+                    {/* Bottom Section - Fixed at Bottom */}
+                    <div className="mt-auto space-y-2">
+                      {/* SKU - Fixed Height */}
+                      <div className="min-h-[1rem]">
+                        {(() => {
+                          const shopProduct = staticProducts.find(p => p.slug === formValues.slug);
+                          return shopProduct?.sku ? (
+                            <div className="text-xs text-muted-foreground">
+                              SKU: {shopProduct.sku}
+                            </div>
+                          ) : null;
+                        })()}
+                      </div>
+                      
+                      {/* Category Badge - Fixed Height */}
+                      <div className="flex justify-between items-center h-8">
+                        {(() => {
+                          const shopProduct = staticProducts.find(p => p.slug === formValues.slug);
+                          return shopProduct?.category ? (
+                            <Badge variant="outline" className="h-6 px-3">{shopProduct.category}</Badge>
+                          ) : null;
+                        })()}
+                      </div>
+                    </div>
+                  </CardContent>
+                </div>
               </Card>
             </div>
           </CardContent>
