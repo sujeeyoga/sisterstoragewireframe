@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
 import { Button } from '@/components/ui/button';
@@ -33,6 +33,7 @@ const Checkout = () => {
   const [selectedShippingRate, setSelectedShippingRate] = useState<string>('');
   const [clientSecret, setClientSecret] = useState<string>('');
   const [showPayment, setShowPayment] = useState(false);
+  const paymentRef = useRef<HTMLDivElement>(null);
   const [formData, setFormData] = useState({
     email: '',
     firstName: '',
@@ -97,6 +98,13 @@ const Checkout = () => {
       calculateShipping();
     }
   }, [debouncedAddress, debouncedCity, debouncedProvince, debouncedPostalCode]);
+
+  // Scroll to payment form when it appears
+  useEffect(() => {
+    if (showPayment && paymentRef.current) {
+      paymentRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [showPayment]);
 
   // Handle address selection from autocomplete
   const handleAddressSelect = (address: {
@@ -505,7 +513,7 @@ const Checkout = () => {
 
             {/* Stripe Payment Form */}
             {showPayment && clientSecret && (
-              <Card className="mt-6">
+              <Card ref={paymentRef} className="mt-6">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <CreditCard className="h-5 w-5" />
