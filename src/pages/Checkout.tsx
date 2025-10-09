@@ -97,31 +97,33 @@ const Checkout = () => {
         body: {
           action: 'get-rates',
           data: {
-            from: {
+            from_address: {
               name: 'Sister Storage',
-              street1: '123 Business St', // TODO: Replace with actual warehouse address
+              address1: '123 Business St', // TODO: Replace with actual warehouse address
               city: 'Toronto',
-              province: 'ON',
+              province_code: 'ON',
               postal_code: 'M5V3A8',
-              country: 'CA',
+              country_code: 'CA',
             },
-            to: {
+            to_address: {
               name: `${formData.firstName} ${formData.lastName}`,
-              street1: formData.address,
+              address1: formData.address,
               city: formData.city,
-              province: formData.province,
+              province_code: formData.province,
               postal_code: formData.postalCode,
-              country: formData.country,
+              country_code: formData.country,
               phone: formData.phone,
               email: formData.email,
             },
-            packages: [{
-              weight: Math.max(totalWeight, 0.5), // Minimum 0.5kg
-              length: 30,
-              width: 20,
-              height: 10,
-              units: 'metric',
-            }],
+            weight: Math.max(totalWeight, 0.5), // Minimum 0.5kg
+            weight_unit: 'kg',
+            length: 30,
+            width: 20,
+            height: 10,
+            size_unit: 'cm',
+            package_contents: 'Jewelry storage accessories',
+            value: subtotal,
+            currency: 'CAD',
           },
         },
       });
