@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ShoppingBag, Star, Plus } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { useToast } from '@/components/ui/use-toast';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 
 const buyCards = [
@@ -65,6 +65,7 @@ const buyCards = [
 const BestSeller = () => {
   const { addItem } = useCart();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [loadedImages, setLoadedImages] = React.useState<Record<string, boolean>>({});
   
   console.log('BestSeller component rendering');
@@ -84,9 +85,11 @@ const BestSeller = () => {
     });
     
     toast({
-      title: "Added to cart",
+      title: "Processing purchase",
       description: `${item.name} added to your cart`,
     });
+    
+    navigate('/checkout');
   };
 
   return (
