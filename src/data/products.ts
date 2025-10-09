@@ -65,7 +65,7 @@ export const products: Product[] = [
   },
   {
     id: "bundle-1",
-    name: "Everyday Starter",
+    name: "Starter Set",
     description: "START. SAFE. STYLE.",
     shortDescription: "2 Large Boxes, 1 Medium Box, 1 Small Box",
     bundleContents: "2 Large Boxes, 1 Medium Box, 1 Small Box",
