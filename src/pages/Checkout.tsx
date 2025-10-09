@@ -6,14 +6,16 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { ArrowLeft, ShoppingBag, CreditCard, Truck, Trash2 } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, CreditCard, Truck, Trash2, Tag } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Logo from '@/components/ui/Logo';
+import { useStoreDiscount } from '@/hooks/useStoreDiscount';
 
 const Checkout = () => {
   const navigate = useNavigate();
   const { items, subtotal, clearCart, removeItem } = useCart();
   const { toast } = useToast();
+  const { discount, applyDiscount, getDiscountAmount } = useStoreDiscount();
   
   const [isProcessing, setIsProcessing] = useState(false);
   const [formData, setFormData] = useState({
@@ -30,9 +32,11 @@ const Checkout = () => {
   });
 
   const taxRate = 0.085;
-  const taxAmount = subtotal * taxRate;
-  const shippingCost = subtotal > 50 ? 0 : 9.99;
-  const total = subtotal + taxAmount + shippingCost;
+  const discountedSubtotal = discount?.enabled ? applyDiscount(subtotal) : subtotal;
+  const discountAmount = discount?.enabled ? getDiscountAmount(subtotal) : 0;
+  const taxAmount = discountedSubtotal * taxRate;
+  const shippingCost = discountedSubtotal > 50 ? 0 : 9.99;
+  const total = discountedSubtotal + taxAmount + shippingCost;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -314,6 +318,17 @@ const Checkout = () => {
                     <span className="text-gray-600">Subtotal</span>
                     <span className="font-medium">${subtotal.toFixed(2)}</span>
                   </div>
+                  
+                  {discount?.enabled && discountAmount > 0 && (
+                    <div className="flex justify-between text-green-600">
+                      <span className="flex items-center gap-1">
+                        <Tag className="h-3 w-3" />
+                        {discount.name} ({discount.percentage}% off)
+                      </span>
+                      <span className="font-medium">-${discountAmount.toFixed(2)}</span>
+                    </div>
+                  )}
+                  
                   <div className="flex justify-between">
                     <span className="text-gray-600">Tax</span>
                     <span className="font-medium">${taxAmount.toFixed(2)}</span>
