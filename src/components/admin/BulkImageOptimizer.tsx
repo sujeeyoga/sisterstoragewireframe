@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { optimizeImage } from '@/lib/imageOptimizer';
 import { Loader2, Image as ImageIcon, RefreshCw, X } from 'lucide-react';
+import Logo from '@/components/ui/Logo';
 
 interface StorageImage {
   name: string;          // full path for display
@@ -288,6 +289,9 @@ export function BulkImageOptimizer() {
 
   return (
     <div className="space-y-6">
+      <div className="flex items-center gap-4">
+        <Logo size="md" />
+      </div>
       <div>
         <h2 className="text-2xl font-bold">Bulk Image Optimizer</h2>
         <p className="text-muted-foreground">
