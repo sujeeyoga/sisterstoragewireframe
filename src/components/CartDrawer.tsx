@@ -50,7 +50,7 @@ const CartDrawer = () => {
   const total = discountedSubtotal + taxAmount;
 
   return (
-    <div className={`fixed inset-0 z-[1200] transition-opacity duration-300 ${isOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'}`}>
+    <div className={`fixed inset-0 z-[9999] transition-opacity duration-300 ${isOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'}`}>
       {/* Backdrop */}
       <div 
         className={`absolute inset-0 bg-black transition-opacity duration-300 ${isOpen ? 'bg-opacity-50' : 'bg-opacity-0'}`}
