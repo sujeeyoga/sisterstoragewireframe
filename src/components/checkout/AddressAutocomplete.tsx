@@ -96,7 +96,8 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
       const route = components.route?.long || '';
       const fullAddress = `${streetNumber} ${route}`.trim();
       
-      const city = components.locality?.long || '';
+      // Use sublocality (e.g., Scarborough) if available, otherwise use locality (e.g., Toronto)
+      const city = components.sublocality_level_1?.long || components.sublocality?.long || components.locality?.long || '';
       
       // Get 2-letter province code (try mapping first, then short_name)
       const provinceLong = components.administrative_area_level_1?.long || '';
