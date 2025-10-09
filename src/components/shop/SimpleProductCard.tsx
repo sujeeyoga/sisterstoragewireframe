@@ -160,16 +160,25 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
         <div className="space-y-3 mt-auto">
           {/* Price Display */}
           <div className="flex items-center justify-between">
-            <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-bold text-gray-900">${product.price.toFixed(2)}</span>
-              {product.originalPrice && (
-                <span className="text-lg text-gray-400 line-through">${product.originalPrice.toFixed(2)}</span>
-              )}
-            </div>
-            {product.originalPrice && (
-              <Badge variant="destructive" className="bg-red-500 text-white">
-                SAVE ${(product.originalPrice - product.price).toFixed(2)}
-              </Badge>
+            {product.category === 'open-box' ? (
+              <div className="flex items-center gap-2">
+                <Package className="w-6 h-6 text-[#ff6b35]" />
+                <span className="text-3xl font-bold text-[#ff6b35] uppercase">Open Box</span>
+              </div>
+            ) : (
+              <>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-3xl font-bold text-gray-900">${product.price.toFixed(2)}</span>
+                  {product.originalPrice && (
+                    <span className="text-lg text-gray-400 line-through">${product.originalPrice.toFixed(2)}</span>
+                  )}
+                </div>
+                {product.originalPrice && (
+                  <Badge variant="destructive" className="bg-red-500 text-white">
+                    SAVE ${(product.originalPrice - product.price).toFixed(2)}
+                  </Badge>
+                )}
+              </>
             )}
           </div>
           
