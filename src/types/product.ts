@@ -43,6 +43,7 @@ export interface Product {
   price: number;
   originalPrice?: number;
   salePrice?: number;
+  stripePriceId?: string;
   category: string;
   categories: string[];
   color: string;

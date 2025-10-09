@@ -26,6 +26,7 @@ import OurStory from "./pages/OurStory";
 import Admin from "./pages/Admin";
 import PageTransition from "./components/layout/PageTransition";
 import ComingSoon from "./pages/ComingSoon";
+import PaymentSuccess from "./pages/PaymentSuccess";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +41,7 @@ const App = () => {
           <BrowserRouter>
             <CartDrawer />
             <Routes>
+              <Route path="/payment-success" element={<PageTransition><PaymentSuccess /></PageTransition>} />
               <Route path="*" element={<PageTransition><ComingSoon /></PageTransition>} />
             </Routes>
           </BrowserRouter>
