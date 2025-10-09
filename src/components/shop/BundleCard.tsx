@@ -59,16 +59,28 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
             <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse" />
           )}
           
-          <div 
-            className={cn(
-              "w-full aspect-[4/5] object-cover transition-all duration-700 group-hover:scale-105",
-              imageLoaded ? "opacity-100" : "opacity-0"
-            )}
-            style={{ 
-              background: `linear-gradient(135deg, ${product.color}30, ${product.color})`,
-            }}
-            onLoad={() => setImageLoaded(true)}
-          />
+          {product.images && product.images[0] ? (
+            <img 
+              src={product.images[0]} 
+              alt={product.name}
+              className={cn(
+                "w-full aspect-[4/5] object-cover transition-all duration-700 group-hover:scale-105",
+                imageLoaded ? "opacity-100" : "opacity-0"
+              )}
+              onLoad={() => setImageLoaded(true)}
+            />
+          ) : (
+            <div 
+              className={cn(
+                "w-full aspect-[4/5] object-cover transition-all duration-700 group-hover:scale-105",
+                imageLoaded ? "opacity-100" : "opacity-0"
+              )}
+              style={{ 
+                background: `linear-gradient(135deg, ${product.color}30, ${product.color})`,
+              }}
+              onLoad={() => setImageLoaded(true)}
+            />
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           
           {/* Quick Buy Overlay */}
