@@ -42,8 +42,7 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
 
   return (
     <Card 
-      className="group overflow-hidden border-none shadow-md hover:shadow-xl transition-all duration-500 bg-white relative transform hover:-translate-y-1 hover:scale-[1.02] h-full cursor-pointer"
-      onClick={handleAddToCart}
+      className="group overflow-hidden border-none shadow-md hover:shadow-xl transition-all duration-500 bg-white relative transform hover:-translate-y-1 hover:scale-[1.02] h-full"
     >
       {/* Bundle Badge */}
       <div className="absolute top-3 left-3 z-10">
@@ -88,7 +87,8 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
             <Button 
               variant="buy"
               size="buy"
-              className="transform scale-90 group-hover:scale-100 shadow-2xl pointer-events-none"
+              className="transform scale-90 group-hover:scale-100 shadow-2xl"
+              onClick={handleAddToCart}
             >
               <Plus className="h-4 w-4 mr-2" />
               Quick Add
@@ -207,7 +207,8 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
             <Button 
               variant="buy"
               size="buy"
-              className="flex-1 font-bold text-sm py-3 shadow-lg hover:shadow-xl transition-all duration-300 pointer-events-none"
+              className="flex-1 font-bold text-sm py-3 shadow-lg hover:shadow-xl transition-all duration-300"
+              onClick={handleAddToCart}
             >
               <ShoppingBag className="h-4 w-4 mr-2" />
               GET THIS BUNDLE
