@@ -14,6 +14,12 @@ import { supabase } from '@/integrations/supabase/client';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import AddressAutocomplete from '@/components/checkout/AddressAutocomplete';
 import { useDebounce } from '@/hooks/useDebounce';
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements } from '@stripe/react-stripe-js';
+import { PaymentForm } from '@/components/checkout/PaymentForm';
+
+// Initialize Stripe with publishable key
+const stripePromise = loadStripe('pk_live_51QXKjNKUj5UEV4Z9vLvF09u1l2ZJzqkF0LKcGTmPYSC1cYQzV7MmgfWk4z5tClCaBx41Vls0gDj1jxmK4jQxqQ3600lfNh3Lte');
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -25,6 +31,8 @@ const Checkout = () => {
   const [isLoadingRates, setIsLoadingRates] = useState(false);
   const [shippingRates, setShippingRates] = useState<any[]>([]);
   const [selectedShippingRate, setSelectedShippingRate] = useState<string>('');
+  const [clientSecret, setClientSecret] = useState<string>('');
+  const [showPayment, setShowPayment] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     firstName: '',
@@ -207,7 +215,7 @@ const Checkout = () => {
     setIsProcessing(true);
 
     try {
-      // Call Stripe checkout edge function with cart items
+      // Call Stripe checkout edge function to create payment intent
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: {
           items: items.map(item => ({
@@ -235,16 +243,16 @@ const Checkout = () => {
 
       if (error) throw error;
 
-      if (data?.url) {
-        // Redirect to Stripe Checkout in new tab
-        window.open(data.url, '_blank');
+      if (data?.clientSecret) {
+        setClientSecret(data.clientSecret);
+        setShowPayment(true);
         
         toast({
-          title: "Redirecting to Checkout",
-          description: "You'll be redirected to Stripe to complete your payment securely.",
+          title: "Ready for Payment",
+          description: "Please complete your payment below.",
         });
       } else {
-        throw new Error('No checkout URL received');
+        throw new Error('No payment client secret received');
       }
     } catch (error) {
       console.error('Checkout error:', error);
@@ -518,7 +526,7 @@ const Checkout = () => {
                 type="submit" 
                 className="w-full bg-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))]/90"
                 size="lg"
-                disabled={isProcessing}
+                disabled={isProcessing || showPayment}
               >
                 {isProcessing ? (
                   <>
@@ -533,6 +541,28 @@ const Checkout = () => {
                 )}
               </Button>
             </form>
+
+            {/* Stripe Payment Form */}
+            {showPayment && clientSecret && (
+              <Card className="mt-6">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <CreditCard className="h-5 w-5" />
+                    Complete Payment
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Elements stripe={stripePromise} options={{ clientSecret }}>
+                    <PaymentForm 
+                      onBack={() => {
+                        setShowPayment(false);
+                        setClientSecret('');
+                      }} 
+                    />
+                  </Elements>
+                </CardContent>
+              </Card>
+            )}
           </div>
 
           {/* Order Summary */}
