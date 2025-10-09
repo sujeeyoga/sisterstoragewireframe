@@ -23,17 +23,31 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
   const handleAddToCart = (e?: React.MouseEvent) => {
     e?.preventDefault();
     e?.stopPropagation();
-    addItem({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      image: product.images?.[0] || product.color
-    });
     
-    toast({
-      title: "Added to cart",
-      description: `${product.name} has been added to your cart`,
-    });
+    console.log('Add to cart clicked for:', product.id, product.name);
+    
+    try {
+      addItem({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        image: product.images?.[0] || product.color
+      });
+      
+      toast({
+        title: "Added to cart",
+        description: `${product.name} has been added to your cart`,
+      });
+      
+      console.log('Item added successfully, cart should open');
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      toast({
+        title: "Error",
+        description: "Failed to add item to cart",
+        variant: "destructive"
+      });
+    }
   };
 
   // Extract bundle contents and rod count
