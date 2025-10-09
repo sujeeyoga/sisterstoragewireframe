@@ -106,20 +106,22 @@ const FeaturedGrid = () => {
 
       {/* Lightbox Modal */}
       <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
-        <DialogContent className="max-w-[95vw] max-h-[95vh] p-0 border-none bg-black/95">
+        <DialogContent className="max-w-[95vw] w-[95vw] h-[95vh] p-0 border-0 bg-black/95 flex items-center justify-center">
           <button
             onClick={() => setSelectedImage(null)}
-            className="absolute top-4 right-4 z-50 p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors"
+            className="absolute top-4 right-4 z-[60] p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors"
             aria-label="Close"
           >
             <X className="h-6 w-6 text-white" />
           </button>
           {selectedImage && (
-            <img
-              src={selectedImage.url}
-              alt={selectedImage.title}
-              className="w-full h-full object-contain"
-            />
+            <div className="w-full h-full flex items-center justify-center p-4">
+              <img
+                src={selectedImage.url}
+                alt={selectedImage.title}
+                className="max-w-full max-h-full object-contain"
+              />
+            </div>
           )}
         </DialogContent>
       </Dialog>
