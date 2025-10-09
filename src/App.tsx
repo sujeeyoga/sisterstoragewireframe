@@ -19,6 +19,7 @@ import Accessibility from "./pages/Accessibility";
 import Contact from "./pages/Contact";
 import Gift from "./pages/Gift";
 import Checkout from "./pages/Checkout";
+import OpenBox from "./pages/OpenBox";
 import { CartProvider } from "./contexts/CartContext";
 import CartDrawer from "../src/components/CartDrawer";
 import OurStory from "./pages/OurStory";
@@ -40,6 +41,7 @@ const App = () => {
             <Routes>
               <Route path="/" element={<PageTransition><Index /></PageTransition>} />
               <Route path="/shop" element={<PageTransition><Shop /></PageTransition>} />
+              <Route path="/open-box" element={<PageTransition><OpenBox /></PageTransition>} />
               <Route path="/gallery" element={<PageTransition><Gallery /></PageTransition>} />
               <Route path="/shop/:productId" element={<PageTransition><ProductDetail /></PageTransition>} />
               <Route path="/checkout" element={<PageTransition><Checkout /></PageTransition>} />

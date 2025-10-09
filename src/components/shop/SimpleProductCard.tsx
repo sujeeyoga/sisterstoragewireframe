@@ -183,15 +183,28 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
           </div>
           
           {/* Buy Button */}
-          <Button
-            variant="buy"
-            size="buy"
-            className="w-full font-bold text-sm py-3 shadow-lg hover:shadow-xl transition-all duration-300"
-            onClick={handleAddToCart}
-          >
-            <ShoppingBag className="h-4 w-4 mr-2" />
-            {product.category === 'open-box' ? 'SEE WHAT\'S AVAILABLE' : 'ADD TO CART'}
-          </Button>
+          {product.category === 'open-box' ? (
+            <Link to="/open-box" className="block w-full">
+              <Button
+                variant="buy"
+                size="buy"
+                className="w-full font-bold text-sm py-3 shadow-lg hover:shadow-xl transition-all duration-300"
+              >
+                <ShoppingBag className="h-4 w-4 mr-2" />
+                SEE WHAT'S AVAILABLE
+              </Button>
+            </Link>
+          ) : (
+            <Button
+              variant="buy"
+              size="buy"
+              className="w-full font-bold text-sm py-3 shadow-lg hover:shadow-xl transition-all duration-300"
+              onClick={handleAddToCart}
+            >
+              <ShoppingBag className="h-4 w-4 mr-2" />
+              ADD TO CART
+            </Button>
+          )}
         </div>
       </CardContent>
     </Card>
