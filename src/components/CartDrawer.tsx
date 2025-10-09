@@ -9,6 +9,14 @@ import { useStoreDiscount } from '@/hooks/useStoreDiscount';
 const CartDrawer = () => {
   const { items, removeItem, updateQuantity, totalItems, subtotal, isOpen, setIsOpen } = useCart();
   const { discount, applyDiscount, getDiscountAmount } = useStoreDiscount();
+  const drawerContentRef = React.useRef<HTMLDivElement>(null);
+
+  // Scroll to top when drawer opens
+  useEffect(() => {
+    if (isOpen && drawerContentRef.current) {
+      drawerContentRef.current.scrollTop = 0;
+    }
+  }, [isOpen]);
 
   // No body scroll lock - allow scrolling behind the drawer
 
@@ -73,7 +81,7 @@ const CartDrawer = () => {
           {/* Two Column Layout - Mobile: stacked, Desktop: side-by-side */}
           <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
             {/* Left Panel - Cart Items (Scrollable) */}
-            <div className="flex-1 md:w-[60%] overflow-y-auto py-4 px-4">
+            <div ref={drawerContentRef} className="flex-1 md:w-[60%] overflow-y-auto py-4 px-4">
               {items.length === 0 ? (
                 <div className="text-center py-12">
                   <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
