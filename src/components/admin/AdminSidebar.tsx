@@ -43,13 +43,13 @@ export function AdminSidebar() {
     <Sidebar className={isCollapsed ? 'w-14' : 'w-60'} collapsible="icon">
       <div className="p-4 border-b">
         {!isCollapsed && (
-          <h2 className="text-xl font-bold">Admin Panel</h2>
+          <h2 className="text-2xl font-bold">Admin Panel</h2>
         )}
       </div>
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Management</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-xl">Management</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item) => (
@@ -62,7 +62,7 @@ export function AdminSidebar() {
                       onClick={handleNavClick}
                     >
                       <item.icon className="h-4 w-4" />
-                      {!isCollapsed && <span>{item.title}</span>}
+                      {!isCollapsed && <span className="text-xl">{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
