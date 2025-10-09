@@ -24,6 +24,8 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
     e?.preventDefault();
     e?.stopPropagation();
     
+    console.log('[BundleCard] Add to Cart clicked', { productId: product.id, productName: product.name });
+    
     try {
       addItem({
         id: product.id,
@@ -32,6 +34,8 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
         image: product.images?.[0] || product.color
       });
       
+      console.log('[BundleCard] Item added to cart successfully');
+      
       toast({
         title: "Added to cart",
         description: `${product.name} has been added to your cart`,
@@ -39,7 +43,7 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
       
       setIsOpen(true);
     } catch (error) {
-      console.error('Error adding to cart:', error);
+      console.error('[BundleCard] Error adding to cart:', error);
       toast({
         title: "Error",
         description: "Failed to add item to cart",
@@ -52,6 +56,8 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
     e?.preventDefault();
     e?.stopPropagation();
     
+    console.log('[BundleCard] Buy Now clicked', { productId: product.id, productName: product.name });
+    
     try {
       addItem({
         id: product.id,
@@ -60,9 +66,10 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
         image: product.images?.[0] || product.color
       });
       
+      console.log('[BundleCard] Navigating to checkout');
       navigate('/checkout');
     } catch (error) {
-      console.error('Error adding to cart:', error);
+      console.error('[BundleCard] Error in Buy Now:', error);
       toast({
         title: "Error",
         description: "Failed to add item to cart",
