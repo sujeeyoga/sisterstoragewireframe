@@ -3,7 +3,7 @@ import { Product } from "@/types/product";
 // Best Seller Hero Product
 export const featuredProduct = {
   id: "bundle-3",
-  title: "FULL LUXE COLLECTION",
+  title: "THE BEST SELLER - COMPLETE FAMILY SET",
   subtitle: "The ultimate set for you and yours. Complete storage solution.",
   price: 174.00,
   compareAt: 240.00,
