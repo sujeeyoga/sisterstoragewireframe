@@ -334,13 +334,13 @@ export const ImageUploader = () => {
           </p>
         </div>
         <div className="flex gap-2">
-          {selectedImages.size > 0 && (
+          {selectedImages.size >= 2 && (
             <Button
               variant="outline"
               onClick={copySelectedUrls}
             >
               <ImageIcon className="h-4 w-4 mr-2" />
-              Copy {selectedImages.size} URL{selectedImages.size > 1 ? 's' : ''}
+              Copy {selectedImages.size} URLs
             </Button>
           )}
           <label>
