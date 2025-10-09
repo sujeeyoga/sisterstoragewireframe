@@ -185,11 +185,11 @@ export const products: Product[] = [
     sku: "JEW-ORG-001",
     slug: "jewelry-bag-organizer",
     images: [
-      "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/Sister%20Storage%20Assets/jewlery%20bag/1759979154371-4bikx.jpg",
-      "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/Sister%20Storage%20Assets/jewlery%20bag/1759979153457-8ip49p.jpg",
-      "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/Sister%20Storage%20Assets/jewlery%20bag/1759979152374-09505.jpg",
-      "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/Sister%20Storage%20Assets/jewlery%20bag/1759979151269-2i6rrm.jpg",
-      "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/Sister%20Storage%20Assets/jewlery%20bag/1759979150294-wvvbmd.jpg"
+      "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/jewlery%20bag/1759979983043-ydw0xu.jpg",
+      "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/jewlery%20bag/1759979982197-8onior.jpg",
+      "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/jewlery%20bag/1759979981266-gqug88.jpg",
+      "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/jewlery%20bag/1759979980195-rry2kt.jpg",
+      "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/jewlery%20bag/1759979979119-8rc2tl.jpg"
     ],
     attributes: {},
     caption: "All your pieces, organized and loved.",
