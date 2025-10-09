@@ -12,6 +12,8 @@ import Logo from '@/components/ui/Logo';
 import { useStoreDiscount } from '@/hooks/useStoreDiscount';
 import { supabase } from '@/integrations/supabase/client';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import AddressAutocomplete from '@/components/checkout/AddressAutocomplete';
+import { useDebounce } from '@/hooks/useDebounce';
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -49,6 +51,34 @@ const Checkout = () => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  // Debounce address fields
+  const debouncedAddress = useDebounce(formData.address, 500);
+  const debouncedCity = useDebounce(formData.city, 500);
+  const debouncedProvince = useDebounce(formData.province, 500);
+  const debouncedPostalCode = useDebounce(formData.postalCode, 500);
+
+  // Auto-calculate shipping when address is complete
+  useEffect(() => {
+    const hasCompleteAddress = debouncedAddress && debouncedCity && debouncedProvince && debouncedPostalCode;
+    
+    if (hasCompleteAddress && !isLoadingRates) {
+      calculateShipping();
+    }
+  }, [debouncedAddress, debouncedCity, debouncedProvince, debouncedPostalCode]);
+
+  // Handle address selection from autocomplete
+  const handleAddressSelect = (address: {
+    address: string;
+    city: string;
+    province: string;
+    postalCode: string;
+  }) => {
+    setFormData(prev => ({
+      ...prev,
+      ...address
+    }));
   };
 
   // Calculate shipping when address is complete
@@ -290,16 +320,10 @@ const Checkout = () => {
                       />
                     </div>
                   </div>
-                  <div>
-                    <Label htmlFor="address">Address</Label>
-                    <Input
-                      id="address"
-                      name="address"
-                      value={formData.address}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
+                  <AddressAutocomplete
+                    value={formData.address}
+                    onAddressSelect={handleAddressSelect}
+                  />
                   <div className="grid grid-cols-3 gap-4">
                     <div>
                       <Label htmlFor="city">City</Label>
@@ -345,25 +369,14 @@ const Checkout = () => {
                       placeholder="555-1234"
                     />
                   </div>
-                  <Button
-                    type="button"
-                    onClick={calculateShipping}
-                    disabled={isLoadingRates || !formData.address || !formData.city || !formData.province || !formData.postalCode}
-                    className="w-full"
-                    variant="outline"
-                  >
-                    {isLoadingRates ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Calculating Rates...
-                      </>
-                    ) : (
-                      <>
-                        <Package className="mr-2 h-4 w-4" />
-                        Calculate Shipping
-                      </>
-                    )}
-                  </Button>
+                  
+                  {/* Auto-calculating shipping indicator */}
+                  {isLoadingRates && (
+                    <div className="flex items-center gap-2 text-sm text-gray-600 bg-blue-50 p-3 rounded-lg">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <span>Calculating shipping rates...</span>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 
