@@ -70,9 +70,9 @@ const CartDrawer = () => {
             </h2>
           </div>
           
-          {/* Cart Summary - Moved to top */}
+          {/* Cart Summary - Sticky at top */}
           {items.length > 0 && (
-            <div className="flex-shrink-0 border-b border-gray-200 p-4 bg-gray-50">
+            <div className="sticky top-0 z-10 flex-shrink-0 border-b border-gray-200 p-4 bg-gray-50">
               {/* Itemized Breakdown */}
               <div className="space-y-2 mb-4">
                 <div className="flex justify-between text-sm text-gray-600">
