@@ -48,7 +48,7 @@ export const PagesManager = () => {
                 {page.description}
               </p>
               <Button asChild className="w-full" variant="outline">
-                <Link to={page.path} target="_blank" rel="noopener noreferrer">
+                <Link to={page.path}>
                   <ExternalLink className="mr-2 h-4 w-4" />
                   View Page
                 </Link>
