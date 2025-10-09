@@ -50,6 +50,11 @@ export const ProductsTable = () => {
     return staticProducts.some(p => p.slug === productSlug);
   };
 
+  // Get shop page product data by slug
+  const getShopPageProduct = (productSlug: string) => {
+    return staticProducts.find(p => p.slug === productSlug);
+  };
+
   const handleSort = (field: SortField) => {
     if (sortField === field) {
       // Cycle through: asc -> desc -> null
@@ -270,32 +275,39 @@ export const ProductsTable = () => {
                 </TableCell>
               </TableRow>
             ) : (
-              products?.map((product) => (
-                <TableRow 
-                  key={product.id}
-                  className={!product.visible ? 'opacity-50 bg-muted/30' : ''}
-                >
-                  <TableCell className="font-medium">
-                    <div className="flex items-center gap-2">
-                      {product.name}
-                      {!product.visible && (
-                        <Badge variant="secondary" className="text-xs">
-                          Hidden
-                        </Badge>
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    ${product.sale_price || product.regular_price || product.price}
-                  </TableCell>
-                  <TableCell>
-                    {product.manage_stock ? product.stock_quantity : 'Unlimited'}
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={product.in_stock ? 'default' : 'destructive'}>
-                      {product.in_stock ? 'In Stock' : 'Out of Stock'}
-                    </Badge>
-                  </TableCell>
+              products?.map((product) => {
+                const shopProduct = getShopPageProduct(product.slug);
+                const displayName = shopProduct?.name || product.name;
+                const displayPrice = shopProduct?.price || product.sale_price || product.regular_price || product.price;
+                const displayStock = shopProduct?.stock || product.stock_quantity;
+                const displayInStock = shopProduct?.inStock ?? product.in_stock;
+                
+                return (
+                  <TableRow 
+                    key={product.id}
+                    className={!product.visible ? 'opacity-50 bg-muted/30' : ''}
+                  >
+                    <TableCell className="font-medium">
+                      <div className="flex items-center gap-2">
+                        {displayName}
+                        {!product.visible && (
+                          <Badge variant="secondary" className="text-xs">
+                            Hidden
+                          </Badge>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      ${displayPrice}
+                    </TableCell>
+                    <TableCell>
+                      {shopProduct ? displayStock : (product.manage_stock ? product.stock_quantity : 'Unlimited')}
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={displayInStock ? 'default' : 'destructive'}>
+                        {displayInStock ? 'In Stock' : 'Out of Stock'}
+                      </Badge>
+                    </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <Button
@@ -355,7 +367,8 @@ export const ProductsTable = () => {
                     </div>
                   </TableCell>
                 </TableRow>
-              ))
+              );
+              })
             )}
           </TableBody>
         </Table>
