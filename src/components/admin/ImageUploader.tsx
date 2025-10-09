@@ -465,11 +465,15 @@ export const ImageUploader = () => {
                       variant="secondary"
                       onClick={(e) => {
                         e.stopPropagation();
-                        copyUrl(image.url);
+                        if (selectedImages.size > 1) {
+                          copySelectedUrls();
+                        } else {
+                          copyUrl(image.url);
+                        }
                       }}
                     >
                       <ImageIcon className="h-4 w-4 mr-1" />
-                      Copy URL
+                      {selectedImages.size > 1 ? `Copy ${selectedImages.size} URLs` : 'Copy URL'}
                     </Button>
                     <Button
                       size="sm"
