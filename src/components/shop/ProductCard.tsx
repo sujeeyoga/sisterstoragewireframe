@@ -83,16 +83,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
           </div>
           
           {/* Hover Overlay */}
-          <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/10 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
-            <Button 
-              variant="buy"
-              size="sm"
-              onClick={handleAddToCart}
-            >
-              <ShoppingBag className="h-3 w-3 mr-1" />
-              Quick Add
-            </Button>
-          </div>
+          <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/10 transition-all duration-300"></div>
           
           {/* Bookmark button */}
           <Button 

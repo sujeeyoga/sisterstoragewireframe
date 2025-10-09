@@ -140,19 +140,6 @@ const BestSeller = () => {
                   onLoad={() => handleImageLoad(item.id)}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                
-                {/* Quick Buy Overlay */}
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
-                  <Button 
-                    variant="buy"
-                    size="buy"
-                    className="transform scale-90 group-hover:scale-100 shadow-2xl"
-                    onClick={() => handleBuyNow(item)}
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Quick Add
-                  </Button>
-                </div>
               </div>
               
               <CardContent className="p-4 space-y-3">
