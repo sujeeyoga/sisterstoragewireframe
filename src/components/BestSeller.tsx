@@ -6,6 +6,7 @@ import { useCart } from '@/contexts/CartContext';
 import { useToast } from '@/components/ui/use-toast';
 import { Link, useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
+import BundleContentsList from '@/components/product/BundleContentsList';
 
 const buyCards = [
   {
@@ -174,10 +175,7 @@ const BestSeller = () => {
                 <p className="text-xl text-gray-700 mb-5">{item.description}</p>
                 
                 {/* Bundle Contents */}
-                <div className="bg-gray-50 rounded p-3 border border-gray-200">
-                  <p className="text-xl font-semibold text-gray-700 mb-1">Bundle Includes:</p>
-                  <p className="text-xl text-gray-600">{item.bundleContents}</p>
-                </div>
+                <BundleContentsList contents={item.bundleContents} variant="full" />
                 
                 {/* Rating */}
                 <div className="flex items-center gap-2">
