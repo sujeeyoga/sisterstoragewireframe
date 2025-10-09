@@ -127,7 +127,11 @@ export const products: Product[] = [
     inStock: true,
     sku: "medium",
     slug: "medium-bangle-box",
-    images: ["/lovable-uploads/c80056-placeholder.png"],
+    images: [
+      "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/medium/1759981042683-u89u4i.jpg",
+      "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/medium/1759981041913-uncnqf.jpg",
+      "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/medium/1759981040946-u2blwo.jpg"
+    ],
     attributes: { size: ["Medium"], rodCount: ["2"] },
     caption: "Just the right size for your day.",
     funnelStage: "Everyday Sister Staples – Medium (2 rods)"
