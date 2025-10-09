@@ -106,12 +106,12 @@ export function AnalyticsDashboard() {
         </p>
       </div>
 
-      {/* KPI Cards */}
+      {/* KPI Cards - Bento Box Style */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
+        <Card className="bg-white rounded-xl border-[0.5px] border-pink-500 shadow-sm hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
+            <DollarSign className="h-4 w-4 text-pink-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
@@ -123,10 +123,10 @@ export function AnalyticsDashboard() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-white rounded-xl border-[0.5px] border-pink-500 shadow-sm hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Orders</CardTitle>
-            <ShoppingCart className="h-4 w-4 text-muted-foreground" />
+            <ShoppingCart className="h-4 w-4 text-pink-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats?.totalOrders || 0}</div>
@@ -136,10 +136,10 @@ export function AnalyticsDashboard() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-white rounded-xl border-[0.5px] border-pink-500 shadow-sm hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Avg Order Value</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            <TrendingUp className="h-4 w-4 text-pink-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
@@ -151,10 +151,10 @@ export function AnalyticsDashboard() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-white rounded-xl border-[0.5px] border-pink-500 shadow-sm hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Refunds</CardTitle>
-            <RotateCcw className="h-4 w-4 text-muted-foreground" />
+            <RotateCcw className="h-4 w-4 text-pink-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats?.refundedOrders || 0}</div>
@@ -167,7 +167,7 @@ export function AnalyticsDashboard() {
 
       <div className="grid gap-4 md:grid-cols-2">
         {/* Recent Orders */}
-        <Card>
+        <Card className="bg-white rounded-xl border-[0.5px] border-pink-500 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Recent Orders</CardTitle>
             <Link to="/admin/orders">
@@ -210,7 +210,7 @@ export function AnalyticsDashboard() {
         </Card>
 
         {/* Low Stock */}
-        <Card>
+        <Card className="bg-white rounded-xl border-[0.5px] border-pink-500 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Low Stock Alert</CardTitle>
             <Link to="/admin/products">

@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { Link } from 'react-router-dom';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { AdminSidebar } from './AdminSidebar';
 import { Menu } from 'lucide-react';
@@ -17,7 +18,9 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
             <SidebarTrigger className="mr-4">
               <Menu className="h-5 w-5" />
             </SidebarTrigger>
-            <h1 className="text-lg font-semibold">Admin Dashboard</h1>
+            <Link to="/admin">
+              <h1 className="text-lg font-semibold hover:text-primary transition-colors cursor-pointer">Admin Dashboard</h1>
+            </Link>
           </header>
           <main className="flex-1 overflow-auto">
             {children}
