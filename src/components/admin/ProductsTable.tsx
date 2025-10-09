@@ -30,7 +30,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { Edit, Trash2, Plus, Search, Eye, EyeOff, AlertCircle, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { products as staticProducts } from '@/data/products';
 
 type SortField = 'name' | 'price' | 'stock' | 'visible';
@@ -44,6 +44,7 @@ export const ProductsTable = () => {
   const [showOnlyWebsiteProducts, setShowOnlyWebsiteProducts] = useState(true);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   // Check if a product exists on the shop page (static products)
   const isOnShopPage = (productSlug: string) => {
@@ -285,7 +286,8 @@ export const ProductsTable = () => {
                 return (
                   <TableRow 
                     key={product.id}
-                    className={!product.visible ? 'opacity-50 bg-muted/30' : ''}
+                    className={`cursor-pointer hover:bg-muted/50 ${!product.visible ? 'opacity-50 bg-muted/30' : ''}`}
+                    onClick={() => navigate(`/admin/products/${product.id}`)}
                   >
                     <TableCell className="font-medium">
                       <div className="flex items-center gap-2">
@@ -308,19 +310,20 @@ export const ProductsTable = () => {
                         {displayInStock ? 'In Stock' : 'Out of Stock'}
                       </Badge>
                     </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() =>
-                          toggleVisibilityMutation.mutate({
-                            id: product.id,
-                            visible: !product.visible,
-                          })
-                        }
-                        title={product.visible ? 'Hide product' : 'Show product'}
-                      >
+                    <TableCell onClick={(e) => e.stopPropagation()}>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleVisibilityMutation.mutate({
+                              id: product.id,
+                              visible: !product.visible,
+                            });
+                          }}
+                          title={product.visible ? 'Hide product' : 'Show product'}
+                        >
                         {!isOnShopPage(product.slug) ? (
                           <Eye className="h-4 w-4 text-red-600" />
                         ) : product.visible ? (
@@ -346,21 +349,25 @@ export const ProductsTable = () => {
                       )}
                     </div>
                   </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
                     <div className="flex justify-end gap-2">
                       <Button
                         size="sm"
                         variant="outline"
-                        asChild
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/admin/products/${product.id}`);
+                        }}
                       >
-                        <Link to={`/admin/products/${product.id}`}>
-                          <Edit className="h-4 w-4" />
-                        </Link>
+                        <Edit className="h-4 w-4" />
                       </Button>
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => setDeleteId(product.id)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setDeleteId(product.id);
+                        }}
                       >
                         <Trash2 className="h-4 w-4 text-destructive" />
                       </Button>
