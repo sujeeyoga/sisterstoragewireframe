@@ -10,35 +10,7 @@ const CartDrawer = () => {
   const { items, removeItem, updateQuantity, totalItems, subtotal, isOpen, setIsOpen } = useCart();
   const { discount, applyDiscount, getDiscountAmount } = useStoreDiscount();
 
-  // Prevent body scroll when drawer is open
-  useEffect(() => {
-    if (isOpen) {
-      // Store current scroll position
-      const scrollY = window.scrollY;
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = '100%';
-      document.body.style.overflow = 'hidden';
-    } else {
-      // Restore scroll position
-      const scrollY = document.body.style.top;
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      document.body.style.overflow = '';
-      if (scrollY) {
-        window.scrollTo(0, parseInt(scrollY || '0') * -1);
-      }
-    }
-
-    return () => {
-      // Cleanup on unmount
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      document.body.style.overflow = '';
-    };
-  }, [isOpen]);
+  // No body scroll lock - allow scrolling behind the drawer
 
   // Calculate discount and totals
   const discountedSubtotal = discount?.enabled ? applyDiscount(subtotal) : subtotal;
