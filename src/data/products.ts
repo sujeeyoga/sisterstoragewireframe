@@ -102,7 +102,12 @@ export const products: Product[] = [
     inStock: true,
     sku: "large-1-1",
     slug: "large-bangle-box",
-    images: ["/lovable-uploads/e90064-placeholder.png"],
+    images: [
+      "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/Sister%20Storage%20Assets/Large%20bangle%20box/1759979146338-cqpngb.jpg",
+      "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/Sister%20Storage%20Assets/Large%20bangle%20box/1759979145474-zyaeti.jpg",
+      "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/Sister%20Storage%20Assets/Large%20bangle%20box/1759979144578-clou37.jpg",
+      "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/Sister%20Storage%20Assets/Large%20bangle%20box/1759979143880-l187qg.jpg"
+    ],
     attributes: { size: ["Large"], rodCount: ["4"] },
     caption: "Keep every bangle safe, stylish, secure.",
     funnelStage: "Everyday Sister Staples – Large (4 rods)"
