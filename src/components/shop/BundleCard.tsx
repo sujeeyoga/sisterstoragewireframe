@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ShoppingBag, Star, Plus } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
@@ -15,6 +15,7 @@ interface BundleCardProps {
 }
 
 const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
+  const navigate = useNavigate();
   const { addItem, setIsOpen } = useCart();
   const { toast } = useToast();
   const [imageLoaded, setImageLoaded] = React.useState(false);
@@ -29,10 +30,8 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
       image: product.images?.[0] || product.color
     });
     
-    toast({
-      title: "Added to cart",
-      description: `${product.name} has been added to your cart`,
-    });
+    // Navigate to checkout immediately
+    navigate('/checkout');
   };
 
   // Extract bundle contents and rod count
