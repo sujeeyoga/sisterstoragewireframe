@@ -71,8 +71,8 @@ const ProductDetail = () => {
       description: `${quantity} × ${product.name} added to your cart`,
     });
     
-    // Open cart drawer and redirect to checkout in the future
-    setIsOpen(true);
+    // Navigate to checkout
+    navigate('/checkout');
   };
 
   return (

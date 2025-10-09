@@ -6,6 +6,7 @@ interface HeroProductPriceProps {
   price: number;
   compareAt?: number;
   onAddToCart: () => void;
+  onBuyNow: () => void;
   hideCompareAt?: boolean;
 }
 
@@ -13,6 +14,7 @@ const HeroProductPrice: React.FC<HeroProductPriceProps> = ({
   price, 
   compareAt, 
   onAddToCart,
+  onBuyNow,
   hideCompareAt = false
 }) => {
   return (
@@ -41,7 +43,7 @@ const HeroProductPrice: React.FC<HeroProductPriceProps> = ({
         <Button 
           variant="outline"
           className="w-full h-12 border-2 border-brand-black hover:bg-brand-black hover:text-white font-bold uppercase tracking-wide transition-colors"
-          onClick={onAddToCart}
+          onClick={onBuyNow}
           style={{ borderRadius: '0px' }}
         >
           BUY NOW

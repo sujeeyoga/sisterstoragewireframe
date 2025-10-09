@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
 import HeroProductBadge from "./hero/HeroProductBadge";
@@ -32,6 +33,7 @@ interface ShopHeroProductProps {
 const ShopHeroProduct: React.FC<ShopHeroProductProps> = ({ product }) => {
   const { addItem } = useCart();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleAddToCart = () => {
     addItem({
@@ -45,6 +47,22 @@ const ShopHeroProduct: React.FC<ShopHeroProductProps> = ({ product }) => {
       title: "Added to cart",
       description: `${product.title} has been added to your cart`,
     });
+  };
+
+  const handleBuyNow = () => {
+    addItem({
+      id: product.id,
+      name: product.title,
+      price: product.price,
+      image: product.image,
+    });
+    
+    toast({
+      title: "Processing purchase",
+      description: `${product.title} added to your cart`,
+    });
+    
+    navigate('/checkout');
   };
 
   return (
@@ -102,6 +120,7 @@ const ShopHeroProduct: React.FC<ShopHeroProductProps> = ({ product }) => {
                 price={product.price}
                 compareAt={product.compareAt}
                 onAddToCart={handleAddToCart}
+                onBuyNow={handleBuyNow}
                 hideCompareAt={true}
               />
             </div>
