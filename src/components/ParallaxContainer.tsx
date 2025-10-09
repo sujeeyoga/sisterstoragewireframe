@@ -48,10 +48,10 @@ const ParallaxContainer = () => {
   return (
     <section 
       ref={mainRef}
-      className="relative h-screen overflow-hidden w-full bg-no-repeat bg-cover bg-center"
+      className="relative overflow-hidden w-full bg-no-repeat bg-cover bg-center"
       aria-label="Parallax showcase section"
       style={{
-        height: 'calc(var(--vh, 1vh) * 100)',
+        height: 'calc(var(--vh, 1vh) * 50)',
         marginTop: '0',
         backgroundColor: 'hsl(var(--brand-pink))'
       }}
@@ -83,7 +83,7 @@ const ParallaxContainer = () => {
 
       {/* Centered Instagram button only */}
       <section 
-        className="relative z-10 h-1/2 flex items-center justify-center px-4 md:px-6"
+        className="relative z-10 h-1/4 flex items-center justify-center px-4 md:px-6"
       >
         <Button
           asChild
