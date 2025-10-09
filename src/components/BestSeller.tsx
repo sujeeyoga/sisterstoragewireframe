@@ -175,7 +175,7 @@ const BestSeller = () => {
                 <p className="text-xl text-gray-700 mb-5">{item.description}</p>
                 
                 {/* Bundle Contents */}
-                <BundleContentsList contents={item.bundleContents} variant="full" />
+                <BundleContentsList contents={item.bundleContents} variant="full" showTotals={true} />
                 
                 {/* Rating */}
                 <div className="flex items-center gap-2">
