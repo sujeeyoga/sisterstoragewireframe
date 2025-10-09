@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import FeaturedGridItem from './FeaturedGridItem';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { X } from 'lucide-react';
+import { useViewportHeight } from '@/hooks/use-viewport-height';
 
 const gridItems = [
   // Row 1
@@ -83,6 +84,26 @@ const gridItems = [
 ];
 const FeaturedGrid = () => {
   const [selectedImage, setSelectedImage] = useState<{ url: string; title: string } | null>(null);
+  useViewportHeight();
+
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (!selectedImage) return;
+    
+    const prevOverflow = document.body.style.overflow;
+    const prevPaddingRight = document.body.style.paddingRight;
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    
+    document.body.style.overflow = 'hidden';
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    }
+    
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      document.body.style.paddingRight = prevPaddingRight;
+    };
+  }, [selectedImage]);
 
   return (
     <>
@@ -108,9 +129,9 @@ const FeaturedGrid = () => {
     </div>
 
     {/* Lightbox Modal */}
-    <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
+    <Dialog open={!!selectedImage} onOpenChange={(open) => !open && setSelectedImage(null)}>
       <DialogContent 
-        className="max-w-[95vw] w-[95vw] h-[95vh] p-0 border-0 bg-black/95 flex items-center justify-center"
+        className="fixed inset-0 left-0 top-0 translate-x-0 translate-y-0 z-[60] w-screen h-screen max-w-none m-0 p-0 rounded-none border-0 bg-black/95 flex items-center justify-center"
         aria-describedby="lightbox-description"
       >
         <span id="lightbox-description" className="sr-only">
@@ -118,19 +139,17 @@ const FeaturedGrid = () => {
         </span>
         <button
           onClick={() => setSelectedImage(null)}
-          className="absolute top-4 right-4 z-[60] p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors"
+          className="absolute top-4 right-4 z-[70] p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors"
           aria-label="Close lightbox"
         >
           <X className="h-6 w-6 text-white" />
         </button>
         {selectedImage && (
-          <div className="w-full h-full flex items-center justify-center p-4">
-            <img
-              src={selectedImage.url}
-              alt={selectedImage.title}
-              className="max-w-full max-h-full object-contain"
-            />
-          </div>
+          <img
+            src={selectedImage.url}
+            alt={selectedImage.title}
+            className="max-w-[95vw] max-h-[calc(var(--vh,1vh)*95)] w-auto h-auto object-contain"
+          />
         )}
       </DialogContent>
     </Dialog>
