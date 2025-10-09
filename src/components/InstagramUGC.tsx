@@ -201,7 +201,7 @@ const InstagramUGC = () => {
             className="px-8 py-4 text-lg bg-gradient-to-r from-[#E90064] to-[#FF8021] hover:from-[#c50058] hover:to-[#e6721c] text-white border-none shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
             asChild
           >
-            <a href="https://www.instagram.com/sisterstorage" target="_blank" rel="noopener noreferrer" className="flex items-center space-x-3">
+            <a href="https://www.instagram.com/sisterstorageinc" target="_blank" rel="noopener noreferrer" className="flex items-center space-x-3">
               <Instagram className="h-5 w-5" />
               <span>Follow Our Sister Stories</span>
             </a>

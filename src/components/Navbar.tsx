@@ -231,7 +231,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
                   <p className="text-gray-600 text-sm mb-3">Follow Sister Storage</p>
                   <div className="flex justify-center gap-3">
                     <a 
-                      href="https://instagram.com/sisterstorage" 
+                      href="https://instagram.com/sisterstorageinc" 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="w-10 h-10 bg-[hsl(var(--brand-pink))] rounded-full flex items-center justify-center text-white hover:bg-[hsl(var(--brand-pink))]/90 transition-colors"

@@ -27,7 +27,7 @@ const Footer = () => {
               Culture without clutter. Storage designed for us, by us – bringing organization and elegance to your cultural treasures.
             </p>
             <div className="flex space-x-4 pt-2">
-              <a href="#" className="text-gray-400 hover:text-[#E6007E] transition-colors" aria-label="Follow us on Instagram">
+              <a href="https://www.instagram.com/sisterstorageinc" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-[#E6007E] transition-colors" aria-label="Follow us on Instagram">
                 <Instagram className="h-4 w-4" />
               </a>
               <a href="#" className="text-gray-400 hover:text-[#E6007E] transition-colors" aria-label="Follow us on Facebook">

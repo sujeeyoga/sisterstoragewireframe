@@ -20,7 +20,7 @@ const FollowUs = () => {
             aria-label="Follow Sister Storage on Instagram"
           >
             <a
-              href="https://www.instagram.com/sisterstorage/"
+              href="https://www.instagram.com/sisterstorageinc/"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2"
@@ -31,13 +31,13 @@ const FollowUs = () => {
           </Button>
 
           <a
-            href="https://www.instagram.com/sisterstorage/"
+            href="https://www.instagram.com/sisterstorageinc/"
             target="_blank"
             rel="noopener noreferrer"
             className="story-link text-sm md:text-base"
-            aria-label="Visit @sisterstorage on Instagram"
+            aria-label="Visit @sisterstorageinc on Instagram"
           >
-            @sisterstorage
+            @sisterstorageinc
           </a>
         </div>
       </div>
