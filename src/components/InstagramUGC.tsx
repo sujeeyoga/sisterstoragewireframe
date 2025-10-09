@@ -115,7 +115,7 @@ const InstagramUGC = () => {
             >
               {/* Post Image */}
               <div className="relative aspect-[9/16] overflow-hidden">
-                 {post.isVideo ? (
+                  {post.isVideo ? (
                   <video 
                     src={post.video}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
@@ -123,8 +123,6 @@ const InstagramUGC = () => {
                     loop
                     playsInline
                     preload="none"
-                    onLoadStart={() => console.log('Video loading started')}
-                    onError={() => console.warn('Video failed to load')}
                     title={`Sister Storage styled by @${post.username}`}
                   />
                 ) : (

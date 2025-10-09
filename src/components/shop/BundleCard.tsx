@@ -24,8 +24,6 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
     e?.preventDefault();
     e?.stopPropagation();
     
-    console.log('Add to cart clicked for:', product.id, product.name);
-    
     try {
       addItem({
         id: product.id,
@@ -34,14 +32,12 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
         image: product.images?.[0] || product.color
       });
       
-    toast({
-      title: "Added to cart",
-      description: `${product.name} has been added to your cart`,
-    });
-    
-    setIsOpen(true);
-    
-    console.log('Item added successfully, cart should open');
+      toast({
+        title: "Added to cart",
+        description: `${product.name} has been added to your cart`,
+      });
+      
+      setIsOpen(true);
     } catch (error) {
       console.error('Error adding to cart:', error);
       toast({

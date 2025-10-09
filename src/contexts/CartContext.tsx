@@ -38,10 +38,8 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       try {
         const parsedCart = JSON.parse(savedCart);
         if (Array.isArray(parsedCart)) {
-          console.log('Cart loaded from localStorage:', parsedCart);
           setItems(parsedCart);
         } else {
-          console.warn('Invalid cart data in localStorage, clearing...');
           localStorage.removeItem('cart');
         }
       } catch (error) {
@@ -58,7 +56,6 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   
   const addItem = (newItem: Omit<CartItem, 'quantity'>) => {
     try {
-      console.log('Adding item to cart:', newItem);
       setItems(currentItems => {
         const existingItemIndex = currentItems.findIndex(item => item.id === newItem.id);
         
@@ -66,12 +63,10 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
           // Item exists, update quantity
           const updatedItems = [...currentItems];
           updatedItems[existingItemIndex].quantity += 1;
-          console.log('Updated existing item quantity:', updatedItems[existingItemIndex]);
           return updatedItems;
         } else {
           // Item doesn't exist, add it
           const newCartItem = { ...newItem, quantity: 1 };
-          console.log('Added new item to cart:', newCartItem);
           return [...currentItems, newCartItem];
         }
       });

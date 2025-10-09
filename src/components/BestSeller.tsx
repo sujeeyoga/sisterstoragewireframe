@@ -69,15 +69,11 @@ const BestSeller = () => {
   const navigate = useNavigate();
   const [loadedImages, setLoadedImages] = React.useState<Record<string, boolean>>({});
   
-  console.log('BestSeller component rendering');
-  console.log('BestSeller buyCards length:', buyCards.length);
-  
   const handleImageLoad = (itemId: string) => {
     setLoadedImages(prev => ({ ...prev, [itemId]: true }));
   };
   
   const handleBuyNow = (item: { id: string; name: string; price: number; image: string }) => {
-    console.log('handleBuyNow called with:', item);
     addItem({
       id: item.id,
       name: item.name,
