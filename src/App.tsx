@@ -25,6 +25,7 @@ import CartDrawer from "../src/components/CartDrawer";
 import OurStory from "./pages/OurStory";
 import Admin from "./pages/Admin";
 import PageTransition from "./components/layout/PageTransition";
+import ComingSoon from "./pages/ComingSoon";
 
 const queryClient = new QueryClient();
 
@@ -39,25 +40,7 @@ const App = () => {
           <BrowserRouter>
             <CartDrawer />
             <Routes>
-              <Route path="/" element={<PageTransition><Index /></PageTransition>} />
-              <Route path="/shop" element={<PageTransition><Shop /></PageTransition>} />
-              <Route path="/open-box" element={<PageTransition><OpenBox /></PageTransition>} />
-              <Route path="/gallery" element={<PageTransition><Gallery /></PageTransition>} />
-              <Route path="/shop/:productId" element={<PageTransition><ProductDetail /></PageTransition>} />
-              <Route path="/checkout" element={<PageTransition><Checkout /></PageTransition>} />
-              <Route path="/blog" element={<PageTransition><Blog /></PageTransition>} />
-              <Route path="/brand/*" element={<PageTransition><Brand /></PageTransition>} />
-              <Route path="/content/:slug" element={<PageTransition><ContentPage /></PageTransition>} />
-              <Route path="/hero-gallery-demo" element={<PageTransition><HeroGalleryDemo /></PageTransition>} />
-              <Route path="/our-story" element={<PageTransition><OurStory /></PageTransition>} />
-              <Route path="/admin/*" element={<Admin />} />
-              <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
-              <Route path="/gift" element={<PageTransition><Gift /></PageTransition>} />
-              <Route path="/privacy-policy" element={<PageTransition><PrivacyPolicy /></PageTransition>} />
-              <Route path="/terms-of-service" element={<PageTransition><TermsOfService /></PageTransition>} />
-              <Route path="/accessibility" element={<PageTransition><Accessibility /></PageTransition>} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
+              <Route path="*" element={<PageTransition><ComingSoon /></PageTransition>} />
             </Routes>
           </BrowserRouter>
         </CartProvider>
