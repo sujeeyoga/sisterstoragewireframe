@@ -1,4 +1,4 @@
-import { LayoutDashboard, Package, Layout, RefreshCw, Settings, Users, ShoppingCart } from 'lucide-react';
+import { LayoutDashboard, Package, Layout, RefreshCw, Settings, Users, ShoppingCart, Image } from 'lucide-react';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
   Sidebar,
@@ -21,6 +21,7 @@ const menuItems = [
   { title: 'Sections', url: '/admin/sections', icon: Layout, end: false },
   { title: 'WooCommerce Sync', url: '/admin/sync', icon: RefreshCw, end: false },
   { title: 'Settings', url: '/admin/settings', icon: Settings, end: false },
+  { title: 'Images', url: '/admin/images', icon: Image, end: false },
 ];
 
 export function AdminSidebar() {

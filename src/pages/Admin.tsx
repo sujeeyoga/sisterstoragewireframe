@@ -8,6 +8,7 @@ import { AdminSync } from '@/components/admin/AdminSync';
 import { CustomersTable } from '@/components/admin/CustomersTable';
 import { OrdersTable } from '@/components/admin/OrdersTable';
 import { StoreSettings } from '@/components/admin/StoreSettings';
+import { ImageUploader } from '@/components/admin/ImageUploader';
 
 const Admin = () => {
   // TODO: Re-enable admin role check when ready
@@ -37,6 +38,7 @@ const Admin = () => {
         <Route path="sections" element={<SectionsManager />} />
         <Route path="sync" element={<AdminSync />} />
         <Route path="settings" element={<StoreSettings />} />
+        <Route path="images" element={<ImageUploader />} />
         <Route path="*" element={<Navigate to="/admin" replace />} />
       </Routes>
     </AdminLayout>
