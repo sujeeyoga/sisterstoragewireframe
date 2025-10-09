@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      hero_images: {
+        Row: {
+          alt_text: string | null
+          created_at: string | null
+          display_order: number
+          id: string
+          image_url: string
+          is_active: boolean
+          position: string
+          updated_at: string | null
+        }
+        Insert: {
+          alt_text?: string | null
+          created_at?: string | null
+          display_order?: number
+          id?: string
+          image_url: string
+          is_active?: boolean
+          position: string
+          updated_at?: string | null
+        }
+        Update: {
+          alt_text?: string | null
+          created_at?: string | null
+          display_order?: number
+          id?: string
+          image_url?: string
+          is_active?: boolean
+          position?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       shop_sections: {
         Row: {
           background_color: string | null

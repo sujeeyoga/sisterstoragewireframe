@@ -10,6 +10,7 @@ import { OrdersList } from '@/components/admin/OrdersList';
 import { StoreSettings } from '@/components/admin/StoreSettings';
 import { ImageUploader } from '@/components/admin/ImageUploader';
 import { PagesManager } from '@/components/admin/PagesManager';
+import { HeroImagesManager } from '@/components/admin/HeroImagesManager';
 import Uploads from '@/pages/Uploads';
 
 const Admin = () => {
@@ -39,6 +40,7 @@ const Admin = () => {
         <Route path="customers" element={<CustomersTable />} />
         <Route path="sections" element={<SectionsManager />} />
         <Route path="pages" element={<PagesManager />} />
+        <Route path="hero-images" element={<HeroImagesManager />} />
         <Route path="sync" element={<AdminSync />} />
         <Route path="settings" element={<StoreSettings />} />
         <Route path="images" element={<ImageUploader />} />

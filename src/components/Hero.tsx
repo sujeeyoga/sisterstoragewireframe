@@ -1,16 +1,22 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import HeroContent from './hero/HeroContent';
 import ScrollIndicator from './hero/ScrollIndicator';
 import HeroSpotlightCard from './HeroSpotlightCard';
 import RotatingImageGallery from './hero/RotatingImageGallery';
 import { useOptimizedScroll } from '@/hooks/use-optimized-scroll';
+import { supabase } from '@/integrations/supabase/client';
 
 // Import optimized image assets
 import heroMain32rem from '@/assets/hero-main-32rem.jpg';
 
 const Hero = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
+  const [galleryImages, setGalleryImages] = useState<string[]>([
+    '/lovable-uploads/a501115d-f6f4-4f74-bdbe-1b73ba1bc625.png',
+    '/lovable-uploads/fb8da55a-c9bb-419e-a96f-175a667875e1.png',
+    '/lovable-uploads/4ef08ea3-3380-4111-b4a1-eb939cba275b.png'
+  ]);
 
   // Check for reduced motion preference
   const prefersReducedMotion = typeof window !== 'undefined' 
@@ -23,6 +29,31 @@ const Hero = () => {
     throttle: 16,
     passive: true
   });
+
+  // Fetch gallery images from database
+  useEffect(() => {
+    const fetchGalleryImages = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('hero_images')
+          .select('image_url')
+          .eq('position', 'gallery')
+          .eq('is_active', true)
+          .order('display_order', { ascending: true });
+
+        if (error) throw error;
+        
+        if (data && data.length > 0) {
+          setGalleryImages(data.map(img => img.image_url));
+        }
+      } catch (error) {
+        console.error('Error fetching hero images:', error);
+        // Keep default images if fetch fails
+      }
+    };
+
+    fetchGalleryImages();
+  }, []);
 
   return (
     <section className="relative min-h-screen w-full overflow-hidden bg-[hsl(var(--brand-pink))]" aria-label="Hero section">
@@ -57,11 +88,7 @@ const Hero = () => {
               <div className="w-[48rem] max-w-full mx-auto lg:mx-0 lg:block hidden animate-breath-fade-up-6">
                 <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden">
                   <RotatingImageGallery
-                    images={[
-                      '/lovable-uploads/a501115d-f6f4-4f74-bdbe-1b73ba1bc625.png',
-                      '/lovable-uploads/fb8da55a-c9bb-419e-a96f-175a667875e1.png',
-                      '/lovable-uploads/4ef08ea3-3380-4111-b4a1-eb939cba275b.png'
-                    ]}
+                    images={galleryImages}
                     className="w-full h-full rounded-2xl"
                   />
                 </div>
@@ -71,11 +98,7 @@ const Hero = () => {
               <div className="w-[48rem] max-w-full mx-auto lg:hidden animate-breath-fade-up-6">
                 <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden">
                   <RotatingImageGallery
-                    images={[
-                      '/lovable-uploads/a501115d-f6f4-4f74-bdbe-1b73ba1bc625.png',
-                      '/lovable-uploads/fb8da55a-c9bb-419e-a96f-175a667875e1.png',
-                      '/lovable-uploads/4ef08ea3-3380-4111-b4a1-eb939cba275b.png'
-                    ]}
+                    images={galleryImages}
                     className="w-full h-full rounded-2xl"
                   />
                 </div>
