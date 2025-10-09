@@ -16,6 +16,8 @@ interface StorageImage {
   size: number;
   url: string;
   metadata?: any;
+  isStatic?: boolean;
+  staticPath?: string;
 }
 
 export function BulkImageOptimizer() {
@@ -36,7 +38,7 @@ export function BulkImageOptimizer() {
     try {
       setLoading(true);
       
-      // Fetch all folders and files recursively
+      // Fetch all folders and files recursively from storage
       const allImages: StorageImage[] = [];
       
       const fetchFolder = async (path: string = '') => {
@@ -64,12 +66,37 @@ export function BulkImageOptimizer() {
               size: item.metadata?.size || 0,
               url: supabase.storage.from('images').getPublicUrl(fullPath).data.publicUrl,
               metadata: item.metadata,
+              isStatic: false,
             });
           }
         }
       };
 
       await fetchFolder();
+
+      // Also fetch hero images from database to check for static files
+      const { data: heroImages } = await supabase
+        .from('hero_images')
+        .select('image_url')
+        .eq('position', 'gallery')
+        .eq('is_active', true);
+
+      if (heroImages) {
+        for (const hero of heroImages) {
+          if (hero.image_url.startsWith('/lovable-uploads/')) {
+            const filename = hero.image_url.replace('/lovable-uploads/', '');
+            allImages.push({
+              name: filename,
+              id: `static-${filename}`,
+              size: 0, // Unknown size for static files
+              url: hero.image_url,
+              isStatic: true,
+              staticPath: hero.image_url,
+            });
+          }
+        }
+      }
+
       setImages(allImages);
     } catch (error) {
       console.error('Error fetching images:', error);
@@ -310,7 +337,7 @@ export function BulkImageOptimizer() {
             key={image.id}
             className={`p-2 cursor-pointer transition-all ${
               selectedImages.has(image.id) ? 'ring-2 ring-primary' : ''
-            }`}
+            } ${image.isStatic ? 'border-yellow-500 border-2' : ''}`}
             onClick={() => !optimizing && toggleImageSelection(image.id)}
           >
             <div className="relative">
@@ -327,12 +354,17 @@ export function BulkImageOptimizer() {
                   toggleImageSelection(image.id);
                 }}
               />
+              {image.isStatic && (
+                <div className="absolute top-2 left-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded">
+                  Static
+                </div>
+              )}
             </div>
             <p className="text-xs font-medium truncate" title={image.name}>
               {image.name}
             </p>
             <p className="text-xs text-muted-foreground">
-              {formatFileSize(image.size)}
+              {image.size > 0 ? formatFileSize(image.size) : 'Static file'}
             </p>
           </Card>
         ))}
