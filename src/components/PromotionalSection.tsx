@@ -2,8 +2,26 @@ import { Button } from '@/components/ui/button';
 import { ShoppingBag, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
+import { useQuery } from '@tanstack/react-query';
 
 const PromotionalSection = () => {
+  // Fetch a promotional image from hero_images
+  const { data: promoImage } = useQuery({
+    queryKey: ['promo-image'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('hero_images')
+        .select('*')
+        .eq('is_active', true)
+        .order('display_order', { ascending: true })
+        .limit(1)
+        .single();
+      
+      if (error) throw error;
+      return data;
+    }
+  });
+
   return (
     <section className="py-16 md:py-24 bg-white">
       <div className="container-custom">
@@ -60,13 +78,19 @@ const PromotionalSection = () => {
             </div>
 
             {/* Image Side */}
-            <div className="flex-1 min-h-[300px] lg:min-h-[500px] overflow-hidden">
-              <img 
-                src={supabase.storage.from('images').getPublicUrl('hero-images/ff4988e3-c51c-4391-a440-95e03d111656.png').data.publicUrl} 
-                alt="Sister Storage organized jewelry collection"
-                className="w-full h-full object-cover"
-                loading="lazy"
-              />
+            <div className="flex-1 min-h-[300px] lg:min-h-[500px] overflow-hidden bg-gray-100">
+              {promoImage ? (
+                <img 
+                  src={promoImage.image_url}
+                  alt={promoImage.alt_text || "Sister Storage promotional image"}
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <p className="text-gray-400">Loading image...</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
