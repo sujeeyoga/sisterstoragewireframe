@@ -31,7 +31,7 @@ serve(async (req) => {
       }
     }
 
-    // Create checkout session
+    // Create checkout session with mobile pay enabled
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : email,
@@ -42,6 +42,7 @@ serve(async (req) => {
         },
       ],
       mode: "payment",
+      payment_method_types: ['card', 'apple_pay', 'google_pay', 'link'],
       success_url: `${req.headers.get("origin")}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.get("origin")}/shop`,
     });
