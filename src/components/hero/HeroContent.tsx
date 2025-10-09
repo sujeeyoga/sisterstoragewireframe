@@ -59,7 +59,7 @@ const HeroContent = ({ scrollPosition }: HeroContentProps) => {
         className="text-lg text-white max-w-xl leading-relaxed font-medium opacity-90"
         animation="breath-fade-up-5"
       >
-        Made by us, for us... By sisters, for sisters.<br />
+        Made by sisters, for sisters.<br />
         Clutter never had a place in our culture.
       </AnimatedText>
     </div>
