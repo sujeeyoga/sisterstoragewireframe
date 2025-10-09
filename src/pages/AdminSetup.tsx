@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
@@ -9,15 +10,49 @@ import Logo from "@/components/ui/Logo";
 const AdminSetup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Load remember me preference
+    const savedPreference = localStorage.getItem('admin_remember_me');
+    if (savedPreference !== null) {
+      setRememberMe(savedPreference === 'true');
+    }
+  }, []);
+
+  useEffect(() => {
+    // If remember me is disabled, clear session on browser close
+    if (!rememberMe) {
+      const handleBeforeUnload = () => {
+        // This will be executed when browser/tab closes
+        sessionStorage.setItem('should_logout', 'true');
+      };
+
+      window.addEventListener('beforeunload', handleBeforeUnload);
+      return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    }
+  }, [rememberMe]);
+
+  useEffect(() => {
+    // Check if we should logout on page load
+    const shouldLogout = sessionStorage.getItem('should_logout');
+    if (shouldLogout === 'true' && !rememberMe) {
+      supabase.auth.signOut();
+      sessionStorage.removeItem('should_logout');
+    }
+  }, [rememberMe]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     
     try {
+      // Save remember me preference
+      localStorage.setItem('admin_remember_me', rememberMe.toString());
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -27,7 +62,9 @@ const AdminSetup = () => {
 
       toast({
         title: "Login Successful!",
-        description: "Redirecting to admin panel...",
+        description: rememberMe 
+          ? "Session will persist for 7 days" 
+          : "Session will expire when you close the browser",
       });
 
       // Redirect to admin or home after successful login
@@ -90,6 +127,22 @@ const AdminSetup = () => {
                 required
                 disabled={isLoading}
               />
+            </div>
+
+            {/* Remember Me Checkbox */}
+            <div className="flex items-center space-x-2 pt-2">
+              <Checkbox
+                id="remember-me"
+                checked={rememberMe}
+                onCheckedChange={(checked) => setRememberMe(checked === true)}
+                disabled={isLoading}
+              />
+              <label
+                htmlFor="remember-me"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+              >
+                Remember me for a week
+              </label>
             </div>
           </div>
 
