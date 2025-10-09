@@ -24,7 +24,7 @@ const ParallaxContainer = () => {
     disabled: parallaxDisabled
   });
 
-  const imageUrlDesktop = "https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-27-scaled.jpg";
+  const imageUrlDesktop = "/lovable-uploads/b0963b41-dee1-4ccb-b8bc-7144c4ea6285.png";
   const imageUrlMobile = "/lovable-uploads/b0963b41-dee1-4ccb-b8bc-7144c4ea6285.png";
   const currentImageUrl = isMobile ? imageUrlMobile : imageUrlDesktop;
   const backgroundImage = `url(${currentImageUrl})`;
