@@ -168,6 +168,12 @@ const BestSeller = () => {
                 {/* Bundle Title */}
                 <h3 className="text-xl font-bold mb-2">{item.name}</h3>
                 
+                {/* Rod Count Badge */}
+                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-pink-500 to-rose-500 text-white px-4 py-2 rounded-lg">
+                  <span className="text-xs font-bold uppercase tracking-wider">Total Rods:</span>
+                  <span className="text-2xl font-bold">{item.rodCount}</span>
+                </div>
+                
                 {/* Pricing */}
                 <p className="text-xl font-semibold text-gray-800 mb-4">${item.price}</p>
                 
@@ -175,7 +181,10 @@ const BestSeller = () => {
                 <p className="text-xl text-gray-700 mb-5">{item.description}</p>
                 
                 {/* Bundle Contents */}
-                <BundleContentsList contents={item.bundleContents} variant="full" showTotals={true} />
+                <div className="bg-gray-50 rounded p-3 border border-gray-200">
+                  <p className="text-xs font-bold text-[hsl(var(--brand-pink))] uppercase tracking-wider mb-2">What's Included</p>
+                  <p className="text-sm text-gray-600">{item.bundleContents}</p>
+                </div>
                 
                 {/* Rating */}
                 <div className="flex items-center gap-2">
