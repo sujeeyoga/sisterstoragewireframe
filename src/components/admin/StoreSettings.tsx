@@ -86,16 +86,8 @@ export function StoreSettings() {
     },
   });
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
-
   return (
-    <div className="space-y-6">
+    <div className="p-8 space-y-6">
       <div>
         <h1 className="text-3xl font-bold">Store Settings</h1>
         <p className="text-muted-foreground mt-1">
