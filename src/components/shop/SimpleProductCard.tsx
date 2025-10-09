@@ -190,7 +190,7 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
             onClick={handleAddToCart}
           >
             <ShoppingBag className="h-4 w-4 mr-2" />
-            ADD TO CART
+            {product.category === 'open-box' ? 'SEE WHAT\'S AVAILABLE' : 'ADD TO CART'}
           </Button>
         </div>
       </CardContent>
