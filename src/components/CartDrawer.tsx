@@ -51,7 +51,7 @@ const CartDrawer = () => {
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
-        <div className="flex flex-col h-full">
+        <div className="sticky top-0 flex flex-col h-full">
           {/* Drawer Header */}
           <div className="sticky top-0 z-20 border-b border-gray-200 p-4 bg-[hsl(var(--brand-pink))]/5">
             <div className="flex justify-between items-center mb-3">
