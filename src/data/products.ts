@@ -58,7 +58,7 @@ export const products: Product[] = [
     inStock: true,
     sku: "bundle2",
     slug: "bundle-2",
-    images: ["/lovable-uploads/e90064-placeholder.png"],
+    images: ["https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/Sister%20Storage%20Assets/Together%20Bundle-%203%20Large%202%20Medium%201%20Travel/1759979157485-d2rva.jpg"],
     attributes: {},
     caption: "Your smart set for every special occasion.",
     funnelStage: "Forever Sister Collection – 2 Medium (2 rods each) part of bundle"
