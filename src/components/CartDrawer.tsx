@@ -129,7 +129,7 @@ const CartDrawer = () => {
           )}
           
           {/* Cart Items */}
-          <div className="flex-1 overflow-y-auto py-4 px-4 overscroll-contain">
+          <div className="sticky flex-1 overflow-y-auto py-4 px-4 overscroll-contain">
             {items.length === 0 ? (
               <div className="text-center py-12">
                 <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
