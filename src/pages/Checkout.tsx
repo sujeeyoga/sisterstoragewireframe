@@ -50,7 +50,9 @@ const Checkout = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    // Uppercase province code for API compatibility
+    const processedValue = name === 'province' ? value.toUpperCase() : value;
+    setFormData(prev => ({ ...prev, [name]: processedValue }));
   };
 
   // Debounce address fields
@@ -118,8 +120,8 @@ const Checkout = () => {
               name: `${formData.firstName} ${formData.lastName}`,
               address1: formData.address,
               city: formData.city,
-              province_code: formData.province,
-              postal_code: formData.postalCode,
+              province_code: formData.province.toUpperCase(),
+              postal_code: formData.postalCode.replace(/\s/g, ''),
               country_code: formData.country,
               phone: formData.phone,
               email: formData.email,

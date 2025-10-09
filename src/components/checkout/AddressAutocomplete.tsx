@@ -123,7 +123,7 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
       // Get 2-letter province code (try mapping first, then short_name)
       const provinceLong = components.administrative_area_level_1?.long || '';
       const provinceShort = components.administrative_area_level_1?.short || '';
-      const province = PROVINCE_MAP[provinceLong] || provinceShort;
+      const province = (PROVINCE_MAP[provinceLong] || provinceShort).toUpperCase();
       
       // Format Canadian postal code with space
       let postalCode = components.postal_code?.long || '';
