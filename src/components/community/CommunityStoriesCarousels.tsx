@@ -3,18 +3,14 @@ import { SisterStoriesCarousel } from './SisterStoriesCarousel';
 
 const CommunityStoriesCarousels = () => {
   return (
-    <section className="py-8 md:py-12 bg-white overflow-x-hidden">
-      {/* Simple Header */}
-      <div className="container-custom text-center mb-8">
-        <div className="inline-flex items-center gap-2 bg-primary/10 rounded-full px-4 py-2 mb-4">
-          <span className="w-2 h-2 bg-primary rounded-full"></span>
-          <span className="text-primary font-medium text-sm">Community</span>
-        </div>
-        <h2 className="text-3xl md:text-4xl font-bold mb-4">
-          STYLED BY OUR <span className="text-primary">SISTERS</span>
+    <section className="py-12 md:py-16 bg-[hsl(var(--brand-gray))] overflow-x-hidden">
+      {/* Header */}
+      <div className="container-custom text-center mb-10">
+        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-foreground">
+          STYLED BY OUR <span className="text-[hsl(var(--brand-pink))]">SISTERS</span>
         </h2>
-        <p className="text-muted-foreground max-w-xl mx-auto">
-          Real sisters sharing their organization journeys
+        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          See how real sisters organize their jewelry
         </p>
       </div>
 

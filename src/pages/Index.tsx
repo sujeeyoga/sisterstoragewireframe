@@ -2,14 +2,13 @@ import { lazy, Suspense, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Hero from "@/components/Hero";
-import FeaturedGrid from "@/components/FeaturedGrid";
 import SaleBanner from "@/components/SaleBanner";
 
 // Lazy load below-the-fold content
 const BestSeller = lazy(() => import("@/components/BestSeller"));
 const CommunityStoriesCarousels = lazy(() => import("@/components/community/CommunityStoriesCarousels"));
-const PromotionalSection = lazy(() => import("@/components/PromotionalSection"));
-const ParallaxContainer = lazy(() => import("@/components/ParallaxContainer"));
+const OrganizationGallery = lazy(() => import("@/components/OrganizationGallery"));
+const PromotionalBanner = lazy(() => import("@/components/PromotionalBanner"));
 
 const Index = () => {
   // Ensure body scroll is enabled on mount
@@ -30,33 +29,27 @@ const Index = () => {
         </nav>
       </div>
 
-      {/* Hero Section - No wrapper needed, has built-in spacing */}
+      {/* Hero Section */}
       <Hero />
       
-      {/* Parallax Transition - No additional spacing */}
-      <Suspense fallback={<div className="h-32" />}>
-        <ParallaxContainer />
-      </Suspense>
-      
-      {/* Featured Grid - First major section after hero */}
-      <section className="py-12 md:py-16 bg-white">
-        <div className="container-custom">
-          <FeaturedGrid />
-        </div>
-      </section>
-      
-      {/* Buy Cards - Major product section */}
-      <Suspense fallback={<div className="h-64" />}>
-        <BestSeller />
-      </Suspense>
-      
-      {/* Community Stories - Combined carousel section with testimonials */}
+      {/* Styled by Our Sisters - Community carousel */}
       <Suspense fallback={<div className="h-96" />}>
         <CommunityStoriesCarousels />
       </Suspense>
       
+      {/* Best Sellers - Product carousel */}
       <Suspense fallback={<div className="h-64" />}>
-        <PromotionalSection />
+        <BestSeller />
+      </Suspense>
+      
+      {/* Organization Gallery - Photo grid */}
+      <Suspense fallback={<div className="h-64" />}>
+        <OrganizationGallery />
+      </Suspense>
+      
+      {/* Promotional Banner - Bottom CTA */}
+      <Suspense fallback={<div className="h-64" />}>
+        <PromotionalBanner />
       </Suspense>
       
       {/* Footer */}
