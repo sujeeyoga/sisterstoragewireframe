@@ -262,9 +262,9 @@ export const SisterStoriesCarousel = () => {
                     {/* Tap to unmute indicator */}
                     {playingVideos.has(story.id) && unmutedVideo !== story.id && (
                       <div 
-                        className="absolute bottom-20 left-0 right-0 flex justify-center pointer-events-none z-10"
+                        className="absolute inset-0 flex items-center justify-center pointer-events-none z-10"
                       >
-                        <div className="bg-black/50 text-white text-xs px-3 py-1.5 rounded-full backdrop-blur-sm">
+                        <div className="bg-black/50 text-white text-4xl px-12 py-6 rounded-full backdrop-blur-sm font-semibold">
                           Tap to unmute
                         </div>
                       </div>
