@@ -45,7 +45,7 @@ const OrganizationGallery = () => {
               />
               {/* Instagram Icon Overlay - Only on last card */}
               {index === galleryImages.length - 1 && (
-                <div className="absolute inset-0 flex items-center justify-center">
+                <div className="absolute inset-0 flex items-end justify-center pb-4">
                   <svg
                     className="w-32 h-32 md:w-64 md:h-64 text-white"
                     viewBox="0 0 24 24"
