@@ -11,7 +11,7 @@ export function DiscountBanner() {
   }
 
   return (
-    <div className="bg-gradient-to-r from-[hsl(var(--brand-pink))] to-[hsl(var(--brand-pink))]/80 text-white py-3 px-4 relative">
+    <div className="bg-black text-white py-3 px-4 relative">
       <div className="max-w-7xl mx-auto flex items-center justify-center gap-2 text-center">
         <Tag className="h-5 w-5 animate-pulse" />
         <p className="font-semibold">
