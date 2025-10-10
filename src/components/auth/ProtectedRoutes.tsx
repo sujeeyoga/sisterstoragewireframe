@@ -39,13 +39,10 @@ export const ProtectedRoutes = ({ children }: ProtectedRoutesProps) => {
     return () => subscription.unsubscribe();
   }, []);
 
-  // Loading state
+  // Loading state - show content immediately, auth check happens in background
   if (isAuthenticated === null || isLoadingSetting) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse text-muted-foreground">Loading...</div>
-      </div>
-    );
+    // Optimistically show content while checking auth
+    return <>{children}</>;
   }
 
   // Show coming soon if enabled and not authenticated
