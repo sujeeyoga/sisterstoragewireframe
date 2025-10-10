@@ -36,11 +36,11 @@ const OrganizationGallery = () => {
         {/* Gallery Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
           {galleryImages.map((image, index) => (
-            <div key={index} className="relative aspect-square overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 group">
+            <div key={index} className="relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 group">
               <PerformanceImage
                 src={image.src}
                 alt={image.alt}
-                className="w-full h-full object-cover group-hover:scale-110 group-hover:brightness-105 transition-all duration-500"
+                className="w-full h-auto group-hover:scale-110 group-hover:brightness-105 transition-all duration-500"
                 loading={index < 2 ? 'eager' : 'lazy'}
               />
             </div>
