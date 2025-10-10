@@ -34,7 +34,7 @@ const OrganizationGallery = () => {
         </div>
 
         {/* Gallery Grid */}
-        <div className="flex flex-col gap-6 md:gap-8 items-center max-w-2xl mx-auto">
+        <div className="flex flex-col gap-6 md:gap-8 items-center max-w-2xl mx-auto px-5">
           {galleryImages.map((image, index) => (
             <div 
               key={index} 
