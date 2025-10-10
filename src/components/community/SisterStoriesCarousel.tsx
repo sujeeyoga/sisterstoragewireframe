@@ -9,7 +9,7 @@ interface VideoStory {
   video: string;
   title: string;
   author: string;
-  description: string;
+  description: string | null;
 }
 
 export const SisterStoriesCarousel = () => {
@@ -19,35 +19,32 @@ export const SisterStoriesCarousel = () => {
 
   console.log('SisterStoriesCarousel: Rendering with', videoStories.length, 'videos, loading:', isLoading);
 
-  // Fetch videos from Supabase storage
+  // Fetch videos from database
   const fetchVideos = useCallback(async () => {
     try {
       console.log('SisterStoriesCarousel: Starting video fetch...');
       setIsLoading(true);
-      const { data, error } = await supabase.storage
-        .from('sister')
-        .list('', { limit: 100 });
+      
+      const { data, error } = await supabase
+        .from('sister_stories')
+        .select('*')
+        .eq('is_active', true)
+        .order('display_order', { ascending: true })
+        .order('created_at', { ascending: false });
 
       if (error) {
         console.error('Error fetching videos:', error);
         console.log('SisterStoriesCarousel: Using fallback - no videos available');
-        setVideoStories([]); // Explicitly set empty array
+        setVideoStories([]);
         return;
       }
 
-      const videoFiles = data?.filter(file => 
-        (file.name.endsWith('.mp4') || 
-        file.name.endsWith('.webm') || 
-        file.name.endsWith('.mov')) &&
-        file.name !== 'Video-345.mp4'
-      ) || [];
-
-      const stories: VideoStory[] = videoFiles.map((file, index) => ({
-        id: file.name,
-        video: `https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/sister/${file.name}`,
-        title: `Sister Story ${index + 1}`,
-        author: `@${file.name.split('.')[0].replace(/_/g, '')}`,
-        description: 'Organization journey shared with love'
+      const stories: VideoStory[] = (data || []).map((story) => ({
+        id: story.id,
+        video: story.video_url,
+        title: story.title,
+        author: story.author,
+        description: story.description || 'Organization journey shared with love'
       }));
 
       setVideoStories(stories);
@@ -61,7 +58,7 @@ export const SisterStoriesCarousel = () => {
     } catch (error) {
       console.error('Error fetching videos:', error);
       console.log('SisterStoriesCarousel: Catch block - setting empty stories');
-      setVideoStories([]); // Ensure empty state
+      setVideoStories([]);
       setIsLoading(false);
     } finally {
       setIsLoading(false);

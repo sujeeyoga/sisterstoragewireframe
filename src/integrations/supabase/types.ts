@@ -122,6 +122,48 @@ export type Database = {
         }
         Relationships: []
       }
+      sister_stories: {
+        Row: {
+          author: string
+          created_at: string | null
+          description: string | null
+          display_order: number | null
+          id: string
+          is_active: boolean | null
+          thumbnail_url: string | null
+          title: string
+          updated_at: string | null
+          video_path: string
+          video_url: string
+        }
+        Insert: {
+          author: string
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean | null
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string | null
+          video_path: string
+          video_url: string
+        }
+        Update: {
+          author?: string
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean | null
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string | null
+          video_path?: string
+          video_url?: string
+        }
+        Relationships: []
+      }
       store_settings: {
         Row: {
           created_at: string | null

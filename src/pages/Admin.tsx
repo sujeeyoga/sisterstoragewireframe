@@ -10,6 +10,7 @@ import { OrdersList } from '@/components/admin/OrdersList';
 import { StoreSettings } from '@/components/admin/StoreSettings';
 import { ImageUploader } from '@/components/admin/ImageUploader';
 import { VideoUploader } from '@/components/admin/VideoUploader';
+import { SisterStoriesManager } from '@/components/admin/SisterStoriesManager';
 import { PagesManager } from '@/components/admin/PagesManager';
 import { HeroImagesManager } from '@/components/admin/HeroImagesManager';
 import { BulkImageOptimizer } from '@/components/admin/BulkImageOptimizer';
@@ -50,6 +51,7 @@ const Admin = () => {
         <Route path="settings" element={<StoreSettings />} />
         <Route path="images" element={<ImageUploader />} />
         <Route path="videos" element={<VideoUploader />} />
+        <Route path="sister-stories" element={<SisterStoriesManager />} />
         <Route path="uploads" element={<Uploads />} />
         <Route path="*" element={<Navigate to="/admin" replace />} />
       </Routes>
