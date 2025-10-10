@@ -13,7 +13,7 @@ const Hero = () => {
       <div className="md:hidden flex flex-col">
         {/* Pink Content Section */}
         <div className="bg-[hsl(var(--brand-pink))] py-16 px-4">
-          <div className="flex flex-col space-y-3 text-white">
+          <div className="flex flex-col space-y-3 text-white pt-9">
             {/* Badge */}
             <Badge 
               variant="secondary" 
