@@ -25,7 +25,6 @@ const AddToCartBar: React.FC<AddToCartBarProps> = ({ product, className }) => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
   const [isAdding, setIsAdding] = useState(false); // prevent double-add
 
   const safePrice =
@@ -77,71 +76,16 @@ const AddToCartBar: React.FC<AddToCartBarProps> = ({ product, className }) => {
     e?.preventDefault();
     e?.stopPropagation();
 
-    // Stripe path - format as cart items for create-checkout
-    if (product.stripePriceId) {
-      if (isCheckoutLoading) return;
-      setIsCheckoutLoading(true);
-
-      try {
-        // Get user email if authenticated
-        const { data: { user } } = await supabase.auth.getUser();
-        const email = user?.email || 'guest@example.com';
-
-        const { data, error } = await supabase.functions.invoke("create-checkout", {
-          body: { 
-            items: [{
-              id: product.id,
-              name: product.name,
-              price: safePrice,
-              quantity: 1,
-            }],
-            customerEmail: email,
-            shippingAddress: {
-              name: user?.email || 'Guest',
-              address: '',
-              city: '',
-              state: '',
-              postal_code: '',
-              country: 'CA',
-            },
-            shippingCost: 0,
-            shippingMethod: 'Standard Shipping',
-            taxAmount: 0,
-            taxRate: 0,
-            province: 'ON',
-          },
-        });
-        
-        if (error) throw error;
-
-        if (data?.url) {
-          // Use same-tab navigation to avoid popup blockers
-          window.location.href = data.url as string;
-          return;
-        }
-
-        throw new Error("No checkout URL returned.");
-      } catch (error) {
-        console.error("Checkout error:", error);
-        toast({
-          title: "Checkout Error",
-          description: error instanceof Error ? error.message : "Failed to start checkout. Please try again.",
-          variant: "destructive",
-        });
-      } finally {
-        setIsCheckoutLoading(false);
-      }
-      return;
-    }
-
-    // Fallback: add to cart then go to local checkout
     try {
+      // Add item to cart
       addItem({
         id: String(product.id),
         name: String(product.name ?? "Untitled"),
         price: safePrice,
         image: imageSrc,
       });
+      
+      // Navigate to checkout/shipping info page
       navigate("/checkout");
     } catch (error) {
       console.error("[AddToCartBar] Error in Buy Now:", error);
@@ -177,10 +121,9 @@ const AddToCartBar: React.FC<AddToCartBarProps> = ({ product, className }) => {
         size="buy"
         className="flex-1 font-bold text-sm py-3 shadow-lg hover:shadow-xl transition-all duration-300"
         onClick={handleBuyNow}
-        disabled={isCheckoutLoading}
         type="button"
       >
-        {isCheckoutLoading ? "Loading…" : "Buy Now"}
+        Buy Now
       </Button>
     </div>
   );
