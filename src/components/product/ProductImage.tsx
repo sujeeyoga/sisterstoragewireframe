@@ -9,6 +9,11 @@ interface ProductImageProps {
 
 const ProductImage = ({ images, color, name }: ProductImageProps) => {
   const [selectedImage, setSelectedImage] = useState(0);
+  const [loadedImages, setLoadedImages] = useState<Record<number, boolean>>({});
+  
+  const handleImageLoad = (index: number) => {
+    setLoadedImages(prev => ({ ...prev, [index]: true }));
+  };
 
   if (!images || images.length === 0) {
     return (
@@ -24,12 +29,16 @@ const ProductImage = ({ images, color, name }: ProductImageProps) => {
   return (
     <div className="space-y-4">
       {/* Main Image */}
-      <div className="rounded-[3rem] overflow-hidden aspect-square">
+      <div className="rounded-[3rem] overflow-hidden aspect-square relative">
+        {!loadedImages[selectedImage] && (
+          <div className="absolute inset-0 bg-gray-200 animate-pulse" />
+        )}
         <PerformanceImage 
           src={images[selectedImage]} 
           alt={`${name} - Image ${selectedImage + 1}`}
           className="w-full h-full object-cover"
           loading="eager"
+          onLoad={() => handleImageLoad(selectedImage)}
         />
       </div>
       
@@ -40,17 +49,21 @@ const ProductImage = ({ images, color, name }: ProductImageProps) => {
             <button
               key={index}
               onClick={() => setSelectedImage(index)}
-              className={`rounded-[1.5rem] overflow-hidden aspect-square border-2 transition-all ${
+              className={`rounded-[1.5rem] overflow-hidden aspect-square border-2 transition-all relative ${
                 selectedImage === index 
                   ? 'border-primary ring-2 ring-primary/20' 
                   : 'border-transparent hover:border-gray-300'
               }`}
             >
+              {!loadedImages[index] && (
+                <div className="absolute inset-0 bg-gray-200 animate-pulse" />
+              )}
               <PerformanceImage 
                 src={image} 
                 alt={`${name} - Thumbnail ${index + 1}`}
                 className="w-full h-full object-cover"
                 loading="lazy"
+                onLoad={() => handleImageLoad(index)}
               />
             </button>
           ))}
