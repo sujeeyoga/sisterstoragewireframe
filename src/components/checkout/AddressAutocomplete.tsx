@@ -17,6 +17,34 @@ interface AddressAutocompleteProps {
   error?: string;
 }
 
+// Utility functions for formatting
+const formatPostalCode = (postal: string): string => {
+  const cleaned = postal.replace(/\s/g, '').toUpperCase();
+  if (cleaned.length === 6 && /^[A-Z]\d[A-Z]\d[A-Z]\d$/.test(cleaned)) {
+    return `${cleaned.slice(0, 3)} ${cleaned.slice(3)}`;
+  }
+  return cleaned;
+};
+
+const formatCity = (city: string): string => {
+  return city
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+};
+
+const formatAddress = (address: string): string => {
+  return address
+    .split(' ')
+    .map(word => {
+      // Keep numbers and single letters as-is
+      if (/^\d+$/.test(word) || word.length === 1) return word;
+      // Capitalize first letter of words
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    })
+    .join(' ');
+};
+
 // Province name to code mapping
 const PROVINCE_MAP: Record<string, string> = {
   'Alberta': 'AB',
@@ -82,16 +110,13 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
         // Fallback: parse from freeform string when Places API is unavailable
         const raw = inputRef.current?.value || '';
         const parts = raw.split(',').map(p => p.trim()).filter(Boolean);
-        const street = parts[0] || raw.trim();
+        const street = formatAddress(parts[0] || raw.trim());
 
         const provinceMatch = raw.match(/\b(AB|BC|MB|NB|NL|NT|NS|NU|ON|PE|QC|SK|YT)\b/i);
         const postalMatch = raw.match(/([A-Za-z]\d[A-Za-z])\s?\d[A-Za-z]\d/i);
-        const city = parts.length > 1 ? parts[1] : '';
+        const city = formatCity(parts.length > 1 ? parts[1] : '');
         const province = provinceMatch ? provinceMatch[1].toUpperCase() : '';
-        let postalCode = postalMatch ? postalMatch[0].toUpperCase().replace(/\s/g, '') : '';
-        if (postalCode.length === 6) {
-          postalCode = `${postalCode.slice(0,3)} ${postalCode.slice(3)}`;
-        }
+        const postalCode = postalMatch ? formatPostalCode(postalMatch[0]) : '';
 
         if (street && city && province) {
           onChange(street);
@@ -115,10 +140,12 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
       // Build address from components
       const streetNumber = components.street_number?.long || '';
       const route = components.route?.long || '';
-      const fullAddress = `${streetNumber} ${route}`.trim();
+      const rawAddress = `${streetNumber} ${route}`.trim();
+      const fullAddress = formatAddress(rawAddress);
       
       // Use sublocality (e.g., Scarborough) if available, otherwise use locality (e.g., Toronto)
-      const city = components.sublocality_level_1?.long || components.sublocality?.long || components.locality?.long || '';
+      const rawCity = components.sublocality_level_1?.long || components.sublocality?.long || components.locality?.long || '';
+      const city = formatCity(rawCity);
       
       // Get 2-letter province code (try mapping first, then short_name)
       const provinceLong = components.administrative_area_level_1?.long || '';
@@ -126,15 +153,8 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
       const province = (PROVINCE_MAP[provinceLong] || provinceShort).toUpperCase();
       
       // Format Canadian postal code with space
-      let postalCode = components.postal_code?.long || '';
-      if (postalCode) {
-        postalCode = postalCode.replace(/\s/g, '').toUpperCase();
-        if (postalCode.length === 6) {
-          postalCode = `${postalCode.slice(0, 3)} ${postalCode.slice(3)}`;
-        }
-      }
-
-      console.log('Address selected:', { fullAddress, city, province, postalCode });
+      const rawPostalCode = components.postal_code?.long || '';
+      const postalCode = rawPostalCode ? formatPostalCode(rawPostalCode) : '';
 
       if (fullAddress && city && province && postalCode) {
         // Update the input value to close the dropdown
