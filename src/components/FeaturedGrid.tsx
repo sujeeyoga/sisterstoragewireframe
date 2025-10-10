@@ -42,44 +42,6 @@ const gridItems = [
     image: "/lovable-uploads/8620f7af-c089-458c-bef9-78d6cd77f04e.png",
     title: "Storage Solutions",
     span: "normal"
-  },
-  // Row 3
-  {
-    id: 7,
-    image: "/lovable-uploads/ce6528ec-56be-4176-919f-4285946c18b2.png",
-    title: "Bangle Display",
-    span: "vertical"
-  },
-  {
-    id: 8,
-    image: "/lovable-uploads/160b5d30-ba2c-4e66-8423-c4a6288d1af0.png",
-    title: "Friend Goals",
-    span: "horizontal"
-  },
-  {
-    id: 9,
-    image: "/lovable-uploads/c6544fac-3f2f-4a6a-a01e-5ca149720fcb.png",
-    title: "Jewelry Party",
-    span: "normal"
-  },
-  // Row 4
-  {
-    id: 10,
-    image: "/lovable-uploads/b0963b41-dee1-4ccb-b8bc-7144c4ea6285.png",
-    title: "Golden Elegance",
-    span: "normal"
-  },
-  {
-    id: 11,
-    image: "/lovable-uploads/e9628188-8ef0-426b-9858-08b2848fd690.png",
-    title: "Sister Collection",
-    span: "normal"
-  },
-  {
-    id: 12,
-    image: "/lovable-uploads/fb8da55a-c9bb-419e-a96f-175a667875e1.png",
-    title: "Organized Beauty",
-    span: "normal"
   }
 ];
 const FeaturedGrid = () => {
