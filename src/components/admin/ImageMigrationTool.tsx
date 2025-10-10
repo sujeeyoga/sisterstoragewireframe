@@ -90,7 +90,7 @@ const ImageMigrationTool = () => {
         const file = new File([blob], image.filename, { type: blob.type });
 
         // Optimize the image (convert to WebP, compress)
-        const optimized = await optimizeImage(file, 1920, 1920, 0.85);
+        const optimized = await optimizeImage(file, 1920, 1920, 0.85, 'image/webp');
 
         // Upload to storage bucket as WebP
         const { error: uploadError } = await supabase.storage

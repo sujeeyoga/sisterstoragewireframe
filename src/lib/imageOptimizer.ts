@@ -5,7 +5,8 @@ export const optimizeImage = async (
   file: File,
   maxWidth: number = 1920,
   maxHeight: number = 1920,
-  quality: number = 0.8
+  quality: number = 0.8,
+  format: 'image/jpeg' | 'image/webp' = 'image/webp'
 ): Promise<{ blob: Blob; width: number; height: number; originalSize: number }> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -53,7 +54,7 @@ export const optimizeImage = async (
               reject(new Error('Failed to create blob'));
             }
           },
-          'image/jpeg',
+          format,
           quality
         );
       };

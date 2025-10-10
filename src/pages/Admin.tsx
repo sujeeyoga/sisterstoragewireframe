@@ -14,6 +14,7 @@ import { SisterStoriesManager } from '@/components/admin/SisterStoriesManager';
 import { PagesManager } from '@/components/admin/PagesManager';
 import { HeroImagesManager } from '@/components/admin/HeroImagesManager';
 import { BulkImageOptimizer } from '@/components/admin/BulkImageOptimizer';
+import ImageMigrationTool from '@/components/admin/ImageMigrationTool';
 import ShippingManager from '@/components/admin/ShippingManager';
 import Uploads from '@/pages/Uploads';
 
@@ -47,6 +48,7 @@ const Admin = () => {
         <Route path="pages" element={<PagesManager />} />
         <Route path="hero-images" element={<HeroImagesManager />} />
         <Route path="optimize-images" element={<BulkImageOptimizer />} />
+        <Route path="migrate-images" element={<ImageMigrationTool />} />
         <Route path="sync" element={<AdminSync />} />
         <Route path="settings" element={<StoreSettings />} />
         <Route path="images" element={<ImageUploader />} />
