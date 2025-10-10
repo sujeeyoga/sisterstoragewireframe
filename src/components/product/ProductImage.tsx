@@ -13,7 +13,7 @@ const ProductImage = ({ images, color, name }: ProductImageProps) => {
   if (!images || images.length === 0) {
     return (
       <div 
-        className="rounded-lg flex items-center justify-center aspect-square"
+        className="rounded-3xl flex items-center justify-center aspect-square"
         style={{ backgroundColor: color || "#9b87f5" }}
       >
         <span className="text-white text-sm font-bold">Sister Storage</span>
@@ -24,7 +24,7 @@ const ProductImage = ({ images, color, name }: ProductImageProps) => {
   return (
     <div className="space-y-4">
       {/* Main Image */}
-      <div className="rounded-lg overflow-hidden aspect-square">
+      <div className="rounded-3xl overflow-hidden aspect-square">
         <PerformanceImage 
           src={images[selectedImage]} 
           alt={`${name} - Image ${selectedImage + 1}`}
@@ -40,7 +40,7 @@ const ProductImage = ({ images, color, name }: ProductImageProps) => {
             <button
               key={index}
               onClick={() => setSelectedImage(index)}
-              className={`rounded-lg overflow-hidden aspect-square border-2 transition-all ${
+              className={`rounded-2xl overflow-hidden aspect-square border-2 transition-all ${
                 selectedImage === index 
                   ? 'border-primary ring-2 ring-primary/20' 
                   : 'border-transparent hover:border-gray-300'
