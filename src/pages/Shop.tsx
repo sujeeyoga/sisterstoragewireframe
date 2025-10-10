@@ -15,14 +15,16 @@ const Shop = () => {
   useShopSEO(sortedProducts);
 
   return (
-    <BaseLayout variant="standard" pageId="shop" spacing="normal">
-      <div className="bg-background min-h-screen">
-        <DiscountBanner />
-        <HeroSection product={featuredProduct} />
-        <ProductsSection products={sortedProducts} />
-        <FooterSection />
-      </div>
-    </BaseLayout>
+    <>
+      <DiscountBanner />
+      <BaseLayout variant="standard" pageId="shop" spacing="normal">
+        <div className="bg-background min-h-screen">
+          <HeroSection product={featuredProduct} />
+          <ProductsSection products={sortedProducts} />
+          <FooterSection />
+        </div>
+      </BaseLayout>
+    </>
   );
 };
 
