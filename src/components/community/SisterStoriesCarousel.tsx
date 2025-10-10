@@ -262,8 +262,8 @@ export const SisterStoriesCarousel = () => {
                       </div>
                     )}
                     
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/10 opacity-0 group-hover:opacity-100 transition-all duration-300" />
-                    <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/0 opacity-0 group-hover:opacity-100 transition-all duration-300" />
+                    <div className="absolute bottom-0 left-0 right-0 p-6 text-white transform translate-y-20 group-hover:translate-y-0 transition-all duration-300 ease-out">
                       <h4 className="font-semibold text-sm mb-1">{story.title}</h4>
                       <p className="text-xs opacity-90 mb-1">{story.author}</p>
                       <p className="text-xs opacity-75">{story.description}</p>
