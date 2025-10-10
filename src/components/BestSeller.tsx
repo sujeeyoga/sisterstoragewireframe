@@ -73,9 +73,9 @@ const BestSeller = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mx-auto">
+        <div className="flex gap-4 md:gap-6 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide">
           {buyCards.map((item, index) => (
-            <Card key={item.id} className="group overflow-hidden border-none shadow-md hover:shadow-xl transition-all duration-500 bg-white relative transform hover:-translate-y-1 hover:scale-[1.02]">
+            <Card key={item.id} className="group flex-shrink-0 w-[85vw] md:w-[400px] lg:w-[450px] overflow-hidden border-none shadow-md hover:shadow-xl transition-all duration-500 bg-white relative snap-center">
               {/* Bundle Badge */}
               <div className="absolute top-3 left-3 z-10">
                 <span className={`px-3 py-1.5 text-xs font-bold rounded-full shadow-lg ${
@@ -89,8 +89,8 @@ const BestSeller = () => {
               </div>
               
               {/* Product Image */}
-              <Link to={`/shop/${item.id}`} className="block">
-                <div className="relative overflow-hidden">
+              <Link to={`/shop/${item.id}`} className="block relative">
+                <div className="relative overflow-hidden group-hover:overflow-visible">
                   {/* Loading skeleton */}
                   {!loadedImages[item.id] && (
                     <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse" />
@@ -100,14 +100,21 @@ const BestSeller = () => {
                     src={item.image} 
                     alt={`${item.name} - Bundle collection`}
                     className={cn(
-                      "w-full aspect-[4/5] object-cover transition-all duration-700 group-hover:scale-105",
+                      "w-full aspect-[4/5] object-cover transition-all duration-700",
                       loadedImages[item.id] ? "opacity-100" : "opacity-0"
                     )}
                     loading="eager"
                     decoding="async"
                     onLoad={() => handleImageLoad(item.id)}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 scale-0 group-hover:scale-100"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                  
+                  {/* Card content overlay that appears on hover */}
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-4 pointer-events-none">
+                    <h3 className="text-white text-2xl font-bold mb-2">{item.name}</h3>
+                    <p className="text-white/90 text-sm mb-2">{item.description}</p>
+                    <p className="text-white text-xl font-semibold">${item.price}</p>
+                  </div>
                 </div>
               </Link>
               
