@@ -23,7 +23,7 @@ const BrandGallery = () => {
           .from('uploaded_images')
           .select('id, file_path, file_name, width, height')
           .order('created_at', { ascending: false })
-          .limit(12);
+          .limit(16);
 
         if (error) throw error;
 
@@ -72,8 +72,8 @@ const BrandGallery = () => {
         </AnimatedText>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {images.map((image, index) => (
+      <div className="grid grid-cols-4 gap-4">
+        {images.slice(0, 16).map((image, index) => (
           <div
             key={image.id}
             className="group relative overflow-hidden bg-white aspect-square"
