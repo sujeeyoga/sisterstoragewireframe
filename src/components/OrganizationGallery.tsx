@@ -36,18 +36,18 @@ const OrganizationGallery = () => {
         {/* Gallery Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 lg:gap-6 items-end">
           {galleryImages.map((image, index) => (
-            <div key={index} className="relative rounded-2xl shadow-md hover:shadow-xl transition-all duration-500 group">
+            <div key={index} className="relative rounded-2xl shadow-md hover:shadow-xl transition-all duration-500 group overflow-hidden">
               <PerformanceImage
                 src={image.src}
                 alt={image.alt}
-                className="w-full h-auto block group-hover:scale-[1.02] group-hover:brightness-[1.02] transition-all duration-700 rounded-2xl"
+                className="w-full h-full object-cover block group-hover:scale-[1.02] group-hover:brightness-[1.02] transition-all duration-700 rounded-2xl"
                 loading={index < 2 ? 'eager' : 'lazy'}
               />
               {/* Instagram Icon Overlay - Only on last card */}
               {index === galleryImages.length - 1 && (
                 <div className="absolute inset-0 flex items-center justify-center">
                   <svg
-                    className="w-64 h-64 text-[hsl(var(--brand-pink))]"
+                    className="w-64 h-64 text-white"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
