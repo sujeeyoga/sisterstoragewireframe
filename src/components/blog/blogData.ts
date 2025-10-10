@@ -79,141 +79,141 @@ export const collections = [
 export const blogPosts = [
   {
     id: "1",
-    title: "5 Ways to Organize Your Bathroom Cabinets",
-    excerpt: "Transform your bathroom storage with these simple yet effective organization tips that will maximize space and minimize clutter.",
-    author: "Emma Wilson",
-    date: "May 12, 2025",
-    category: "Organization Tips",
-    color: "#E90064", // Primary Pink for Organization Tips
-    readingTime: "5 min",
+    title: "How to Store Your Wedding Bangles Without Scratches",
+    excerpt: "Keep your precious wedding bangles pristine with these storage techniques designed specifically for delicate South Asian jewelry.",
+    author: "Priya Sharma",
+    date: "June 15, 2025",
+    category: "Bangle Archives",
+    color: "#FF8021",
+    readingTime: "6 min",
     difficulty: "Beginner"
   },
   {
     id: "2",
-    title: "The Psychology of a Well-Organized Space",
-    excerpt: "Discover how an organized home can lead to reduced stress and increased productivity in your daily life.",
-    author: "Olivia Wilson",
-    date: "May 5, 2025",
-    category: "Wellness",
-    color: "#9b87f5", // Purple for Wellness
+    title: "The Art of Bangle Stacking: A Complete Guide",
+    excerpt: "Master the cultural art of bangle layering with tips on color coordination, occasion matching, and safe storage between wears.",
+    author: "Aisha Patel",
+    date: "June 12, 2025",
+    category: "Stacked & Styled",
+    color: "#FFA51E",
     readingTime: "8 min",
-    difficulty: "Intermediate"
-  },
-  {
-    id: "3",
-    title: "Storage Solutions for Small Apartments",
-    excerpt: "Living in a compact space doesn't mean sacrificing organization. Learn how to maximize every inch with these clever storage ideas.",
-    author: "James Chen",
-    date: "April 28, 2025",
-    category: "Small Spaces",
-    color: "#E6007E", // Secondary Pink for Small Spaces
-    readingTime: "6 min",
-    difficulty: "Intermediate"
-  },
-  {
-    id: "4",
-    title: "Sustainable Organization: Eco-Friendly Storage",
-    excerpt: "Explore how to organize your home using sustainable materials and practices that are better for both your space and the planet.",
-    author: "Sophia Rodriguez",
-    date: "April 22, 2025",
-    category: "Sustainability",
-    color: "#7E69AB", // Secondary Purple for Sustainability
-    readingTime: "7 min",
-    difficulty: "Advanced"
-  },
-  {
-    id: "5",
-    title: "Seasonal Storage: Rotating Your Belongings",
-    excerpt: "Learn the art of seasonal rotation to keep your home clutter-free throughout the year.",
-    author: "Emma Wilson",
-    date: "April 15, 2025",
-    category: "Organization Tips",
-    color: "#E90064", // Primary Pink for Organization Tips
-    readingTime: "4 min",
-    difficulty: "Beginner"
-  },
-  // New blog posts with more brand colors
-  {
-    id: "6",
-    title: "Smart Pantry Organization Systems",
-    excerpt: "Revolutionize your kitchen storage with these smart pantry systems that make finding ingredients a breeze.",
-    author: "Michael Torres",
-    date: "May 18, 2025",
-    category: "Kitchen & Pantry",
-    color: "#F97316", // Bright Orange for Kitchen & Pantry
-    readingTime: "6 min",
     difficulty: "Intermediate",
     featured: true
   },
   {
-    id: "7",
-    title: "Under-Bed Storage Hacks for Small Bedrooms",
-    excerpt: "Make the most of every inch in your bedroom with these clever under-bed storage solutions that hide clutter and maximize space.",
-    author: "Anna Johnson",
-    date: "May 16, 2025",
-    category: "Bedroom Storage",
-    color: "#33C3F0", // Sky Blue for Bedroom Storage
-    readingTime: "5 min",
+    id: "3",
+    title: "My Amma's Jewelry Box: Lessons in Organization",
+    excerpt: "What three generations taught me about keeping family heirlooms safe, accessible, and cherished.",
+    author: "Nisha Kumar",
+    date: "June 8, 2025",
+    category: "From Amma's Shelf",
+    color: "#FF8021",
+    readingTime: "7 min",
     difficulty: "Beginner",
     trending: true
   },
   {
-    id: "8",
-    title: "Kid-Friendly Organization Systems That Last",
-    excerpt: "Design storage solutions that grow with your children and teach them valuable organization skills at the same time.",
-    author: "Priya Patel",
-    date: "May 11, 2025",
-    category: "Kids' Rooms",
-    color: "#D946EF", // Magenta Pink for Kids' Rooms
-    readingTime: "9 min",
-    difficulty: "Advanced",
-    editorsPick: true
-  },
-  {
-    id: "9",
-    title: "Creating a Minimalist Home Office",
-    excerpt: "Design a clutter-free workspace that enhances productivity and mental clarity with these minimalist organization principles.",
-    author: "Robert Chen",
-    date: "May 9, 2025",
-    category: "Office Organization",
-    color: "#0EA5E9", // Ocean Blue for Office Organization
-    readingTime: "7 min",
-    difficulty: "Intermediate",
-    mostShared: true
-  },
-  {
-    id: "10",
-    title: "Packing Cubes: The Ultimate Travel Organization",
-    excerpt: "Transform your travel experience with packing cubes that keep clothes organized and maximize suitcase space.",
-    author: "Sophia Rodriguez",
-    date: "May 7, 2025",
-    category: "Travel & Packing",
-    color: "#8B5CF6", // Vivid Purple for Travel & Packing
-    readingTime: "4 min",
+    id: "4",
+    title: "Traveling with Jewelry: TSA-Approved Storage Tips",
+    excerpt: "Never worry about damaged bangles during travel again. Here's how to pack your jewelry like a pro.",
+    author: "Meera Singh",
+    date: "June 5, 2025",
+    category: "Brown Girl Hacks",
+    color: "#FFDCBD",
+    readingTime: "5 min",
     difficulty: "Beginner"
   },
   {
-    id: "11",
-    title: "Holiday Decoration Storage Solutions",
-    excerpt: "Protect and organize your seasonal decorations with these smart storage ideas that make decorating easier every year.",
-    author: "Emma Wilson",
-    date: "May 3, 2025",
-    category: "Seasonal Decor",
-    color: "#ea384c", // Red for Seasonal Decor
+    id: "5",
+    title: "Creating a Daily Bangle Rotation System",
+    excerpt: "Simplify your morning routine with an organized system that keeps your favorite bangles ready to wear.",
+    author: "Kavya Reddy",
+    date: "June 1, 2025",
+    category: "Velvet Drawer Diaries",
+    color: "#FE5FA4",
     readingTime: "6 min",
+    difficulty: "Intermediate"
+  },
+  {
+    id: "6",
+    title: "The Perfect Shaadi Gift: Bangle Sets That Matter",
+    excerpt: "Why a well-organized bangle set makes a thoughtful, practical gift for any South Asian celebration.",
+    author: "Anjali Desai",
+    date: "May 28, 2025",
+    category: "Gifts That Hit",
+    color: "#E90064",
+    readingTime: "5 min",
+    difficulty: "Beginner",
+    editorsPick: true
+  },
+  {
+    id: "7",
+    title: "Downsizing After Moving: What Jewelry to Keep",
+    excerpt: "Navigate the emotional process of curating your jewelry collection when transitioning between homes.",
+    author: "Rina Shah",
+    date: "May 25, 2025",
+    category: "Clutter We Left Behind",
+    color: "#F4F4F4",
+    readingTime: "9 min",
+    difficulty: "Advanced"
+  },
+  {
+    id: "8",
+    title: "Small Space, Big Collection: Maximizing Jewelry Storage",
+    excerpt: "Live in a studio? Here's how to store 200+ bangles in minimal space without compromising accessibility.",
+    author: "Sana Ahmed",
+    date: "May 22, 2025",
+    category: "Brown Girl Hacks",
+    color: "#FFDCBD",
+    readingTime: "7 min",
     difficulty: "Intermediate",
     trending: true
   },
   {
-    id: "12",
-    title: "Creating a Color-Coded Closet System",
-    excerpt: "Transform your closet into a visually pleasing and functional space with this step-by-step color-coding guide.",
-    author: "James Chen",
-    date: "April 30, 2025",
-    category: "Organization Tips",
-    color: "#E90064", // Primary Pink for Organization Tips
+    id: "9",
+    title: "Why We Design Zero-Radius Storage",
+    excerpt: "A deep dive into our design philosophy and why every millimeter matters in bangle organization.",
+    author: "Sister Storage Team",
+    date: "May 19, 2025",
+    category: "Made You Look",
+    color: "#FE5FA4",
+    readingTime: "10 min",
+    difficulty: "Advanced",
+    mostShared: true
+  },
+  {
+    id: "10",
+    title: "Sister Spotlight: Meet Amara, Jewelry Designer",
+    excerpt: "How one sister turned her passion for bangles into a thriving business while staying organized.",
+    author: "Editorial Team",
+    date: "May 16, 2025",
+    category: "Sister Signal Boost",
+    color: "#FFA51E",
     readingTime: "8 min",
-    difficulty: "Advanced"
+    difficulty: "Beginner"
+  },
+  {
+    id: "11",
+    title: "What 'Home' Means When You're Between Countries",
+    excerpt: "Finding comfort in portable organization when home is wherever you land.",
+    author: "Leela Menon",
+    date: "May 13, 2025",
+    category: "Home Is a Drawer",
+    color: "#FFDCBD",
+    readingTime: "6 min",
+    difficulty: "Intermediate"
+  },
+  {
+    id: "12",
+    title: "Garba Season: Organizing Your Festival Bangles",
+    excerpt: "Get ready for Navratri with a color-coded system that makes matching bangles to your chaniya choli effortless.",
+    author: "Divya Kapoor",
+    date: "May 10, 2025",
+    category: "Stacked & Styled",
+    color: "#FFA51E",
+    readingTime: "5 min",
+    difficulty: "Beginner",
+    featured: true
   }
 ];
 
