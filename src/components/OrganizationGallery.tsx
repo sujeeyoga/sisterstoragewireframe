@@ -38,7 +38,9 @@ const OrganizationGallery = () => {
           {galleryImages.map((image, index) => (
             <div 
               key={index} 
-              className="relative aspect-square rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 group overflow-hidden animate-fade-in"
+              className={`relative rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 group overflow-hidden animate-fade-in ${
+                index === 1 || index === 2 ? 'lg:row-span-2' : 'aspect-square'
+              }`}
             >
               <PerformanceImage
                 src={image.src}
