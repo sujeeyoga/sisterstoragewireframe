@@ -47,7 +47,7 @@ const OrganizationGallery = () => {
               {index === galleryImages.length - 1 && (
                 <div className="absolute inset-0 flex items-center justify-center">
                   <svg
-                    className="w-64 h-64 text-white"
+                    className="w-64 h-64 text-[hsl(var(--brand-pink))]"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
