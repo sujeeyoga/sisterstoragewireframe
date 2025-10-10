@@ -208,21 +208,6 @@ export const SisterStoriesCarousel = () => {
     }
   };
 
-  // Auto-scroll effect
-  useEffect(() => {
-    if (!carouselApiRef.current) return;
-
-    const autoScroll = setInterval(() => {
-      if (carouselApiRef.current?.canScrollNext()) {
-        carouselApiRef.current.scrollNext();
-      } else {
-        carouselApiRef.current?.scrollTo(0);
-      }
-    }, 4000); // Scroll every 4 seconds
-
-    return () => clearInterval(autoScroll);
-  }, [carouselApiRef.current]);
-
   if (isLoading) {
     return (
       <div className="w-full">
