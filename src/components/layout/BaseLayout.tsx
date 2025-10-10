@@ -66,8 +66,17 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
     if (!el) return;
     
     const updateNavOffset = () => {
-      const height = el.getBoundingClientRect().height || 64;
-      const offset = Math.round(height + (isMobile ? 0 : 12));
+      const navHeight = el.getBoundingClientRect().height || 64;
+      const containerEl = el.parentElement as HTMLElement | null;
+      let containerPadding = 0;
+      if (containerEl) {
+        const styles = getComputedStyle(containerEl);
+        const pt = parseFloat(styles.paddingTop || '0');
+        const pb = parseFloat(styles.paddingBottom || '0');
+        containerPadding = (isNaN(pt) ? 0 : pt) + (isNaN(pb) ? 0 : pb);
+      }
+      const extraSpacing = isMobile ? 0 : 12;
+      const offset = Math.round(navHeight + containerPadding + extraSpacing);
       document.documentElement.style.setProperty('--sticky-nav-offset', `${offset}px`);
     };
     
@@ -142,12 +151,14 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
   return (
     <div className={`min-h-screen ${getBackgroundClasses()} ${className}`} style={{ position: 'relative' }}>
       {/* Navigation: Fixed on mobile, sticky on desktop */}
-      <nav 
-        ref={navRef} 
-        className="fixed top-0 left-0 right-0 z-50 sm:sticky sm:top-0 w-[min(1100px,calc(100%-40px))] mx-auto rounded-[25px] bg-white shadow-lg px-4 py-2 mt-3"
-      >
-        <Navbar position={position} />
-      </nav>
+      <div className="fixed top-0 left-0 right-0 z-50 bg-[hsl(var(--brand-pink))] pt-3 pb-3 sm:sticky sm:top-0">
+        <nav 
+          ref={navRef} 
+          className="w-[min(1100px,calc(100%-40px))] mx-auto rounded-[25px] bg-white shadow-lg px-4 py-2"
+        >
+          <Navbar position={position} />
+        </nav>
+      </div>
       
       {/* Main content with top margin to account for fixed nav on mobile */}
       <main className="bg-background" style={{ outline: 'none', marginTop: 'var(--sticky-nav-offset)' }}>
