@@ -60,7 +60,7 @@ const BestSeller = () => {
 
   return (
     <section className="pt-[100px] md:pt-[300px] pb-12 md:pb-16 bg-gradient-to-br from-gray-50 to-white">
-      <div className="container-custom">
+      <div className="px-4 md:px-6 lg:px-8 max-w-screen-2xl mx-auto">
         <div className="text-center max-w-3xl mx-auto mb-12 md:mb-16">
           <span className="inline-block px-4 py-2 bg-[#E90064] text-white text-sm font-bold rounded-full mb-4">
             Shop Now
@@ -73,7 +73,7 @@ const BestSeller = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mx-auto">
           {buyCards.map((item, index) => (
             <Card key={item.id} className="group overflow-hidden border-none shadow-md hover:shadow-xl transition-all duration-500 bg-white relative transform hover:-translate-y-1 hover:scale-[1.02]">
               {/* Bundle Badge */}
