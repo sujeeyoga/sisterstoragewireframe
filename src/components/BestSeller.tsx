@@ -73,9 +73,12 @@ const BestSeller = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
           {buyCards.map((item, index) => (
-            <Card key={item.id} className="group overflow-hidden border-none shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 bg-white relative">
+            <Card key={item.id} className={cn(
+              "group overflow-hidden border-none shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 bg-white relative",
+              index === 0 && "md:col-span-2"
+            )}>
               
               {/* Product Image */}
               <Link to={`/shop/${item.id}`} className="block relative">
