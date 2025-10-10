@@ -2,16 +2,20 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Link } from 'react-router-dom';
 import heroMainImage from '@/assets/hero-bg-main.jpg';
+import { useOptimizedParallax } from '@/hooks/use-optimized-parallax';
 
 const Hero = () => {
+  const { ref: parallaxRef, offset } = useOptimizedParallax({ speed: 0.5 });
+
   return (
-    <section className="relative w-full overflow-hidden h-[70vh]" aria-label="Hero section">
-      {/* Full Background Image */}
-      <div className="absolute inset-0 w-full h-full">
+    <section ref={parallaxRef} className="relative w-full overflow-hidden h-[70vh]" aria-label="Hero section">
+      {/* Full Background Image with Parallax */}
+      <div className="absolute inset-0 w-full h-[120%] -top-[10%]">
         <img
           src={heroMainImage}
           alt="Woman showcasing Sister Storage jewelry organization solution"
           className="w-full h-full object-cover"
+          style={{ transform: `translateY(${offset}px)` }}
           loading="eager"
           fetchPriority="high"
         />
