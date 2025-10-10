@@ -93,8 +93,8 @@ const BestSeller = () => {
                     onLoad={() => handleImageLoad(buyCards[0].id)}
                   />
                   
-                  <div className="absolute top-6 left-6">
-                    <h3 className="text-white text-2xl md:text-3xl font-black drop-shadow-lg">{buyCards[0].name}</h3>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <h3 className="text-sister-pink text-4xl md:text-5xl font-poppins font-thin">{buyCards[0].name}</h3>
                   </div>
                   
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-6 pointer-events-none">
@@ -142,8 +142,8 @@ const BestSeller = () => {
                     onLoad={() => handleImageLoad(buyCards[1].id)}
                   />
                   
-                  <div className="absolute top-6 left-6">
-                    <h3 className="text-white text-2xl md:text-3xl font-black drop-shadow-lg">{buyCards[1].name}</h3>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <h3 className="text-sister-pink text-4xl md:text-5xl font-poppins font-thin">{buyCards[1].name}</h3>
                   </div>
                   
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-6 pointer-events-none">
