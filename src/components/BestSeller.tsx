@@ -73,7 +73,7 @@ const BestSeller = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {buyCards.map((item, index) => (
             <Card key={item.id} className="group overflow-hidden border-none shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 bg-white relative">
               
@@ -89,7 +89,7 @@ const BestSeller = () => {
                     src={item.image} 
                     alt={`${item.name} - Bundle collection`}
                     className={cn(
-                      "w-full aspect-[4/5] object-cover transition-all duration-700",
+                      "w-full h-auto object-cover transition-all duration-700",
                       loadedImages[item.id] ? "opacity-100" : "opacity-0"
                     )}
                     loading="eager"
