@@ -92,20 +92,20 @@ const Hero = () => {
                 {/* Badge */}
                 <Badge 
                   variant="secondary" 
-                  className="bg-white text-[hsl(var(--brand-pink))] px-4 py-2 text-base font-bold w-fit rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                  className="bg-white text-[hsl(var(--brand-pink))] px-4 py-2 text-sm font-bold w-fit rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
                 >
                   Beautifully Organized
                 </Badge>
 
                 {/* Headline */}
-                <h1 className="text-5xl md:text-6xl lg:text-7xl font-black leading-[0.9] tracking-tighter">
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-black leading-[0.9] tracking-tighter">
                   CULTURE /<br />
                   WITHOUT<br />
                   CLUTTER.
                 </h1>
 
                 {/* Main Tagline */}
-                <p className="text-3xl md:text-4xl lg:text-5xl font-bold leading-[1.1] tracking-tight uppercase">
+                <p className="text-2xl md:text-3xl lg:text-4xl font-bold leading-[1.1] tracking-tight uppercase">
                   BROUGHT TO YOU BY SISTERS<br />
                   WHO GET IT.
                 </p>
@@ -115,7 +115,7 @@ const Hero = () => {
                   <Link to="/shop">
                     <Button 
                       size="lg"
-                      className="bg-white text-[hsl(var(--brand-pink))] hover:bg-white/95 hover:scale-105 font-bold text-lg px-6 py-4 w-fit shadow-2xl transition-all duration-300 rounded-full"
+                      className="bg-white text-[hsl(var(--brand-pink))] hover:bg-white/95 hover:scale-105 font-bold text-base px-6 py-4 w-fit shadow-2xl transition-all duration-300 rounded-full"
                     >
                       SHOP THE DROP
                     </Button>
@@ -124,7 +124,7 @@ const Hero = () => {
 
                 {/* Bottom Text */}
                 <div className="pt-2 opacity-95">
-                  <p className="text-lg md:text-xl font-light leading-relaxed tracking-wide">
+                  <p className="text-base md:text-lg font-light leading-relaxed tracking-wide">
                     Made by sisters, for sisters.<br />
                     Clutter never had a place in our culture.
                   </p>
