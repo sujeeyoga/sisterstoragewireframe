@@ -34,7 +34,7 @@ const OrganizationGallery = () => {
         </div>
 
         {/* Gallery Grid */}
-        <div className="flex flex-col gap-6 md:gap-8 items-center max-w-2xl mx-auto px-5">
+        <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-center max-w-6xl mx-auto px-5">
           {/* First Image */}
           <div className="relative w-full aspect-square rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 group overflow-hidden animate-fade-in">
             <PerformanceImage
