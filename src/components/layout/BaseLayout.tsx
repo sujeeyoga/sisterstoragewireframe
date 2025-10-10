@@ -98,9 +98,8 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
 
   // Handle page-specific body classes and effects
   useEffect(() => {
-    // Add base animation class
-    document.body.classList.add('animate-fade-in');
-    
+    // Avoid transforms on body to keep sticky nav reliable on mobile
+
     // Add variant-specific classes
     if (variant === 'brand') {
       document.body.classList.add('brand-layout');
@@ -115,7 +114,7 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
     
     // Cleanup on unmount
     return () => {
-      document.body.classList.remove('animate-fade-in', 'brand-layout', 'pinterest-layout');
+      document.body.classList.remove('brand-layout', 'pinterest-layout');
       if (pageId) {
         document.body.classList.remove(`page-${pageId}`);
       }
