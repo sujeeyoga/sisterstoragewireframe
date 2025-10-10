@@ -34,7 +34,7 @@ const OrganizationGallery = () => {
         </div>
 
         {/* Gallery Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-4 items-stretch">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-6 md:gap-4 items-stretch">
           {/* First Image */}
           <div className="relative aspect-square rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 group overflow-hidden animate-fade-in">
             <PerformanceImage
@@ -46,16 +46,6 @@ const OrganizationGallery = () => {
           </div>
 
           {/* Second Image - moved to column 4 */}
-
-          {/* Third Image */}
-          <div className="relative aspect-[1/2] rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 group overflow-hidden animate-fade-in">
-            <PerformanceImage
-              src={galleryImages[2].src}
-              alt={galleryImages[2].alt}
-              className="w-full h-full object-contain block group-hover:scale-110 transition-transform duration-700 ease-out"
-              loading="lazy"
-            />
-          </div>
 
           {/* Fourth Image with Second Image below */}
           <div className="flex flex-col gap-6 md:gap-4">
