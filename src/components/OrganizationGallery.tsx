@@ -44,7 +44,7 @@ const OrganizationGallery = () => {
                 src={image.src}
                 alt={image.alt}
                 className={`w-full h-full block group-hover:scale-110 transition-transform duration-700 ease-out ${
-                  index === 1 || index === 2 ? 'object-cover object-center' : 'object-cover'
+                  index === 1 || index === 2 ? 'object-contain' : 'object-cover'
                 }`}
                 loading={index < 2 ? 'eager' : 'lazy'}
               />
