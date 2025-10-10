@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import PerformanceImage from '@/components/ui/performance-image';
 
 interface RotatingImageGalleryProps {
   images: string[];
@@ -31,7 +30,7 @@ const RotatingImageGallery = ({
   return (
     <div className={`relative ${className}`}>
       {images.map((image, index) => (
-        <PerformanceImage
+        <img
           key={index}
           src={image}
           alt={`Sister brand organization solution ${index + 1}`}
@@ -39,7 +38,11 @@ const RotatingImageGallery = ({
             index === currentIndex ? 'opacity-100' : 'opacity-0'
           } ${index !== currentIndex ? 'absolute inset-0' : ''}`}
           loading={index === 0 ? 'eager' : 'lazy'}
-          priority={index === 0}
+          decoding="async"
+          style={{ 
+            backfaceVisibility: 'hidden',
+            contentVisibility: 'auto'
+          }}
         />
       ))}
       

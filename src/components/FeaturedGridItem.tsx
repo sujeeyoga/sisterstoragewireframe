@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { cn } from '@/lib/utils';
 
 interface FeaturedGridItemProps {
@@ -14,8 +14,6 @@ const FeaturedGridItem: React.FC<FeaturedGridItemProps> = ({
   span,
   onClick
 }) => {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [hasError, setHasError] = useState(false);
 
   const getSpanClass = (spanType: string) => {
     switch (spanType) {
@@ -37,31 +35,17 @@ const FeaturedGridItem: React.FC<FeaturedGridItemProps> = ({
       )}
       onClick={onClick}
     >
-      {/* Loading skeleton */}
-      {!isLoaded && !hasError && (
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse" />
-      )}
-
-      {/* Error state */}
-      {hasError && (
-        <div className="absolute inset-0 flex items-center justify-center bg-muted">
-          <span className="text-muted-foreground text-sm">Failed to load</span>
-        </div>
-      )}
-
       {/* Image */}
       <img
         src={image}
         alt={title}
-        className={cn(
-          "w-full h-full object-cover transition-opacity duration-300 transform-gpu group-hover:scale-105",
-          isLoaded ? "opacity-100" : "opacity-0"
-        )}
-        loading="eager"
+        className="w-full h-full object-cover transform-gpu group-hover:scale-105 transition-transform duration-300"
+        loading="lazy"
         decoding="async"
-        onLoad={() => setIsLoaded(true)}
-        onError={() => setHasError(true)}
-        style={{ backfaceVisibility: 'hidden' }}
+        style={{ 
+          backfaceVisibility: 'hidden',
+          contentVisibility: 'auto'
+        }}
       />
     </div>
   );
