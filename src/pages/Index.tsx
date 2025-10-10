@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Hero from "@/components/Hero";
@@ -12,6 +12,12 @@ const PromotionalSection = lazy(() => import("@/components/PromotionalSection"))
 const ParallaxContainer = lazy(() => import("@/components/ParallaxContainer"));
 
 const Index = () => {
+  // Ensure body scroll is enabled on mount
+  useEffect(() => {
+    document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
+  }, []);
+
   return (
     <div className="min-h-screen bg-white">
       {/* Sale Banner */}
