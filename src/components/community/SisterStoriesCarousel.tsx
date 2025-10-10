@@ -97,12 +97,7 @@ export const SisterStoriesCarousel = () => {
           setVisibleVideos(prev => new Set([...prev, videoId]));
           // Ensure the play overlay is available even if metadata hasn't loaded (iOS/Incognito)
           setLoadingVideos(prev => ({ ...prev, [videoId]: false }));
-          const video = videoRefs.current[videoId];
-          if (video && video.paused && video.readyState >= 2) {
-            video.play().catch(() => {
-              // Ignore autoplay errors
-            });
-          }
+          // Do NOT autoplay; wait for explicit user tap to comply with mobile/Incognito policies
         }
       });
     }, options);
