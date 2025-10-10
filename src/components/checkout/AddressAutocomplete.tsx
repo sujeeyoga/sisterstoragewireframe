@@ -171,7 +171,7 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
         postalCode
       });
 
-      if (fullAddress && city && province && postalCode) {
+      if (fullAddress && city && province) {
         // Update the input value
         onChange(fullAddress);
         
@@ -181,7 +181,7 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
             address: fullAddress,
             city,
             province,
-            postalCode
+            postalCode // may be empty if not returned; we'll still populate city/province
           });
         }, 50);
       }
@@ -209,6 +209,21 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
         placeholder="Start typing your address..."
         value={value}
         onChange={(e) => onChange(e.target.value)}
+        onFocus={() => {
+          if (inputRef.current) {
+            inputRef.current.readOnly = false;
+            inputRef.current.disabled = false;
+          }
+        }}
+        onClick={() => {
+          if (inputRef.current) {
+            inputRef.current.readOnly = false;
+            inputRef.current.disabled = false;
+          }
+        }}
+        inputMode="text"
+        autoCorrect="off"
+        spellCheck={false}
         className={error ? 'border-red-500' : ''}
         autoComplete="off"
       />
