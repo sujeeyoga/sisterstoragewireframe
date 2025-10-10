@@ -12,7 +12,7 @@ const Hero = () => {
       {/* Mobile: Stacked Layout */}
       <div className="md:hidden flex flex-col">
         {/* Pink Content Section */}
-        <div className="bg-[hsl(var(--brand-pink))] py-16 px-4">
+        <div className="bg-[hsl(var(--brand-pink))] py-16 px-4 h-[45vh] flex items-center">
           <div className="flex flex-col space-y-3 text-white pt-54">
             {/* Badge */}
             <Badge 
