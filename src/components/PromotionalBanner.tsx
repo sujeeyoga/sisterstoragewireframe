@@ -9,7 +9,7 @@ const PromotionalBanner = () => {
         <Card className="overflow-hidden border-none shadow-2xl">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center py-10 md:py-14 px-8 md:px-12 lg:px-14 bg-white">
             {/* Left Content */}
-            <div className="space-y-6 md:space-y-8 pl-32 md:pl-48 lg:pl-64">
+            <div className="space-y-6 md:space-y-8 pl-4 md:pl-48 lg:pl-64">
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-foreground leading-[1.1] tracking-tight">
                 YOUR JEWELS<br />
                 DESERVE BETTER<br />
