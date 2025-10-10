@@ -209,7 +209,7 @@ export const SisterStoriesCarousel = () => {
         >
           <CarouselContent className="ml-4 md:ml-8">
             {videoStories.map((story) => (
-              <CarouselItem key={story.id} className="pl-4 basis-[calc(20%-1rem)] md:basis-[calc(20%-1.5rem)]">
+              <CarouselItem key={story.id} className="pl-4 basis-[calc(33.33%-1rem)] md:basis-[calc(33.33%-1.5rem)]">
                 <Card 
                   className="overflow-hidden border-0 bg-card/50 backdrop-blur-sm group cursor-pointer hover:bg-card/80 transition-all duration-300 h-full"
                 >
