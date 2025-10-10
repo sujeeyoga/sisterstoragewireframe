@@ -23,7 +23,7 @@ const Hero = () => {
 
       {/* Pink Content Section - Wipes in from left then grows vertically */}
       <div className="relative h-[70vh] flex items-center justify-start pt-0">
-        <div className="bg-[hsl(var(--brand-pink))] flex items-center justify-center animate-[slide-left_1.2s_ease-out,expand-up_1.2s_ease-out_forwards] lg:max-w-[80%] overflow-hidden">
+        <div className="bg-[hsl(var(--brand-pink))] flex items-center justify-center animate-[slide-left_1.2s_ease-out,expand-up_1.2s_ease-out_forwards] w-full lg:w-1/2 overflow-hidden">
           <div className="w-full max-w-[550px] pl-[max(32px,calc((100vw-1100px)/2+32px))] pr-8 md:pr-12 lg:pr-12 py-12 lg:py-16">
             <div className="flex flex-col space-y-5 lg:space-y-7 text-white">
               {/* Badge */}
