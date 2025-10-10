@@ -8,20 +8,6 @@ import AddToCartBar from '@/components/cart/AddToCartBar';
 
 const buyCards = [
   {
-    id: "bundle-2", 
-    name: 'Sister Staples',
-    price: 137.00,
-    originalPrice: null,
-    stripePriceId: "price_1SGKRxDkJNZeOpMwdoeKbQQN",
-    image: 'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/Sister%20Storage%20Assets/Together%20Bundle-%203%20Large%202%20Medium%201%20Travel/1759979157485-d2rva.jpg',
-    badge: "SMART SET",
-    description: "SMART. SET. READY.",
-    rodCount: 17,
-    bundleContents: "3 Large (4 rods each) + 2 Medium (2 rods each) + 1 Small (1 rod)",
-    rating: 5,
-    reviews: 124
-  },
-  {
     id: "bundle-1",
     name: 'Starter Set',
     price: 90.00,
@@ -48,6 +34,20 @@ const buyCards = [
     bundleContents: "4 Large (4 rods each) + 2 Medium (2 rods each) + 2 Small (1 rod each)",
     rating: 5,
     reviews: 167
+  },
+  {
+    id: "bundle-2", 
+    name: 'Sister Staples',
+    price: 137.00,
+    originalPrice: null,
+    stripePriceId: "price_1SGKRxDkJNZeOpMwdoeKbQQN",
+    image: 'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/Sister%20Storage%20Assets/Together%20Bundle-%203%20Large%202%20Medium%201%20Travel/1759979157485-d2rva.jpg',
+    badge: "SMART SET",
+    description: "SMART. SET. READY.",
+    rodCount: 17,
+    bundleContents: "3 Large (4 rods each) + 2 Medium (2 rods each) + 1 Small (1 rod)",
+    rating: 5,
+    reviews: 124
   },
 ];
 
@@ -77,7 +77,7 @@ const BestSeller = () => {
           {buyCards.map((item, index) => (
             <Card key={item.id} className={cn(
               "group overflow-hidden border-none shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 bg-white relative",
-              index === 0 && "md:col-span-2"
+              index === 2 && "md:col-span-2"
             )}>
               
               {/* Product Image */}
