@@ -201,7 +201,7 @@ export const SisterStoriesCarousel = () => {
         >
           <CarouselContent className="ml-4 md:ml-8">
             {videoStories.map((story) => (
-              <CarouselItem key={story.id} className="px-8 basis-auto flex-shrink-0">
+              <CarouselItem key={story.id} className="px-8 basis-auto flex-shrink-0 flex justify-center items-center">
                 <Card 
                   className="overflow-hidden border-0 bg-transparent group cursor-pointer transition-transform duration-300 hover:scale-105 h-full"
                 >
