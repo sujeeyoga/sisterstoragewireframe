@@ -200,8 +200,13 @@ export const SisterStoriesCarousel = () => {
                   className="overflow-hidden border-0 bg-card/50 backdrop-blur-sm group cursor-pointer hover:bg-card/80 transition-all duration-300 h-full"
                 >
                   <div 
-                    className="relative aspect-[9/16] overflow-hidden bg-black"
+                    className="relative aspect-[9/16] overflow-hidden bg-black cursor-pointer"
                     data-video-id={story.id}
+                    onClick={(e) => {
+                      if (playingVideos.has(story.id)) {
+                        setUnmutedVideo(prev => prev === story.id ? null : story.id);
+                      }
+                    }}
                   >
                     {loadingVideos[story.id] && (
                       <div className="absolute inset-0 z-10 bg-black">
@@ -247,6 +252,17 @@ export const SisterStoriesCarousel = () => {
                       <source src={story.video} type="video/mp4" />
                       Your browser does not support the video tag.
                     </video>
+                    
+                    {/* Tap to unmute indicator */}
+                    {playingVideos.has(story.id) && unmutedVideo !== story.id && (
+                      <div 
+                        className="absolute bottom-20 left-0 right-0 flex justify-center pointer-events-none z-10"
+                      >
+                        <div className="bg-black/50 text-white text-xs px-3 py-1.5 rounded-full backdrop-blur-sm">
+                          Tap to unmute
+                        </div>
+                      </div>
+                    )}
                     
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/10 opacity-0 group-hover:opacity-100 transition-all duration-300" />
                     <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
