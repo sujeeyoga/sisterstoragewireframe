@@ -61,21 +61,21 @@ const BestSeller = () => {
   return (
     <section className="pt-[60px] md:pt-[120px] pb-8 md:pb-12 bg-gray-50">
       <div className="px-4 md:px-6 lg:px-8 max-w-screen-2xl mx-auto">
-        <div className="text-center max-w-3xl mx-auto mb-12 md:mb-16">
-          <span className="inline-block px-4 py-2 bg-[#E90064] text-white text-sm font-bold rounded-full mb-4">
+        <div className="text-center max-w-3xl mx-auto mb-16 md:mb-20">
+          <span className="inline-block px-6 py-2.5 bg-[hsl(var(--brand-pink))] text-white text-sm font-bold rounded-full mb-6 shadow-lg">
             Shop Now
           </span>
-          <h2 className="text-4xl md:text-6xl lg:text-7xl font-black text-gray-900 mb-6 leading-tight">
-            <span className="text-[#E90064]">BEST SELLERS</span>
+          <h2 className="text-4xl md:text-6xl lg:text-7xl font-black text-gray-900 mb-8 leading-[0.95] tracking-wide">
+            <span className="text-[hsl(var(--brand-pink))]">BEST SELLERS</span>
           </h2>
-          <p className="text-gray-600 text-lg leading-relaxed">
+          <p className="text-muted-foreground text-lg md:text-xl leading-relaxed font-light">
             Everyone's go-to organizers — and for good reason.
           </p>
         </div>
         
-        <div className="flex gap-4 md:gap-6 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide">
+        <div className="flex gap-6 md:gap-8 overflow-x-auto pb-6 snap-x snap-mandatory scrollbar-hide">
           {buyCards.map((item, index) => (
-            <Card key={item.id} className="group flex-shrink-0 w-[85vw] md:w-[400px] lg:w-[450px] overflow-hidden border-none shadow-md hover:shadow-xl transition-all duration-500 bg-white relative snap-center">
+            <Card key={item.id} className="group flex-shrink-0 w-[85vw] md:w-[400px] lg:w-[450px] overflow-hidden border-none shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 bg-white relative snap-center">
               
               {/* Product Image */}
               <Link to={`/shop/${item.id}`} className="block relative">
@@ -96,28 +96,28 @@ const BestSeller = () => {
                     decoding="async"
                     onLoad={() => handleImageLoad(item.id)}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
                   
                   {/* Card content overlay that appears on hover */}
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-6 pointer-events-none">
-                    <h3 className="text-white text-2xl font-bold mb-2">{item.name}</h3>
-                    <p className="text-white/90 text-sm mb-3">{item.description}</p>
-                    <p className="text-white text-xl font-semibold mb-4">${item.price}</p>
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-6 pointer-events-none">
+                    <h3 className="text-white text-2xl md:text-3xl font-black mb-3 tracking-tight">{item.name}</h3>
+                    <p className="text-white/95 text-base mb-4 font-medium">{item.description}</p>
+                    <p className="text-white text-2xl font-bold mb-5">${item.price}</p>
                     
                     {/* What's Included */}
-                    <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20 mb-3">
-                      <p className="text-xs font-bold text-white uppercase tracking-wider mb-1.5">What's Included</p>
-                      <p className="text-sm text-white/90">{item.bundleContents}</p>
+                    <div className="bg-white/15 backdrop-blur-md rounded-xl p-4 border border-white/25 mb-4 shadow-lg">
+                      <p className="text-xs font-bold text-white uppercase tracking-widest mb-2">What's Included</p>
+                      <p className="text-sm text-white/95 leading-relaxed">{item.bundleContents}</p>
                     </div>
                     
                     {/* Reviews */}
-                    <div className="flex items-center gap-2 mb-4">
-                      <div className="flex items-center gap-0.5">
+                    <div className="flex items-center gap-2.5 mb-5">
+                      <div className="flex items-center gap-1">
                         {[...Array(item.rating)].map((_, i) => (
                           <Star key={i} className="h-4 w-4 text-amber-400 fill-amber-400" />
                         ))}
                       </div>
-                      <span className="text-white/90 text-sm">({item.reviews} reviews)</span>
+                      <span className="text-white/95 text-sm font-medium">({item.reviews} reviews)</span>
                     </div>
                     
                     {/* Action Buttons */}
@@ -147,17 +147,17 @@ const BestSeller = () => {
           ))}
         </div>
         
-        <div className="text-center mt-12 md:mt-16">
+        <div className="text-center mt-16 md:mt-20">
           <Button 
             variant="outline" 
-            className="px-8 py-4 text-lg border-2 border-[#E90064] text-[#E90064] hover:bg-[#E90064] hover:text-white font-bold transition-all duration-300"
+            className="px-10 py-6 text-lg border-2 border-[hsl(var(--brand-pink))] text-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))] hover:text-white hover:scale-105 font-bold transition-all duration-300 shadow-lg"
             asChild
           >
             <Link to="/shop">
               View All Products
             </Link>
           </Button>
-          <p className="text-gray-500 text-sm mt-3">Free shipping on orders over $50 • 30-day returns</p>
+          <p className="text-muted-foreground text-sm md:text-base mt-4 font-light">Free shipping on orders over $50 • 30-day returns</p>
         </div>
       </div>
     </section>

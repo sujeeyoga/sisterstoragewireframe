@@ -24,23 +24,23 @@ const OrganizationGallery = () => {
     <section className="py-12 md:py-16 bg-white">
       <div className="container-custom">
         {/* Header */}
-        <div className="text-center mb-10">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-foreground mb-6 tracking-wide">
             ORGANIZATION MADE BEAUTIFUL
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto font-light">
             See how our storage solutions transform your space
           </p>
         </div>
 
         {/* Gallery Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
           {galleryImages.map((image, index) => (
-            <div key={index} className="relative aspect-square overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+            <div key={index} className="relative aspect-square overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 group">
               <PerformanceImage
                 src={image.src}
                 alt={image.alt}
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                className="w-full h-full object-cover group-hover:scale-110 group-hover:brightness-105 transition-all duration-500"
                 loading={index < 2 ? 'eager' : 'lazy'}
               />
             </div>

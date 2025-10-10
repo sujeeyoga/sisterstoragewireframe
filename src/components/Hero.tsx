@@ -13,20 +13,20 @@ const Hero = () => {
             {/* Badge */}
             <Badge 
               variant="secondary" 
-              className="bg-white text-[hsl(var(--brand-pink))] px-4 py-2 text-sm font-semibold w-fit"
+              className="bg-white text-[hsl(var(--brand-pink))] px-6 py-2.5 text-sm font-bold w-fit rounded-full shadow-lg hover:shadow-xl transition-shadow duration-300"
             >
               Beautifully Organized
             </Badge>
 
             {/* Headline */}
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-black leading-[0.95] tracking-tight">
               CULTURE /<br />
               WITHOUT<br />
               CLUTTER
             </h1>
 
             {/* Tagline */}
-            <p className="text-lg md:text-xl lg:text-2xl font-light max-w-xl">
+            <p className="text-lg md:text-xl lg:text-2xl font-light max-w-xl leading-relaxed">
               Made by sisters, for sisters. Clutter never had a place in our culture.
             </p>
 
@@ -34,7 +34,7 @@ const Hero = () => {
             <Link to="/shop">
               <Button 
                 size="lg"
-                className="bg-white text-[hsl(var(--brand-pink))] hover:bg-white/90 font-bold text-base px-8 py-6 w-fit"
+                className="bg-white text-[hsl(var(--brand-pink))] hover:bg-white/95 hover:scale-105 font-bold text-base px-8 py-6 w-fit shadow-xl transition-all duration-300"
               >
                 SHOP THE DROP
               </Button>
