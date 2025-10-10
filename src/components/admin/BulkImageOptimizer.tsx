@@ -36,6 +36,7 @@ export function BulkImageOptimizer() {
   const [maxDimension, setMaxDimension] = useState(1920);
   const [bucket, setBucket] = useState<'images' | 'sister'>('images');
   const [search, setSearch] = useState('');
+  const [minSize, setMinSize] = useState(0); // Minimum file size in KB
   const [previewImage, setPreviewImage] = useState<StorageImage | null>(null);
   const { toast } = useToast();
 
@@ -320,6 +321,17 @@ export function BulkImageOptimizer() {
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
+          <div className="flex items-center gap-2">
+            <Label>Min Size (KB)</Label>
+            <Input
+              type="number"
+              className="w-24"
+              value={minSize}
+              onChange={(e) => setMinSize(Number(e.target.value))}
+              min={0}
+              placeholder="0"
+            />
+          </div>
         </div>
         <div className="space-y-4">
           <div>
@@ -407,12 +419,16 @@ export function BulkImageOptimizer() {
         {images
           .filter((img) => {
             const q = search.toLowerCase();
-            return (
-              q.length === 0 ||
+            const sizeInKB = img.size / 1024;
+            
+            const matchesSearch = q.length === 0 ||
               img.name.toLowerCase().includes(q) ||
               img.path?.toLowerCase().includes(q) ||
-              img.label?.toLowerCase().includes(q)
-            );
+              img.label?.toLowerCase().includes(q);
+            
+            const matchesSize = minSize === 0 || sizeInKB >= minSize;
+            
+            return matchesSearch && matchesSize;
           })
           .map((image) => (
           <Card
