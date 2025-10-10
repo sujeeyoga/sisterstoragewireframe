@@ -4,11 +4,14 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
 import { useStoreDiscount } from "@/hooks/useStoreDiscount";
+import { useInventorySettings } from "@/hooks/useInventorySettings";
 import ProductImage from "@/components/product/ProductImage";
 import ProductInfo from "@/components/product/ProductInfo";
 import Breadcrumbs from "@/components/product/Breadcrumbs";
 import RelatedProducts from "@/components/product/RelatedProducts";
 import Layout from "@/components/layout/Layout";
+import { Badge } from "@/components/ui/badge";
+import { AlertTriangle, Package } from "lucide-react";
 
 import { products as shopProducts } from "@/data/products";
 import { productTaxonomyMap } from "@/data/product-taxonomy";
@@ -20,6 +23,7 @@ const ProductDetail = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { discount, applyDiscount } = useStoreDiscount();
+  const { lowStock, preorders, isLowStock, isOutOfStock } = useInventorySettings();
   
   // Find the product based on the URL parameter
   const product = shopProducts.find(p => p.id === productId);
@@ -49,7 +53,19 @@ const ProductDetail = () => {
   
   const discountedPrice = discount?.enabled ? applyDiscount(product.price) : product.price;
 
+  const showLowStockBadge = lowStock?.showBadge && isLowStock(product.stockQuantity);
+  const showPreorderBadge = preorders?.enabled && isOutOfStock(product.stockQuantity);
+  const canAddToCart = !isOutOfStock(product.stockQuantity) || preorders?.enabled;
+
   const handleAddToCart = () => {
+    if (!canAddToCart) {
+      toast({
+        title: "Out of Stock",
+        description: "This product is currently unavailable",
+        variant: "destructive",
+      });
+      return;
+    }
     addItem({
       id: product.id,
       name: product.name,
@@ -88,6 +104,24 @@ const ProductDetail = () => {
         <div className="container-custom">
           <Breadcrumbs productName={product.name} primaryCategorySlug={primaryCategorySlug} />
           
+          {/* Inventory Badges */}
+          {(showLowStockBadge || showPreorderBadge) && (
+            <div className="flex gap-2 mb-4">
+              {showLowStockBadge && (
+                <Badge variant="destructive" className="flex items-center gap-1">
+                  <AlertTriangle className="h-3 w-3" />
+                  Only {product.stockQuantity} left in stock!
+                </Badge>
+              )}
+              {showPreorderBadge && (
+                <Badge variant="secondary" className="flex items-center gap-1">
+                  <Package className="h-3 w-3" />
+                  {preorders?.badgeText || 'Pre-Order'} - Ships when available
+                </Badge>
+              )}
+            </div>
+          )}
+
           {/* Product Details */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
             <ProductImage 

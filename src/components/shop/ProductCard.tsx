@@ -2,13 +2,14 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ShoppingBag, Check, Bookmark, Tag } from "lucide-react";
+import { ShoppingBag, Check, Bookmark, Tag, AlertTriangle, Package } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useCart } from "@/contexts/CartContext";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { productTaxonomyMap } from "@/data/product-taxonomy";
 import { useStoreDiscount } from "@/hooks/useStoreDiscount";
+import { useInventorySettings } from "@/hooks/useInventorySettings";
 
 export interface Product {
   id: string;
@@ -25,6 +26,7 @@ export interface Product {
   newArrival?: boolean;
   limitedEdition?: boolean;
   stock: number;
+  stockQuantity?: number;
   sku?: string;
   caption?: string;
   funnelStage?: string;
@@ -38,11 +40,17 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const { addItem, setIsOpen } = useCart();
   const { toast } = useToast();
   const { discount, applyDiscount } = useStoreDiscount();
+  const { lowStock, preorders, isLowStock, isOutOfStock, shouldShowProduct } = useInventorySettings();
   const taxonomy = productTaxonomyMap[product.id] ?? undefined;
   const attrs = taxonomy?.attributes;
   
   const discountedPrice = discount?.enabled ? applyDiscount(product.price) : product.price;
   const hasDiscount = discount?.enabled && discount.percentage > 0;
+  
+  if (!shouldShowProduct(product.stockQuantity)) return null;
+  
+  const showLowStock = lowStock?.showBadge && isLowStock(product.stockQuantity);
+  const showPreorder = preorders?.enabled && isOutOfStock(product.stockQuantity);
   
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -115,18 +123,21 @@ const ProductCard = ({ product }: ProductCardProps) => {
                 {discount.percentage}% OFF
               </Badge>
             )}
-            {product.bestSeller && (
-              <Badge>Best Seller</Badge>
+            {showLowStock && (
+              <Badge variant="destructive" className="flex items-center gap-1">
+                <AlertTriangle className="h-3 w-3" />
+                Low Stock
+              </Badge>
             )}
-            {product.newArrival && (
-              <Badge variant="secondary">New Arrival</Badge>
+            {showPreorder && (
+              <Badge variant="secondary" className="flex items-center gap-1">
+                <Package className="h-3 w-3" />
+                {preorders?.badgeText}
+              </Badge>
             )}
-            {product.limitedEdition && (
-              <Badge variant="destructive">Limited Edition</Badge>
-            )}
-            {product.stock <= 5 && (
-              <Badge variant="outline">Only {product.stock} left</Badge>
-            )}
+            {product.bestSeller && <Badge>Best Seller</Badge>}
+            {product.newArrival && <Badge variant="secondary">New Arrival</Badge>}
+            {product.limitedEdition && <Badge variant="destructive">Limited Edition</Badge>}
           </div>
         </div>
         

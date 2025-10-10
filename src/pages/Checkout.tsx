@@ -1,21 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
+import { useStoreDiscount } from '@/hooks/useStoreDiscount';
+import { useGiftOptions } from '@/hooks/useGiftOptions';
+import { useNewsletterSettings } from '@/hooks/useNewsletterSettings';
+import { useAbandonedCart } from '@/hooks/useAbandonedCart';
+import { useDebounce } from '@/hooks/useDebounce';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft, ShoppingBag, CreditCard, Truck, Trash2, Tag, Loader2, Package } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-import Logo from '@/components/ui/Logo';
-import { useStoreDiscount } from '@/hooks/useStoreDiscount';
-import { useAbandonedCart } from '@/hooks/useAbandonedCart';
-import { supabase } from '@/integrations/supabase/client';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Textarea } from '@/components/ui/textarea';
 import AddressAutocomplete from '@/components/checkout/AddressAutocomplete';
-import { useDebounce } from '@/hooks/useDebounce';
+import Logo from '@/components/ui/Logo';
+import { ArrowLeft, ShoppingBag, CreditCard, Truck, Trash2, Tag, Loader2, Package, Gift, Mail } from 'lucide-react';
 
 // Province mapping and validation
 const PROVINCE_MAP: Record<string, string> = {
@@ -60,6 +64,8 @@ const Checkout = () => {
   const { items, subtotal, clearCart, removeItem } = useCart();
   const { toast } = useToast();
   const { discount, applyDiscount, getDiscountAmount } = useStoreDiscount();
+  const { giftOptions } = useGiftOptions();
+  const { newsletter } = useNewsletterSettings();
   
   const [isProcessing, setIsProcessing] = useState(false);
   const [isLoadingRates, setIsLoadingRates] = useState(false);
@@ -80,6 +86,10 @@ const Checkout = () => {
     province: '',
     postalCode: '',
   });
+
+  const [giftMessage, setGiftMessage] = useState("");
+  const [includeGiftWrapping, setIncludeGiftWrapping] = useState(false);
+  const [subscribeNewsletter, setSubscribeNewsletter] = useState(newsletter?.defaultChecked || false);
 
   // Track abandoned carts
   const { markAsRecovered } = useAbandonedCart(formData.email || undefined);
@@ -113,7 +123,8 @@ const Checkout = () => {
   const selectedRate = shippingRates.find(rate => rate.postage_type === selectedShippingRate);
   const shippingCost = selectedRate ? parseFloat(selectedRate.total) : 0;
   
-  const total = discountedSubtotal + taxAmount + shippingCost;
+  const giftWrappingFee = includeGiftWrapping && giftOptions?.wrappingEnabled ? (giftOptions.wrappingPrice || 0) : 0;
+  const total = discountedSubtotal + taxAmount + shippingCost + giftWrappingFee;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

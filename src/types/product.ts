@@ -53,6 +53,7 @@ export interface Product {
   newArrival?: boolean;
   limitedEdition?: boolean;
   stock: number;
+  stockQuantity?: number;
   inStock: boolean;
   sku?: string;
   slug: string;
@@ -100,6 +101,7 @@ export function transformProduct(dbProduct: any): Product {
     newArrival: metaData.newArrival || false,
     limitedEdition: metaData.limitedEdition || false,
     stock: dbProduct.stock_quantity || 0,
+    stockQuantity: dbProduct.stock_quantity || undefined,
     inStock: dbProduct.in_stock,
     sku: metaData.sku,
     slug: dbProduct.slug,
