@@ -18,7 +18,7 @@ const SaleBanner = ({}: SaleBannerProps) => {
   const duplicatedContent = [...contentItems, ...contentItems];
   return <div className="relative z-10 w-screen px-0 bg-black text-white py-3 overflow-hidden animate-slide-down" data-announcement aria-live="polite" style={{
     '--ss-slide-duration': '12s',
-    '--ss-marquee-duration': '20s'
+    '--ss-marquee-duration': '40s'
   } as React.CSSProperties}>
       <div className="flex items-center gap-8 animate-marquee-left">
         {duplicatedContent.map((item, index) => (
