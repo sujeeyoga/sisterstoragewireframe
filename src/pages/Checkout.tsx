@@ -567,7 +567,7 @@ const Checkout = () => {
                   </CardHeader>
                   <CardContent>
                     <RadioGroup value={selectedShippingRate} onValueChange={setSelectedShippingRate}>
-                      <div className="space-y-3">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                         {shippingRates.map((rate: any) => (
                           <div key={rate.postage_type} className="flex items-center space-x-2 border-2 rounded-lg p-4 hover:bg-gray-50 transition-colors hover:border-[hsl(var(--brand-pink))]">
                             <RadioGroupItem value={rate.postage_type} id={rate.postage_type} />
