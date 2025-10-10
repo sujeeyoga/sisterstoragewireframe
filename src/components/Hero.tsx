@@ -23,7 +23,7 @@ const Hero = () => {
             </Badge>
 
             {/* Headline */}
-            <h1 className="text-5xl font-black leading-[0.9] tracking-tighter">
+            <h1 className="text-[12rem] font-black leading-[0.9] tracking-tighter">
               CULTURE /<br />
               WITHOUT<br />
               CLUTTER.
