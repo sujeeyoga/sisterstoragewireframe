@@ -1,12 +1,15 @@
+import { lazy, Suspense } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Hero from "@/components/Hero";
-import BestSeller from "@/components/BestSeller";
-import CommunityStoriesCarousels from "@/components/community/CommunityStoriesCarousels";
 import FeaturedGrid from "@/components/FeaturedGrid";
-import PromotionalSection from "@/components/PromotionalSection";
-import ParallaxContainer from "@/components/ParallaxContainer";
 import SaleBanner from "@/components/SaleBanner";
+
+// Lazy load below-the-fold content
+const BestSeller = lazy(() => import("@/components/BestSeller"));
+const CommunityStoriesCarousels = lazy(() => import("@/components/community/CommunityStoriesCarousels"));
+const PromotionalSection = lazy(() => import("@/components/PromotionalSection"));
+const ParallaxContainer = lazy(() => import("@/components/ParallaxContainer"));
 
 const Index = () => {
   return (
@@ -25,7 +28,9 @@ const Index = () => {
       <Hero />
       
       {/* Parallax Transition - No additional spacing */}
-      <ParallaxContainer />
+      <Suspense fallback={<div className="h-32" />}>
+        <ParallaxContainer />
+      </Suspense>
       
       {/* Featured Grid - First major section after hero */}
       <section className="py-12 md:py-16 bg-white">
@@ -35,12 +40,18 @@ const Index = () => {
       </section>
       
       {/* Buy Cards - Major product section */}
-      <BestSeller />
+      <Suspense fallback={<div className="h-64" />}>
+        <BestSeller />
+      </Suspense>
       
       {/* Community Stories - Combined carousel section with testimonials */}
-      <CommunityStoriesCarousels />
+      <Suspense fallback={<div className="h-96" />}>
+        <CommunityStoriesCarousels />
+      </Suspense>
       
-      <PromotionalSection />
+      <Suspense fallback={<div className="h-64" />}>
+        <PromotionalSection />
+      </Suspense>
       
       {/* Footer */}
       <Footer />

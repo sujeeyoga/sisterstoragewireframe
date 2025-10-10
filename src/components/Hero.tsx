@@ -12,8 +12,11 @@ import heroMain32rem from '@/assets/hero-main-32rem.jpg';
 
 const Hero = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
-  const [galleryImages, setGalleryImages] = useState<string[]>([]);
-  const [isLoadingImages, setIsLoadingImages] = useState(true);
+  const [galleryImages, setGalleryImages] = useState<string[]>([
+    '/lovable-uploads/a501115d-f6f4-4f74-bdbe-1b73ba1bc625.png',
+    '/lovable-uploads/fb8da55a-c9bb-419e-a96f-175a667875e1.png',
+    '/lovable-uploads/4ef08ea3-3380-4111-b4a1-eb939cba275b.png'
+  ]);
 
   // Check for reduced motion preference
   const prefersReducedMotion = typeof window !== 'undefined' 
@@ -27,13 +30,11 @@ const Hero = () => {
     passive: true
   });
 
-  // Fetch gallery images from database or storage
+  // Fetch gallery images from database or storage (non-blocking)
   useEffect(() => {
     const fetchGalleryImages = async () => {
       try {
-        setIsLoadingImages(true);
-        
-        // First try to fetch from hero_images table
+        // Try to fetch from hero_images table
         const { data: heroData, error: heroError } = await supabase
           .from('hero_images')
           .select('image_url')
@@ -43,7 +44,6 @@ const Hero = () => {
 
         if (!heroError && heroData && heroData.length > 0) {
           setGalleryImages(heroData.map(img => img.image_url));
-          setIsLoadingImages(false);
           return;
         }
         
@@ -63,24 +63,9 @@ const Hero = () => {
             );
           
           setGalleryImages(imageUrls);
-        } else {
-          // Final fallback to static images
-          setGalleryImages([
-            '/lovable-uploads/a501115d-f6f4-4f74-bdbe-1b73ba1bc625.png',
-            '/lovable-uploads/fb8da55a-c9bb-419e-a96f-175a667875e1.png',
-            '/lovable-uploads/4ef08ea3-3380-4111-b4a1-eb939cba275b.png'
-          ]);
         }
       } catch (error) {
         console.error('Error fetching hero images:', error);
-        // Fallback to static images on error
-        setGalleryImages([
-          '/lovable-uploads/a501115d-f6f4-4f74-bdbe-1b73ba1bc625.png',
-          '/lovable-uploads/fb8da55a-c9bb-419e-a96f-175a667875e1.png',
-          '/lovable-uploads/4ef08ea3-3380-4111-b4a1-eb939cba275b.png'
-        ]);
-      } finally {
-        setIsLoadingImages(false);
       }
     };
 
@@ -117,28 +102,24 @@ const Hero = () => {
               />
               
               {/* XL Image Container - appears on desktop in right section, mobile after text */}
-              {!isLoadingImages && galleryImages.length > 0 && (
-                <>
-                  <div className="w-[48rem] max-w-full mx-auto lg:mx-0 lg:block hidden animate-breath-fade-up-6">
-                    <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden">
-                      <RotatingImageGallery
-                        images={galleryImages}
-                        className="w-full h-full rounded-2xl"
-                      />
-                    </div>
-                  </div>
-                  
-                  {/* Mobile version - shows after hero text */}
-                  <div className="w-[48rem] max-w-full mx-auto lg:hidden animate-breath-fade-up-6">
-                    <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden">
-                      <RotatingImageGallery
-                        images={galleryImages}
-                        className="w-full h-full rounded-2xl"
-                      />
-                    </div>
-                  </div>
-                </>
-              )}
+              <div className="w-[48rem] max-w-full mx-auto lg:mx-0 lg:block hidden animate-breath-fade-up-6">
+                <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden">
+                  <RotatingImageGallery
+                    images={galleryImages}
+                    className="w-full h-full rounded-2xl"
+                  />
+                </div>
+              </div>
+              
+              {/* Mobile version - shows after hero text */}
+              <div className="w-[48rem] max-w-full mx-auto lg:hidden animate-breath-fade-up-6">
+                <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden">
+                  <RotatingImageGallery
+                    images={galleryImages}
+                    className="w-full h-full rounded-2xl"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>
