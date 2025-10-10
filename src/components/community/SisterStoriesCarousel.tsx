@@ -21,9 +21,6 @@ export const SisterStoriesCarousel = () => {
   const [visibleVideos, setVisibleVideos] = useState<Set<string>>(new Set());
   const [playingVideos, setPlayingVideos] = useState<Set<string>>(new Set());
   const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({});
-  const carouselApiRef = useRef<any>(null);
-  const scrollDirectionRef = useRef<'right' | 'left'>('right');
-  const autoScrollIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   console.log('SisterStoriesCarousel: Rendering with', videoStories.length, 'videos, loading:', isLoading);
 
@@ -83,44 +80,7 @@ export const SisterStoriesCarousel = () => {
     fetchVideos();
   }, [fetchVideos]);
 
-  // Auto-scroll carousel back and forth
-  useEffect(() => {
-    if (!carouselApiRef.current || videoStories.length === 0) return;
-
-    const startAutoScroll = () => {
-      autoScrollIntervalRef.current = setInterval(() => {
-        if (!carouselApiRef.current) return;
-
-        const api = carouselApiRef.current;
-        
-        if (scrollDirectionRef.current === 'right') {
-          if (api.canScrollNext()) {
-            api.scrollNext();
-          } else {
-            // Reached the end, change direction
-            scrollDirectionRef.current = 'left';
-          }
-        } else {
-          if (api.canScrollPrev()) {
-            api.scrollPrev();
-          } else {
-            // Reached the beginning, change direction
-            scrollDirectionRef.current = 'right';
-          }
-        }
-      }, 3000); // Scroll every 3 seconds
-    };
-
-    startAutoScroll();
-
-    return () => {
-      if (autoScrollIntervalRef.current) {
-        clearInterval(autoScrollIntervalRef.current);
-      }
-    };
-  }, [carouselApiRef.current, videoStories]);
-
-  // Set up Intersection Observer for lazy loading and auto-scroll
+  // Set up Intersection Observer for lazy loading
   useEffect(() => {
     const options = {
       root: null,
@@ -142,16 +102,6 @@ export const SisterStoriesCarousel = () => {
               // Ignore autoplay errors on mobile/incognito
             });
           }
-
-          // Auto-scroll to next video when current comes into view
-          if (carouselApiRef.current && visibleVideos.size >= 5) {
-            const currentIndex = videoStories.findIndex(s => s.id === videoId);
-            if (currentIndex !== -1 && currentIndex < videoStories.length - 1) {
-              setTimeout(() => {
-                carouselApiRef.current?.scrollNext();
-              }, 2000); // Scroll after 2 seconds
-            }
-          }
         }
       });
     }, options);
@@ -161,7 +111,7 @@ export const SisterStoriesCarousel = () => {
     containers.forEach(container => observer.observe(container));
 
     return () => observer.disconnect();
-  }, [videoStories, visibleVideos]);
+  }, [videoStories]);
 
   const handleVideoLoad = (storyId: string) => {
     console.log(`Video ${storyId} loaded successfully`);
@@ -244,19 +194,14 @@ export const SisterStoriesCarousel = () => {
         <Carousel
           opts={{
             align: "start",
-            loop: true,
-            dragFree: false,
-            skipSnaps: false,
-            duration: 25,
+            loop: false,
+            dragFree: true,
           }}
           className="w-full"
-          setApi={(api) => {
-            carouselApiRef.current = api;
-          }}
         >
           <CarouselContent className="ml-4 md:ml-8">
             {videoStories.map((story) => (
-              <CarouselItem key={story.id} className="pl-4 basis-full md:basis-[calc(70%-1.5rem)] flex-shrink-0">
+              <CarouselItem key={story.id} className="pl-4 basis-auto flex-shrink-0">
                 <Card 
                   className="overflow-hidden border-0 bg-transparent group cursor-pointer transition-transform duration-300 hover:scale-105 h-full"
                 >
