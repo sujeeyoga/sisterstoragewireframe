@@ -79,18 +79,12 @@ const PromotionalSection = () => {
 
             {/* Image Side */}
             <div className="flex-1 min-h-[300px] lg:min-h-[500px] overflow-hidden bg-gray-100">
-              {promoImage ? (
-                <img 
-                  src={promoImage.image_url}
-                  alt={promoImage.alt_text || "Sister Storage promotional image"}
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <p className="text-gray-400">Loading image...</p>
-                </div>
-              )}
+              <img 
+                src="/lovable-uploads/c3b682be-b949-4e16-8aff-82cc8e879642.png"
+                alt="Sister holding bag of bangles"
+                className="w-full h-full object-cover"
+                loading="lazy"
+              />
             </div>
           </div>
         </div>
