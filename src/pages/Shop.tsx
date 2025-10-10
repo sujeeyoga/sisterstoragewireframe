@@ -17,7 +17,7 @@ const Shop = () => {
   return (
     <BaseLayout variant="standard" pageId="shop" spacing="normal">
       <div className="bg-background min-h-screen">
-        <div className="mt-[6px]">
+        <div className="mt-4">
           <DiscountBanner />
         </div>
         <HeroSection product={featuredProduct} />
