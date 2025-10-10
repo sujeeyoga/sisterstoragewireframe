@@ -77,15 +77,41 @@ const AddToCartBar: React.FC<AddToCartBarProps> = ({ product, className }) => {
     e?.preventDefault();
     e?.stopPropagation();
 
-    // Stripe path
+    // Stripe path - format as cart items for create-checkout
     if (product.stripePriceId) {
       if (isCheckoutLoading) return;
       setIsCheckoutLoading(true);
 
       try {
+        // Get user email if authenticated
+        const { data: { user } } = await supabase.auth.getUser();
+        const email = user?.email || 'guest@example.com';
+
         const { data, error } = await supabase.functions.invoke("create-checkout", {
-          body: { priceId: product.stripePriceId, quantity: 1 },
+          body: { 
+            items: [{
+              id: product.id,
+              name: product.name,
+              price: safePrice,
+              quantity: 1,
+            }],
+            customerEmail: email,
+            shippingAddress: {
+              name: user?.email || 'Guest',
+              address: '',
+              city: '',
+              state: '',
+              postal_code: '',
+              country: 'CA',
+            },
+            shippingCost: 0,
+            shippingMethod: 'Standard Shipping',
+            taxAmount: 0,
+            taxRate: 0,
+            province: 'ON',
+          },
         });
+        
         if (error) throw error;
 
         if (data?.url) {
@@ -99,7 +125,7 @@ const AddToCartBar: React.FC<AddToCartBarProps> = ({ product, className }) => {
         console.error("Checkout error:", error);
         toast({
           title: "Checkout Error",
-          description: "Failed to start checkout. Please try again.",
+          description: error instanceof Error ? error.message : "Failed to start checkout. Please try again.",
           variant: "destructive",
         });
       } finally {
