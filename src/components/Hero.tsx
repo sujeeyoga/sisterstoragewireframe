@@ -43,11 +43,11 @@ const Hero = () => {
 
           {/* Right Image */}
           <div className="flex items-center justify-center lg:justify-end">
-            <div className="relative w-full max-w-lg lg:max-w-xl">
+            <div className="relative w-full h-full min-h-[50vh] lg:min-h-[90vh]">
               <img
                 src={heroMainImage}
                 alt="Woman showcasing Sister Storage jewelry organization solution"
-                className="w-full h-auto rounded-2xl shadow-2xl"
+                className="w-full h-full object-cover rounded-2xl shadow-2xl"
                 loading="eager"
                 fetchPriority="high"
               />
