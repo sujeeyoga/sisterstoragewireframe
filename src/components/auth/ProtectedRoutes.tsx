@@ -7,36 +7,6 @@ interface ProtectedRoutesProps {
 }
 
 export const ProtectedRoutes = ({ children }: ProtectedRoutesProps) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-
-  useEffect(() => {
-    // Check current session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setIsAuthenticated(!!session);
-    });
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setIsAuthenticated(!!session);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  // Loading state
-  if (isAuthenticated === null) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse text-muted-foreground">Loading...</div>
-      </div>
-    );
-  }
-
-  // Show coming soon if not authenticated
-  if (!isAuthenticated) {
-    return <ComingSoon />;
-  }
-
-  // Show actual content if authenticated
+  // Coming Soon disabled - render content directly
   return <>{children}</>;
 };
