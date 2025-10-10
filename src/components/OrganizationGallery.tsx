@@ -40,12 +40,12 @@ const OrganizationGallery = () => {
               <PerformanceImage
                 src={image.src}
                 alt={image.alt}
-                className="w-full h-full object-cover block group-hover:scale-[1.02] group-hover:brightness-[1.02] transition-all duration-700 rounded-2xl"
+                className="w-full h-full object-cover object-bottom block group-hover:scale-[1.02] group-hover:brightness-[1.02] transition-all duration-700 rounded-2xl"
                 loading={index < 2 ? 'eager' : 'lazy'}
               />
               {/* Instagram Icon Overlay - Only on last card */}
               {index === galleryImages.length - 1 && (
-                <div className="absolute inset-0 flex items-end justify-center pb-4">
+                <div className="absolute inset-0 flex items-center justify-center">
                   <svg
                     className="w-32 h-32 md:w-64 md:h-64 text-white"
                     viewBox="0 0 24 24"
