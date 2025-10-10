@@ -15,7 +15,7 @@ const Hero = () => {
           src={heroMainImage}
           alt="Woman showcasing Sister Storage jewelry organization solution"
           className="w-full h-full object-cover"
-          style={{ transform: `translateY(-${offset}px)` }}
+          style={{ transform: `translateY(${offset}px)` }}
           loading="eager"
           fetchPriority="high"
         />
