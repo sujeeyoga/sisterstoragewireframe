@@ -87,7 +87,7 @@ const BestSeller = () => {
                     src={buyCards[0].image} 
                     alt={`${buyCards[0].name} - Bundle collection`}
                     className={cn(
-                      "w-full h-auto object-cover transition-all duration-700",
+                      "w-full h-auto object-cover transition-all duration-700 scale-125",
                       loadedImages[buyCards[0].id] ? "opacity-100" : "opacity-0"
                     )}
                     loading="eager"
@@ -181,7 +181,7 @@ const BestSeller = () => {
                   src={buyCards[2].image} 
                   alt={`${buyCards[2].name} - Bundle collection`}
                   className={cn(
-                    "w-full h-auto object-cover transition-all duration-700",
+                    "w-full h-auto object-cover transition-all duration-700 scale-125",
                     loadedImages[buyCards[2].id] ? "opacity-100" : "opacity-0"
                   )}
                   loading="eager"
