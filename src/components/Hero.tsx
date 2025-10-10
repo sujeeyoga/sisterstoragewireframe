@@ -57,7 +57,7 @@ const Hero = () => {
         </div>
 
         {/* Background Image */}
-        <div className="w-full h-screen -mt-32">
+        <div className="w-full h-[50vh]">
           <img
             src={heroMainImage}
             alt="Woman showcasing Sister Storage jewelry organization solution"
