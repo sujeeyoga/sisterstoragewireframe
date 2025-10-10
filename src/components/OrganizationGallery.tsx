@@ -34,7 +34,7 @@ const OrganizationGallery = () => {
         </div>
 
         {/* Gallery Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8 items-end">
           {galleryImages.map((image, index) => (
             <div key={index} className="relative rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 group">
               <PerformanceImage
