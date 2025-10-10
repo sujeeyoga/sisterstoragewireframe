@@ -91,7 +91,7 @@ const Hero = () => {
               <div className="col-span-1"></div>
               
               {/* Second column - text content */}
-              <div className="col-span-1 pr-4 md:pr-6 lg:pr-8">
+              <div className="col-span-1 pr-2 md:pr-3 lg:pr-4">
               <div className="flex flex-col gap-2 lg:gap-3 text-white">
                 {/* Badge */}
                 <Badge 
