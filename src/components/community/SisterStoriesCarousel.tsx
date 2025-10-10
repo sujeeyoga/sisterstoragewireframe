@@ -182,7 +182,7 @@ export const SisterStoriesCarousel = () => {
   }
 
   return (
-    <div className="w-full overflow-hidden relative">
+    <div className="w-full overflow-hidden relative flex justify-center items-center">
       {/* Left fade gradient - 5% */}
       <div className="absolute left-0 top-0 bottom-0 w-[5%] bg-gradient-to-r from-[hsl(var(--brand-gray))] to-transparent z-10 pointer-events-none" />
       
