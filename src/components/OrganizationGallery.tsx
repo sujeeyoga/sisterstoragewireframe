@@ -39,7 +39,7 @@ const OrganizationGallery = () => {
             <div 
               key={index} 
               className={`relative rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 group overflow-hidden animate-fade-in ${
-                index === 1 || index === 2 ? 'aspect-[1/1.5]' : 'aspect-square'
+                index === 1 || index === 2 ? 'aspect-[1/2]' : 'aspect-square'
               }`}
             >
               <PerformanceImage
