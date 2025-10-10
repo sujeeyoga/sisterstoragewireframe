@@ -85,8 +85,8 @@ const HomeImageOptimizer = () => {
           type: blob.type 
         });
 
-        // Optimize the image
-        const { blob: optimizedBlob } = await optimizeImage(file, 1920, 1920, 0.75);
+        // Optimize the image with high quality to preserve detail
+        const { blob: optimizedBlob } = await optimizeImage(file, 1920, 1920, 0.85);
         
         // Extract the storage path
         const pathParts = image.path.split('/');
