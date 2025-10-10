@@ -66,8 +66,21 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
     if (!el) return;
     
     const updateNavOffset = () => {
-      const height = el.getBoundingClientRect().height || 64;
-      const offset = Math.round(height + (isMobile ? 0 : 12));
+      const navEl = el;
+      const navHeight = navEl.getBoundingClientRect().height || 64;
+      const containerEl = navEl.parentElement as HTMLElement | null;
+      let containerPadding = 0;
+      if (containerEl) {
+        const styles = getComputedStyle(containerEl);
+        // Only account for padding when the wrapper is fixed (mobile)
+        if (styles.position === 'fixed') {
+          const pt = parseFloat(styles.paddingTop || '0');
+          const pb = parseFloat(styles.paddingBottom || '0');
+          containerPadding = (isNaN(pt) ? 0 : pt) + (isNaN(pb) ? 0 : pb);
+        }
+      }
+      const extraSpacing = isMobile ? 0 : 12; // retain subtle gap on desktop
+      const offset = Math.round(navHeight + containerPadding + extraSpacing);
       document.documentElement.style.setProperty('--sticky-nav-offset', `${offset}px`);
     };
     
