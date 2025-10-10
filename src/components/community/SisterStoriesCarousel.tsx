@@ -21,6 +21,7 @@ export const SisterStoriesCarousel = () => {
   const [visibleVideos, setVisibleVideos] = useState<Set<string>>(new Set());
   const [playingVideos, setPlayingVideos] = useState<Set<string>>(new Set());
   const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({});
+  const carouselApiRef = useRef<any>(null);
 
   console.log('SisterStoriesCarousel: Rendering with', videoStories.length, 'videos, loading:', isLoading);
 
@@ -80,7 +81,7 @@ export const SisterStoriesCarousel = () => {
     fetchVideos();
   }, [fetchVideos]);
 
-  // Set up Intersection Observer for lazy loading
+  // Set up Intersection Observer for lazy loading and auto-scroll
   useEffect(() => {
     const options = {
       root: null,
@@ -102,6 +103,16 @@ export const SisterStoriesCarousel = () => {
               // Ignore autoplay errors on mobile/incognito
             });
           }
+
+          // Auto-scroll to next video when current comes into view
+          if (carouselApiRef.current && visibleVideos.size >= 3) {
+            const currentIndex = videoStories.findIndex(s => s.id === videoId);
+            if (currentIndex !== -1 && currentIndex < videoStories.length - 1) {
+              setTimeout(() => {
+                carouselApiRef.current?.scrollNext();
+              }, 2000); // Scroll after 2 seconds
+            }
+          }
         }
       });
     }, options);
@@ -111,7 +122,7 @@ export const SisterStoriesCarousel = () => {
     containers.forEach(container => observer.observe(container));
 
     return () => observer.disconnect();
-  }, [videoStories]);
+  }, [videoStories, visibleVideos]);
 
   const handleVideoLoad = (storyId: string) => {
     console.log(`Video ${storyId} loaded successfully`);
@@ -192,10 +203,13 @@ export const SisterStoriesCarousel = () => {
             dragFree: true,
           }}
           className="w-full"
+          setApi={(api) => {
+            carouselApiRef.current = api;
+          }}
         >
           <CarouselContent className="ml-4 md:ml-8">
             {videoStories.map((story) => (
-              <CarouselItem key={story.id} className="pl-4 basis-[280px] md:basis-[320px]">
+              <CarouselItem key={story.id} className="pl-4 basis-[calc(33.33%-1rem)] md:basis-[calc(33.33%-1.5rem)]">
                 <Card 
                   className="overflow-hidden border-0 bg-card/50 backdrop-blur-sm group cursor-pointer hover:bg-card/80 transition-all duration-300 h-full"
                 >
