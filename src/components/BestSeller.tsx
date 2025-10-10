@@ -67,7 +67,7 @@ const BestSeller = () => {
           </p>
         </div>
         
-        <div className="flex flex-col md:flex-row gap-3 md:gap-4 max-w-7xl mx-auto mt-16 mb-8">
+        <div className="flex flex-col md:flex-row gap-3 md:gap-4 max-w-[900px] mx-auto mt-16 mb-8">
             <Card className="group border-none shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 bg-white relative rounded-3xl overflow-hidden aspect-square">
               <Link to={`/shop/${buyCards[0].id}`} className="block h-full">
                 <div className="relative group-hover:overflow-visible h-full">
