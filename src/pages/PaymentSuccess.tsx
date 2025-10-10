@@ -3,11 +3,18 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import BaseLayout from "@/components/layout/BaseLayout";
 import { Button } from "@/components/ui/button";
 import { CheckCircle } from "lucide-react";
+import { useCart } from "@/contexts/CartContext";
 
 const PaymentSuccess = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get("session_id");
+  const { clearCart } = useCart();
+
+  useEffect(() => {
+    // Clear cart on successful payment
+    clearCart();
+  }, [clearCart]);
 
   return (
     <BaseLayout variant="standard" pageId="payment-success">
