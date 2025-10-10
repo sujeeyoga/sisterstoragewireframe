@@ -76,9 +76,9 @@ const BestSeller = () => {
         <div className="grid md:grid-cols-2 gap-3 md:gap-4 max-w-7xl mx-auto rounded-3xl overflow-hidden my-8">
           {/* Left Column - First and Third Images Stacked */}
           <div className="flex flex-col gap-3 md:gap-4">
-            <Card className="group border-none shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 bg-white relative rounded-3xl overflow-hidden">
-              <Link to={`/shop/${buyCards[0].id}`} className="block">
-                <div className="relative group-hover:overflow-visible">
+            <Card className="group border-none shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 bg-white relative rounded-3xl overflow-hidden aspect-square">
+              <Link to={`/shop/${buyCards[0].id}`} className="block h-full">
+                <div className="relative group-hover:overflow-visible h-full">
                   {!loadedImages[buyCards[0].id] && (
                     <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse" />
                   )}
@@ -87,7 +87,7 @@ const BestSeller = () => {
                     src={buyCards[0].image} 
                     alt={`${buyCards[0].name} - Bundle collection`}
                     className={cn(
-                      "w-full h-auto object-cover transition-all duration-700 scale-125",
+                      "w-full h-full object-cover transition-all duration-700 scale-125",
                       loadedImages[buyCards[0].id] ? "opacity-100" : "opacity-0"
                     )}
                     loading="eager"
