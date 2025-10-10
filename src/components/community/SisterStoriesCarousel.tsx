@@ -246,6 +246,8 @@ export const SisterStoriesCarousel = () => {
             align: "start",
             loop: true,
             dragFree: false,
+            skipSnaps: false,
+            duration: 25,
           }}
           className="w-full"
           setApi={(api) => {
@@ -254,12 +256,12 @@ export const SisterStoriesCarousel = () => {
         >
           <CarouselContent className="ml-4 md:ml-8">
             {videoStories.map((story) => (
-              <CarouselItem key={story.id} className="pl-4 basis-full md:basis-[calc(70%-1.5rem)]">
+              <CarouselItem key={story.id} className="pl-4 basis-full md:basis-[calc(70%-1.5rem)] flex-shrink-0">
                 <Card 
-                  className="overflow-hidden border-0 bg-card/50 backdrop-blur-sm group cursor-pointer hover:bg-card/80 transition-all duration-300 h-full"
+                  className="overflow-hidden border-0 bg-transparent group cursor-pointer transition-transform duration-300 hover:scale-105 h-full"
                 >
                   <div 
-                    className="relative w-[350px] h-[540px] overflow-hidden bg-black cursor-pointer"
+                    className="relative w-[350px] h-[540px] overflow-hidden bg-black cursor-pointer rounded-2xl shadow-xl"
                     data-video-id={story.id}
                     onClick={(e) => {
                       if (playingVideos.has(story.id)) {
