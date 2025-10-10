@@ -8,6 +8,7 @@ interface ScreenLoaderProps {
 
 // Key images to preload
 const staticImagesToPreload = [
+  'https://sisterstorage.com/wp-content/uploads/2025/02/Sister-Storage-Logo-Main-300x112.png',
   'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/Starter-Set-2x-Large-1x-Medium-Box-1x-Small-Box/1759980850863-5xgr2a.jpg',
   'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/Sister%20Storage%20Assets/Together%20Bundle-%203%20Large%202%20Medium%201%20Travel/1759979157485-d2rva.jpg',
   'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/The-Complete-Family-Set-4-Large-2-Medium-2-Travel/1759980920453-ezsfq.jpg',
@@ -23,11 +24,13 @@ const ScreenLoader: React.FC<ScreenLoaderProps> = ({
   const [isVisible, setIsVisible] = useState(true);
   const [logoLoaded, setLogoLoaded] = useState(false);
   const [imagesLoaded, setImagesLoaded] = useState(0);
+  const [videosLoaded, setVideosLoaded] = useState(0);
   const [totalImages, setTotalImages] = useState(0);
+  const [totalVideos, setTotalVideos] = useState(0);
 
-  // Preload images
+  // Preload images and videos
   useEffect(() => {
-    const preloadImages = async () => {
+    const preloadAssets = async () => {
       // Fetch gallery images from database
       const { data: heroData } = await supabase
         .from('hero_images')
@@ -36,27 +39,54 @@ const ScreenLoader: React.FC<ScreenLoaderProps> = ({
         .eq('is_active', true)
         .order('display_order', { ascending: true });
 
+      // Fetch sister stories videos
+      const { data: storiesData } = await supabase
+        .from('sister_stories')
+        .select('video_url')
+        .eq('is_active', true)
+        .order('display_order', { ascending: true });
+
       const galleryImages = heroData?.map(img => img.image_url) || [];
       const allImages = [...staticImagesToPreload, ...galleryImages];
-      setTotalImages(allImages.length);
-
-      let loadedCount = 0;
+      const storyVideos = storiesData?.map(story => story.video_url) || [];
       
+      setTotalImages(allImages.length);
+      setTotalVideos(storyVideos.length);
+
+      let loadedImageCount = 0;
+      let loadedVideoCount = 0;
+      
+      // Preload images
       allImages.forEach(src => {
         const img = new Image();
         img.onload = () => {
-          loadedCount++;
-          setImagesLoaded(loadedCount);
+          loadedImageCount++;
+          setImagesLoaded(loadedImageCount);
         };
         img.onerror = () => {
-          loadedCount++;
-          setImagesLoaded(loadedCount);
+          loadedImageCount++;
+          setImagesLoaded(loadedImageCount);
         };
         img.src = src;
       });
+
+      // Preload videos (metadata only for faster loading)
+      storyVideos.forEach(src => {
+        const video = document.createElement('video');
+        video.preload = 'metadata';
+        video.onloadedmetadata = () => {
+          loadedVideoCount++;
+          setVideosLoaded(loadedVideoCount);
+        };
+        video.onerror = () => {
+          loadedVideoCount++;
+          setVideosLoaded(loadedVideoCount);
+        };
+        video.src = src;
+      });
     };
 
-    preloadImages();
+    preloadAssets();
   }, []);
 
   useEffect(() => {
@@ -144,8 +174,14 @@ const ScreenLoader: React.FC<ScreenLoaderProps> = ({
           </div>
           
           {/* Loading text with progress */}
-          <div className="text-sm text-muted-foreground font-medium tracking-wide">
-            {totalImages > 0 ? `Loading images... ${imagesLoaded}/${totalImages}` : 'Loading...'}
+          <div className="text-sm text-muted-foreground font-medium tracking-wide space-y-1">
+            {totalImages > 0 && (
+              <div>Images: {imagesLoaded}/{totalImages}</div>
+            )}
+            {totalVideos > 0 && (
+              <div>Videos: {videosLoaded}/{totalVideos}</div>
+            )}
+            {totalImages === 0 && totalVideos === 0 && <div>Loading...</div>}
           </div>
         </div>
         
