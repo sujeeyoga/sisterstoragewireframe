@@ -569,7 +569,11 @@ const Checkout = () => {
                     <RadioGroup value={selectedShippingRate} onValueChange={setSelectedShippingRate}>
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                         {shippingRates.map((rate: any) => (
-                          <div key={rate.postage_type} className="flex items-center space-x-2 border-2 rounded-lg p-4 hover:bg-gray-50 transition-colors hover:border-[hsl(var(--brand-pink))]">
+                          <div key={rate.postage_type} className={`flex items-center space-x-2 border-2 rounded-lg p-4 transition-colors hover:border-[hsl(var(--brand-pink))] ${
+                            selectedShippingRate === rate.postage_type 
+                              ? 'bg-[hsl(var(--brand-pink))]/10 border-[hsl(var(--brand-pink))] shadow-md' 
+                              : 'hover:bg-gray-50'
+                          }`}>
                             <RadioGroupItem value={rate.postage_type} id={rate.postage_type} />
                             <Label htmlFor={rate.postage_type} className="flex-1 cursor-pointer">
                               <div className="flex justify-between items-center">
