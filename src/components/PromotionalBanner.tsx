@@ -7,7 +7,7 @@ const PromotionalBanner = () => {
     <section className="py-16 md:py-20 bg-[hsl(var(--brand-pink))]">
       <div className="container-custom">
         <Card className="overflow-hidden border-none shadow-2xl">
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center p-10 md:p-14 bg-white">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center py-10 md:py-14 px-4 md:px-6 bg-white">
             {/* Left Content */}
             <div className="space-y-8">
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-foreground leading-[1.1] tracking-tight">
