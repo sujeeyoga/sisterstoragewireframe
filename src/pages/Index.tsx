@@ -25,7 +25,7 @@ const Index = () => {
       {/* Hero Section - Full Height with Nav Overlay */}
       <div className="relative">
         {/* Navigation - Scrolls with page */}
-        <div className="absolute top-0 left-0 right-0 z-50 bg-[hsl(var(--brand-pink))] py-3">
+        <div className="absolute top-0 left-0 right-0 z-50 py-3">
           <nav className="w-[min(1100px,calc(100%-40px))] mx-auto rounded-[25px] bg-white shadow-lg px-4 py-2">
             <Navbar position={0} />
           </nav>
