@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -27,6 +28,22 @@ serve(async (req) => {
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2025-08-27.basil",
     });
+
+    // Initialize Supabase client to check for store discounts
+    const supabaseClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+    );
+
+    // Fetch store-wide discount
+    const { data: discountData } = await supabaseClient
+      .from('store_settings')
+      .select('*')
+      .eq('setting_key', 'store_wide_discount')
+      .eq('enabled', true)
+      .single();
+
+    console.log('Store discount:', discountData);
 
     // Check if customer exists
     let customerId;
@@ -78,8 +95,8 @@ serve(async (req) => {
 
     console.log('Creating Stripe checkout session');
 
-    // Create checkout session
-    const session = await stripe.checkout.sessions.create({
+    // Prepare session parameters
+    const sessionParams: any = {
       customer: customerId,
       customer_email: customerId ? undefined : customerEmail,
       line_items: lineItems,
@@ -90,7 +107,38 @@ serve(async (req) => {
         shippingAddress: shippingAddress ? JSON.stringify(shippingAddress) : '',
         shippingMethod: shippingMethod || '',
       },
-    });
+    };
+
+    // Apply discount if available
+    if (discountData?.setting_value?.percentage) {
+      const discountPercentage = discountData.setting_value.percentage;
+      console.log('Applying discount:', discountPercentage, '%');
+      
+      // Create or get a coupon for this discount
+      const couponId = `store-discount-${discountPercentage}`;
+      
+      try {
+        // Try to retrieve existing coupon
+        await stripe.coupons.retrieve(couponId);
+        console.log('Using existing coupon:', couponId);
+      } catch {
+        // Create new coupon if it doesn't exist
+        await stripe.coupons.create({
+          id: couponId,
+          name: discountData.setting_value.name || 'Store Discount',
+          percent_off: discountPercentage,
+          duration: 'once',
+        });
+        console.log('Created new coupon:', couponId);
+      }
+      
+      sessionParams.discounts = [{
+        coupon: couponId
+      }];
+    }
+
+    // Create checkout session
+    const session = await stripe.checkout.sessions.create(sessionParams);
 
     console.log('Checkout session created:', session.id);
 
