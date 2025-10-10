@@ -21,7 +21,7 @@ interface AddToCartBarProps {
 }
 
 const AddToCartBar: React.FC<AddToCartBarProps> = ({ product, className }) => {
-  const { addItem, setIsOpen, clearCart } = useCart();
+  const { addItem, setIsOpen } = useCart();
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -77,9 +77,7 @@ const AddToCartBar: React.FC<AddToCartBarProps> = ({ product, className }) => {
     e?.stopPropagation();
 
     try {
-      // Clear cart and add only this item for immediate checkout
-      clearCart();
-      
+      // Add item to cart and proceed to checkout
       addItem({
         id: String(product.id),
         name: String(product.name ?? "Untitled"),
