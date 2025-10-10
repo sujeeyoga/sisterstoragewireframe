@@ -5,7 +5,7 @@ import heroMainImage from '@/assets/hero-main-32rem.jpg';
 
 const Hero = () => {
   return (
-    <section className="relative w-full bg-[hsl(var(--brand-pink))] overflow-hidden" aria-label="Hero section">
+    <section className="relative w-full bg-[hsl(var(--brand-pink))] overflow-hidden pt-[80px]" aria-label="Hero section">
       <div className="relative grid lg:grid-cols-2 gap-0 min-h-[85vh] lg:min-h-[90vh]">
         {/* Left Content - Contained */}
         <div className="flex items-center">
