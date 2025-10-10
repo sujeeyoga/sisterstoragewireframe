@@ -34,7 +34,7 @@ const OrganizationGallery = () => {
         </div>
 
         {/* Gallery Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 items-center">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-2 items-center">
           {galleryImages.map((image, index) => (
             <div 
               key={index} 
