@@ -7,7 +7,7 @@ const ParallaxContainer = () => {
   useViewportHeight();
   const isMobile = useIsMobile();
 
-  const imageUrl = "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/b0963b41-dee1-4ccb-b8bc-7144c4ea6285.jpg";
+  const imageUrl = "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/b0963b41-dee1-4ccb-b8bc-7144c4ea6285.webp";
 
   return (
     <section 
