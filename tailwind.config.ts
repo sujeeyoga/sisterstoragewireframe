@@ -119,6 +119,14 @@ export default {
 				sm: 'calc(var(--radius) - 4px)'
 			},
 			keyframes: {
+				'wipe-in-right': {
+					'0%': {
+						clipPath: 'inset(0 100% 0 0)',
+					},
+					'100%': {
+						clipPath: 'inset(0 0 0 0)',
+					},
+				},
 				'accordion-down': {
 					from: {
 						height: '0'

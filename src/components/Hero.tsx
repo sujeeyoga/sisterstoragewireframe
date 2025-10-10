@@ -5,10 +5,21 @@ import heroMainImage from '@/assets/hero-main-32rem.jpg';
 
 const Hero = () => {
   return (
-    <section className="relative w-full bg-[hsl(var(--brand-pink))] overflow-hidden" aria-label="Hero section">
-      <div className="relative grid lg:grid-cols-2 gap-0 min-h-screen lg:min-h-screen">
-        {/* Left Content - Contained */}
-        <div className="flex items-center">
+    <section className="relative w-full overflow-hidden min-h-screen" aria-label="Hero section">
+      {/* Full Background Image */}
+      <div className="absolute inset-0 w-full h-full">
+        <img
+          src={heroMainImage}
+          alt="Woman showcasing Sister Storage jewelry organization solution"
+          className="w-full h-full object-cover"
+          loading="eager"
+          fetchPriority="high"
+        />
+      </div>
+
+      {/* Pink Content Section - Wipes in from left */}
+      <div className="relative min-h-screen flex items-center">
+        <div className="bg-[hsl(var(--brand-pink))] animate-[wipe-in-right_1.2s_ease-out] lg:max-w-[55%]">
           <div className="w-full max-w-[550px] ml-auto px-8 md:px-12 lg:px-0 lg:pr-12 py-12 lg:py-16">
             <div className="flex flex-col space-y-6 lg:space-y-8 text-white">
               {/* Badge */}
@@ -52,17 +63,6 @@ const Hero = () => {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Right Image - Full Width Background */}
-        <div className="relative h-screen w-full bg-gray-100">
-          <img
-            src={heroMainImage}
-            alt="Woman showcasing Sister Storage jewelry organization solution"
-            className="w-full h-full object-cover"
-            loading="eager"
-            fetchPriority="high"
-          />
         </div>
       </div>
     </section>
