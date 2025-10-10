@@ -155,20 +155,30 @@ const Checkout = () => {
     setValidationErrors(prev => ({ ...prev, province: '' }));
   };
 
-  // Debounce address fields
-  const debouncedAddress = useDebounce(formData.address, 500);
-  const debouncedCity = useDebounce(formData.city, 500);
-  const debouncedProvince = useDebounce(formData.province, 500);
-  const debouncedPostalCode = useDebounce(formData.postalCode, 500);
+  // Debounce address fields for shipping calculation
+  const debouncedAddress = useDebounce(formData.address, 300);
+  const debouncedCity = useDebounce(formData.city, 300);
+  const debouncedProvince = useDebounce(formData.province, 300);
+  const debouncedPostalCode = useDebounce(formData.postalCode, 300);
 
   // Auto-calculate shipping when address is complete
   useEffect(() => {
     const hasCompleteAddress = debouncedAddress && debouncedCity && debouncedProvince && debouncedPostalCode;
     
+    console.log('Debounced address check:', {
+      hasCompleteAddress,
+      address: debouncedAddress,
+      city: debouncedCity,
+      province: debouncedProvince,
+      postalCode: debouncedPostalCode,
+      isLoadingRates
+    });
+    
     if (hasCompleteAddress && !isLoadingRates) {
+      console.log('Auto-triggering shipping calculation from debounced effect');
       calculateShipping();
     }
-  }, [debouncedAddress, debouncedCity, debouncedProvince, debouncedPostalCode]);
+  }, [debouncedAddress, debouncedCity, debouncedProvince, debouncedPostalCode, isLoadingRates]);
 
   // Handle address selection from autocomplete
   const handleAddressSelect = (address: {
@@ -195,6 +205,7 @@ const Checkout = () => {
       postalCode: formattedPostalCode
     });
     
+    // Update form data - the debounced useEffect will trigger shipping calculation
     setFormData(prev => ({
       ...prev,
       address: address.address,
@@ -205,12 +216,6 @@ const Checkout = () => {
     
     // Clear any validation errors
     setValidationErrors({ province: '', postalCode: '' });
-    
-    // Trigger shipping calculation after state update
-    setTimeout(() => {
-      console.log('Triggering shipping calculation...');
-      calculateShipping();
-    }, 200);
   };
 
   // Calculate shipping when address is complete
