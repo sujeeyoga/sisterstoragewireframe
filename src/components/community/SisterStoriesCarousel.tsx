@@ -76,8 +76,8 @@ export const SisterStoriesCarousel = () => {
   useEffect(() => {
     const options = {
       root: null,
-      rootMargin: '50px',
-      threshold: 0.1
+      rootMargin: '100px',
+      threshold: 0.3
     };
 
     const observer = new IntersectionObserver((entries) => {
@@ -88,20 +88,10 @@ export const SisterStoriesCarousel = () => {
         if (entry.isIntersecting) {
           setVisibleVideos(prev => new Set([...prev, videoId]));
           const video = videoRefs.current[videoId];
-          if (video && video.paused) {
+          if (video && video.paused && video.readyState >= 2) {
             video.play().catch(() => {
               // Ignore autoplay errors
             });
-          }
-        } else {
-          setVisibleVideos(prev => {
-            const newSet = new Set(prev);
-            newSet.delete(videoId);
-            return newSet;
-          });
-          const video = videoRefs.current[videoId];
-          if (video && !video.paused) {
-            video.pause();
           }
         }
       });
@@ -165,14 +155,14 @@ export const SisterStoriesCarousel = () => {
                   onClick={() => handleVideoClick(story.id)}
                 >
                   <div 
-                    className="relative aspect-[9/16] overflow-hidden"
+                    className="relative aspect-[9/16] overflow-hidden bg-black"
                     data-video-id={story.id}
                   >
                     {loadingVideos[story.id] && (
-                      <div className="absolute inset-0 z-10">
-                        <Skeleton className="w-full h-full" />
+                      <div className="absolute inset-0 z-10 bg-black">
+                        <Skeleton className="w-full h-full bg-gray-800" />
                         <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="animate-pulse text-primary">Loading...</div>
+                          <div className="animate-pulse text-white">Loading...</div>
                         </div>
                       </div>
                     )}
@@ -185,8 +175,10 @@ export const SisterStoriesCarousel = () => {
                       loop
                       playsInline
                       preload="metadata"
+                      autoPlay
                       onLoadedData={() => handleVideoLoad(story.id)}
                       className="w-full h-full object-cover transition-all duration-300 group-hover:scale-105"
+                      style={{ backgroundColor: '#000' }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/10 opacity-0 group-hover:opacity-100 transition-all duration-300" />
                     <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
