@@ -73,7 +73,7 @@ const Hero = () => {
       {/* Desktop: Overlapping Layout */}
       <div className="hidden md:block">
         {/* Full Background Image with Parallax */}
-        <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 w-[90%] h-[130%] rounded-[25%] overflow-hidden">
+        <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 w-[90%] h-[130%] rounded-b-[25%] overflow-hidden">
           <img
             src={heroMainImage}
             alt="Woman showcasing Sister Storage jewelry organization solution"
