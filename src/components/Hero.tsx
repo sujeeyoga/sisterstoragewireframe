@@ -87,34 +87,34 @@ const Hero = () => {
         <div className="relative h-[90vh] flex items-center justify-start pt-0">
           <div className="bg-[hsl(var(--brand-pink))] flex items-center justify-end animate-[slide-left_1.2s_ease-out_forwards] w-full md:w-[60vw] lg:w-[55vw] overflow-hidden shadow-2xl rounded-r-[3rem]">
             <div className="w-full max-w-[600px] pr-4 md:pr-6 lg:pr-8 pl-6 md:pl-8 lg:pl-12 py-8 md:py-12 lg:py-16">
-              <div className="flex flex-col space-y-2 lg:space-y-3 text-white">
+              <div className="flex flex-col gap-4 lg:gap-6 text-white">
                 {/* Badge */}
                 <Badge 
                   variant="secondary" 
-                  className="bg-white text-[hsl(var(--brand-pink))] px-4 py-2 text-sm font-bold w-fit rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                  className="bg-white text-[hsl(var(--brand-pink))] px-5 py-2.5 text-xs md:text-sm font-bold w-fit rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
                 >
                   Beautifully Organized
                 </Badge>
 
                 {/* Headline */}
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-black leading-[0.9] tracking-tighter">
+                <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black leading-[0.9] tracking-tighter">
                   CULTURE /<br />
                   WITHOUT<br />
                   CLUTTER.
                 </h1>
 
                 {/* Main Tagline */}
-                <p className="text-2xl md:text-3xl lg:text-4xl font-bold leading-[1.1] tracking-tight uppercase">
+                <p className="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold leading-tight tracking-tight uppercase">
                   BROUGHT TO YOU BY SISTERS<br />
                   WHO GET IT.
                 </p>
 
                 {/* CTA Button */}
-                <div className="pt-1">
+                <div className="pt-2">
                   <Link to="/shop">
                     <Button 
                       size="lg"
-                      className="bg-white text-[hsl(var(--brand-pink))] hover:bg-white/95 hover:scale-105 font-bold text-base px-6 py-4 w-fit shadow-2xl transition-all duration-300 rounded-full"
+                      className="bg-white text-[hsl(var(--brand-pink))] hover:bg-white/90 hover:scale-105 font-bold text-sm md:text-base px-8 py-5 w-fit shadow-2xl transition-all duration-300 rounded-full"
                     >
                       SHOP THE DROP
                     </Button>
@@ -122,8 +122,8 @@ const Hero = () => {
                 </div>
 
                 {/* Bottom Text */}
-                <div className="pt-2 opacity-95">
-                  <p className="text-base md:text-lg font-light leading-relaxed tracking-wide">
+                <div className="pt-1 opacity-90">
+                  <p className="text-sm md:text-base lg:text-lg font-light leading-relaxed tracking-wide">
                     Made by sisters, for sisters.<br />
                     Clutter never had a place in our culture.
                   </p>
