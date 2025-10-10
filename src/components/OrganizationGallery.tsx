@@ -40,7 +40,7 @@ const OrganizationGallery = () => {
               <PerformanceImage
                 src={image.src}
                 alt={image.alt}
-                className="w-full h-auto group-hover:scale-[1.02] group-hover:brightness-[1.02] transition-all duration-700 rounded-2xl"
+                className="w-full h-auto block group-hover:scale-[1.02] group-hover:brightness-[1.02] transition-all duration-700 rounded-2xl"
                 loading={index < 2 ? 'eager' : 'lazy'}
               />
             </div>
