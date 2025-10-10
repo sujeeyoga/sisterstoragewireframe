@@ -52,7 +52,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
         {/* Left: Logo */}
         <div className="justify-self-start shrink-0">
           <EnhancedLogo 
-            size={isSticky ? "2xl" : "3xl"} 
+            size="4xl"
             scrolled={isSticky}
             className="animate-fade-in transition-all duration-300"
             loading="eager"
