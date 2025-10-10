@@ -86,40 +86,40 @@ const Hero = () => {
         {/* Pink Content Section - Wipes in from left then grows vertically */}
         <div className="relative h-[90vh] flex items-center justify-start pt-0">
           <div className="bg-[hsl(var(--brand-pink))] flex items-center animate-[slide-left_1.2s_ease-out_forwards] w-full md:w-[60vw] lg:w-[55vw] overflow-hidden shadow-2xl rounded-r-[3rem]">
-            <div className="grid grid-cols-2 w-full py-8 md:py-12 lg:py-16">
+            <div className="grid grid-cols-2 w-full py-4 md:py-6 lg:py-8">
               {/* First column - empty spacer */}
               <div className="col-span-1"></div>
               
               {/* Second column - text content */}
               <div className="col-span-1 pr-4 md:pr-6 lg:pr-8">
-              <div className="flex flex-col gap-4 lg:gap-6 text-white">
+              <div className="flex flex-col gap-2 lg:gap-3 text-white">
                 {/* Badge */}
                 <Badge 
                   variant="secondary" 
-                  className="bg-white text-[hsl(var(--brand-pink))] px-5 py-2.5 text-xs md:text-sm font-bold w-fit rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                  className="bg-white text-[hsl(var(--brand-pink))] px-3 py-1.5 text-[10px] md:text-xs font-bold w-fit rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
                 >
                   Beautifully Organized
                 </Badge>
 
                 {/* Headline */}
-                <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black leading-[0.9] tracking-tighter">
+                <h1 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-black leading-[0.9] tracking-tighter">
                   CULTURE /<br />
                   WITHOUT<br />
                   CLUTTER.
                 </h1>
 
                 {/* Main Tagline */}
-                <p className="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold leading-tight tracking-tight uppercase">
+                <p className="text-sm md:text-base lg:text-xl xl:text-2xl font-bold leading-tight tracking-tight uppercase">
                   BROUGHT TO YOU BY SISTERS<br />
                   WHO GET IT.
                 </p>
 
                 {/* CTA Button */}
-                <div className="pt-2">
+                <div className="pt-1">
                   <Link to="/shop">
                     <Button 
-                      size="lg"
-                      className="bg-white text-[hsl(var(--brand-pink))] hover:bg-white/90 hover:scale-105 font-bold text-sm md:text-base px-8 py-5 w-fit shadow-2xl transition-all duration-300 rounded-full"
+                      size="sm"
+                      className="bg-white text-[hsl(var(--brand-pink))] hover:bg-white/90 hover:scale-105 font-bold text-xs md:text-sm px-5 py-3 w-fit shadow-2xl transition-all duration-300 rounded-full"
                     >
                       SHOP THE DROP
                     </Button>
@@ -127,8 +127,8 @@ const Hero = () => {
                 </div>
 
                 {/* Bottom Text */}
-                <div className="pt-1 opacity-90">
-                  <p className="text-sm md:text-base lg:text-lg font-light leading-relaxed tracking-wide">
+                <div className="pt-0.5 opacity-90">
+                  <p className="text-xs md:text-sm lg:text-base font-light leading-relaxed tracking-wide">
                     Made by sisters, for sisters.<br />
                     Clutter never had a place in our culture.
                   </p>
