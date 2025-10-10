@@ -199,7 +199,7 @@ export const SisterStoriesCarousel = () => {
           }}
           className="w-full"
         >
-          <CarouselContent className="ml-4 md:ml-8">
+          <CarouselContent className="flex justify-center items-center">
             {videoStories.map((story) => (
               <CarouselItem key={story.id} className="px-8 basis-auto flex-shrink-0 flex justify-center items-center">
                 <Card 
