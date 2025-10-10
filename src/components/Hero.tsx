@@ -6,10 +6,10 @@ import heroMainImage from '@/assets/hero-main-32rem.jpg';
 const Hero = () => {
   return (
     <section className="relative w-full bg-[hsl(var(--brand-pink))]" aria-label="Hero section">
-      <div className="container-custom">
+      <div className="w-[min(1100px,calc(100%-40px))] mx-auto">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 min-h-[80vh] lg:min-h-[90vh] items-center py-12 lg:py-16">
           {/* Left Content */}
-          <div className="flex flex-col justify-center space-y-6 lg:space-y-8 text-white ml-4 md:ml-8 lg:ml-12">
+          <div className="flex flex-col justify-center space-y-6 lg:space-y-8 text-white px-4">
             {/* Badge */}
             <Badge 
               variant="secondary" 
