@@ -37,9 +37,9 @@ const EnhancedLogo: React.FC<LogoProps> = ({
     '4xl': 'h-14 sm:h-16 md:h-18 lg:h-20 xl:h-22 2xl:h-24'
   };
 
-  // Enhanced scroll scaling for smoother transitions
-  const scale = scrolled ? 0.88 : 1;
-  const opacity = imageLoaded ? (scrolled ? 0.92 : 1) : 0;
+  // No scaling - keep logo at 100%
+  const scale = 1;
+  const opacity = imageLoaded ? 1 : 0;
 
   const handleImageLoad = () => {
     setImageLoaded(true);
