@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PerformanceImage from "@/components/ui/performance-image";
 
 interface ProductImageProps {
   images?: string[];
@@ -24,10 +25,11 @@ const ProductImage = ({ images, color, name }: ProductImageProps) => {
     <div className="space-y-4">
       {/* Main Image */}
       <div className="rounded-lg overflow-hidden aspect-square">
-        <img 
+        <PerformanceImage 
           src={images[selectedImage]} 
           alt={`${name} - Image ${selectedImage + 1}`}
           className="w-full h-full object-cover"
+          loading="eager"
         />
       </div>
       
@@ -44,10 +46,11 @@ const ProductImage = ({ images, color, name }: ProductImageProps) => {
                   : 'border-transparent hover:border-gray-300'
               }`}
             >
-              <img 
+              <PerformanceImage 
                 src={image} 
                 alt={`${name} - Thumbnail ${index + 1}`}
                 className="w-full h-full object-cover"
+                loading="lazy"
               />
             </button>
           ))}
