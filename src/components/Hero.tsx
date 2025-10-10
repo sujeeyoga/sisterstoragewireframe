@@ -85,8 +85,13 @@ const Hero = () => {
 
         {/* Pink Content Section - Wipes in from left then grows vertically */}
         <div className="relative h-[90vh] flex items-center justify-start pt-0">
-          <div className="bg-[hsl(var(--brand-pink))] flex items-center justify-end animate-[slide-left_1.2s_ease-out_forwards] w-full md:w-[60vw] lg:w-[55vw] overflow-hidden shadow-2xl rounded-r-[3rem]">
-            <div className="w-full max-w-[600px] pr-4 md:pr-6 lg:pr-8 pl-6 md:pl-8 lg:pl-12 py-8 md:py-12 lg:py-16">
+          <div className="bg-[hsl(var(--brand-pink))] flex items-center animate-[slide-left_1.2s_ease-out_forwards] w-full md:w-[60vw] lg:w-[55vw] overflow-hidden shadow-2xl rounded-r-[3rem]">
+            <div className="grid grid-cols-2 w-full py-8 md:py-12 lg:py-16">
+              {/* First column - empty spacer */}
+              <div className="col-span-1"></div>
+              
+              {/* Second column - text content */}
+              <div className="col-span-1 pr-4 md:pr-6 lg:pr-8">
               <div className="flex flex-col gap-4 lg:gap-6 text-white">
                 {/* Badge */}
                 <Badge 
@@ -128,6 +133,7 @@ const Hero = () => {
                     Clutter never had a place in our culture.
                   </p>
                 </div>
+              </div>
               </div>
             </div>
           </div>
