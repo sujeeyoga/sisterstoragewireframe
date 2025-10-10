@@ -103,12 +103,6 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
       types: ['address']
     });
 
-    // Ensure input remains editable
-    if (inputRef.current) {
-      inputRef.current.readOnly = false;
-      inputRef.current.disabled = false;
-    }
-
     // Handle place selection
     const handlePlaceChanged = () => {
       const place = autocompleteRef.current?.getPlace();
@@ -209,21 +203,6 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
         placeholder="Start typing your address..."
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        onFocus={() => {
-          if (inputRef.current) {
-            inputRef.current.readOnly = false;
-            inputRef.current.disabled = false;
-          }
-        }}
-        onClick={() => {
-          if (inputRef.current) {
-            inputRef.current.readOnly = false;
-            inputRef.current.disabled = false;
-          }
-        }}
-        inputMode="text"
-        autoCorrect="off"
-        spellCheck={false}
         className={error ? 'border-red-500' : ''}
         autoComplete="off"
       />
