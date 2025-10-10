@@ -9,7 +9,7 @@ const Hero = () => {
       <div className="container-custom">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 min-h-[80vh] lg:min-h-[90vh] items-center py-12 lg:py-16">
           {/* Left Content */}
-          <div className="flex flex-col justify-center space-y-6 lg:space-y-8 text-white">
+          <div className="flex flex-col justify-center space-y-6 lg:space-y-8 text-white ml-4 md:ml-8 lg:ml-12">
             {/* Badge */}
             <Badge 
               variant="secondary" 
