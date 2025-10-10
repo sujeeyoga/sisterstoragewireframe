@@ -93,7 +93,7 @@ const BestSeller = () => {
                     onLoad={() => handleImageLoad(buyCards[0].id)}
                   />
                   
-                  <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="absolute inset-0 flex items-center justify-center animate-fade-in">
                     <h3 className="text-sister-pink text-4xl md:text-5xl font-poppins font-thin">{buyCards[0].name}</h3>
                   </div>
                   
@@ -142,7 +142,7 @@ const BestSeller = () => {
                     onLoad={() => handleImageLoad(buyCards[1].id)}
                   />
                   
-                  <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="absolute inset-0 flex items-center justify-center animate-fade-in">
                     <h3 className="text-sister-pink text-4xl md:text-5xl font-poppins font-thin">{buyCards[1].name}</h3>
                   </div>
                   
