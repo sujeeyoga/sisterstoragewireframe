@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
+import logoImage from '@/assets/sister-storage-logo-new.jpg';
 
 interface LogoProps {
   className?: string;
@@ -74,7 +75,7 @@ const EnhancedLogo: React.FC<LogoProps> = ({
         
         {/* Main logo image */}
         <img 
-          src="https://sisterstorage.com/wp-content/uploads/2025/02/Sister-Storage-Logo-Main-300x112.png"
+          src={logoImage}
           alt="Sister Storage - Elegant jewelry and keepsake storage solutions"
           className={cn(
             sizeClasses[size],

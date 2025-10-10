@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import logoImage from '@/assets/sister-storage-logo-new.jpg';
 
 interface ScreenLoaderProps {
   onComplete?: () => void;
@@ -8,7 +9,6 @@ interface ScreenLoaderProps {
 
 // Key images to preload
 const staticImagesToPreload = [
-  'https://sisterstorage.com/wp-content/uploads/2025/02/Sister-Storage-Logo-Main-300x112.png',
   'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/Starter-Set-2x-Large-1x-Medium-Box-1x-Small-Box/1759980850863-5xgr2a.jpg',
   'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/Sister%20Storage%20Assets/Together%20Bundle-%203%20Large%202%20Medium%201%20Travel/1759979157485-d2rva.jpg',
   'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/The-Complete-Family-Set-4-Large-2-Medium-2-Travel/1759980920453-ezsfq.jpg',
@@ -144,7 +144,7 @@ const ScreenLoader: React.FC<ScreenLoaderProps> = ({
           }`}
         >
           <img 
-            src="https://sisterstorage.com/wp-content/uploads/2025/02/Sister-Storage-Logo-Main-300x112.png"
+            src={logoImage}
             alt="Sister Storage"
             className="h-16 md:h-20 lg:h-24 w-auto drop-shadow-xl"
             loading="eager"
