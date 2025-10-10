@@ -20,7 +20,7 @@ const Hero = () => {
       {/* Pink Content Section - Wipes in from left */}
       <div className="relative min-h-screen flex items-center">
         <div className="bg-[hsl(var(--brand-pink))] animate-[wipe-in-right_1.2s_ease-out] lg:max-w-[55%]">
-          <div className="w-full max-w-[550px] ml-auto px-8 md:px-12 lg:px-0 lg:pr-12 py-12 lg:py-16">
+          <div className="w-full max-w-[550px] ml-auto pl-[max(20px,calc((100vw-1100px)/2+20px))] pr-8 md:pr-12 lg:pr-12 py-12 lg:py-16">
             <div className="flex flex-col space-y-6 lg:space-y-8 text-white">
               {/* Badge */}
               <Badge 
