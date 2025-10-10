@@ -59,7 +59,7 @@ const BestSeller = () => {
   };
 
   return (
-    <section className="pt-[100px] md:pt-[300px] pb-12 md:pb-16 bg-gradient-to-br from-gray-50 to-white">
+    <section className="pt-[60px] md:pt-[120px] pb-8 md:pb-12 bg-gradient-to-br from-gray-50 to-white">
       <div className="px-4 md:px-6 lg:px-8 max-w-screen-2xl mx-auto">
         <div className="text-center max-w-3xl mx-auto mb-12 md:mb-16">
           <span className="inline-block px-4 py-2 bg-[#E90064] text-white text-sm font-bold rounded-full mb-4">
