@@ -57,11 +57,12 @@ const Hero = () => {
         </div>
 
         {/* Background Image */}
-        <div className="w-full h-[50vh]">
+        <div className="w-full h-[50vh] overflow-hidden">
           <img
             src={heroMainImage}
             alt="Woman showcasing Sister Storage jewelry organization solution"
             className="w-full h-full object-cover"
+            style={{ transform: `translateY(${offset}px)` }}
             loading="eager"
             fetchPriority="high"
           />
