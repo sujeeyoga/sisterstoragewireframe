@@ -1,80 +1,52 @@
+import { useEffect, useState } from 'react';
 import { SisterBrand } from '@/config/sister-brand.config';
 import AnimatedText from '@/components/ui/animated-text';
 import MobileGallery from './MobileGallery';
+import { supabase } from '@/integrations/supabase/client';
+import { Loader2 } from 'lucide-react';
 
 const BrandVoice = () => {
-  const gridImages = [
-    {
-      id: 1,
-      src: 'https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=400&h=500&fit=crop',
-      alt: 'Organized workspace with laptop',
-      link: '/brand/content/workspace-organization',
-      title: 'Workspace Organization'
-    },
-    {
-      id: 2,
-      src: 'https://images.unsplash.com/photo-1721322800607-8c38375eef04?w=400&h=600&fit=crop',
-      alt: 'Modern living room design',
-      link: '/brand/content/living-spaces',
-      title: 'Living Spaces'
-    },
-    {
-      id: 3,
-      src: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=450&fit=crop',
-      alt: 'Woman organizing with laptop',
-      link: '/brand/content/digital-organization',
-      title: 'Digital Organization'
-    },
-    {
-      id: 4,
-      src: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&h=550&fit=crop',
-      alt: 'Collaborative workspace',
-      link: '/brand/content/collaborative-spaces',
-      title: 'Collaborative Spaces'
-    },
-    {
-      id: 5,
-      src: 'https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b?w=400&h=400&fit=crop',
-      alt: 'Creative inspiration',
-      link: '/brand/content/creative-inspiration',
-      title: 'Creative Inspiration'
-    },
-    {
-      id: 6,
-      src: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400&h=500&fit=crop',
-      alt: 'Organized desk setup',
-      link: '/brand/content/desk-organization',
-      title: 'Desk Organization'
-    },
-    {
-      id: 7,
-      src: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=400&h=450&fit=crop',
-      alt: 'Modern technology workspace',
-      link: '/brand/content/tech-organization',
-      title: 'Tech Organization'
-    },
-    {
-      id: 8,
-      src: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&h=600&fit=crop',
-      alt: 'Organized systems and processes',
-      link: '/brand/content/system-design',
-      title: 'System Design'
-    },
-    {
-      id: 9,
-      src: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&h=500&fit=crop',
-      alt: 'Digital workspace management',
-      link: '/brand/content/digital-workspace',
-      title: 'Digital Workspace'
-    },
-    {
-      id: 10,
-      src: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&h=450&fit=crop',
-      alt: 'Productive work environment',
-      link: '/brand/content/productivity-spaces',
-      title: 'Productivity Spaces'
-    }
-  ];
+  const [gridImages, setGridImages] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchImages = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('uploaded_images')
+          .select('id, file_path, file_name')
+          .order('created_at', { ascending: false })
+          .limit(10);
+
+        if (error) throw error;
+
+        if (data) {
+          const images = data.map((img, index) => ({
+            id: index + 1,
+            src: supabase.storage.from('images').getPublicUrl(img.file_path).data.publicUrl,
+            alt: img.file_name,
+            link: `/brand/content/${img.file_name.toLowerCase().replace(/\s+/g, '-')}`,
+            title: img.file_name.replace(/\.[^/.]+$/, '')
+          }));
+          setGridImages(images);
+        }
+      } catch (error) {
+        console.error('Error fetching images:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchImages();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-white">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center text-center text-white">
