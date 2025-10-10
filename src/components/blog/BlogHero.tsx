@@ -18,10 +18,7 @@ const BlogHero = ({ selectedCategory, setSelectedCategory, categories }: BlogHer
         
         {/* Categories */}
         <div className="flex flex-wrap gap-3 justify-center mb-8">
-          {categories.filter(cat => cat !== "Collections" && !cat.includes("Drawer") && !cat.includes("Archive") 
-              && !cat.includes("Shelf") && !cat.includes("Girl") && !cat.includes("Signal")
-              && !cat.includes("Home") && !cat.includes("Clutter") && !cat.includes("Made") 
-              && !cat.includes("Gift") && !cat.includes("Stacked")).map((category) => (
+          {categories.map((category) => (
             <button
               key={category}
               onClick={() => setSelectedCategory(category)}
