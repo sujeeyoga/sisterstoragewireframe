@@ -22,6 +22,8 @@ export const SisterStoriesCarousel = () => {
   const [playingVideos, setPlayingVideos] = useState<Set<string>>(new Set());
   const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({});
   const carouselApiRef = useRef<any>(null);
+  const scrollDirectionRef = useRef<'right' | 'left'>('right');
+  const autoScrollIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   console.log('SisterStoriesCarousel: Rendering with', videoStories.length, 'videos, loading:', isLoading);
 
@@ -80,6 +82,43 @@ export const SisterStoriesCarousel = () => {
   useEffect(() => {
     fetchVideos();
   }, [fetchVideos]);
+
+  // Auto-scroll carousel back and forth
+  useEffect(() => {
+    if (!carouselApiRef.current || videoStories.length === 0) return;
+
+    const startAutoScroll = () => {
+      autoScrollIntervalRef.current = setInterval(() => {
+        if (!carouselApiRef.current) return;
+
+        const api = carouselApiRef.current;
+        
+        if (scrollDirectionRef.current === 'right') {
+          if (api.canScrollNext()) {
+            api.scrollNext();
+          } else {
+            // Reached the end, change direction
+            scrollDirectionRef.current = 'left';
+          }
+        } else {
+          if (api.canScrollPrev()) {
+            api.scrollPrev();
+          } else {
+            // Reached the beginning, change direction
+            scrollDirectionRef.current = 'right';
+          }
+        }
+      }, 3000); // Scroll every 3 seconds
+    };
+
+    startAutoScroll();
+
+    return () => {
+      if (autoScrollIntervalRef.current) {
+        clearInterval(autoScrollIntervalRef.current);
+      }
+    };
+  }, [carouselApiRef.current, videoStories]);
 
   // Set up Intersection Observer for lazy loading and auto-scroll
   useEffect(() => {
