@@ -83,6 +83,7 @@ const Checkout = () => {
     phone: '',
   });
   const [validationErrors, setValidationErrors] = useState({
+    address: '',
     province: '',
     postalCode: '',
   });
@@ -131,7 +132,7 @@ const Checkout = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
     
     // Clear validation errors when user types
-    if (name === 'province' || name === 'postalCode') {
+    if (name === 'address' || name === 'province' || name === 'postalCode') {
       setValidationErrors(prev => ({ ...prev, [name]: '' }));
     }
   };
@@ -217,7 +218,7 @@ const Checkout = () => {
     }));
     
     // Clear any validation errors
-    setValidationErrors({ province: '', postalCode: '' });
+    setValidationErrors({ address: '', province: '', postalCode: '' });
   };
 
   // Calculate shipping when address is complete
@@ -517,6 +518,7 @@ const Checkout = () => {
                     value={formData.address}
                     onChange={(value) => handleInputChange({ target: { name: 'address', value } } as any)}
                     onAddressSelect={handleAddressSelect}
+                    error={validationErrors.address}
                   />
                   <div className="grid grid-cols-3 gap-4">
                     <div>

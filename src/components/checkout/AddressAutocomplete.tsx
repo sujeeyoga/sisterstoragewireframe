@@ -103,6 +103,12 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
       types: ['address']
     });
 
+    // Ensure input remains editable
+    if (inputRef.current) {
+      inputRef.current.readOnly = false;
+      inputRef.current.disabled = false;
+    }
+
     // Handle place selection
     const handlePlaceChanged = () => {
       const place = autocompleteRef.current?.getPlace();
