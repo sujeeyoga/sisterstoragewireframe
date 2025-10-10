@@ -29,6 +29,7 @@ import ComingSoon from "./pages/ComingSoon";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import AdminSetup from "./pages/AdminSetup";
 import { ProtectedRoutes } from "./components/auth/ProtectedRoutes";
+import { AdminProtectedRoute } from "./components/auth/AdminProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -59,7 +60,7 @@ const App = () => {
               <Route path="/content/:slug" element={<ProtectedRoutes><PageTransition><ContentPage /></PageTransition></ProtectedRoutes>} />
               <Route path="/hero-gallery-demo" element={<ProtectedRoutes><PageTransition><HeroGalleryDemo /></PageTransition></ProtectedRoutes>} />
               <Route path="/our-story" element={<ProtectedRoutes><PageTransition><OurStory /></PageTransition></ProtectedRoutes>} />
-              <Route path="/admin/*" element={<Admin />} />
+              <Route path="/admin/*" element={<AdminProtectedRoute><Admin /></AdminProtectedRoute>} />
               <Route path="/contact" element={<ProtectedRoutes><PageTransition><Contact /></PageTransition></ProtectedRoutes>} />
               <Route path="/gift" element={<ProtectedRoutes><PageTransition><Gift /></PageTransition></ProtectedRoutes>} />
               <Route path="/privacy-policy" element={<ProtectedRoutes><PageTransition><PrivacyPolicy /></PageTransition></ProtectedRoutes>} />

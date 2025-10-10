@@ -1,5 +1,7 @@
-import { LayoutDashboard, Package, Layout, RefreshCw, Settings, Users, ShoppingCart, Image, FolderOpen, FileText, Sparkles, Truck, Video, Film } from 'lucide-react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { LayoutDashboard, Package, Layout, RefreshCw, Settings, Users, ShoppingCart, Image, FolderOpen, FileText, Sparkles, Truck, Video, Film, LogOut } from 'lucide-react';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 import {
   Sidebar,
   SidebarContent,
@@ -11,7 +13,9 @@ import {
   SidebarMenuItem,
   SidebarTrigger,
   useSidebar,
+  SidebarFooter,
 } from '@/components/ui/sidebar';
+import { Button } from '@/components/ui/button';
 
 const menuItems = [
   { title: 'Dashboard', url: '/admin', icon: LayoutDashboard, end: true },
@@ -34,11 +38,31 @@ const menuItems = [
 export function AdminSidebar() {
   const { state, setOpenMobile } = useSidebar();
   const location = useLocation();
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const isCollapsed = state === 'collapsed';
 
   const handleNavClick = () => {
     // Close sidebar on mobile when nav item is clicked
     setOpenMobile(false);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      toast({
+        title: "Logged Out",
+        description: "You have been successfully logged out.",
+      });
+      navigate('/admin-setup');
+    } catch (error) {
+      console.error('Logout error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to logout. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
@@ -76,6 +100,17 @@ export function AdminSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+
+      <SidebarFooter className="border-t p-4">
+        <Button
+          variant="ghost"
+          onClick={handleLogout}
+          className="w-full justify-start text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+        >
+          <LogOut className="h-4 w-4 mr-2" />
+          {!isCollapsed && <span>Logout</span>}
+        </Button>
+      </SidebarFooter>
     </Sidebar>
   );
 }
