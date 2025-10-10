@@ -9,6 +9,7 @@ import { useDebounce } from '@/hooks/useDebounce';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
+import { loadStripe } from '@stripe/stripe-js';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -377,30 +378,30 @@ const Checkout = () => {
 
       console.log('Stripe checkout response:', data);
 
-      if (data?.url) {
-        console.log('Redirecting to Stripe:', data.url);
+      if (data?.sessionId) {
+        console.log('Redirecting to Stripe checkout:', data.sessionId);
         
         // Mark cart as recovered before redirecting to payment
         await markAsRecovered();
         
-        // Open Stripe Checkout in a new tab (works best in preview environment)
-        const stripeWindow = window.open(data.url, '_blank', 'noopener,noreferrer');
+        // Use Stripe.js to redirect - more reliable on mobile browsers
+        const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || 'pk_test_51R0nZTRr65hCrEBwUlDPR9xQDI93cKJmEpz7GSmZ6JycAm0nOqq3M0DLQgEqsGG2wNZYpXCqyVFsgpW1Ei6nACmy00FJ5OmaPB');
         
-        if (!stripeWindow) {
-          toast({
-            title: "Pop-up Blocked",
-            description: "Please allow pop-ups for this site to proceed to checkout.",
-            variant: "destructive",
-          });
-        } else {
-          toast({
-            title: "Redirecting to Stripe",
-            description: "Opening secure checkout in a new tab...",
-          });
+        if (!stripe) {
+          throw new Error('Failed to load Stripe');
+        }
+
+        // @ts-ignore - redirectToCheckout exists in @stripe/stripe-js but types may be outdated
+        const { error: redirectError } = await stripe.redirectToCheckout({
+          sessionId: data.sessionId
+        });
+
+        if (redirectError) {
+          throw redirectError;
         }
       } else {
-        console.error('No URL in response:', data);
-        throw new Error('No checkout URL received');
+        console.error('No session ID in response:', data);
+        throw new Error('No checkout session ID received');
       }
     } catch (error) {
       console.error('Checkout error:', error);

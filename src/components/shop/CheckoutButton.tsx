@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { ShoppingCart } from "lucide-react";
+import { loadStripe } from "@stripe/stripe-js";
 
 interface CheckoutButtonProps {
   priceId?: string;
@@ -39,8 +40,21 @@ export const CheckoutButton = ({
 
       if (error) throw error;
 
-      if (data?.url) {
-        window.open(data.url, '_blank');
+      if (data?.sessionId) {
+        const stripeInstance = await loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || 'pk_test_51R0nZTRr65hCrEBwUlDPR9xQDI93cKJmEpz7GSmZ6JycAm0nOqq3M0DLQgEqsGG2wNZYpXCqyVFsgpW1Ei6nACmy00FJ5OmaPB');
+        
+        if (!stripeInstance) {
+          throw new Error('Failed to load Stripe');
+        }
+
+        // @ts-ignore - redirectToCheckout exists in @stripe/stripe-js but types may be outdated
+        const { error: redirectError } = await stripeInstance.redirectToCheckout({
+          sessionId: data.sessionId
+        });
+
+        if (redirectError) {
+          throw redirectError;
+        }
       }
     } catch (error) {
       console.error('Checkout error:', error);
