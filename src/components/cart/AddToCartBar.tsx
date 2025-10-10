@@ -85,6 +85,9 @@ const AddToCartBar: React.FC<AddToCartBarProps> = ({ product, className }) => {
         image: imageSrc,
       });
       
+      // Ensure cart drawer is closed
+      setIsOpen(false);
+      
       // Navigate to checkout/shipping info page
       navigate("/checkout");
     } catch (error) {
