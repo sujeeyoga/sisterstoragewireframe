@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
 import { useStoreDiscount } from '@/hooks/useStoreDiscount';
@@ -160,25 +160,27 @@ const Checkout = () => {
   const debouncedCity = useDebounce(formData.city, 300);
   const debouncedProvince = useDebounce(formData.province, 300);
   const debouncedPostalCode = useDebounce(formData.postalCode, 300);
+  const lastRatesKeyRef = useRef<string>('');
 
-  // Auto-calculate shipping when address is complete
+  // Auto-calculate shipping when address is complete and has changed
   useEffect(() => {
-    const hasCompleteAddress = debouncedAddress && debouncedCity && debouncedProvince && debouncedPostalCode;
-    
+    const hasCompleteAddress = Boolean(
+      debouncedAddress && debouncedCity && debouncedProvince && debouncedPostalCode
+    );
+
+    const key = `${debouncedAddress}|${debouncedCity}|${debouncedProvince}|${debouncedPostalCode}`;
+
     console.log('Debounced address check:', {
       hasCompleteAddress,
-      address: debouncedAddress,
-      city: debouncedCity,
-      province: debouncedProvince,
-      postalCode: debouncedPostalCode,
-      isLoadingRates
+      key,
     });
-    
-    if (hasCompleteAddress && !isLoadingRates) {
-      console.log('Auto-triggering shipping calculation from debounced effect');
+
+    if (hasCompleteAddress && key !== lastRatesKeyRef.current) {
+      lastRatesKeyRef.current = key;
+      console.log('Auto-triggering shipping calculation (new address key)');
       calculateShipping();
     }
-  }, [debouncedAddress, debouncedCity, debouncedProvince, debouncedPostalCode, isLoadingRates]);
+  }, [debouncedAddress, debouncedCity, debouncedProvince, debouncedPostalCode]);
 
   // Handle address selection from autocomplete
   const handleAddressSelect = (address: {
