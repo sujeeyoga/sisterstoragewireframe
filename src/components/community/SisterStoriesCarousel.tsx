@@ -52,6 +52,12 @@ export const SisterStoriesCarousel = () => {
         description: story.description || 'Organization journey shared with love'
       }));
 
+      console.log('SisterStoriesCarousel: Fetched video URLs:', stories.map(s => ({ 
+        id: s.id.substring(0, 8), 
+        url: s.video,
+        title: s.title 
+      })));
+
       setVideoStories(stories);
       
       // Initialize loading state for all videos
@@ -107,6 +113,7 @@ export const SisterStoriesCarousel = () => {
   }, [videoStories]);
 
   const handleVideoLoad = (storyId: string) => {
+    console.log(`Video ${storyId} loaded successfully`);
     setLoadingVideos(prev => ({ ...prev, [storyId]: false }));
   };
 
