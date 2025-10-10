@@ -17,7 +17,6 @@ interface MediaItemType {
 const MediaItem = ({ item, className, onClick }: { item: MediaItemType, className?: string, onClick?: () => void }) => {
     const videoRef = useRef<HTMLVideoElement>(null); // Reference for video element
     const [isInView, setIsInView] = useState(false); // To track if video is in the viewport
-    const [isBuffering, setIsBuffering] = useState(true);  // To track if video is buffering
 
     // Intersection Observer to detect if video is in view and play/pause accordingly
     useEffect(() => {
@@ -51,21 +50,7 @@ const MediaItem = ({ item, className, onClick }: { item: MediaItemType, classNam
             if (!videoRef.current || !isInView || !mounted) return; // Don't play if video is not in view or component is unmounted
 
             try {
-                if (videoRef.current.readyState >= 3) {
-                    setIsBuffering(false);
-                    await videoRef.current.play(); // Play the video if it's ready
-                } else {
-                    setIsBuffering(true);
-                    await new Promise((resolve) => {
-                        if (videoRef.current) {
-                            videoRef.current.oncanplay = resolve; // Wait until the video can start playing
-                        }
-                    });
-                    if (mounted) {
-                        setIsBuffering(false);
-                        await videoRef.current.play();
-                    }
-                }
+                await videoRef.current.play();
             } catch (error) {
                 console.warn("Video playback failed:", error);
             }
@@ -99,9 +84,8 @@ const MediaItem = ({ item, className, onClick }: { item: MediaItemType, classNam
                     playsInline
                     muted
                     loop
-                    preload="auto"
+                    preload="metadata"
                     style={{
-                        opacity: isBuffering ? 0.8 : 1,
                         transition: 'opacity 0.2s',
                         transform: 'translateZ(0)',
                         willChange: 'transform',
@@ -109,11 +93,6 @@ const MediaItem = ({ item, className, onClick }: { item: MediaItemType, classNam
                 >
                     <source src={item.url} type="video/mp4" />
                 </video>
-                {isBuffering && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/10">
-                        <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    </div>
-                )}
             </div>
         );
     }

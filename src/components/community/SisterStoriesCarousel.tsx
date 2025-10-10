@@ -208,14 +208,6 @@ export const SisterStoriesCarousel = () => {
                       }
                     }}
                   >
-                    {loadingVideos[story.id] && (
-                      <div className="absolute inset-0 z-10 bg-black">
-                        <Skeleton className="w-full h-full bg-gray-800" />
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="animate-pulse text-white">Loading...</div>
-                        </div>
-                      </div>
-                    )}
                     <video
                       ref={(el) => {
                         videoRefs.current[story.id] = el;
@@ -227,7 +219,7 @@ export const SisterStoriesCarousel = () => {
                       playsInline
                       webkit-playsinline="true"
                       x5-playsinline="true"
-                      preload="auto"
+                      preload="metadata"
                       controlsList="nodownload nofullscreen noremoteplayback"
                       disablePictureInPicture
                       onLoadedData={() => handleVideoLoad(story.id)}
