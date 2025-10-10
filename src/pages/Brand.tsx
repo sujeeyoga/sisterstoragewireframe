@@ -9,6 +9,7 @@ import BrandTypography from "@/components/brand/BrandTypography";
 import BrandComponents from "@/components/brand/BrandComponents";
 import BrandApplications from "@/components/brand/BrandApplications";
 import BrandVoice from "@/components/brand/BrandVoice";
+import BrandGallery from "@/components/brand/BrandGallery";
 import ContentPage from "./ContentPage";
 
 const BrandMain = () => {
@@ -33,6 +34,10 @@ const BrandMain = () => {
         
         <Section spacing="lg" width="contained" background="gray">
           <BrandApplications />
+        </Section>
+        
+        <Section spacing="lg" width="contained" background="white">
+          <BrandGallery />
         </Section>
         
         <Section spacing="xl" width="full" background="dark">
