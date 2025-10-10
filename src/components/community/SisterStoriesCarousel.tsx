@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
@@ -17,6 +17,8 @@ export const SisterStoriesCarousel = () => {
   const [loadingVideos, setLoadingVideos] = useState<Record<string, boolean>>({});
   const [isLoading, setIsLoading] = useState(true);
   const [unmutedVideo, setUnmutedVideo] = useState<string | null>(null);
+  const [visibleVideos, setVisibleVideos] = useState<Set<string>>(new Set());
+  const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({});
 
   console.log('SisterStoriesCarousel: Rendering with', videoStories.length, 'videos, loading:', isLoading);
 
@@ -70,6 +72,48 @@ export const SisterStoriesCarousel = () => {
     fetchVideos();
   }, [fetchVideos]);
 
+  // Set up Intersection Observer for lazy loading
+  useEffect(() => {
+    const options = {
+      root: null,
+      rootMargin: '50px',
+      threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const videoId = entry.target.getAttribute('data-video-id');
+        if (!videoId) return;
+
+        if (entry.isIntersecting) {
+          setVisibleVideos(prev => new Set([...prev, videoId]));
+          const video = videoRefs.current[videoId];
+          if (video && video.paused) {
+            video.play().catch(() => {
+              // Ignore autoplay errors
+            });
+          }
+        } else {
+          setVisibleVideos(prev => {
+            const newSet = new Set(prev);
+            newSet.delete(videoId);
+            return newSet;
+          });
+          const video = videoRefs.current[videoId];
+          if (video && !video.paused) {
+            video.pause();
+          }
+        }
+      });
+    }, options);
+
+    // Observe all video containers
+    const containers = document.querySelectorAll('[data-video-id]');
+    containers.forEach(container => observer.observe(container));
+
+    return () => observer.disconnect();
+  }, [videoStories]);
+
   const handleVideoLoad = (storyId: string) => {
     setLoadingVideos(prev => ({ ...prev, [storyId]: false }));
   };
@@ -120,7 +164,10 @@ export const SisterStoriesCarousel = () => {
                   className="overflow-hidden border-0 bg-card/50 backdrop-blur-sm group cursor-pointer hover:bg-card/80 transition-all duration-300 h-full"
                   onClick={() => handleVideoClick(story.id)}
                 >
-                  <div className="relative aspect-[9/16] overflow-hidden">
+                  <div 
+                    className="relative aspect-[9/16] overflow-hidden"
+                    data-video-id={story.id}
+                  >
                     {loadingVideos[story.id] && (
                       <div className="absolute inset-0 z-10">
                         <Skeleton className="w-full h-full" />
@@ -130,11 +177,14 @@ export const SisterStoriesCarousel = () => {
                       </div>
                     )}
                     <video
+                      ref={(el) => {
+                        videoRefs.current[story.id] = el;
+                      }}
                       src={story.video}
-                      autoPlay
                       muted={unmutedVideo !== story.id}
                       loop
                       playsInline
+                      preload="metadata"
                       onLoadedData={() => handleVideoLoad(story.id)}
                       className="w-full h-full object-cover transition-all duration-300 group-hover:scale-105"
                     />
