@@ -3,12 +3,12 @@ import PerformanceImage from '@/components/ui/performance-image';
 const OrganizationGallery = () => {
   const galleryImages = [
     {
-      src: '/lovable-uploads/e1ae51b5-7916-4137-825e-7f197dff06a3.png',
-      alt: 'Organized jewelry display with bangles'
-    },
-    {
       src: '/lovable-uploads/2a4c457a-7695-47d3-9912-ab2900c6ea25.png',
       alt: 'Elegant jewelry storage solution'
+    },
+    {
+      src: '/lovable-uploads/e1ae51b5-7916-4137-825e-7f197dff06a3.png',
+      alt: 'Organized jewelry display with bangles'
     },
     {
       src: '/lovable-uploads/76c5f6ac-f27b-4f26-8377-759dfc17c71d.png',
