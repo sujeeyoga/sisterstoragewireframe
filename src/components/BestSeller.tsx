@@ -76,7 +76,7 @@ const BestSeller = () => {
         <div className="grid md:grid-cols-2 gap-3 md:gap-4 max-w-7xl mx-auto rounded-3xl overflow-hidden">
           {/* Left Column - First and Third Images Stacked */}
           <div className="flex flex-col gap-3 md:gap-4">
-            <Card className="group border-none shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 bg-white relative">
+            <Card className="group border-none shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 bg-white relative rounded-3xl overflow-hidden">
               <Link to={`/shop/${buyCards[0].id}`} className="block">
                 <div className="relative group-hover:overflow-visible">
                   {!loadedImages[buyCards[0].id] && (
@@ -122,7 +122,7 @@ const BestSeller = () => {
               </Link>
             </Card>
 
-            <Card className="group border-none shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 bg-white relative">
+            <Card className="group border-none shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 bg-white relative rounded-3xl overflow-hidden">
               <Link to={`/shop/${buyCards[2].id}`} className="block">
                 <div className="relative group-hover:overflow-visible">
                   {!loadedImages[buyCards[2].id] && (
@@ -170,7 +170,7 @@ const BestSeller = () => {
           </div>
 
           {/* Right Column - Vertical Image */}
-          <Card className="group border-none shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 bg-white relative">
+          <Card className="group border-none shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 bg-white relative rounded-3xl overflow-hidden">
             <Link to={`/shop/${buyCards[1].id}`} className="block">
               <div className="relative group-hover:overflow-visible">
                 {!loadedImages[buyCards[1].id] && (
