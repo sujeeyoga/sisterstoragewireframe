@@ -164,12 +164,7 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
     <div className={`min-h-screen ${getBackgroundClasses()} ${className}`} style={{ position: 'relative' }}>
       {/* Floating navigation - simplified for mobile sticky reliability */}
       <div 
-        className="sticky top-0 z-50 bg-[hsl(var(--brand-pink))] py-4"
-        style={{ 
-          position: '-webkit-sticky',
-          WebkitTransform: 'translateZ(0)',
-          transform: 'translateZ(0)'
-        }}
+        className="fixed top-0 left-0 right-0 z-50 bg-[hsl(var(--brand-pink))] py-3 sm:sticky sm:top-0"
       >
         <nav 
           ref={navRef} 
@@ -179,7 +174,7 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
         </nav>
       </div>
       
-      <main className="bg-background" style={{ outline: 'none' }}>
+      <main className="bg-background" style={{ outline: 'none', marginTop: 'var(--sticky-nav-offset)' }}>
         {children}
       </main>
       {showFooter && <Footer />}
