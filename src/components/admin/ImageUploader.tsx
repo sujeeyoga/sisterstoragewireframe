@@ -439,6 +439,77 @@ export const ImageUploader = () => {
     setUndoTimeout(timeout);
   };
 
+  const optimizeSelected = async () => {
+    if (selectedImages.size === 0) return;
+
+    const imagesToOptimize = images.filter(img => selectedImages.has(img.id));
+    setUploading(true);
+    setUploadProgress({ current: 0, total: imagesToOptimize.length });
+
+    let optimizedCount = 0;
+    let totalSaved = 0;
+
+    for (let i = 0; i < imagesToOptimize.length; i++) {
+      const image = imagesToOptimize[i];
+      setUploadProgress({ current: i + 1, total: imagesToOptimize.length });
+
+      try {
+        // Download the image
+        const response = await fetch(image.url);
+        const blob = await response.blob();
+        const file = new File([blob], image.file_name, { type: blob.type });
+
+        // Optimize with higher quality
+        const { blob: optimizedBlob, width, height } = await optimizeImage(file, 1920, 1920, 0.85);
+
+        // Only re-upload if we saved at least 10% size
+        const savedBytes = image.file_size - optimizedBlob.size;
+        const savedPercent = (savedBytes / image.file_size) * 100;
+
+        if (savedPercent >= 10) {
+          // Delete old file
+          await supabase.storage.from('images').remove([image.file_path]);
+
+          // Upload optimized version
+          const { error: uploadError } = await supabase.storage
+            .from('images')
+            .upload(image.file_path, optimizedBlob, {
+              contentType: 'image/jpeg',
+              upsert: true
+            });
+
+          if (uploadError) throw uploadError;
+
+          // Update database
+          await supabase
+            .from('uploaded_images')
+            .update({
+              file_size: optimizedBlob.size,
+              width,
+              height
+            })
+            .eq('id', image.id);
+
+          optimizedCount++;
+          totalSaved += savedBytes;
+        }
+      } catch (error) {
+        console.error('Optimization error:', error);
+      }
+    }
+
+    setUploading(false);
+    setUploadProgress({ current: 0, total: 0 });
+    setSelectedImages(new Set());
+
+    toast({
+      title: `Optimized ${optimizedCount} image(s)`,
+      description: `Saved ${(totalSaved / 1024 / 1024).toFixed(2)}MB total`
+    });
+
+    fetchImages();
+  };
+
   return (
     <div className="space-y-6" onClick={handleClickOutside}>
       <div className="flex items-center justify-between">
@@ -449,14 +520,26 @@ export const ImageUploader = () => {
           </p>
         </div>
         <div className="flex gap-2">
-          {selectedImages.size >= 2 && (
-            <Button
-              variant="outline"
-              onClick={copySelectedUrls}
-            >
-              <ImageIcon className="h-4 w-4 mr-2" />
-              Copy {selectedImages.size} URLs
-            </Button>
+          {selectedImages.size > 0 && (
+            <>
+              <Button
+                variant="outline"
+                onClick={optimizeSelected}
+                disabled={uploading}
+              >
+                <ImageIcon className="h-4 w-4 mr-2" />
+                Optimize {selectedImages.size}
+              </Button>
+              {selectedImages.size >= 2 && (
+                <Button
+                  variant="outline"
+                  onClick={copySelectedUrls}
+                >
+                  <Copy className="h-4 w-4 mr-2" />
+                  Copy {selectedImages.size} URLs
+                </Button>
+              )}
+            </>
           )}
           <label>
             <input
