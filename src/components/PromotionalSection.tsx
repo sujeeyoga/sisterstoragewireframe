@@ -78,11 +78,11 @@ const PromotionalSection = () => {
             </div>
 
             {/* Image Side */}
-            <div className="flex-1 min-h-[300px] lg:min-h-[500px] overflow-hidden bg-gray-100">
+            <div className="flex-1 min-h-[300px] lg:min-h-[500px] relative">
               <img 
                 src="/lovable-uploads/c3b682be-b949-4e16-8aff-82cc8e879642.png"
                 alt="Sister holding bag of bangles"
-                className="w-full h-full object-cover"
+                className="absolute inset-0 w-full h-full object-cover"
                 loading="lazy"
               />
             </div>
