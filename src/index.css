@@ -439,6 +439,29 @@
     }
   }
 
+  /* Hero pink box animations */
+  @keyframes slide-left {
+    0% {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes expand-up {
+    0% {
+      transform: scaleY(0);
+      transform-origin: bottom;
+    }
+    100% {
+      transform: scaleY(1);
+      transform-origin: bottom;
+    }
+  }
+
   .animate-slide-down {
     animation: slide-down 0.8s ease-out;
   }
