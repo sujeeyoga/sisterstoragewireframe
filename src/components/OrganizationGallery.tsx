@@ -34,9 +34,9 @@ const OrganizationGallery = () => {
         </div>
 
         {/* Gallery Grid */}
-        <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-stretch max-w-6xl mx-auto px-5 md:h-[600px]">
+        <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-center max-w-6xl mx-auto px-5">
           {/* First Image */}
-          <div className="relative w-full aspect-square md:aspect-auto md:h-full md:flex-shrink-0 md:w-auto rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 group overflow-hidden animate-fade-in">
+          <div className="relative w-full aspect-square rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 group overflow-hidden animate-fade-in">
             <PerformanceImage
               src={galleryImages[0].src}
               alt={galleryImages[0].alt}
@@ -46,8 +46,8 @@ const OrganizationGallery = () => {
           </div>
 
           {/* Second and Third Images - Horizontal Row */}
-          <div className="w-full md:h-full grid grid-cols-2 gap-4">
-            <div className="relative aspect-[3/4] md:aspect-auto md:h-full rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 group overflow-hidden animate-fade-in">
+          <div className="w-full grid grid-cols-2 gap-4">
+            <div className="relative aspect-[3/4] rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 group overflow-hidden animate-fade-in">
               <PerformanceImage
                 src={galleryImages[1].src}
                 alt={galleryImages[1].alt}
@@ -55,7 +55,7 @@ const OrganizationGallery = () => {
                 loading="eager"
               />
             </div>
-            <div className="relative aspect-[3/4] md:aspect-auto md:h-full rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 group overflow-hidden animate-fade-in">
+            <div className="relative aspect-[3/4] rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 group overflow-hidden animate-fade-in">
               <PerformanceImage
                 src={galleryImages[2].src}
                 alt={galleryImages[2].alt}
@@ -66,7 +66,7 @@ const OrganizationGallery = () => {
           </div>
 
           {/* Fourth Image */}
-          <div className="relative w-full aspect-square md:aspect-auto md:h-full md:flex-shrink-0 md:w-auto rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 group overflow-hidden animate-fade-in">
+          <div className="relative w-full aspect-square rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 group overflow-hidden animate-fade-in">
             <PerformanceImage
               src={galleryImages[3].src}
               alt={galleryImages[3].alt}
