@@ -85,7 +85,7 @@ const Hero = () => {
 
         {/* Pink Content Section - Wipes in from left then grows vertically */}
         <div className="relative h-[90vh] flex items-center justify-start pt-0">
-          <div className="bg-[hsl(var(--brand-pink))] flex items-center animate-[slide-in-right_0.3s_ease-out_reverse] w-full md:w-[60vw] lg:w-[55vw] overflow-hidden shadow-2xl rounded-r-[3rem]">
+          <div className="bg-[hsl(var(--brand-pink))] flex items-center animate-slide-in-right w-full md:w-[60vw] lg:w-[55vw] overflow-hidden shadow-2xl rounded-r-[3rem]">
             <div className="grid grid-cols-2 w-full py-4 md:py-6 lg:py-8">
               {/* First column - empty spacer */}
               <div className="col-span-1"></div>
