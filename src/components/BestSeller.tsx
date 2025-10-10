@@ -94,7 +94,6 @@ const BestSeller = () => {
                     decoding="async"
                     onLoad={() => handleImageLoad(buyCards[0].id)}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
                   
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-6 pointer-events-none">
 ...
@@ -140,7 +139,6 @@ const BestSeller = () => {
                     decoding="async"
                     onLoad={() => handleImageLoad(buyCards[1].id)}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
                   
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-6 pointer-events-none">
 ...
