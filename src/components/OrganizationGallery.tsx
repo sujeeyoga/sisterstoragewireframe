@@ -36,7 +36,14 @@ const OrganizationGallery = () => {
         {/* Gallery Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 items-center">
           {galleryImages.map((image, index) => (
-            <div key={index} className="relative rounded-2xl shadow-md hover:shadow-xl transition-all duration-500 group overflow-hidden">
+            <div 
+              key={index} 
+              className="relative rounded-2xl shadow-md hover:shadow-xl transition-all duration-500 group overflow-hidden animate-fade-in opacity-0"
+              style={{
+                animationDelay: `${index * 150}ms`,
+                animationFillMode: 'forwards'
+              }}
+            >
               <PerformanceImage
                 src={image.src}
                 alt={image.alt}
