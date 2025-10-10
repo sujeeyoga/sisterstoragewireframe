@@ -107,13 +107,50 @@ const BestSeller = () => {
                     decoding="async"
                     onLoad={() => handleImageLoad(item.id)}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
                   
                   {/* Card content overlay that appears on hover */}
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-4 pointer-events-none">
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-6 pointer-events-none">
                     <h3 className="text-white text-2xl font-bold mb-2">{item.name}</h3>
-                    <p className="text-white/90 text-sm mb-2">{item.description}</p>
-                    <p className="text-white text-xl font-semibold">${item.price}</p>
+                    <p className="text-white/90 text-sm mb-3">{item.description}</p>
+                    <p className="text-white text-xl font-semibold mb-4">${item.price}</p>
+                    
+                    {/* What's Included */}
+                    <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20 mb-3">
+                      <p className="text-xs font-bold text-white uppercase tracking-wider mb-1.5">What's Included</p>
+                      <p className="text-sm text-white/90">{item.bundleContents}</p>
+                    </div>
+                    
+                    {/* Reviews */}
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="flex items-center gap-0.5">
+                        {[...Array(item.rating)].map((_, i) => (
+                          <Star key={i} className="h-4 w-4 text-amber-400 fill-amber-400" />
+                        ))}
+                      </div>
+                      <span className="text-white/90 text-sm">({item.reviews} reviews)</span>
+                    </div>
+                    
+                    {/* Action Buttons */}
+                    <div className="pointer-events-auto">
+                      <AddToCartBar 
+                        product={{
+                          id: item.id,
+                          name: item.name,
+                          price: item.price,
+                          originalPrice: item.originalPrice,
+                          stripePriceId: item.stripePriceId,
+                          description: item.description,
+                          category: 'bundle',
+                          color: '#E90064',
+                          images: [item.image],
+                          features: [],
+                          material: '',
+                          stock: 100,
+                          bundleContents: item.bundleContents
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
               </Link>
