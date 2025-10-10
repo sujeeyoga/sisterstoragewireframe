@@ -9,12 +9,13 @@ const Hero = () => {
 
   return (
     <section ref={parallaxRef} className="relative w-full overflow-hidden h-[70vh]" aria-label="Hero section">
-      {/* Full Background Image - No Parallax */}
-      <div className="absolute inset-0 w-full h-full">
+      {/* Full Background Image with Parallax */}
+      <div className="absolute inset-0 w-full h-[140%] -top-[20%]">
         <img
           src={heroMainImage}
           alt="Woman showcasing Sister Storage jewelry organization solution"
           className="w-full h-full object-cover"
+          style={{ transform: `translateY(-${offset}px)` }}
           loading="eager"
           fetchPriority="high"
         />
