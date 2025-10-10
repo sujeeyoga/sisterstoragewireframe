@@ -122,10 +122,11 @@
 
   html {
     font-size: 11px;
+    @apply overflow-x-hidden;
   }
 
   body {
-    @apply bg-white text-foreground font-sans leading-relaxed;
+    @apply bg-white text-foreground font-sans leading-relaxed overflow-x-hidden;
   }
   
   h1, h2, h3, h4, h5, h6 {
