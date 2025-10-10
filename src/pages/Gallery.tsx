@@ -47,25 +47,26 @@ const Gallery = () => {
 
   return (
     <BaseLayout variant="standard" pageId="gallery" spacing="normal">
-      <Section spacing="lg" width="contained" background="white">
-        <div className="text-center mb-8">
-          <motion.h1 
-            className="text-3xl md:text-4xl font-bold text-foreground mb-4"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            Gallery Collection
-          </motion.h1>
-          <motion.p 
-            className="text-muted-foreground text-lg max-w-2xl mx-auto"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-          >
-            Discover our curated collection of premium storage solutions designed with intention and crafted for beauty.
-          </motion.p>
-        </div>
+      <div className="focus:outline-none" tabIndex={-1}>
+        <Section spacing="lg" width="contained" background="white">
+          <div className="text-center mb-8">
+            <motion.h1 
+              className="text-3xl md:text-4xl font-bold text-foreground mb-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              Gallery Collection
+            </motion.h1>
+            <motion.p 
+              className="text-muted-foreground text-lg max-w-2xl mx-auto"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+            >
+              Discover our curated collection of premium storage solutions designed with intention and crafted for beauty.
+            </motion.p>
+          </div>
 
         {/* Gallery Grid */}
         <motion.div 
@@ -150,7 +151,8 @@ const Gallery = () => {
           </motion.div>
         )}
 
-      </Section>
+        </Section>
+      </div>
     </BaseLayout>
   );
 };

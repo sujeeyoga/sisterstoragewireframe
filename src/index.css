@@ -123,10 +123,24 @@
   html {
     font-size: 11px;
     @apply overflow-x-hidden;
+    scroll-behavior: smooth;
   }
 
   body {
     @apply bg-white text-foreground font-sans leading-relaxed overflow-x-hidden;
+    /* Ensure scrolling works without requiring focus */
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Prevent focus ring issues that might interfere with scroll */
+  *:focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+  
+  *:focus:not(:focus-visible) {
+    outline: none;
   }
   
   h1, h2, h3, h4, h5, h6 {

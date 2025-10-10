@@ -163,7 +163,7 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
 
   return (
     <div className={`min-h-screen flex flex-col overflow-x-hidden ${getBackgroundClasses()} ${className}`}>
-      <main className="bg-background overflow-x-hidden">
+      <main className="bg-background overflow-x-hidden" style={{ outline: 'none' }}>
         {/* Floating navigation - white background with margins */}
         <div className="sticky top-0 z-50 py-4 bg-[hsl(var(--brand-pink))] transition-all duration-300">
           <nav 
