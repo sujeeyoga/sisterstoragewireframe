@@ -5,7 +5,7 @@ import heroMainImage from '@/assets/hero-bg-main.jpg';
 import { useOptimizedParallax } from '@/hooks/use-optimized-parallax';
 
 const Hero = () => {
-  const { ref: parallaxRef, offset } = useOptimizedParallax({ speed: 0.2 });
+  const { ref: parallaxRef, offset } = useOptimizedParallax({ speed: 0.3 });
 
   return (
     <section ref={parallaxRef} className="relative w-full overflow-hidden" aria-label="Hero section">
