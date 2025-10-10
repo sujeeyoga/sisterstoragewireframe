@@ -139,37 +139,30 @@ const BestSeller = () => {
             </Card>
 
             <Card className="group border-none shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 bg-white relative rounded-3xl overflow-hidden aspect-square">
-              <Link to={`/shop/${buyCards[2].id}`} className="block h-full">
-                <div className="relative group-hover:overflow-visible h-full">
-                  {!loadedImages[buyCards[2].id] && <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse" />}
-                  
-                  <img src={buyCards[2].image} alt={`${buyCards[2].name} - Bundle collection`} className={cn("w-full h-full object-cover transition-all duration-700 scale-125", loadedImages[buyCards[2].id] ? "opacity-100" : "opacity-0")} loading="eager" decoding="async" onLoad={() => handleImageLoad(buyCards[2].id)} />
-                  
-                  <div className="absolute inset-0 flex items-center justify-center animate-fade-in">
-                    <h3 className="text-white text-4xl md:text-5xl font-poppins font-thin drop-shadow-[0_4px_8px_rgba(0,0,0,0.3)] [text-shadow:_-1px_-1px_0_#fff,_1px_-1px_0_#fff,_-1px_1px_0_#fff,_1px_1px_0_#fff]">{buyCards[2].name}</h3>
-                  </div>
-                  
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-6 pointer-events-none">
-                    <div className="pointer-events-auto">
-                      <AddToCartBar product={{
-                    id: buyCards[2].id,
-                    name: buyCards[2].name,
-                    price: buyCards[2].price,
-                    originalPrice: buyCards[2].originalPrice,
-                    stripePriceId: buyCards[2].stripePriceId,
-                    description: buyCards[2].description,
-                    category: 'bundle',
-                    color: '#E90064',
-                    images: [buyCards[2].image],
-                    features: [],
-                    material: '',
-                    stock: 100,
-                    bundleContents: buyCards[2].bundleContents
-                  }} />
-                    </div>
-                  </div>
+              <div className="relative h-full overflow-hidden">
+                <img 
+                  src="/lovable-uploads/76c5f6ac-f27b-4f26-8377-759dfc17c71d.png" 
+                  alt="Beautiful bangle organization system" 
+                  className="w-full h-full object-cover block group-hover:scale-110 transition-transform duration-700 ease-out" 
+                  loading="lazy" 
+                />
+                {/* Instagram Icon Overlay */}
+                <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors duration-500">
+                  <svg
+                    className="w-24 h-24 md:w-40 md:h-40 text-white drop-shadow-2xl group-hover:scale-110 transition-transform duration-500"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+                  </svg>
                 </div>
-              </Link>
+              </div>
             </Card>
         </div>
         
