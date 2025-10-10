@@ -12,18 +12,29 @@ const BrandVoice = () => {
   useEffect(() => {
     const fetchImages = async () => {
       try {
-        const { data, error } = await supabase
+        // First try to get non-V2R68 images
+        const { data: heroImages, error: heroError } = await supabase
           .from('uploaded_images')
           .select('id, file_path, file_name')
+          .ilike('folder_path', '%hero%')
+          .order('created_at', { ascending: false });
+
+        // Get additional product images that aren't V2R68
+        const { data: productImages, error: productError } = await supabase
+          .from('uploaded_images')
+          .select('id, file_path, file_name')
+          .not('file_name', 'ilike', '%V2R68%')
           .not('file_name', 'ilike', '%logo%')
-          .or('folder_path.ilike.%medium%,folder_path.ilike.%jewlery%,folder_path.ilike.%Large%,folder_path.ilike.%Starter%')
           .order('created_at', { ascending: false })
-          .limit(10);
+          .limit(8);
 
-        if (error) throw error;
+        if (heroError || productError) throw heroError || productError;
 
-        if (data) {
-          const images = data.map((img, index) => ({
+        // Combine hero images first, then product images
+        const allImages = [...(heroImages || []), ...(productImages || [])].slice(0, 10);
+
+        if (allImages.length > 0) {
+          const images = allImages.map((img, index) => ({
             id: index + 1,
             src: supabase.storage.from('images').getPublicUrl(img.file_path).data.publicUrl,
             alt: img.file_name,
