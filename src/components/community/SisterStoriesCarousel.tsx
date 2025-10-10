@@ -97,15 +97,9 @@ export const SisterStoriesCarousel = () => {
   }
 
   return (
-    <div className="w-full py-8 md:py-12 bg-white">
-      {/* Header */}
-      <div className="container-custom mb-8">
-        <h3 className="text-2xl md:text-3xl font-bold mb-2">Sister Stories</h3>
-        <p className="text-muted-foreground">Real sisters sharing their organization journeys ({videoStories.length} stories)</p>
-      </div>
-
+    <div className="w-full overflow-hidden">
       {/* Carousel Container */}
-      <div className="container-custom">
+      <div className="w-full max-w-[100vw]">
         <Carousel
           opts={{
             align: "start",
@@ -114,7 +108,7 @@ export const SisterStoriesCarousel = () => {
           }}
           className="w-full"
         >
-          <CarouselContent className="-ml-4">
+          <CarouselContent className="ml-4 md:ml-8">
             {videoStories.map((story) => (
               <CarouselItem key={story.id} className="pl-4 basis-[280px] md:basis-[320px]">
                 <Card className="overflow-hidden border-0 bg-card/50 backdrop-blur-sm group cursor-pointer hover:bg-card/80 transition-all duration-300 h-full">
