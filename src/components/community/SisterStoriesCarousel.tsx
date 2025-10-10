@@ -215,6 +215,7 @@ export const SisterStoriesCarousel = () => {
                         videoRefs.current[story.id] = el;
                       }}
                       src={story.video}
+                      crossOrigin="anonymous"
                       muted={unmutedVideo !== story.id}
                       loop
                       playsInline
