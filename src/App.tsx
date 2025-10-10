@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import Shop from "./pages/Shop";
 import Gallery from "./pages/Gallery";
 import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
 import Brand from "./pages/Brand";
 import ProductDetail from "./pages/ProductDetail";
 import HeroGalleryDemo from "./pages/HeroGalleryDemo";
@@ -56,6 +57,7 @@ const App = () => {
               <Route path="/shop/:productId" element={<ProtectedRoutes><PageTransition><ProductDetail /></PageTransition></ProtectedRoutes>} />
               <Route path="/checkout" element={<ProtectedRoutes><PageTransition><Checkout /></PageTransition></ProtectedRoutes>} />
               <Route path="/blog" element={<ProtectedRoutes><PageTransition><Blog /></PageTransition></ProtectedRoutes>} />
+              <Route path="/blog/:id" element={<ProtectedRoutes><PageTransition><BlogPost /></PageTransition></ProtectedRoutes>} />
               <Route path="/brand/*" element={<ProtectedRoutes><PageTransition><Brand /></PageTransition></ProtectedRoutes>} />
               <Route path="/content/:slug" element={<ProtectedRoutes><PageTransition><ContentPage /></PageTransition></ProtectedRoutes>} />
               <Route path="/hero-gallery-demo" element={<ProtectedRoutes><PageTransition><HeroGalleryDemo /></PageTransition></ProtectedRoutes>} />
