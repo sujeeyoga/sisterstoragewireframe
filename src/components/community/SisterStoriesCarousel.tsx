@@ -201,12 +201,12 @@ export const SisterStoriesCarousel = () => {
         >
           <CarouselContent className="ml-4 md:ml-8">
             {videoStories.map((story) => (
-              <CarouselItem key={story.id} className="pl-6 basis-auto flex-shrink-0">
+              <CarouselItem key={story.id} className="px-8 basis-auto flex-shrink-0">
                 <Card 
                   className="overflow-hidden border-0 bg-transparent group cursor-pointer transition-transform duration-300 hover:scale-105 h-full"
                 >
                   <div 
-                    className="relative w-[350px] h-[540px] overflow-hidden bg-black cursor-pointer rounded-2xl shadow-xl"
+                    className="relative w-[263px] h-[405px] overflow-hidden bg-black cursor-pointer rounded-2xl shadow-xl"
                     data-video-id={story.id}
                     onClick={(e) => {
                       if (playingVideos.has(story.id)) {
