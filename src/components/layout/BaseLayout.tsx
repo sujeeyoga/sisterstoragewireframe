@@ -150,15 +150,13 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
   // Standard layout with navigation
   return (
     <div className={`min-h-screen ${getBackgroundClasses()} ${className}`} style={{ position: 'relative' }}>
-      {/* Navigation: Sticky at the top, scrolls with user */}
-      <div className="sticky top-0 left-0 right-0 z-50 bg-[hsl(var(--brand-pink))] pt-3 pb-3">
-        <nav 
-          ref={navRef} 
-          className="w-[min(1100px,calc(100%-40px))] mx-auto rounded-[25px] bg-white shadow-lg px-4 py-2"
-        >
-          <Navbar position={position} />
-        </nav>
-      </div>
+      {/* Navigation: White navbar that scrolls with user */}
+      <nav 
+        ref={navRef} 
+        className="sticky top-0 left-0 right-0 z-50 w-[min(1100px,calc(100%-40px))] mx-auto rounded-[25px] bg-white shadow-lg px-4 py-2 my-3"
+      >
+        <Navbar position={position} />
+      </nav>
       
       {/* Main content */}
       <main className="bg-background" style={{ outline: 'none' }}>
