@@ -32,20 +32,23 @@ export const useScrollDirection = (
       const direction = scrollY > lastScrollY ? 'down' : 
                          scrollY < lastScrollY ? 'up' : 'none';
       
-      // Only update state if we've scrolled past the threshold and direction has changed
-      if (
-        Math.abs(scrollY - lastScrollY) > threshold && 
-        direction !== scrollState.direction
-      ) {
+      // Always update position for smooth sticky behavior
+      const isAtTop = scrollY <= 10;
+      
+      // Update direction only if we've scrolled past the threshold
+      if (Math.abs(scrollY - lastScrollY) > threshold) {
         setScrollState({
           direction,
           position: scrollY,
-          isAtTop: scrollY <= 10,
+          isAtTop,
           isScrolling: true,
         });
-      } else if (!scrollState.isScrolling) {
+      } else {
+        // Update position even if direction hasn't changed significantly
         setScrollState(prev => ({
           ...prev,
+          position: scrollY,
+          isAtTop,
           isScrolling: true,
         }));
       }
