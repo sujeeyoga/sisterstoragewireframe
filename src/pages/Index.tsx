@@ -1,9 +1,9 @@
-
+import { useState } from "react";
 import BaseLayout from "@/components/layout/BaseLayout";
 import Section from "@/components/layout/Section";
 import Hero from "@/components/Hero";
 import BestSeller from "@/components/BestSeller";
-
+import ScreenLoader from "@/components/ui/ScreenLoader";
 import CommunityStoriesCarousels from "@/components/community/CommunityStoriesCarousels";
 import FeaturedGrid from "@/components/FeaturedGrid";
 import PromotionalSection from "@/components/PromotionalSection";
@@ -14,6 +14,12 @@ import { Button } from "@/components/ui/button";
 
 
 const Index = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  if (isLoading) {
+    return <ScreenLoader onComplete={() => setIsLoading(false)} duration={3000} />;
+  }
+
   return (
     <BaseLayout variant="standard" pageId="home">
       {/* Hero Section - No wrapper needed, has built-in spacing */}
