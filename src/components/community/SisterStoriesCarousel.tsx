@@ -213,7 +213,7 @@ export const SisterStoriesCarousel = () => {
                       playsInline
                       webkit-playsinline="true"
                       x5-playsinline="true"
-                      preload="metadata"
+                      preload="auto"
                       controlsList="nodownload nofullscreen noremoteplayback"
                       disablePictureInPicture
                       onLoadedData={() => handleVideoLoad(story.id)}
@@ -223,6 +223,14 @@ export const SisterStoriesCarousel = () => {
                         newSet.delete(story.id);
                         return newSet;
                       })}
+                      onError={(e) => {
+                        console.error(`Video ${story.id} failed to load:`, {
+                          error: e.currentTarget.error,
+                          src: story.video,
+                          readyState: e.currentTarget.readyState
+                        });
+                        setLoadingVideos(prev => ({ ...prev, [story.id]: false }));
+                      }}
                       className="w-full h-full object-cover transition-all duration-300 group-hover:scale-105"
                       style={{ backgroundColor: '#000' }}
                     >
