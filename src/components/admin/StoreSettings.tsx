@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Loader2, Percent, Save } from 'lucide-react';
+import { Loader2, Percent, Save, Settings } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface StoreSetting {
@@ -24,8 +24,9 @@ export function StoreSettings() {
   const [discountPercentage, setDiscountPercentage] = useState(20);
   const [discountName, setDiscountName] = useState('Store-Wide Sale');
 
-  const { data: settings, isLoading } = useQuery({
-    queryKey: ['store-settings'],
+  // Fetch discount settings
+  const { data: discountSettings, isLoading: isLoadingDiscount } = useQuery({
+    queryKey: ['store-settings', 'discount'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('store_settings')
@@ -42,6 +43,58 @@ export function StoreSettings() {
       }
       
       return data as StoreSetting;
+    },
+  });
+
+  // Fetch coming soon settings
+  const { data: comingSoonSettings, isLoading: isLoadingComingSoon } = useQuery({
+    queryKey: ['store-settings', 'coming-soon'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('store_settings')
+        .select('*')
+        .eq('setting_key', 'coming_soon')
+        .maybeSingle();
+
+      if (error) throw error;
+      return data as StoreSetting | null;
+    },
+  });
+
+  const toggleComingSoonMutation = useMutation({
+    mutationFn: async (enabled: boolean) => {
+      // Check if setting exists
+      const { data: existing } = await supabase
+        .from('store_settings')
+        .select('id')
+        .eq('setting_key', 'coming_soon')
+        .maybeSingle();
+
+      if (existing) {
+        // Update existing
+        const { error } = await supabase
+          .from('store_settings')
+          .update({ enabled })
+          .eq('setting_key', 'coming_soon');
+        if (error) throw error;
+      } else {
+        // Insert new
+        const { error } = await supabase
+          .from('store_settings')
+          .insert({
+            setting_key: 'coming_soon',
+            setting_value: {},
+            enabled,
+          });
+        if (error) throw error;
+      }
+    },
+    onSuccess: (_, enabled) => {
+      queryClient.invalidateQueries({ queryKey: ['store-settings'] });
+      toast.success(enabled ? 'Coming Soon page enabled' : 'Coming Soon page disabled');
+    },
+    onError: () => {
+      toast.error('Failed to update Coming Soon setting');
     },
   });
 
@@ -98,6 +151,36 @@ export function StoreSettings() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
+            <Settings className="h-5 w-5" />
+            Coming Soon Page
+          </CardTitle>
+          <CardDescription>
+            Enable or disable the Coming Soon landing page for unauthenticated visitors
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <Label htmlFor="coming-soon-toggle" className="text-base font-medium">
+                Show Coming Soon Page
+              </Label>
+              <p className="text-sm text-muted-foreground">
+                When enabled, visitors must be logged in to access the site
+              </p>
+            </div>
+            <Switch
+              id="coming-soon-toggle"
+              checked={comingSoonSettings?.enabled || false}
+              onCheckedChange={(checked) => toggleComingSoonMutation.mutate(checked)}
+              disabled={toggleComingSoonMutation.isPending}
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
             <Percent className="h-5 w-5" />
             Store-Wide Discount
           </CardTitle>
@@ -118,7 +201,7 @@ export function StoreSettings() {
             </div>
             <Switch
               id="discount-toggle"
-              checked={settings?.enabled || false}
+              checked={discountSettings?.enabled || false}
               onCheckedChange={(checked) => toggleDiscountMutation.mutate(checked)}
               disabled={toggleDiscountMutation.isPending}
             />
@@ -179,7 +262,7 @@ export function StoreSettings() {
           </div>
 
           {/* Preview */}
-          {settings?.enabled && (
+          {discountSettings?.enabled && (
             <div className="bg-primary/10 border border-primary/20 rounded-lg p-4 mt-4">
               <p className="font-medium text-primary mb-2">🎉 Active Promotion Preview</p>
               <div className="space-y-1 text-sm">
