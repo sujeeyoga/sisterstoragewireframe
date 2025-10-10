@@ -33,7 +33,7 @@ const PromotionalBanner = () => {
             {/* Right Image */}
             <div className="relative h-[320px] lg:h-[450px]">
               <img
-                src="/lovable-uploads/c44d4b5c-0104-4077-99dd-904d87ec4d8b.png"
+                src="https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/1760125164235-26m74b.jpg"
                 alt="Sister Storage organized jewelry display"
                 className="w-full h-full object-cover rounded-2xl shadow-lg"
                 loading="lazy"
