@@ -239,7 +239,7 @@ export const SisterStoriesCarousel = () => {
           opts={{
             align: "start",
             loop: false,
-            dragFree: true,
+            dragFree: false,
           }}
           className="w-full"
           setApi={(api) => {
@@ -253,7 +253,7 @@ export const SisterStoriesCarousel = () => {
                   className="overflow-hidden border-0 bg-card/50 backdrop-blur-sm group cursor-pointer hover:bg-card/80 transition-all duration-300 h-full"
                 >
                   <div 
-                    className="relative aspect-[9/16] overflow-hidden bg-black cursor-pointer"
+                    className="relative aspect-[4/5] overflow-hidden bg-black cursor-pointer"
                     data-video-id={story.id}
                     onClick={(e) => {
                       if (playingVideos.has(story.id)) {
