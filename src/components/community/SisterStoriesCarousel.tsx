@@ -183,11 +183,11 @@ export const SisterStoriesCarousel = () => {
 
   return (
     <div className="w-full overflow-hidden relative">
-      {/* Left fade gradient - 10% */}
-      <div className="absolute left-0 top-0 bottom-0 w-[10%] bg-gradient-to-r from-[hsl(var(--brand-gray))] to-transparent z-10 pointer-events-none" />
+      {/* Left fade gradient - 5% */}
+      <div className="absolute left-0 top-0 bottom-0 w-[5%] bg-gradient-to-r from-[hsl(var(--brand-gray))] to-transparent z-10 pointer-events-none" />
       
-      {/* Right fade gradient - 10% */}
-      <div className="absolute right-0 top-0 bottom-0 w-[10%] bg-gradient-to-l from-[hsl(var(--brand-gray))] to-transparent z-10 pointer-events-none" />
+      {/* Right fade gradient - 5% */}
+      <div className="absolute right-0 top-0 bottom-0 w-[5%] bg-gradient-to-l from-[hsl(var(--brand-gray))] to-transparent z-10 pointer-events-none" />
       
       {/* Carousel Container */}
       <div className="w-full max-w-[100vw]">
