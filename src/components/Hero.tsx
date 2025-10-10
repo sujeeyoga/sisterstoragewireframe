@@ -77,7 +77,7 @@ const Hero = () => {
           <img
             src={heroMainImage}
             alt="Woman showcasing Sister Storage jewelry organization solution"
-            className="w-full h-full object-contain object-center"
+            className="w-full h-full object-contain object-top"
             style={{ transform: `translateY(${offset}px)` }}
             loading="eager"
             fetchPriority="high"
