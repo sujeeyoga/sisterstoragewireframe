@@ -1,20 +1,63 @@
 import React, { useState, useEffect } from 'react';
-import { useVideoPreloader } from '@/hooks/use-video-preloader';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ScreenLoaderProps {
   onComplete?: () => void;
   duration?: number;
 }
 
-// Videos to preload before showing the app - simplified approach
-const videosToPreload: string[] = []; // Removed problematic external videos
+// Key images to preload
+const staticImagesToPreload = [
+  'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/Starter-Set-2x-Large-1x-Medium-Box-1x-Small-Box/1759980850863-5xgr2a.jpg',
+  'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/Sister%20Storage%20Assets/Together%20Bundle-%203%20Large%202%20Medium%201%20Travel/1759979157485-d2rva.jpg',
+  'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/The-Complete-Family-Set-4-Large-2-Medium-2-Travel/1759980920453-ezsfq.jpg',
+  '/lovable-uploads/a501115d-f6f4-4f74-bdbe-1b73ba1bc625.png',
+  '/lovable-uploads/fb8da55a-c9bb-419e-a96f-175a667875e1.png',
+  '/lovable-uploads/4ef08ea3-3380-4111-b4a1-eb939cba275b.png'
+];
 
 const ScreenLoader: React.FC<ScreenLoaderProps> = ({ 
   onComplete, 
-  duration = 5000 // Clean 5 second load time
+  duration = 3000
 }) => {
   const [isVisible, setIsVisible] = useState(true);
   const [logoLoaded, setLogoLoaded] = useState(false);
+  const [imagesLoaded, setImagesLoaded] = useState(0);
+  const [totalImages, setTotalImages] = useState(0);
+
+  // Preload images
+  useEffect(() => {
+    const preloadImages = async () => {
+      // Fetch gallery images from database
+      const { data: heroData } = await supabase
+        .from('hero_images')
+        .select('image_url')
+        .eq('position', 'gallery')
+        .eq('is_active', true)
+        .order('display_order', { ascending: true });
+
+      const galleryImages = heroData?.map(img => img.image_url) || [];
+      const allImages = [...staticImagesToPreload, ...galleryImages];
+      setTotalImages(allImages.length);
+
+      let loadedCount = 0;
+      
+      allImages.forEach(src => {
+        const img = new Image();
+        img.onload = () => {
+          loadedCount++;
+          setImagesLoaded(loadedCount);
+        };
+        img.onerror = () => {
+          loadedCount++;
+          setImagesLoaded(loadedCount);
+        };
+        img.src = src;
+      });
+    };
+
+    preloadImages();
+  }, []);
 
   useEffect(() => {
     // Start logo animation after a brief delay
@@ -100,9 +143,9 @@ const ScreenLoader: React.FC<ScreenLoaderProps> = ({
             ))}
           </div>
           
-          {/* Loading text */}
+          {/* Loading text with progress */}
           <div className="text-sm text-muted-foreground font-medium tracking-wide">
-            Loading...
+            {totalImages > 0 ? `Loading images... ${imagesLoaded}/${totalImages}` : 'Loading...'}
           </div>
         </div>
         
