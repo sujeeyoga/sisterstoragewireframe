@@ -10,6 +10,7 @@ import { ArrowLeft, ShoppingBag, CreditCard, Truck, Trash2, Tag, Loader2, Packag
 import { useToast } from '@/hooks/use-toast';
 import Logo from '@/components/ui/Logo';
 import { useStoreDiscount } from '@/hooks/useStoreDiscount';
+import { useAbandonedCart } from '@/hooks/useAbandonedCart';
 import { supabase } from '@/integrations/supabase/client';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import AddressAutocomplete from '@/components/checkout/AddressAutocomplete';
@@ -36,6 +37,9 @@ const Checkout = () => {
     country: 'CA',
     phone: '',
   });
+
+  // Track abandoned carts
+  const { markAsRecovered } = useAbandonedCart(formData.email || undefined);
 
   // Calculate tax based on province
   const getTaxRate = (province: string): number => {
@@ -239,6 +243,10 @@ const Checkout = () => {
 
       if (data?.url) {
         console.log('Redirecting to Stripe:', data.url);
+        
+        // Mark cart as recovered before redirecting to payment
+        await markAsRecovered();
+        
         try {
           // Prefer top-level redirect to escape preview iframe
           if (window.top) {

@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      abandoned_carts: {
+        Row: {
+          cart_items: Json
+          created_at: string | null
+          email: string
+          id: string
+          recovered_at: string | null
+          reminder_sent_at: string | null
+          session_id: string | null
+          subtotal: number
+        }
+        Insert: {
+          cart_items?: Json
+          created_at?: string | null
+          email: string
+          id?: string
+          recovered_at?: string | null
+          reminder_sent_at?: string | null
+          session_id?: string | null
+          subtotal: number
+        }
+        Update: {
+          cart_items?: Json
+          created_at?: string | null
+          email?: string
+          id?: string
+          recovered_at?: string | null
+          reminder_sent_at?: string | null
+          session_id?: string | null
+          subtotal?: number
+        }
+        Relationships: []
+      }
       hero_images: {
         Row: {
           alt_text: string | null
