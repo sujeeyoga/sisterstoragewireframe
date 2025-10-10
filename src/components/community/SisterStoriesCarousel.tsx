@@ -274,7 +274,7 @@ export const SisterStoriesCarousel = () => {
                   className="overflow-hidden border-0 bg-card/50 backdrop-blur-sm group cursor-pointer hover:bg-card/80 transition-all duration-300 h-full"
                 >
                   <div 
-                    className="relative h-[90vh] overflow-hidden bg-black cursor-pointer"
+                    className="relative w-[350px] h-[540px] overflow-hidden bg-black cursor-pointer"
                     data-video-id={story.id}
                     onClick={(e) => {
                       if (playingVideos.has(story.id)) {
