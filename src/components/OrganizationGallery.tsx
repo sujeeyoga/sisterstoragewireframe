@@ -21,40 +21,40 @@ const OrganizationGallery = () => {
   ];
 
   return (
-    <section className="py-12 md:py-16 bg-white">
+    <section className="py-16 md:py-24 lg:py-32 bg-white overflow-hidden">
       <div className="container-custom">
         {/* Header */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-foreground mb-6 tracking-wide">
-            ORGANIZATION MADE BEAUTIFUL
+        <div className="text-center mb-16 md:mb-20 animate-fade-in">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-foreground mb-4 tracking-tight leading-tight">
+            ORGANIZATION MADE <span className="text-[hsl(var(--brand-pink))]">BEAUTIFUL</span>
           </h2>
-          <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto font-light">
+          <p className="text-muted-foreground text-xl md:text-2xl max-w-3xl mx-auto font-light leading-relaxed">
             See how our storage solutions transform your space
           </p>
         </div>
 
         {/* Gallery Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-2 items-center">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-4 items-stretch">
           {galleryImages.map((image, index) => (
             <div 
               key={index} 
-              className="relative rounded-2xl shadow-md hover:shadow-xl transition-all duration-500 group overflow-hidden animate-fade-in"
+              className="relative aspect-square rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 group overflow-hidden animate-fade-in"
             >
               <PerformanceImage
                 src={image.src}
                 alt={image.alt}
-                className="w-full h-full object-cover object-bottom block group-hover:scale-[1.02] group-hover:brightness-[1.02] transition-all duration-700 rounded-2xl -m-[5px] md:m-0"
+                className="w-full h-full object-cover block group-hover:scale-110 transition-transform duration-700 ease-out"
                 loading={index < 2 ? 'eager' : 'lazy'}
               />
               {/* Instagram Icon Overlay - Only on last card */}
               {index === galleryImages.length - 1 && (
-                <div className="absolute inset-0 flex items-center justify-center">
+                <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors duration-500">
                   <svg
-                    className="w-32 h-32 md:w-64 md:h-64 text-white"
+                    className="w-24 h-24 md:w-40 md:h-40 text-white drop-shadow-2xl group-hover:scale-110 transition-transform duration-500"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth="2"
+                    strokeWidth="1.5"
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   >
