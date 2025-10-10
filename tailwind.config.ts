@@ -127,6 +127,14 @@ export default {
 						clipPath: 'inset(0 0 0 0)',
 					},
 				},
+				'grow-vertical': {
+					'0%': {
+						clipPath: 'inset(25% 0 25% 0)',
+					},
+					'100%': {
+						clipPath: 'inset(0 0 0 0)',
+					},
+				},
 				'accordion-down': {
 					from: {
 						height: '0'
