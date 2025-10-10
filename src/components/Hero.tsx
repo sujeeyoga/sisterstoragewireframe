@@ -5,8 +5,8 @@ import heroMainImage from '@/assets/hero-main-32rem.jpg';
 
 const Hero = () => {
   return (
-    <section className="relative w-full bg-[hsl(var(--brand-pink))] overflow-hidden pt-[80px]" aria-label="Hero section">
-      <div className="relative grid lg:grid-cols-2 gap-0 min-h-[85vh] lg:min-h-[90vh]">
+    <section className="relative w-full bg-[hsl(var(--brand-pink))] overflow-hidden" aria-label="Hero section">
+      <div className="relative grid lg:grid-cols-2 gap-0 min-h-screen lg:min-h-screen">
         {/* Left Content - Contained */}
         <div className="flex items-center">
           <div className="w-full max-w-[550px] ml-auto px-8 md:px-12 lg:px-0 lg:pr-12 py-12 lg:py-16">
@@ -55,7 +55,7 @@ const Hero = () => {
         </div>
 
         {/* Right Image - Full Width Background */}
-        <div className="relative h-[85vh] lg:h-[90vh] w-full bg-gray-100">
+        <div className="relative h-screen w-full bg-gray-100">
           <img
             src={heroMainImage}
             alt="Woman showcasing Sister Storage jewelry organization solution"
