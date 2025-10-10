@@ -38,11 +38,7 @@ const OrganizationGallery = () => {
           {galleryImages.map((image, index) => (
             <div 
               key={index} 
-              className="relative rounded-2xl shadow-md hover:shadow-xl transition-all duration-500 group overflow-hidden animate-fade-in opacity-0"
-              style={{
-                animationDelay: `${index * 150}ms`,
-                animationFillMode: 'forwards'
-              }}
+              className="relative rounded-2xl shadow-md hover:shadow-xl transition-all duration-500 group overflow-hidden animate-fade-in"
             >
               <PerformanceImage
                 src={image.src}
