@@ -97,7 +97,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const emailResponse = await resend.emails.send({
-      from: "Sister Storage <Sisterstorageinc@gmail.com>",
+      from: "Sister Storage <orders@updates.sisterstorage.com>",
       to: [to],
       subject,
       html,
