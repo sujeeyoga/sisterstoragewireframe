@@ -73,9 +73,9 @@ const BestSeller = () => {
           </p>
         </div>
         
-        <div className="flex gap-6 md:gap-8 overflow-x-auto pb-6 snap-x snap-mandatory scrollbar-hide">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
           {buyCards.map((item, index) => (
-            <Card key={item.id} className="group flex-shrink-0 w-[85vw] md:w-[400px] lg:w-[450px] overflow-hidden border-none shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 bg-white relative snap-center">
+            <Card key={item.id} className="group overflow-hidden border-none shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 bg-white relative">
               
               {/* Product Image */}
               <Link to={`/shop/${item.id}`} className="block relative">
