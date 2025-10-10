@@ -5,6 +5,7 @@ import { Package, Layers, AlertCircle, TrendingUp } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import HomeImageOptimizer from './HomeImageOptimizer';
 
 export const AdminDashboard = () => {
   const { data: stats, isLoading } = useQuery({
@@ -138,6 +139,10 @@ export const AdminDashboard = () => {
             </p>
           </CardContent>
         </Card>
+      </div>
+
+      <div className="mt-6">
+        <HomeImageOptimizer />
       </div>
     </div>
   );
