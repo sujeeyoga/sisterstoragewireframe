@@ -110,7 +110,8 @@ export const SisterStoriesCarousel = () => {
     setLoadingVideos(prev => ({ ...prev, [storyId]: false }));
   };
 
-  const handleVideoClick = async (storyId: string, event: React.MouseEvent) => {
+  const handleVideoClick = async (storyId: string, event: React.MouseEvent | React.TouchEvent) => {
+    event.preventDefault();
     event.stopPropagation();
     const video = videoRefs.current[storyId];
     if (!video) return;
@@ -118,10 +119,30 @@ export const SisterStoriesCarousel = () => {
     // If video isn't playing yet, start it
     if (!playingVideos.has(storyId)) {
       try {
-        await video.play();
-        setPlayingVideos(prev => new Set([...prev, storyId]));
+        // Reset video to start if it was paused
+        video.currentTime = 0;
+        
+        // Important for iOS - must be muted for programmatic play
+        video.muted = true;
+        
+        // Attempt to play
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+          await playPromise;
+          setPlayingVideos(prev => new Set([...prev, storyId]));
+          console.log(`Video ${storyId} playing successfully`);
+        }
       } catch (error) {
-        console.log('Failed to play video:', error);
+        console.error('Failed to play video:', error);
+        // Try one more time after a brief delay (iOS quirk)
+        setTimeout(async () => {
+          try {
+            await video.play();
+            setPlayingVideos(prev => new Set([...prev, storyId]));
+          } catch (retryError) {
+            console.error('Retry failed:', retryError);
+          }
+        }, 100);
       }
     } else {
       // Toggle mute
@@ -190,18 +211,31 @@ export const SisterStoriesCarousel = () => {
                       muted={unmutedVideo !== story.id}
                       loop
                       playsInline
+                      webkit-playsinline="true"
+                      x5-playsinline="true"
                       preload="metadata"
+                      controlsList="nodownload nofullscreen noremoteplayback"
+                      disablePictureInPicture
                       onLoadedData={() => handleVideoLoad(story.id)}
                       onPlay={() => setPlayingVideos(prev => new Set([...prev, story.id]))}
+                      onPause={() => setPlayingVideos(prev => {
+                        const newSet = new Set(prev);
+                        newSet.delete(story.id);
+                        return newSet;
+                      })}
                       className="w-full h-full object-cover transition-all duration-300 group-hover:scale-105"
                       style={{ backgroundColor: '#000' }}
-                    />
+                    >
+                      <source src={story.video} type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
                     
                     {/* Play button overlay for mobile */}
                     {!playingVideos.has(story.id) && !loadingVideos[story.id] && (
                       <div 
                         className="absolute inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm cursor-pointer z-20"
                         onClick={(e) => handleVideoClick(story.id, e)}
+                        onTouchEnd={(e) => handleVideoClick(story.id, e)}
                       >
                         <div className="bg-white/90 rounded-full p-4 shadow-lg transform transition-transform hover:scale-110 active:scale-95">
                           <Play className="w-8 h-8 text-primary fill-primary" />
@@ -219,6 +253,7 @@ export const SisterStoriesCarousel = () => {
                       <div 
                         className="absolute top-3 right-3 bg-black/30 text-white text-xs px-2 py-1 rounded-full backdrop-blur-sm cursor-pointer z-20"
                         onClick={(e) => handleVideoClick(story.id, e)}
+                        onTouchEnd={(e) => handleVideoClick(story.id, e)}
                       >
                         {unmutedVideo === story.id ? (
                         <svg className="w-3 h-3 inline" fill="currentColor" viewBox="0 0 20 20">
