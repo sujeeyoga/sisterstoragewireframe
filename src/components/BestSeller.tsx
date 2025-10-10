@@ -76,13 +76,13 @@ const BestSeller = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
           {buyCards.map((item, index) => (
             <Card key={item.id} className={cn(
-              "group overflow-hidden border-none shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 bg-white relative",
+              "group border-none shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 bg-white relative",
               index === 2 && "md:col-span-2"
             )}>
               
               {/* Product Image */}
-              <Link to={`/shop/${item.id}`} className="block relative">
-                <div className="relative overflow-hidden group-hover:overflow-visible">
+              <Link to={`/shop/${item.id}`} className="block">
+                <div className="relative group-hover:overflow-visible">
                   {/* Loading skeleton */}
                   {!loadedImages[item.id] && (
                     <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse" />
