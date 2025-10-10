@@ -161,18 +161,25 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
   }
 
   return (
-    <div className={`min-h-screen flex flex-col ${getBackgroundClasses()} ${className}`}>
-      {/* Floating navigation - white background with margins */}
-      <div className="sticky top-0 z-50 py-4 bg-[hsl(var(--brand-pink))] transition-all duration-300">
+    <div className={`min-h-screen ${getBackgroundClasses()} ${className}`} style={{ position: 'relative' }}>
+      {/* Floating navigation - simplified for mobile sticky reliability */}
+      <div 
+        className="sticky top-0 z-50 bg-[hsl(var(--brand-pink))] py-4"
+        style={{ 
+          position: '-webkit-sticky',
+          WebkitTransform: 'translateZ(0)',
+          transform: 'translateZ(0)'
+        }}
+      >
         <nav 
           ref={navRef} 
-          className="w-[min(1100px,calc(100%-40px))] mx-auto rounded-[25px] bg-white overflow-visible shadow-lg px-4 py-2 transition-all duration-300"
+          className="w-[min(1100px,calc(100%-40px))] mx-auto rounded-[25px] bg-white shadow-lg px-4 py-2"
         >
           <Navbar position={position} />
         </nav>
       </div>
       
-      <main className="bg-background flex-1" style={{ outline: 'none' }}>
+      <main className="bg-background" style={{ outline: 'none' }}>
         {children}
       </main>
       {showFooter && <Footer />}
