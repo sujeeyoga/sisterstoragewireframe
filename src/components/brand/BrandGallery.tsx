@@ -76,7 +76,7 @@ const BrandGallery = () => {
         {images.map((image, index) => (
           <div
             key={image.id}
-            className="group relative overflow-hidden bg-gray-100 aspect-square"
+            className="group relative overflow-hidden bg-white aspect-square"
             style={{ 
               borderRadius: '0px',
               animationDelay: `${index * 0.05}s`
@@ -85,7 +85,7 @@ const BrandGallery = () => {
             <img
               src={image.url}
               alt={image.file_name}
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+              className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
               loading="lazy"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
