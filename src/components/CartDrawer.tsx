@@ -40,10 +40,10 @@ const CartDrawer = () => {
 
   return (
     <>
-      {/* Floating Cart Button - Scrolls with page */}
+      {/* Floating Cart Button - Always Visible */}
       <button
         onClick={() => setIsOpen(true)}
-        className="sticky top-20 right-6 z-50 w-20 h-20 bg-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))]/90 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 ml-auto mr-6 mt-4"
+        className="fixed bottom-24 right-6 z-[99999] w-20 h-20 bg-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))]/90 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110"
         aria-label="Open shopping cart"
       >
         <ShoppingBag className="h-9 w-9" />
