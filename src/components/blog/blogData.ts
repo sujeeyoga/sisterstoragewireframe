@@ -220,25 +220,17 @@ export const blogPosts = [
 // Categories
 export const categories = [
   "All", 
-  "Organization Tips", 
-  "Wellness", 
-  "Small Spaces", 
-  "Sustainability",
-  "Kitchen & Pantry",
-  "Bedroom Storage",
-  "Kids' Rooms",
-  "Office Organization",
-  "Travel & Packing",
-  "Seasonal Decor",
-  "Collections" // Added new category for collections
+  "Bangle Archives",
+  "Velvet Drawer Diaries",
+  "Brown Girl Hacks",
+  "Stacked & Styled",
+  "From Amma's Shelf",
+  "Gifts That Hit",
+  "Clutter We Left Behind",
+  "Home Is a Drawer",
+  "Sister Signal Boost",
+  "Made You Look"
 ];
-
-// Add collection names to categories
-collections.forEach(collection => {
-  if (!categories.includes(collection.title)) {
-    categories.push(collection.title);
-  }
-});
 
 // Difficulty level colors
 export const difficultyColors = {
