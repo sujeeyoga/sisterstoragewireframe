@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ArrowLeft, ShoppingBag, CreditCard, Truck, Trash2, Tag, Loader2, Package } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Logo from '@/components/ui/Logo';
@@ -15,6 +16,44 @@ import { supabase } from '@/integrations/supabase/client';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import AddressAutocomplete from '@/components/checkout/AddressAutocomplete';
 import { useDebounce } from '@/hooks/useDebounce';
+
+// Province mapping and validation
+const PROVINCE_MAP: Record<string, string> = {
+  'ontario': 'ON', 'québec': 'QC', 'quebec': 'QC',
+  'british columbia': 'BC', 'alberta': 'AB', 'manitoba': 'MB',
+  'saskatchewan': 'SK', 'nova scotia': 'NS', 'new brunswick': 'NB',
+  'newfoundland and labrador': 'NL', 'prince edward island': 'PE',
+  'yukon': 'YT', 'northwest territories': 'NT', 'nunavut': 'NU'
+};
+
+const PROVINCES = [
+  { code: 'AB', name: 'Alberta' },
+  { code: 'BC', name: 'British Columbia' },
+  { code: 'MB', name: 'Manitoba' },
+  { code: 'NB', name: 'New Brunswick' },
+  { code: 'NL', name: 'Newfoundland and Labrador' },
+  { code: 'NT', name: 'Northwest Territories' },
+  { code: 'NS', name: 'Nova Scotia' },
+  { code: 'NU', name: 'Nunavut' },
+  { code: 'ON', name: 'Ontario' },
+  { code: 'PE', name: 'Prince Edward Island' },
+  { code: 'QC', name: 'Quebec' },
+  { code: 'SK', name: 'Saskatchewan' },
+  { code: 'YT', name: 'Yukon' }
+];
+
+// Validation functions
+const validatePostalCode = (code: string): boolean => {
+  return /^[A-Za-z]\d[A-Za-z]\s?\d[A-Za-z]\d$/.test(code);
+};
+
+const formatPostalCode = (code: string): string => {
+  const cleaned = code.replace(/\s/g, '').toUpperCase();
+  if (cleaned.length === 6 && /^[A-Z]\d[A-Z]\d[A-Z]\d$/.test(cleaned)) {
+    return `${cleaned.slice(0, 3)} ${cleaned.slice(3)}`;
+  }
+  return cleaned;
+};
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -36,6 +75,10 @@ const Checkout = () => {
     postalCode: '',
     country: 'CA',
     phone: '',
+  });
+  const [validationErrors, setValidationErrors] = useState({
+    province: '',
+    postalCode: '',
   });
 
   // Track abandoned carts
@@ -74,9 +117,31 @@ const Checkout = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    // Uppercase province code for API compatibility
-    const processedValue = name === 'province' ? value.toUpperCase() : value;
-    setFormData(prev => ({ ...prev, [name]: processedValue }));
+    setFormData(prev => ({ ...prev, [name]: value }));
+    
+    // Clear validation errors when user types
+    if (name === 'province' || name === 'postalCode') {
+      setValidationErrors(prev => ({ ...prev, [name]: '' }));
+    }
+  };
+
+  const handlePostalCodeBlur = () => {
+    const formatted = formatPostalCode(formData.postalCode);
+    if (formatted !== formData.postalCode) {
+      setFormData(prev => ({ ...prev, postalCode: formatted }));
+    }
+    
+    if (formData.postalCode && !validatePostalCode(formatted)) {
+      setValidationErrors(prev => ({ 
+        ...prev, 
+        postalCode: 'Invalid postal code format (e.g., A1A 1A1)' 
+      }));
+    }
+  };
+
+  const handleProvinceChange = (value: string) => {
+    setFormData(prev => ({ ...prev, province: value }));
+    setValidationErrors(prev => ({ ...prev, province: '' }));
   };
 
   // Debounce address fields
@@ -198,6 +263,35 @@ const Checkout = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate postal code format
+    if (!validatePostalCode(formData.postalCode)) {
+      setValidationErrors(prev => ({ 
+        ...prev, 
+        postalCode: 'Invalid postal code format (e.g., A1A 1A1)' 
+      }));
+      toast({
+        title: "Invalid Postal Code",
+        description: "Please enter a valid Canadian postal code (e.g., A1A 1A1).",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate province is valid 2-letter code
+    const validProvinceCodes = PROVINCES.map(p => p.code);
+    if (!validProvinceCodes.includes(formData.province)) {
+      setValidationErrors(prev => ({ 
+        ...prev, 
+        province: 'Please select a valid province' 
+      }));
+      toast({
+        title: "Invalid Province",
+        description: "Please select a valid province from the dropdown.",
+        variant: "destructive",
+      });
+      return;
+    }
     
     if (!selectedShippingRate) {
       toast({
@@ -391,15 +485,22 @@ const Checkout = () => {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="state">Province</Label>
-                      <Input
-                        id="province"
-                        name="province"
-                        value={formData.province}
-                        onChange={handleInputChange}
-                        placeholder="ON"
-                        required
-                      />
+                      <Label htmlFor="province">Province</Label>
+                      <Select value={formData.province} onValueChange={handleProvinceChange}>
+                        <SelectTrigger className={validationErrors.province ? "border-red-500" : ""}>
+                          <SelectValue placeholder="Select province" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {PROVINCES.map((province) => (
+                            <SelectItem key={province.code} value={province.code}>
+                              {province.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      {validationErrors.province && (
+                        <p className="text-sm text-red-500 mt-1">{validationErrors.province}</p>
+                      )}
                     </div>
                     <div>
                       <Label htmlFor="postalCode">Postal Code</Label>
@@ -408,9 +509,15 @@ const Checkout = () => {
                         name="postalCode"
                         value={formData.postalCode}
                         onChange={handleInputChange}
-                        placeholder="M5V 3A8"
+                        onBlur={handlePostalCodeBlur}
+                        className={validationErrors.postalCode ? "border-red-500" : ""}
+                        placeholder="A1A 1A1"
                         required
                       />
+                      {validationErrors.postalCode && (
+                        <p className="text-sm text-red-500 mt-1">{validationErrors.postalCode}</p>
+                      )}
+                      <p className="text-sm text-muted-foreground mt-1">Format: A1A 1A1</p>
                     </div>
                   </div>
                   <div>
