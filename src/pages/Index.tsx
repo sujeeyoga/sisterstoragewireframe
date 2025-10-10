@@ -1,9 +1,7 @@
-import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Hero from "@/components/Hero";
 import BestSeller from "@/components/BestSeller";
-import ScreenLoader from "@/components/ui/ScreenLoader";
 import CommunityStoriesCarousels from "@/components/community/CommunityStoriesCarousels";
 import FeaturedGrid from "@/components/FeaturedGrid";
 import PromotionalSection from "@/components/PromotionalSection";
@@ -11,12 +9,6 @@ import ParallaxContainer from "@/components/ParallaxContainer";
 import SaleBanner from "@/components/SaleBanner";
 
 const Index = () => {
-  const [isLoading, setIsLoading] = useState(true);
-
-  if (isLoading) {
-    return <ScreenLoader onComplete={() => setIsLoading(false)} duration={3000} />;
-  }
-
   return (
     <div className="min-h-screen bg-white">
       {/* Sale Banner */}
