@@ -15,41 +15,29 @@ const BrandMain = () => {
   return (
     <BrandLayout>
       <div className="font-poppins">
-        <EnhancedScrollFade preset="subtle" once={true}>
-          <Section spacing="xl" width="full" background="brand-pink" as="div">
-            <BrandHeader />
-          </Section>
-        </EnhancedScrollFade>
+        <Section spacing="xl" width="full" background="brand-pink" as="div">
+          <BrandHeader />
+        </Section>
         
-        <EnhancedScrollFade preset="subtle" delay={0.1} once={true}>
-          <Section spacing="lg" width="contained" background="white">
-            <BrandColors />
-          </Section>
-        </EnhancedScrollFade>
+        <Section spacing="lg" width="contained" background="white">
+          <BrandColors />
+        </Section>
         
-        <EnhancedScrollFade preset="subtle" delay={0.2} once={true}>
-          <Section spacing="lg" width="contained" background="gray">
-            <BrandTypography />
-          </Section>
-        </EnhancedScrollFade>
+        <Section spacing="lg" width="contained" background="gray">
+          <BrandTypography />
+        </Section>
         
-        <EnhancedScrollFade preset="subtle" delay={0.1} once={true}>
-          <Section spacing="lg" width="contained" background="white">
-            <BrandComponents />
-          </Section>
-        </EnhancedScrollFade>
+        <Section spacing="lg" width="contained" background="white">
+          <BrandComponents />
+        </Section>
         
-        <EnhancedScrollFade preset="subtle" delay={0.2} once={true}>
-          <Section spacing="lg" width="contained" background="gray">
-            <BrandApplications />
-          </Section>
-        </EnhancedScrollFade>
+        <Section spacing="lg" width="contained" background="gray">
+          <BrandApplications />
+        </Section>
         
-        <EnhancedScrollFade preset="subtle" delay={0.1} once={true}>
-          <Section spacing="xl" width="full" background="dark">
-            <BrandVoice />
-          </Section>
-        </EnhancedScrollFade>
+        <Section spacing="xl" width="full" background="dark">
+          <BrandVoice />
+        </Section>
       </div>
     </BrandLayout>
   );
