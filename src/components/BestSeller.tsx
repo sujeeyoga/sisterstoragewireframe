@@ -73,9 +73,9 @@ const BestSeller = () => {
           </p>
         </div>
         
-        <div className="grid md:grid-cols-2 gap-6 md:gap-8">
+        <div className="grid md:grid-cols-2 gap-3 md:gap-4">
           {/* Left Column - First and Third Images Stacked */}
-          <div className="flex flex-col gap-6 md:gap-8">
+          <div className="flex flex-col gap-3 md:gap-4">
             <Card className="group border-none shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 bg-white relative">
               <Link to={`/shop/${buyCards[0].id}`} className="block">
                 <div className="relative group-hover:overflow-visible">
