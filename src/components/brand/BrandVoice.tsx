@@ -15,6 +15,8 @@ const BrandVoice = () => {
         const { data, error } = await supabase
           .from('uploaded_images')
           .select('id, file_path, file_name')
+          .not('file_name', 'ilike', '%logo%')
+          .or('folder_path.ilike.%medium%,folder_path.ilike.%jewlery%,folder_path.ilike.%Large%,folder_path.ilike.%Starter%')
           .order('created_at', { ascending: false })
           .limit(10);
 
