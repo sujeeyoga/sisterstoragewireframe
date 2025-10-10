@@ -25,7 +25,7 @@ const PromotionalBanner = () => {
                   size="lg"
                   className="bg-[hsl(var(--brand-pink))] text-white hover:bg-[hsl(var(--brand-pink))]/90 hover:scale-105 font-bold px-8 py-6 shadow-lg transition-all duration-300"
                 >
-                  DISCOVER OUR COLLECTIONS
+                  SHOP
                 </Button>
               </Link>
             </div>
