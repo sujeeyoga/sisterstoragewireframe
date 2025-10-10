@@ -34,55 +34,38 @@ const OrganizationGallery = () => {
         </div>
 
         {/* Gallery Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-6 md:gap-4 items-stretch">
-          {/* First Image */}
-          <div className="relative aspect-square rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 group overflow-hidden animate-fade-in">
-            <PerformanceImage
-              src={galleryImages[0].src}
-              alt={galleryImages[0].alt}
-              className="w-full h-full object-cover block group-hover:scale-110 transition-transform duration-700 ease-out"
-              loading="eager"
-            />
-          </div>
-
-          {/* Second Image - moved to column 4 */}
-
-          {/* Fourth Image with Second Image below */}
-          <div className="flex flex-col gap-6 md:gap-4">
-            <div className="relative aspect-square rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 group overflow-hidden animate-fade-in">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-4 items-stretch">
+          {galleryImages.map((image, index) => (
+            <div 
+              key={index} 
+              className="relative aspect-square rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 group overflow-hidden animate-fade-in"
+            >
               <PerformanceImage
-                src={galleryImages[3].src}
-                alt={galleryImages[3].alt}
+                src={image.src}
+                alt={image.alt}
                 className="w-full h-full object-cover block group-hover:scale-110 transition-transform duration-700 ease-out"
-                loading="lazy"
+                loading={index < 2 ? 'eager' : 'lazy'}
               />
-              {/* Instagram Icon Overlay */}
-              <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors duration-500">
-                <svg
-                  className="w-24 h-24 md:w-40 md:h-40 text-white drop-shadow-2xl group-hover:scale-110 transition-transform duration-500"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-                </svg>
-              </div>
+              {/* Instagram Icon Overlay - Only on last card */}
+              {index === galleryImages.length - 1 && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors duration-500">
+                  <svg
+                    className="w-24 h-24 md:w-40 md:h-40 text-white drop-shadow-2xl group-hover:scale-110 transition-transform duration-500"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+                  </svg>
+                </div>
+              )}
             </div>
-            {/* Second Image below */}
-            <div className="relative aspect-square rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 group overflow-hidden animate-fade-in">
-              <PerformanceImage
-                src={galleryImages[1].src}
-                alt={galleryImages[1].alt}
-                className="w-full h-full object-contain block group-hover:scale-110 transition-transform duration-700 ease-out"
-                loading="eager"
-              />
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </section>
