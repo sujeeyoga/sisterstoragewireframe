@@ -150,8 +150,8 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
   // Standard layout with navigation
   return (
     <div className={`min-h-screen ${getBackgroundClasses()} ${className}`} style={{ position: 'relative' }}>
-      {/* Navigation: Fixed on mobile, sticky on desktop */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-[hsl(var(--brand-pink))] pt-3 pb-3 sm:sticky sm:top-0">
+      {/* Navigation: Sticky at the top, scrolls with user */}
+      <div className="sticky top-0 left-0 right-0 z-50 bg-[hsl(var(--brand-pink))] pt-3 pb-3">
         <nav 
           ref={navRef} 
           className="w-[min(1100px,calc(100%-40px))] mx-auto rounded-[25px] bg-white shadow-lg px-4 py-2"
@@ -160,8 +160,8 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
         </nav>
       </div>
       
-      {/* Main content with top margin to account for fixed nav on mobile */}
-      <main className="bg-background" style={{ outline: 'none', marginTop: 'var(--sticky-nav-offset)' }}>
+      {/* Main content */}
+      <main className="bg-background" style={{ outline: 'none' }}>
         {children}
       </main>
       
