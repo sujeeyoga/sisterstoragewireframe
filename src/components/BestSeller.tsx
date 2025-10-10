@@ -59,16 +59,16 @@ const BestSeller = () => {
   };
 
   return (
-    <section className="pt-[60px] md:pt-[120px] pb-8 md:pb-12 bg-pink-50">
+    <section className="pt-[60px] md:pt-[120px] pb-8 md:pb-12 bg-[hsl(var(--brand-pink))]">
       <div className="max-w-[2304px] mx-auto px-5">
         <div className="text-center max-w-3xl mx-auto mb-16 md:mb-20">
-          <span className="inline-block px-6 py-2.5 bg-[hsl(var(--brand-pink))] text-white text-sm font-bold rounded-full mb-6 shadow-lg">
+          <span className="inline-block px-6 py-2.5 bg-white text-[hsl(var(--brand-pink))] text-sm font-bold rounded-full mb-6 shadow-lg">
             Shop Now
           </span>
-          <h2 className="text-4xl md:text-6xl lg:text-7xl font-black text-gray-900 mb-8 leading-[0.95] tracking-wide">
-            <span className="text-[hsl(var(--brand-pink))]">BEST SELLERS</span>
+          <h2 className="text-4xl md:text-6xl lg:text-7xl font-black text-white mb-8 leading-[0.95] tracking-wide">
+            <span className="text-white">BEST SELLERS</span>
           </h2>
-          <p className="text-muted-foreground text-lg md:text-xl leading-relaxed font-light">
+          <p className="text-white text-lg md:text-xl leading-relaxed font-light">
             Everyone's go-to organizers — and for good reason.
           </p>
         </div>
@@ -168,14 +168,14 @@ const BestSeller = () => {
         <div className="text-center mt-16 md:mt-20">
           <Button 
             variant="outline" 
-            className="px-10 py-6 text-lg border-2 border-[hsl(var(--brand-pink))] text-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))] hover:text-white hover:scale-105 font-bold transition-all duration-300 shadow-lg"
+            className="px-10 py-6 text-lg border-2 border-white text-white hover:bg-white hover:text-[hsl(var(--brand-pink))] hover:scale-105 font-bold transition-all duration-300 shadow-lg"
             asChild
           >
             <Link to="/shop">
               View All Products
             </Link>
           </Button>
-          <p className="text-muted-foreground text-sm md:text-base mt-4 font-light">Free shipping on orders over $50 • 30-day returns</p>
+          <p className="text-white text-sm md:text-base mt-4 font-light">Free shipping on orders over $50 • 30-day returns</p>
         </div>
       </div>
     </section>
