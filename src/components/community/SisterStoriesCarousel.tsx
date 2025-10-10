@@ -95,9 +95,13 @@ export const SisterStoriesCarousel = () => {
 
         if (entry.isIntersecting) {
           setVisibleVideos(prev => new Set([...prev, videoId]));
-          // Ensure the play overlay is available even if metadata hasn't loaded (iOS/Incognito)
           setLoadingVideos(prev => ({ ...prev, [videoId]: false }));
-          // Do NOT autoplay; wait for explicit user tap to comply with mobile/Incognito policies
+          const video = videoRefs.current[videoId];
+          if (video && video.paused) {
+            video.play().catch(() => {
+              // Ignore autoplay errors on mobile/incognito
+            });
+          }
         }
       });
     }, options);
@@ -244,30 +248,20 @@ export const SisterStoriesCarousel = () => {
                       Your browser does not support the video tag.
                     </video>
                     
-                    {/* Play button overlay for mobile */}
-                    {!playingVideos.has(story.id) && (
-                      <div 
-                        className="absolute inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm cursor-pointer z-20"
-                        onClick={(e) => handleVideoClick(story.id, e)}
-                        onTouchEnd={(e) => handleVideoClick(story.id, e)}
-                      >
-                        <div className="bg-white/90 rounded-full p-4 shadow-lg transform transition-transform hover:scale-110 active:scale-95">
-                          <Play className="w-8 h-8 text-primary fill-primary" />
-                        </div>
-                      </div>
-                    )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/10 opacity-0 group-hover:opacity-100 transition-all duration-300" />
                     <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
                       <h4 className="font-semibold text-sm mb-1">{story.title}</h4>
                       <p className="text-xs opacity-90 mb-1">{story.author}</p>
                       <p className="text-xs opacity-75">{story.description}</p>
                     </div>
-                    {/* Mute/Unmute button - only show when playing */}
+                    {/* Mute/Unmute button */}
                     {playingVideos.has(story.id) && (
                       <div 
                         className="absolute top-3 right-3 bg-black/30 text-white text-xs px-2 py-1 rounded-full backdrop-blur-sm cursor-pointer z-20"
-                        onClick={(e) => handleVideoClick(story.id, e)}
-                        onTouchEnd={(e) => handleVideoClick(story.id, e)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setUnmutedVideo(prev => prev === story.id ? null : story.id);
+                        }}
                       >
                         {unmutedVideo === story.id ? (
                         <svg className="w-3 h-3 inline" fill="currentColor" viewBox="0 0 20 20">
