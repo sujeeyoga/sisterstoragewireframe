@@ -73,73 +73,47 @@ const BestSeller = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-          {buyCards.map((item, index) => (
-            <Card key={item.id} className={cn(
-              "group border-none shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 bg-white relative",
-              index === 2 && "md:col-span-2"
-            )}>
-              
-              {/* Product Image */}
-              <Link to={`/shop/${item.id}`} className="block">
+        <div className="grid md:grid-cols-2 gap-6 md:gap-8">
+          {/* Left Column - First and Third Images Stacked */}
+          <div className="flex flex-col gap-6 md:gap-8">
+            <Card className="group border-none shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 bg-white relative">
+              <Link to={`/shop/${buyCards[0].id}`} className="block">
                 <div className="relative group-hover:overflow-visible">
-                  {/* Loading skeleton */}
-                  {!loadedImages[item.id] && (
+                  {!loadedImages[buyCards[0].id] && (
                     <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse" />
                   )}
                   
                   <img 
-                    src={item.image} 
-                    alt={`${item.name} - Bundle collection`}
+                    src={buyCards[0].image} 
+                    alt={`${buyCards[0].name} - Bundle collection`}
                     className={cn(
                       "w-full h-auto object-cover transition-all duration-700",
-                      loadedImages[item.id] ? "opacity-100" : "opacity-0"
+                      loadedImages[buyCards[0].id] ? "opacity-100" : "opacity-0"
                     )}
                     loading="eager"
                     decoding="async"
-                    onLoad={() => handleImageLoad(item.id)}
+                    onLoad={() => handleImageLoad(buyCards[0].id)}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
                   
-                  {/* Card content overlay that appears on hover */}
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-6 pointer-events-none">
-                    <h3 className="text-white text-2xl md:text-3xl font-black mb-3 tracking-tight">{item.name}</h3>
-                    <p className="text-white/95 text-base mb-4 font-medium">{item.description}</p>
-                    <p className="text-white text-2xl font-bold mb-5">${item.price}</p>
-                    
-                    {/* What's Included */}
-                    <div className="bg-white/15 backdrop-blur-md rounded-xl p-4 border border-white/25 mb-4 shadow-lg">
-                      <p className="text-xs font-bold text-white uppercase tracking-widest mb-2">What's Included</p>
-                      <p className="text-sm text-white/95 leading-relaxed">{item.bundleContents}</p>
-                    </div>
-                    
-                    {/* Reviews */}
-                    <div className="flex items-center gap-2.5 mb-5">
-                      <div className="flex items-center gap-1">
-                        {[...Array(item.rating)].map((_, i) => (
-                          <Star key={i} className="h-4 w-4 text-amber-400 fill-amber-400" />
-                        ))}
-                      </div>
-                      <span className="text-white/95 text-sm font-medium">({item.reviews} reviews)</span>
-                    </div>
-                    
-                    {/* Action Buttons */}
+...
                     <div className="pointer-events-auto">
                       <AddToCartBar 
                         product={{
-                          id: item.id,
-                          name: item.name,
-                          price: item.price,
-                          originalPrice: item.originalPrice,
-                          stripePriceId: item.stripePriceId,
-                          description: item.description,
+                          id: buyCards[0].id,
+                          name: buyCards[0].name,
+                          price: buyCards[0].price,
+                          originalPrice: buyCards[0].originalPrice,
+                          stripePriceId: buyCards[0].stripePriceId,
+                          description: buyCards[0].description,
                           category: 'bundle',
                           color: '#E90064',
-                          images: [item.image],
+                          images: [buyCards[0].image],
                           features: [],
                           material: '',
                           stock: 100,
-                          bundleContents: item.bundleContents
+                          bundleContents: buyCards[0].bundleContents
                         }}
                       />
                     </div>
@@ -147,7 +121,100 @@ const BestSeller = () => {
                 </div>
               </Link>
             </Card>
-          ))}
+
+            <Card className="group border-none shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 bg-white relative">
+              <Link to={`/shop/${buyCards[2].id}`} className="block">
+                <div className="relative group-hover:overflow-visible">
+                  {!loadedImages[buyCards[2].id] && (
+                    <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse" />
+                  )}
+                  
+                  <img 
+                    src={buyCards[2].image} 
+                    alt={`${buyCards[2].name} - Bundle collection`}
+                    className={cn(
+                      "w-full h-auto object-cover transition-all duration-700",
+                      loadedImages[buyCards[2].id] ? "opacity-100" : "opacity-0"
+                    )}
+                    loading="eager"
+                    decoding="async"
+                    onLoad={() => handleImageLoad(buyCards[2].id)}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
+                  
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-6 pointer-events-none">
+...
+                    <div className="pointer-events-auto">
+                      <AddToCartBar 
+                        product={{
+                          id: buyCards[2].id,
+                          name: buyCards[2].name,
+                          price: buyCards[2].price,
+                          originalPrice: buyCards[2].originalPrice,
+                          stripePriceId: buyCards[2].stripePriceId,
+                          description: buyCards[2].description,
+                          category: 'bundle',
+                          color: '#E90064',
+                          images: [buyCards[2].image],
+                          features: [],
+                          material: '',
+                          stock: 100,
+                          bundleContents: buyCards[2].bundleContents
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            </Card>
+          </div>
+
+          {/* Right Column - Vertical Image */}
+          <Card className="group border-none shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 bg-white relative">
+            <Link to={`/shop/${buyCards[1].id}`} className="block">
+              <div className="relative group-hover:overflow-visible">
+                {!loadedImages[buyCards[1].id] && (
+                  <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse" />
+                )}
+                
+                <img 
+                  src={buyCards[1].image} 
+                  alt={`${buyCards[1].name} - Bundle collection`}
+                  className={cn(
+                    "w-full h-auto object-cover transition-all duration-700",
+                    loadedImages[buyCards[1].id] ? "opacity-100" : "opacity-0"
+                  )}
+                  loading="eager"
+                  decoding="async"
+                  onLoad={() => handleImageLoad(buyCards[1].id)}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
+                
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-6 pointer-events-none">
+...
+                  <div className="pointer-events-auto">
+                    <AddToCartBar 
+                      product={{
+                        id: buyCards[1].id,
+                        name: buyCards[1].name,
+                        price: buyCards[1].price,
+                        originalPrice: buyCards[1].originalPrice,
+                        stripePriceId: buyCards[1].stripePriceId,
+                        description: buyCards[1].description,
+                        category: 'bundle',
+                        color: '#E90064',
+                        images: [buyCards[1].image],
+                        features: [],
+                        material: '',
+                        stock: 100,
+                        bundleContents: buyCards[1].bundleContents
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </Link>
+          </Card>
         </div>
         
         <div className="text-center mt-16 md:mt-20">
