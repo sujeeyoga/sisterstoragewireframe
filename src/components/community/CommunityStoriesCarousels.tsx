@@ -3,7 +3,7 @@ import { SisterStoriesCarousel } from './SisterStoriesCarousel';
 
 const CommunityStoriesCarousels = () => {
   return (
-    <section className="py-8 md:py-12 bg-gradient-to-b from-background to-background/50 overflow-x-hidden">
+    <section className="py-8 md:py-12 bg-white overflow-x-hidden">
       {/* Simple Header */}
       <div className="container-custom text-center mb-8">
         <div className="inline-flex items-center gap-2 bg-primary/10 rounded-full px-4 py-2 mb-4">
