@@ -22,7 +22,7 @@ const FeaturedGridItem: React.FC<FeaturedGridItemProps> = ({
       case 'horizontal':
         return 'col-span-2 aspect-[2/1]';
       case 'vertical':
-        return 'row-span-2 aspect-[1/2]';
+        return 'row-span-2';
       case 'normal':
       default:
         return 'aspect-square';
