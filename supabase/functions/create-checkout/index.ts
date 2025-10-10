@@ -53,16 +53,30 @@ serve(async (req) => {
     }
 
     // Build line items for Stripe from cart items
-    const lineItems = items.map((item: any) => ({
-      price_data: {
-        currency: 'cad',
-        product_data: {
-          name: item.name,
+    const lineItems = items.map((item: any) => {
+      const itemData: any = {
+        price_data: {
+          currency: 'cad',
+          product_data: {
+            name: item.name,
+          },
+          unit_amount: Math.round(item.price * 100),
         },
-        unit_amount: Math.round(item.price * 100),
-      },
-      quantity: item.quantity,
-    }));
+        quantity: item.quantity,
+      };
+
+      // Add image if available and is a valid URL
+      if (item.image && item.image.startsWith('http')) {
+        itemData.price_data.product_data.images = [item.image];
+      }
+
+      // Add description with product details
+      if (item.description) {
+        itemData.price_data.product_data.description = item.description;
+      }
+
+      return itemData;
+    });
 
     // Add shipping as a line item
     if (shippingCost && shippingCost > 0) {

@@ -324,6 +324,8 @@ const Checkout = () => {
             name: item.name,
             price: item.price,
             quantity: item.quantity,
+            image: item.image,
+            description: item.description || `${item.name} - Quantity: ${item.quantity}`,
           })),
           customerEmail: formData.email,
           shippingAddress: {
