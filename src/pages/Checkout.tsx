@@ -177,19 +177,40 @@ const Checkout = () => {
     province: string;
     postalCode: string;
   }) => {
-    console.log('Updating form with address:', address);
+    console.log('Google Address Selected:', address);
+    
+    // Ensure postal code is properly formatted (A1A 1A1)
+    const formattedPostalCode = formatPostalCode(address.postalCode);
+    
+    // Ensure province is 2-letter uppercase code
+    const formattedProvince = address.province.toUpperCase().slice(0, 2);
+    
+    // Ensure city is properly formatted
+    const formattedCity = address.city.trim();
+    
+    console.log('Formatted Address Data:', {
+      address: address.address,
+      city: formattedCity,
+      province: formattedProvince,
+      postalCode: formattedPostalCode
+    });
+    
     setFormData(prev => ({
       ...prev,
       address: address.address,
-      city: address.city,
-      province: address.province,
-      postalCode: address.postalCode
+      city: formattedCity,
+      province: formattedProvince,
+      postalCode: formattedPostalCode
     }));
     
-    // Trigger shipping calculation after address is populated
+    // Clear any validation errors
+    setValidationErrors({ province: '', postalCode: '' });
+    
+    // Trigger shipping calculation after state update
     setTimeout(() => {
+      console.log('Triggering shipping calculation...');
       calculateShipping();
-    }, 100);
+    }, 200);
   };
 
   // Calculate shipping when address is complete

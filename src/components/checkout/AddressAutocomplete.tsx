@@ -150,11 +150,20 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
       // Get 2-letter province code (try mapping first, then short_name)
       const provinceLong = components.administrative_area_level_1?.long || '';
       const provinceShort = components.administrative_area_level_1?.short || '';
-      const province = (PROVINCE_MAP[provinceLong] || provinceShort).toUpperCase();
+      const province = PROVINCE_MAP[provinceLong] || provinceShort || '';
+      
+      console.log('Province parsing:', { provinceLong, provinceShort, mapped: province });
       
       // Format Canadian postal code with space
       const rawPostalCode = components.postal_code?.long || '';
       const postalCode = rawPostalCode ? formatPostalCode(rawPostalCode) : '';
+      
+      console.log('Address components parsed:', {
+        fullAddress,
+        city,
+        province,
+        postalCode
+      });
 
       if (fullAddress && city && province && postalCode) {
         // Update the input value
