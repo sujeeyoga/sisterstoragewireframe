@@ -104,8 +104,9 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
     });
 
     // Handle place selection
-    autocompleteRef.current.addListener('place_changed', () => {
+    const handlePlaceChanged = () => {
       const place = autocompleteRef.current?.getPlace();
+      
       if (!place?.address_components) {
         // Fallback: parse from freeform string when Places API is unavailable
         const raw = inputRef.current?.value || '';
@@ -121,7 +122,6 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
         if (street && city && province) {
           onChange(street);
           onAddressSelect({ address: street, city, province, postalCode });
-          inputRef.current?.blur();
         }
         return;
       }
@@ -157,26 +157,29 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
       const postalCode = rawPostalCode ? formatPostalCode(rawPostalCode) : '';
 
       if (fullAddress && city && province && postalCode) {
-        // Update the input value to close the dropdown
+        // Update the input value
         onChange(fullAddress);
         
-        onAddressSelect({
-          address: fullAddress,
-          city,
-          province,
-          postalCode
-        });
-        // Close suggestions
-        inputRef.current?.blur();
+        // Use setTimeout to ensure the autocomplete dropdown is closed first
+        setTimeout(() => {
+          onAddressSelect({
+            address: fullAddress,
+            city,
+            province,
+            postalCode
+          });
+        }, 50);
       }
-    });
+    };
+    
+    autocompleteRef.current.addListener('place_changed', handlePlaceChanged);
 
     return () => {
       if (autocompleteRef.current && window.google) {
         window.google.maps.event.clearInstanceListeners(autocompleteRef.current);
       }
     };
-  }, [isLoaded, onAddressSelect]);
+  }, [isLoaded, onChange, onAddressSelect]);
 
   return (
     <div className="space-y-2">
