@@ -21,33 +21,33 @@ const Hero = () => {
       <div className="relative h-[70vh] flex items-center">
         <div className="bg-[hsl(var(--brand-pink))] h-full flex items-center animate-[wipe-in-right_1.2s_ease-out,grow-vertical_2s_1.2s_ease-out_forwards] lg:max-w-[65%]">
           <div className="w-full max-w-[550px] pl-[max(32px,calc((100vw-1100px)/2+32px))] pr-8 md:pr-12 lg:pr-12 py-12 lg:py-16">
-            <div className="flex flex-col space-y-8 lg:space-y-12 text-white">
+            <div className="flex flex-col space-y-10 lg:space-y-14 text-white">
               {/* Badge */}
               <Badge 
                 variant="secondary" 
-                className="bg-white text-[hsl(var(--brand-pink))] px-8 py-4 text-lg font-bold w-fit rounded-full shadow-lg hover:shadow-xl transition-shadow duration-300"
+                className="bg-white text-[hsl(var(--brand-pink))] px-8 py-4 text-lg font-bold w-fit rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
               >
                 Beautifully Organized
               </Badge>
 
               {/* Headline */}
-              <h1 className="text-7xl md:text-8xl lg:text-9xl font-black leading-[0.95] tracking-tight">
+              <h1 className="text-7xl md:text-8xl lg:text-9xl font-black leading-[0.9] tracking-tighter">
                 CULTURE /<br />
                 WITHOUT<br />
                 CLUTTER.
               </h1>
 
               {/* Main Tagline */}
-              <p className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight uppercase">
+              <p className="text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.1] tracking-tight uppercase">
                 BROUGHT TO YOU BY SISTERS WHO GET IT.
               </p>
 
               {/* CTA Button */}
-              <div>
+              <div className="pt-2">
                 <Link to="/shop">
                   <Button 
                     size="lg"
-                    className="bg-white text-[hsl(var(--brand-pink))] hover:bg-white/95 hover:scale-105 font-bold text-xl px-12 py-8 w-fit shadow-xl transition-all duration-300"
+                    className="bg-white text-[hsl(var(--brand-pink))] hover:bg-white/95 hover:scale-105 font-bold text-xl px-12 py-8 w-fit shadow-2xl transition-all duration-300 rounded-full"
                   >
                     SHOP THE DROP
                   </Button>
@@ -55,8 +55,8 @@ const Hero = () => {
               </div>
 
               {/* Bottom Text */}
-              <div className="pt-6">
-                <p className="text-xl md:text-2xl font-light leading-relaxed">
+              <div className="pt-4 opacity-95">
+                <p className="text-xl md:text-2xl font-light leading-relaxed tracking-wide">
                   Made by sisters, for sisters.<br />
                   Clutter never had a place in our culture.
                 </p>
