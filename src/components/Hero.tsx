@@ -35,7 +35,7 @@ const Hero = () => {
             </p>
 
             {/* CTA Button */}
-            <div className="pt-1">
+            <div className="pt-12">
               <Link to="/shop">
                 <Button 
                   size="lg"
