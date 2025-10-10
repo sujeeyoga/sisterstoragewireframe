@@ -352,16 +352,20 @@ const Checkout = () => {
         // Mark cart as recovered before redirecting to payment
         await markAsRecovered();
         
-        try {
-          // Prefer top-level redirect to escape preview iframe
-          if (window.top) {
-            window.top.location.assign(data.url);
-          } else {
-            window.location.assign(data.url);
-          }
-        } catch (e) {
-          console.warn('Top-level redirect failed, opening new tab:', e);
-          window.open(data.url, '_blank', 'noopener,noreferrer');
+        // Open Stripe Checkout in a new tab (works best in preview environment)
+        const stripeWindow = window.open(data.url, '_blank', 'noopener,noreferrer');
+        
+        if (!stripeWindow) {
+          toast({
+            title: "Pop-up Blocked",
+            description: "Please allow pop-ups for this site to proceed to checkout.",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Redirecting to Stripe",
+            description: "Opening secure checkout in a new tab...",
+          });
         }
       } else {
         console.error('No URL in response:', data);
