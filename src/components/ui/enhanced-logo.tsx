@@ -5,7 +5,7 @@ import logoImage from '@/assets/sister-storage-logo-new.jpg';
 
 interface LogoProps {
   className?: string;
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
   scrolled?: boolean;
   variant?: 'default' | 'minimal' | 'icon-only';
   loading?: 'eager' | 'lazy';
@@ -31,7 +31,8 @@ const EnhancedLogo: React.FC<LogoProps> = ({
     sm: 'h-4 sm:h-5 md:h-6 lg:h-7',
     md: 'h-5 sm:h-6 md:h-7 lg:h-8',
     lg: 'h-6 sm:h-7 md:h-8 lg:h-9 xl:h-10',
-    xl: 'h-7 sm:h-8 md:h-9 lg:h-10 xl:h-11 2xl:h-12'
+    xl: 'h-7 sm:h-8 md:h-9 lg:h-10 xl:h-11 2xl:h-12',
+    '2xl': 'h-8 sm:h-9 md:h-10 lg:h-11 xl:h-12 2xl:h-14'
   };
 
   // Enhanced scroll scaling for smoother transitions
