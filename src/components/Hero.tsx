@@ -18,8 +18,8 @@ const Hero = () => {
       </div>
 
       {/* Pink Content Section - Wipes in from left then grows vertically */}
-      <div className="relative h-[70vh] flex items-center">
-        <div className="bg-[hsl(var(--brand-pink))] h-full flex items-center animate-[wipe-in-right_1.2s_ease-out,grow-vertical_2s_1.2s_ease-out_forwards] lg:max-w-[65%]">
+      <div className="relative h-[70vh] flex items-start pt-[10vh]">
+        <div className="bg-[hsl(var(--brand-pink))] h-[50vh] flex items-center animate-[wipe-in-right_1.2s_ease-out,grow-vertical_2s_1.2s_ease-out_forwards] lg:max-w-[65%]">
           <div className="w-full max-w-[550px] pl-[max(32px,calc((100vw-1100px)/2+32px))] pr-8 md:pr-12 lg:pr-12 py-12 lg:py-16">
             <div className="flex flex-col space-y-5 lg:space-y-7 text-white">
               {/* Badge */}
