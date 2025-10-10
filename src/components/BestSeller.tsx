@@ -76,17 +76,6 @@ const BestSeller = () => {
         <div className="flex gap-4 md:gap-6 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide">
           {buyCards.map((item, index) => (
             <Card key={item.id} className="group flex-shrink-0 w-[85vw] md:w-[400px] lg:w-[450px] overflow-hidden border-none shadow-md hover:shadow-xl transition-all duration-500 bg-white relative snap-center">
-              {/* Bundle Badge */}
-              <div className="absolute top-3 left-3 z-10">
-                <span className={`px-3 py-1.5 text-xs font-bold rounded-full shadow-lg ${
-                  item.badge === 'STARTER BUNDLE' ? 'bg-white text-blue-600' :
-                  item.badge === 'TRAVEL READY' ? 'bg-white text-emerald-600' :
-                  item.badge === 'MOST POPULAR' ? 'bg-white text-pink-600' :
-                  'bg-white text-purple-600'
-                }`}>
-                  {item.badge}
-                </span>
-              </div>
               
               {/* Product Image */}
               <Link to={`/shop/${item.id}`} className="block relative">
