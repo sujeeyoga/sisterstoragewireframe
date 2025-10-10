@@ -45,15 +45,7 @@ const OrganizationGallery = () => {
             />
           </div>
 
-          {/* Second Image */}
-          <div className="relative aspect-[1/2] rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 group overflow-hidden animate-fade-in">
-            <PerformanceImage
-              src={galleryImages[1].src}
-              alt={galleryImages[1].alt}
-              className="w-full h-full object-contain block group-hover:scale-110 transition-transform duration-700 ease-out"
-              loading="eager"
-            />
-          </div>
+          {/* Second Image - moved to column 4 */}
 
           {/* Third Image */}
           <div className="relative aspect-[1/2] rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 group overflow-hidden animate-fade-in">
@@ -65,7 +57,7 @@ const OrganizationGallery = () => {
             />
           </div>
 
-          {/* Fourth Image - Stacked under third */}
+          {/* Fourth Image with Second Image below */}
           <div className="flex flex-col gap-6 md:gap-4">
             <div className="relative aspect-square rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 group overflow-hidden animate-fade-in">
               <PerformanceImage
@@ -90,6 +82,15 @@ const OrganizationGallery = () => {
                   <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
                 </svg>
               </div>
+            </div>
+            {/* Second Image below */}
+            <div className="relative aspect-square rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 group overflow-hidden animate-fade-in">
+              <PerformanceImage
+                src={galleryImages[1].src}
+                alt={galleryImages[1].alt}
+                className="w-full h-full object-contain block group-hover:scale-110 transition-transform duration-700 ease-out"
+                loading="eager"
+              />
             </div>
           </div>
         </div>
