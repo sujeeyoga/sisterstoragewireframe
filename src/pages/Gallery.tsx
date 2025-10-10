@@ -9,30 +9,30 @@ const Gallery = () => {
   const [itemsToShow, setItemsToShow] = useState(12);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Gallery images from uploads
+  // Gallery images from storage (optimized WebP versions)
   const galleryImages = [
-    { id: 1, url: "/lovable-uploads/0e5fe1c0-12f8-439f-94d5-ec1da8ca09c8.png", title: "Bangle Collection" },
-    { id: 2, url: "/lovable-uploads/c44d4b5c-0104-4077-99dd-904d87ec4d8b.png", title: "Jewelry Organization" },
-    { id: 3, url: "/lovable-uploads/56a20345-d9f3-47ac-a645-23d19194af78.png", title: "Instagram Inspiration" },
-    { id: 4, url: "/lovable-uploads/f9cf4a8d-2f00-4b1f-bbb3-4322491012ad.png", title: "Social Showcase" },
-    { id: 5, url: "/lovable-uploads/e1ae51b5-7916-4137-825e-7f197dff06a3.png", title: "Golden Treasures" },
-    { id: 6, url: "/lovable-uploads/8620f7af-c089-458c-bef9-78d6cd77f04e.png", title: "Storage Solutions" },
-    { id: 7, url: "/lovable-uploads/ce6528ec-56be-4176-919f-4285946c18b2.png", title: "Bangle Display" },
-    { id: 8, url: "/lovable-uploads/160b5d30-ba2c-4e66-8423-c4a6288d1af0.png", title: "Friend Goals" },
-    { id: 9, url: "/lovable-uploads/c6544fac-3f2f-4a6a-a01e-5ca149720fcb.png", title: "Jewelry Party" },
-    { id: 10, url: "/lovable-uploads/b0963b41-dee1-4ccb-b8bc-7144c4ea6285.png", title: "Golden Elegance" },
-    { id: 11, url: "/lovable-uploads/e9628188-8ef0-426b-9858-08b2848fd690.png", title: "Sister Collection" },
-    { id: 12, url: "/lovable-uploads/ff4988e3-c51c-4391-a440-95e03d111656.png", title: "Organized Beauty" },
-    { id: 13, url: "/lovable-uploads/2a4c457a-7695-47d3-9912-ab2900c6ea25.png", title: "Bundle Collection" },
-    { id: 14, url: "/lovable-uploads/76c5f6ac-f27b-4f26-8377-759dfc17c71d.png", title: "Travel Set" },
-    { id: 15, url: "/lovable-uploads/b32a7860-b957-41e7-9c5c-cbd348260cf2.png", title: "Everyday Staples" },
-    { id: 16, url: "/lovable-uploads/03cc68a5-5bfc-4417-bf01-d43578ffa321.png", title: "Forever Collection" },
-    { id: 17, url: "/lovable-uploads/3e91b1f2-e5b6-4cee-a7b7-806a5815546b.png", title: "Premium Storage" },
-    { id: 18, url: "/lovable-uploads/4ef08ea3-3380-4111-b4a1-eb939cba275b.png", title: "Luxury Box" },
-    { id: 19, url: "/lovable-uploads/a501115d-f6f4-4f74-bdbe-1b73ba1bc625.png", title: "Classic Design" },
-    { id: 20, url: "/lovable-uploads/c3b682be-b949-4e16-8aff-82cc8e879642.png", title: "Modern Style" },
-    { id: 21, url: "/lovable-uploads/e60a5afe-c0c9-4913-bf6a-eff94188c606.png", title: "Elegant Touch" },
-    { id: 22, url: "/lovable-uploads/fb8da55a-c9bb-419e-a96f-175a667875e1.png", title: "Refined Beauty" }
+    { id: 1, url: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/0e5fe1c0-12f8-439f-94d5-ec1da8ca09c8.webp", title: "Bangle Collection" },
+    { id: 2, url: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/c44d4b5c-0104-4077-99dd-904d87ec4d8b.webp", title: "Jewelry Organization" },
+    { id: 3, url: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/56a20345-d9f3-47ac-a645-23d19194af78.webp", title: "Instagram Inspiration" },
+    { id: 4, url: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/f9cf4a8d-2f00-4b1f-bbb3-4322491012ad.webp", title: "Social Showcase" },
+    { id: 5, url: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/e1ae51b5-7916-4137-825e-7f197dff06a3.webp", title: "Golden Treasures" },
+    { id: 6, url: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/8620f7af-c089-458c-bef9-78d6cd77f04e.webp", title: "Storage Solutions" },
+    { id: 7, url: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/ce6528ec-56be-4176-919f-4285946c18b2.webp", title: "Bangle Display" },
+    { id: 8, url: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/160b5d30-ba2c-4e66-8423-c4a6288d1af0.webp", title: "Friend Goals" },
+    { id: 9, url: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/c6544fac-3f2f-4a6a-a01e-5ca149720fcb.webp", title: "Jewelry Party" },
+    { id: 10, url: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/b0963b41-dee1-4ccb-b8bc-7144c4ea6285.webp", title: "Golden Elegance" },
+    { id: 11, url: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/e9628188-8ef0-426b-9858-08b2848fd690.webp", title: "Sister Collection" },
+    { id: 12, url: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/ff4988e3-c51c-4391-a440-95e03d111656.webp", title: "Organized Beauty" },
+    { id: 13, url: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/2a4c457a-7695-47d3-9912-ab2900c6ea25.webp", title: "Bundle Collection" },
+    { id: 14, url: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/76c5f6ac-f27b-4f26-8377-759dfc17c71d.webp", title: "Travel Set" },
+    { id: 15, url: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/b32a7860-b957-41e7-9c5c-cbd348260cf2.webp", title: "Everyday Staples" },
+    { id: 16, url: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/03cc68a5-5bfc-4417-bf01-d43578ffa321.webp", title: "Forever Collection" },
+    { id: 17, url: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/3e91b1f2-e5b6-4cee-a7b7-806a5815546b.webp", title: "Premium Storage" },
+    { id: 18, url: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/4ef08ea3-3380-4111-b4a1-eb939cba275b.webp", title: "Luxury Box" },
+    { id: 19, url: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/a501115d-f6f4-4f74-bdbe-1b73ba1bc625.webp", title: "Classic Design" },
+    { id: 20, url: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/c3b682be-b949-4e16-8aff-82cc8e879642.webp", title: "Modern Style" },
+    { id: 21, url: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/e60a5afe-c0c9-4913-bf6a-eff94188c606.webp", title: "Elegant Touch" },
+    { id: 22, url: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/fb8da55a-c9bb-419e-a96f-175a667875e1.webp", title: "Refined Beauty" }
   ];
 
   const filteredItems = galleryImages.slice(0, itemsToShow);

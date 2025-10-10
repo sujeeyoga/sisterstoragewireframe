@@ -80,7 +80,7 @@ const PromotionalSection = () => {
             {/* Image Side */}
             <div className="flex-1 min-h-[300px] lg:min-h-[500px]">
               <img 
-                src="/lovable-uploads/c3b682be-b949-4e16-8aff-82cc8e879642.png"
+                src="https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/c3b682be-b949-4e16-8aff-82cc8e879642.webp"
                 alt="Sister holding bag of bangles"
                 className="w-full h-full object-cover"
                 loading="lazy"

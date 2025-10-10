@@ -39,6 +39,7 @@ const RotatingImageGallery = ({
             index === currentIndex ? 'opacity-100' : 'opacity-0'
           } ${index !== currentIndex ? 'absolute inset-0' : ''}`}
           loading={index === 0 ? 'eager' : 'lazy'}
+          fetchPriority={index === 0 ? 'high' : 'low'}
         />
       ))}
       

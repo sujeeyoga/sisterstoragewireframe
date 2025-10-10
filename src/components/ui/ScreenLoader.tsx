@@ -12,9 +12,9 @@ const staticImagesToPreload = [
   'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/Starter-Set-2x-Large-1x-Medium-Box-1x-Small-Box/1759980850863-5xgr2a.jpg',
   'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/Sister%20Storage%20Assets/Together%20Bundle-%203%20Large%202%20Medium%201%20Travel/1759979157485-d2rva.jpg',
   'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/The-Complete-Family-Set-4-Large-2-Medium-2-Travel/1759980920453-ezsfq.jpg',
-  '/lovable-uploads/a501115d-f6f4-4f74-bdbe-1b73ba1bc625.png',
-  '/lovable-uploads/fb8da55a-c9bb-419e-a96f-175a667875e1.png',
-  '/lovable-uploads/4ef08ea3-3380-4111-b4a1-eb939cba275b.png'
+  'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/hero-images/a501115d-f6f4-4f74-bdbe-1b73ba1bc625.png',
+  'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/hero-images/fb8da55a-c9bb-419e-a96f-175a667875e1.png',
+  'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/hero-images/4ef08ea3-3380-4111-b4a1-eb939cba275b.png'
 ];
 
 const ScreenLoader: React.FC<ScreenLoaderProps> = ({ 
