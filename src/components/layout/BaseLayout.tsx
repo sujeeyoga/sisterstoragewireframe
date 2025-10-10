@@ -92,8 +92,8 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
   const headerShrinkFactor = Math.min(1, Math.max(0.95, 1 - (position / 300)));
   const headerShadowOpacity = Math.min(0.15, (position / 200));
   
-  // Header visibility logic
-  const headerTranslateY = isMobile && direction === 'down' && position > 150 && !isAtTop ? -100 : 0;
+  // Header visibility logic - disabled for now to keep nav always visible
+  const headerTranslateY = 0;
   const headerVisibilityTransform = `translateY(${headerTranslateY}%)`;
 
   // Handle page-specific body classes and effects
