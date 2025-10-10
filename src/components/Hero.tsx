@@ -7,9 +7,9 @@ const Hero = () => {
   return (
     <section className="relative w-full bg-[hsl(var(--brand-pink))]" aria-label="Hero section">
       <div className="w-[min(1100px,calc(100%-40px))] mx-auto">
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 min-h-[80vh] lg:min-h-[90vh] items-center py-12 lg:py-16">
+        <div className="grid lg:grid-cols-2 gap-0 min-h-[85vh] lg:min-h-[90vh] items-center">
           {/* Left Content */}
-          <div className="flex flex-col justify-center space-y-6 lg:space-y-8 text-white px-4">
+          <div className="flex flex-col justify-center space-y-6 lg:space-y-8 text-white px-4 py-12 lg:py-16">
             {/* Badge */}
             <Badge 
               variant="secondary" 
@@ -22,36 +22,44 @@ const Hero = () => {
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-black leading-[0.95] tracking-tight">
               CULTURE /<br />
               WITHOUT<br />
-              CLUTTER
+              CLUTTER.
             </h1>
 
-            {/* Tagline */}
-            <p className="text-lg md:text-xl lg:text-2xl font-light max-w-xl leading-relaxed">
-              Made by sisters, for sisters. Clutter never had a place in our culture.
+            {/* Main Tagline */}
+            <p className="text-2xl md:text-3xl lg:text-4xl font-bold leading-tight uppercase">
+              BROUGHT TO YOU BY SISTERS WHO GET IT.
             </p>
 
             {/* CTA Button */}
-            <Link to="/shop">
-              <Button 
-                size="lg"
-                className="bg-white text-[hsl(var(--brand-pink))] hover:bg-white/95 hover:scale-105 font-bold text-base px-8 py-6 w-fit shadow-xl transition-all duration-300"
-              >
-                SHOP THE DROP
-              </Button>
-            </Link>
+            <div>
+              <Link to="/shop">
+                <Button 
+                  size="lg"
+                  className="bg-white text-[hsl(var(--brand-pink))] hover:bg-white/95 hover:scale-105 font-bold text-base px-8 py-6 w-fit shadow-xl transition-all duration-300"
+                >
+                  SHOP THE DROP
+                </Button>
+              </Link>
+            </div>
+
+            {/* Bottom Text */}
+            <div className="pt-4">
+              <p className="text-base md:text-lg font-light leading-relaxed">
+                Made by sisters, for sisters.<br />
+                Clutter never had a place in our culture.
+              </p>
+            </div>
           </div>
 
           {/* Right Image */}
-          <div className="flex items-center justify-center lg:justify-end">
-            <div className="relative w-full h-full min-h-[50vh] lg:min-h-[90vh]">
-              <img
-                src={heroMainImage}
-                alt="Woman showcasing Sister Storage jewelry organization solution"
-                className="w-full h-full object-cover rounded-2xl shadow-2xl"
-                loading="eager"
-                fetchPriority="high"
-              />
-            </div>
+          <div className="relative h-[85vh] lg:h-[90vh] w-full bg-gray-100">
+            <img
+              src={heroMainImage}
+              alt="Woman showcasing Sister Storage jewelry organization solution"
+              className="w-full h-full object-cover"
+              loading="eager"
+              fetchPriority="high"
+            />
           </div>
         </div>
       </div>
