@@ -13,9 +13,9 @@ import heroMain32rem from '@/assets/hero-main-32rem.jpg';
 const Hero = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const [galleryImages, setGalleryImages] = useState<string[]>([
-    '/lovable-uploads/a501115d-f6f4-4f74-bdbe-1b73ba1bc625.png',
-    '/lovable-uploads/fb8da55a-c9bb-419e-a96f-175a667875e1.png',
-    '/lovable-uploads/4ef08ea3-3380-4111-b4a1-eb939cba275b.png'
+    'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/hero-images/a501115d-f6f4-4f74-bdbe-1b73ba1bc625.png',
+    'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/hero-images/fb8da55a-c9bb-419e-a96f-175a667875e1.png',
+    'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/hero-images/4ef08ea3-3380-4111-b4a1-eb939cba275b.png'
   ]);
 
   // Check for reduced motion preference
