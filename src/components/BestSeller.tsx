@@ -8,20 +8,6 @@ import AddToCartBar from '@/components/cart/AddToCartBar';
 
 const buyCards = [
   {
-    id: "bundle-1",
-    name: 'Starter Set',
-    price: 90.00,
-    originalPrice: null,
-    stripePriceId: "price_1SGKRwDkJNZeOpMwTtMXQrHE",
-    image: 'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/Starter-Set-2x-Large-1x-Medium-Box-1x-Small-Box/1759980850863-5xgr2a.jpg',
-    badge: "STARTER BUNDLE",
-    description: "START. SAFE. STYLE.",
-    rodCount: 11,
-    bundleContents: "2 Large (4 rods each) + 1 Medium (2 rods) + 1 Small (1 rod)",
-    rating: 5,
-    reviews: 89
-  },
-  {
     id: "bundle-2", 
     name: 'Sister Staples',
     price: 137.00,
@@ -34,6 +20,20 @@ const buyCards = [
     bundleContents: "3 Large (4 rods each) + 2 Medium (2 rods each) + 1 Small (1 rod)",
     rating: 5,
     reviews: 124
+  },
+  {
+    id: "bundle-1",
+    name: 'Starter Set',
+    price: 90.00,
+    originalPrice: null,
+    stripePriceId: "price_1SGKRwDkJNZeOpMwTtMXQrHE",
+    image: 'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/Starter-Set-2x-Large-1x-Medium-Box-1x-Small-Box/1759980850863-5xgr2a.jpg',
+    badge: "STARTER BUNDLE",
+    description: "START. SAFE. STYLE.",
+    rodCount: 11,
+    bundleContents: "2 Large (4 rods each) + 1 Medium (2 rods) + 1 Small (1 rod)",
+    rating: 5,
+    reviews: 89
   },
   {
     id: "bundle-3",
