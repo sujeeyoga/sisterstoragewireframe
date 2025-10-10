@@ -44,9 +44,9 @@ const OrganizationGallery = () => {
                 loading={index < 2 ? 'eager' : 'lazy'}
               />
               {/* Instagram Icon Overlay */}
-              <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-lg transition-opacity duration-300">
                 <svg
-                  className="w-5 h-5"
+                  className="w-16 h-16"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
