@@ -454,11 +454,11 @@
   @keyframes expand-up {
     0% {
       transform: scaleY(0);
-      transform-origin: bottom;
+      transform-origin: center;
     }
     100% {
       transform: scaleY(1);
-      transform-origin: bottom;
+      transform-origin: center;
     }
   }
 
