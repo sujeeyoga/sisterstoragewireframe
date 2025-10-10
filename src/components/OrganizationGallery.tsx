@@ -43,22 +43,24 @@ const OrganizationGallery = () => {
                 className="w-full h-auto block group-hover:scale-[1.02] group-hover:brightness-[1.02] transition-all duration-700 rounded-2xl"
                 loading={index < 2 ? 'eager' : 'lazy'}
               />
-              {/* Instagram Icon Overlay */}
-              <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-lg transition-opacity duration-300">
-                <svg
-                  className="w-16 h-16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-                </svg>
-              </div>
+              {/* Instagram Icon Overlay - Only on last card */}
+              {index === galleryImages.length - 1 && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <svg
+                    className="w-16 h-16 text-white"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+                  </svg>
+                </div>
+              )}
             </div>
           ))}
         </div>
