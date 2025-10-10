@@ -20,7 +20,7 @@ const PromotionalBanner = () => {
                 Stop letting your precious jewelry tangle in drawers. Our thoughtfully designed storage solutions keep everything organized, protected, and easy to find.
               </p>
               
-              <Link to="/shop">
+              <Link to="/shop" className="block mt-4">
                 <Button 
                   size="lg"
                   className="bg-[hsl(var(--brand-pink))] text-white hover:bg-[hsl(var(--brand-pink))]/90 hover:scale-105 font-bold px-8 py-6 shadow-lg transition-all duration-300"
