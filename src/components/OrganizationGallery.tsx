@@ -38,14 +38,14 @@ const OrganizationGallery = () => {
           {galleryImages.map((image, index) => (
             <div 
               key={index} 
-              className={`relative rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 group overflow-hidden animate-fade-in ${
-                index === 1 || index === 2 ? 'lg:row-span-2' : 'aspect-square'
-              }`}
+              className="relative aspect-square rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 group overflow-hidden animate-fade-in"
             >
               <PerformanceImage
                 src={image.src}
                 alt={image.alt}
-                className="w-full h-full object-cover block group-hover:scale-110 transition-transform duration-700 ease-out"
+                className={`w-full h-full block group-hover:scale-110 transition-transform duration-700 ease-out ${
+                  index === 1 || index === 2 ? 'object-cover object-center' : 'object-cover'
+                }`}
                 loading={index < 2 ? 'eager' : 'lazy'}
               />
               {/* Instagram Icon Overlay - Only on last card */}
