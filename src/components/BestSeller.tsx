@@ -75,7 +75,7 @@ const BestSeller = () => {
                   
                   <img src={buyCards[0].image} alt={`${buyCards[0].name} - Bundle collection`} className={cn("w-full h-full object-cover transition-all duration-700 scale-125", loadedImages[buyCards[0].id] ? "opacity-100" : "opacity-0")} loading="eager" decoding="async" onLoad={() => handleImageLoad(buyCards[0].id)} />
                   
-                  <div className="absolute inset-0 flex items-center justify-center animate-fade-in">
+                  <div className="absolute inset-0 flex items-center justify-center">
                     <h3 className="text-white text-4xl md:text-5xl font-poppins font-thin drop-shadow-[0_4px_8px_rgba(0,0,0,0.3)] [text-shadow:_-1px_-1px_0_#fff,_1px_-1px_0_#fff,_-1px_1px_0_#fff,_1px_1px_0_#fff]">{buyCards[0].name}</h3>
                   </div>
                   
@@ -110,7 +110,7 @@ const BestSeller = () => {
                   
                   <img src={buyCards[1].image} alt={`${buyCards[1].name} - Bundle collection`} className={cn("w-full h-full object-cover transition-all duration-700 scale-125", loadedImages[buyCards[1].id] ? "opacity-100" : "opacity-0")} loading="eager" decoding="async" onLoad={() => handleImageLoad(buyCards[1].id)} />
                   
-                  <div className="absolute inset-0 flex items-center justify-center animate-fade-in">
+                  <div className="absolute inset-0 flex items-center justify-center">
                     <h3 className="text-white text-4xl md:text-5xl font-poppins font-thin drop-shadow-[0_4px_8px_rgba(0,0,0,0.3)] [text-shadow:_-1px_-1px_0_#fff,_1px_-1px_0_#fff,_-1px_1px_0_#fff,_1px_1px_0_#fff]">{buyCards[1].name}</h3>
                   </div>
                   
