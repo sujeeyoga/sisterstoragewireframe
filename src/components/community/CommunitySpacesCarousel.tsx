@@ -7,31 +7,31 @@ import { Skeleton } from '@/components/ui/skeleton';
 const spaceImages = [
   { 
     id: 1, 
-    image: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/f9cf4a8d-2f00-4b1f-bbb3-4322491012ad.webp", 
+    image: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/f9cf4a8d-2f00-4b1f-bbb3-4322491012ad.jpg", 
     title: "Elegant Display",
     description: "Beautifully organized jewelry collection"
   },
   { 
     id: 2, 
-    image: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/ce6528ec-56be-4176-919f-4285946c18b2.webp", 
+    image: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/ce6528ec-56be-4176-919f-4285946c18b2.jpg", 
     title: "Daily Ritual",
     description: "Morning organization setup"
   },
   { 
     id: 3, 
-    image: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/c6544fac-3f2f-4a6a-a01e-5ca149720fcb.webp", 
+    image: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/c6544fac-3f2f-4a6a-a01e-5ca149720fcb.jpg", 
     title: "Perfect Setup",
     description: "Functional and beautiful storage"
   },
   { 
     id: 4, 
-    image: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/b0963b41-dee1-4ccb-b8bc-7144c4ea6285.webp", 
+    image: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/b0963b41-dee1-4ccb-b8bc-7144c4ea6285.jpg", 
     title: "Cultural Pride",
     description: "Traditional pieces organized with love"
   },
   { 
     id: 5, 
-    image: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/3e91b1f2-e5b6-4cee-a7b7-806a5815546b.webp", 
+    image: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/3e91b1f2-e5b6-4cee-a7b7-806a5815546b.jpg", 
     title: "Inspiration",
     description: "Inspiring organization ideas"
   }

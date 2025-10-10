@@ -8,38 +8,38 @@ const gridItems = [
   // Row 1
   {
     id: 1,
-    image: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/0e5fe1c0-12f8-439f-94d5-ec1da8ca09c8.webp",
+    image: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/0e5fe1c0-12f8-439f-94d5-ec1da8ca09c8.jpg",
     title: "Bangle Collection",
     span: "horizontal"
   },
   {
     id: 2,
-    image: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/c44d4b5c-0104-4077-99dd-904d87ec4d8b.webp",
+    image: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/c44d4b5c-0104-4077-99dd-904d87ec4d8b.jpg",
     title: "Jewelry Organization",
     span: "normal"
   },
   {
     id: 3,
-    image: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/56a20345-d9f3-47ac-a645-23d19194af78.webp",
+    image: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/56a20345-d9f3-47ac-a645-23d19194af78.jpg",
     title: "Instagram Inspiration",
     span: "vertical"
   },
   // Row 2
   {
     id: 4,
-    image: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/f9cf4a8d-2f00-4b1f-bbb3-4322491012ad.webp",
+    image: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/f9cf4a8d-2f00-4b1f-bbb3-4322491012ad.jpg",
     title: "Social Showcase",
     span: "normal"
   },
   {
     id: 5,
-    image: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/e1ae51b5-7916-4137-825e-7f197dff06a3.webp",
+    image: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/e1ae51b5-7916-4137-825e-7f197dff06a3.jpg",
     title: "Golden Treasures",
     span: "normal"
   },
   {
     id: 6,
-    image: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/8620f7af-c089-458c-bef9-78d6cd77f04e.webp",
+    image: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/8620f7af-c089-458c-bef9-78d6cd77f04e.jpg",
     title: "Storage Solutions",
     span: "normal"
   }
