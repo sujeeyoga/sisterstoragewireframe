@@ -21,7 +21,7 @@ interface AddressAutocompleteProps {
 const formatPostalCode = (postal: string): string => {
   const cleaned = postal.replace(/\s/g, '').toUpperCase();
   if (cleaned.length === 6 && /^[A-Z]\d[A-Z]\d[A-Z]\d$/.test(cleaned)) {
-    return `${cleaned.slice(0, 3)} ${cleaned.slice(3)}`;
+    return cleaned;
   }
   return cleaned;
 };
@@ -152,7 +152,7 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
       const provinceShort = components.administrative_area_level_1?.short || '';
       const province = PROVINCE_MAP[provinceLong] || provinceShort || '';
       
-      // Format Canadian postal code with space
+      // Format Canadian postal code (A1A1A1)
       const rawPostalCode = components.postal_code?.long || '';
       const postalCode = rawPostalCode ? formatPostalCode(rawPostalCode) : '';
 

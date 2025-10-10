@@ -49,13 +49,13 @@ const PROVINCES = [
 
 // Validation functions
 const validatePostalCode = (code: string): boolean => {
-  return /^[A-Za-z]\d[A-Za-z]\s?\d[A-Za-z]\d$/.test(code);
+  return /^[A-Za-z]\d[A-Za-z]\d[A-Za-z]\d$/.test(code);
 };
 
 const formatPostalCode = (code: string): string => {
   const cleaned = code.replace(/\s/g, '').toUpperCase();
   if (cleaned.length === 6 && /^[A-Z]\d[A-Z]\d[A-Z]\d$/.test(cleaned)) {
-    return `${cleaned.slice(0, 3)} ${cleaned.slice(3)}`;
+    return cleaned;
   }
   return cleaned;
 };
@@ -147,7 +147,7 @@ const Checkout = () => {
     if (formData.postalCode && !validatePostalCode(formatted)) {
       setValidationErrors(prev => ({ 
         ...prev, 
-        postalCode: 'Invalid postal code format (e.g., A1A 1A1)' 
+        postalCode: 'Invalid postal code format (e.g., A1A1A1)' 
       }));
     }
   };
@@ -193,7 +193,7 @@ const Checkout = () => {
   }) => {
     console.log('Google Address Selected:', address);
     
-    // Ensure postal code is properly formatted (A1A 1A1)
+    // Ensure postal code is properly formatted (A1A1A1)
     const formattedPostalCode = formatPostalCode(address.postalCode);
     
     // Ensure province is 2-letter uppercase code
@@ -309,11 +309,11 @@ const Checkout = () => {
     if (!validatePostalCode(formData.postalCode)) {
       setValidationErrors(prev => ({ 
         ...prev, 
-        postalCode: 'Invalid postal code format (e.g., A1A 1A1)' 
+        postalCode: 'Invalid postal code format (e.g., A1A1A1)' 
       }));
       toast({
         title: "Invalid Postal Code",
-        description: "Please enter a valid Canadian postal code (e.g., A1A 1A1).",
+        description: "Please enter a valid Canadian postal code (e.g., A1A1A1).",
         variant: "destructive",
       });
       return;
@@ -570,13 +570,13 @@ const Checkout = () => {
                         onChange={handleInputChange}
                         onBlur={handlePostalCodeBlur}
                         className={validationErrors.postalCode ? "border-red-500" : ""}
-                        placeholder="A1A 1A1"
+                        placeholder="A1A1A1"
                         required
                       />
                       {validationErrors.postalCode && (
                         <p className="text-sm text-red-500 mt-1">{validationErrors.postalCode}</p>
                       )}
-                      <p className="text-sm text-muted-foreground mt-1">Format: A1A 1A1</p>
+                      <p className="text-sm text-muted-foreground mt-1">Format: A1A1A1</p>
                     </div>
                   </div>
                   <div>
