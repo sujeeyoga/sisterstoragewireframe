@@ -194,6 +194,51 @@ export type Database = {
         }
         Relationships: []
       }
+      uploaded_videos: {
+        Row: {
+          created_at: string | null
+          duration: number | null
+          file_name: string
+          file_path: string
+          file_size: number
+          folder_path: string | null
+          height: number | null
+          id: string
+          mime_type: string
+          updated_at: string | null
+          uploaded_by: string | null
+          width: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          duration?: number | null
+          file_name: string
+          file_path: string
+          file_size: number
+          folder_path?: string | null
+          height?: number | null
+          id?: string
+          mime_type: string
+          updated_at?: string | null
+          uploaded_by?: string | null
+          width?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          duration?: number | null
+          file_name?: string
+          file_path?: string
+          file_size?: number
+          folder_path?: string | null
+          height?: number | null
+          id?: string
+          mime_type?: string
+          updated_at?: string | null
+          uploaded_by?: string | null
+          width?: number | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string | null

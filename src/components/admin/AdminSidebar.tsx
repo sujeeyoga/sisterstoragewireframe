@@ -1,4 +1,4 @@
-import { LayoutDashboard, Package, Layout, RefreshCw, Settings, Users, ShoppingCart, Image, FolderOpen, FileText, Sparkles, Truck } from 'lucide-react';
+import { LayoutDashboard, Package, Layout, RefreshCw, Settings, Users, ShoppingCart, Image, FolderOpen, FileText, Sparkles, Truck, Video } from 'lucide-react';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
   Sidebar,
@@ -26,6 +26,7 @@ const menuItems = [
   { title: 'WooCommerce Sync', url: '/admin/sync', icon: RefreshCw, end: false },
   { title: 'Settings', url: '/admin/settings', icon: Settings, end: false },
   { title: 'Images', url: '/admin/images', icon: Image, end: false },
+  { title: 'Videos', url: '/admin/videos', icon: Video, end: false },
   { title: 'Uploads', url: '/admin/uploads', icon: FolderOpen, end: false },
 ];
 
