@@ -166,18 +166,14 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
       });
 
       if (fullAddress && city && province) {
-        // Update the input value
+        // Update the input value and all fields immediately
         onChange(fullAddress);
-        
-        // Use setTimeout to ensure the autocomplete dropdown is closed first
-        setTimeout(() => {
-          onAddressSelect({
-            address: fullAddress,
-            city,
-            province,
-            postalCode // may be empty if not returned; we'll still populate city/province
-          });
-        }, 50);
+        onAddressSelect({
+          address: fullAddress,
+          city,
+          province,
+          postalCode // may be empty if not returned; we'll still populate city/province
+        });
       }
     };
     
