@@ -1,13 +1,10 @@
-
 import React, { useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import PromoBanner from "@/components/shop/PromoBanner";
 import useScrollDirection from "@/hooks/use-scroll-direction";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ArrowLeft } from "lucide-react";
-import { Link } from "react-router-dom";
 
 export type LayoutVariant = 'standard' | 'brand' | 'minimal' | 'full';
 export type SpacingVariant = 'none' | 'compact' | 'normal' | 'spacious';
@@ -35,45 +32,11 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
   pageId
 }) => {
   const location = useLocation();
-  const { isAtTop, position, direction } = useScrollDirection(10);
+  const { position } = useScrollDirection(10);
   const isMobile = useIsMobile();
-  const isShop = location.pathname === '/shop';
-  const navPositionClass = 'sticky top-3';
-
-  // Track nav element to compute a global offset for other sticky bars
   const navRef = useRef<HTMLDivElement | null>(null);
-  useEffect(() => {
-    const el = navRef.current;
-    if (!el) return;
-    const update = () => {
-      const h = el.getBoundingClientRect().height || 64;
-      const offset = Math.round(h + 12); // match nav top-[12px]
-      document.documentElement.style.setProperty('--sticky-nav-offset', `${offset}px`);
-    };
-    update();
-    const ro = new ResizeObserver(update);
-    ro.observe(el);
-    window.addEventListener('resize', update);
-    return () => {
-      ro.disconnect();
-      window.removeEventListener('resize', update);
-    };
-  }, []);
 
-  // Calculate spacing based on variant and spacing prop
-  const getMainPadding = () => {
-    if (variant === 'brand' || variant === 'full') return 'pt-0';
-    
-    const spacingMap = {
-      none: 'pt-6',
-      compact: 'pt-6',
-      normal: 'pt-8',
-      spacious: 'pt-12'
-    };
-    return spacingMap[spacing];
-  };
-
-  // Calculate background classes
+  // ===== UTILITY FUNCTIONS =====
   const getBackgroundClasses = () => {
     const backgroundMap = {
       white: 'bg-white',
@@ -84,40 +47,53 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
     return backgroundMap[background];
   };
 
-  // Header configuration based on variant
-  const shouldShowStandardHeader = variant === 'standard' || variant === 'minimal';
-  const shouldShowBrandBackButton = variant === 'brand';
+  const getMainPadding = () => {
+    if (variant === 'brand' || variant === 'full') return 'pt-0';
+    const spacingMap = {
+      none: 'pt-6',
+      compact: 'pt-6',
+      normal: 'pt-8',
+      spacious: 'pt-12'
+    };
+    return spacingMap[spacing];
+  };
 
-  // Calculate header transform and effects based on scroll position
-  const headerShrinkFactor = Math.min(1, Math.max(0.95, 1 - (position / 300)));
-  const headerShadowOpacity = Math.min(0.15, (position / 200));
+  // ===== EFFECTS =====
   
-  // Header visibility logic - disabled for now to keep nav always visible
-  const headerTranslateY = 0;
-  const headerVisibilityTransform = `translateY(${headerTranslateY}%)`;
-
-  // Handle page-specific body classes and effects
+  // Track nav height for other sticky elements
   useEffect(() => {
-    // Avoid transforms on body to keep sticky nav reliable on mobile
-
-    // Add variant-specific classes
-    if (variant === 'brand') {
-      document.body.classList.add('brand-layout');
-    } else if (location.pathname === '/shop') {
-      document.body.classList.add('pinterest-layout');
-    }
+    const el = navRef.current;
+    if (!el) return;
     
-    // Add page-specific class if provided
-    if (pageId) {
-      document.body.classList.add(`page-${pageId}`);
-    }
+    const updateNavOffset = () => {
+      const height = el.getBoundingClientRect().height || 64;
+      const offset = Math.round(height + (isMobile ? 0 : 12));
+      document.documentElement.style.setProperty('--sticky-nav-offset', `${offset}px`);
+    };
     
-    // Cleanup on unmount
+    updateNavOffset();
+    const resizeObserver = new ResizeObserver(updateNavOffset);
+    resizeObserver.observe(el);
+    window.addEventListener('resize', updateNavOffset);
+    
     return () => {
-      document.body.classList.remove('brand-layout', 'pinterest-layout');
-      if (pageId) {
-        document.body.classList.remove(`page-${pageId}`);
-      }
+      resizeObserver.disconnect();
+      window.removeEventListener('resize', updateNavOffset);
+    };
+  }, [isMobile]);
+
+  // Manage page-specific body classes
+  useEffect(() => {
+    const classes = [];
+    
+    if (variant === 'brand') classes.push('brand-layout');
+    if (location.pathname === '/shop') classes.push('pinterest-layout');
+    if (pageId) classes.push(`page-${pageId}`);
+    
+    classes.forEach(cls => document.body.classList.add(cls));
+    
+    return () => {
+      classes.forEach(cls => document.body.classList.remove(cls));
     };
   }, [location.pathname, variant, pageId]);
 
@@ -127,10 +103,7 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
       const element = document.querySelector(location.hash);
       if (element) {
         setTimeout(() => {
-          element.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start',
-          });
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 100);
       }
     } else {
@@ -138,10 +111,15 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
     }
   }, [location]);
 
+  // ===== RENDER VARIANTS =====
+  
+  // Brand/Full layout with back button
   if (variant === 'brand' || variant === 'full') {
+    const showBackButton = variant === 'brand';
+    
     return (
       <div className={`min-h-screen ${getBackgroundClasses()} ${className}`}>
-        {shouldShowBrandBackButton && (
+        {showBackButton && (
           <Link
             to="/"
             className="fixed top-6 left-6 z-50 w-12 h-12 bg-white/10 backdrop-blur-sm text-white hover:bg-white hover:text-black border border-white/20 hover:border-white flex items-center justify-center transition-all duration-300 ease-in-out hover:scale-110 shadow-lg"
@@ -160,12 +138,11 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
     );
   }
 
+  // Standard layout with navigation
   return (
     <div className={`min-h-screen ${getBackgroundClasses()} ${className}`} style={{ position: 'relative' }}>
-      {/* Floating navigation - simplified for mobile sticky reliability */}
-      <div 
-        className="fixed top-0 left-0 right-0 z-50 bg-[hsl(var(--brand-pink))] py-3 sm:sticky sm:top-0"
-      >
+      {/* Navigation: Fixed on mobile, sticky on desktop for reliability */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-[hsl(var(--brand-pink))] py-3 sm:sticky sm:top-0">
         <nav 
           ref={navRef} 
           className="w-[min(1100px,calc(100%-40px))] mx-auto rounded-[25px] bg-white shadow-lg px-4 py-2"
@@ -174,9 +151,11 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
         </nav>
       </div>
       
+      {/* Main content with top margin to account for fixed nav on mobile */}
       <main className="bg-background" style={{ outline: 'none', marginTop: 'var(--sticky-nav-offset)' }}>
         {children}
       </main>
+      
       {showFooter && <Footer />}
     </div>
   );
