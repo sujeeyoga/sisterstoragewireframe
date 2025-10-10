@@ -45,22 +45,14 @@ const OrganizationGallery = () => {
             />
           </div>
 
-          {/* Second and Third Images - Horizontal Row */}
-          <div className="w-full grid grid-cols-2 gap-4">
+          {/* Second Image */}
+          <div className="w-full">
             <div className="relative aspect-[3/4] rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 group overflow-hidden animate-fade-in">
               <PerformanceImage
                 src={galleryImages[1].src}
                 alt={galleryImages[1].alt}
                 className="w-full h-full object-cover block group-hover:scale-110 transition-transform duration-700 ease-out"
                 loading="eager"
-              />
-            </div>
-            <div className="relative aspect-[3/4] rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 group overflow-hidden animate-fade-in">
-              <PerformanceImage
-                src={galleryImages[2].src}
-                alt={galleryImages[2].alt}
-                className="w-full h-full object-cover block group-hover:scale-110 transition-transform duration-700 ease-out"
-                loading="lazy"
               />
             </div>
           </div>
