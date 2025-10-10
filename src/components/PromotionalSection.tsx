@@ -26,8 +26,8 @@ const PromotionalSection = () => {
     <section className="py-16 md:py-24 bg-white">
       <div className="container-custom">
         {/* Sale Card */}
-        <div className="bg-gradient-to-br from-gray-50 to-white rounded-3xl overflow-hidden shadow-lg border border-gray-200">
-          <div className="flex flex-col lg:flex-row">
+        <div className="bg-gradient-to-br from-gray-50 to-white rounded-3xl shadow-lg border border-gray-200 overflow-hidden">
+          <div className="flex flex-col lg:flex-row h-full">
             {/* Content Side */}
             <div className="flex-1 p-8 md:p-12 lg:p-16 flex flex-col justify-center">
               {/* Badge */}
@@ -78,11 +78,11 @@ const PromotionalSection = () => {
             </div>
 
             {/* Image Side */}
-            <div className="flex-1 min-h-[300px] lg:min-h-[500px] relative">
+            <div className="flex-1 min-h-[300px] lg:min-h-[500px]">
               <img 
                 src="/lovable-uploads/c3b682be-b949-4e16-8aff-82cc8e879642.png"
                 alt="Sister holding bag of bangles"
-                className="absolute inset-0 w-full h-full object-cover"
+                className="w-full h-full object-cover"
                 loading="lazy"
               />
             </div>
