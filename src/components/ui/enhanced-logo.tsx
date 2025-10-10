@@ -37,10 +37,6 @@ const EnhancedLogo: React.FC<LogoProps> = ({
     '4xl': 'h-14 sm:h-16 md:h-18 lg:h-20 xl:h-22 2xl:h-24'
   };
 
-  // No scaling - keep logo at 100%
-  const scale = 1;
-  const opacity = imageLoaded ? 1 : 0;
-
   const handleImageLoad = () => {
     setImageLoaded(true);
     onLoad?.();
@@ -86,13 +82,6 @@ const EnhancedLogo: React.FC<LogoProps> = ({
             "hover:brightness-110 active:scale-95",
             imageLoaded ? "opacity-100" : "opacity-0"
           )}
-            style={{ 
-            transform: `scale(${scale})`,
-            opacity: opacity,
-            filter: scrolled ? 'brightness(0.96) contrast(1.02)' : 'brightness(1)',
-            transformOrigin: 'left center',
-            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
-          }}
           loading={loading}
           onLoad={handleImageLoad}
           onError={handleImageError}
