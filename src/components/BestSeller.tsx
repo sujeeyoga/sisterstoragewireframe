@@ -94,7 +94,7 @@ const BestSeller = () => {
                   />
                   
                   <div className="absolute inset-0 flex items-center justify-center animate-fade-in">
-                    <h3 className="text-sister-pink text-4xl md:text-5xl font-poppins font-thin">{buyCards[0].name}</h3>
+                    <h3 className="text-white text-4xl md:text-5xl font-poppins font-thin drop-shadow-[0_4px_8px_rgba(0,0,0,0.3)] [text-shadow:_-1px_-1px_0_#fff,_1px_-1px_0_#fff,_-1px_1px_0_#fff,_1px_1px_0_#fff]">{buyCards[0].name}</h3>
                   </div>
                   
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-6 pointer-events-none">
@@ -143,7 +143,7 @@ const BestSeller = () => {
                   />
                   
                   <div className="absolute inset-0 flex items-center justify-center animate-fade-in">
-                    <h3 className="text-sister-pink text-4xl md:text-5xl font-poppins font-thin">{buyCards[1].name}</h3>
+                    <h3 className="text-white text-4xl md:text-5xl font-poppins font-thin drop-shadow-[0_4px_8px_rgba(0,0,0,0.3)] [text-shadow:_-1px_-1px_0_#fff,_1px_-1px_0_#fff,_-1px_1px_0_#fff,_1px_1px_0_#fff]">{buyCards[1].name}</h3>
                   </div>
                   
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-6 pointer-events-none">
