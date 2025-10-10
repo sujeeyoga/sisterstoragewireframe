@@ -79,20 +79,15 @@ const PromotionalSection = () => {
 
             {/* Image Side */}
             <div className="flex-1 min-h-[300px] lg:min-h-[500px]">
-              <picture>
-                <source 
-                  type="image/webp"
-                  srcSet="https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/c3b682be-b949-4e16-8aff-82cc8e879642.webp"
-                />
-                <img 
-                  src="https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/c3b682be-b949-4e16-8aff-82cc8e879642.webp"
-                  alt="Summer End Sale - Sister Storage organization products"
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                  width="800"
-                  height="800"
-                />
-              </picture>
+              <img 
+                src="https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/c3b682be-b949-4e16-8aff-82cc8e879642.webp"
+                alt="Summer End Sale - Sister Storage organization products"
+                className="w-full h-full object-cover"
+                loading="lazy"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 800px"
+                width="800"
+                height="800"
+              />
             </div>
           </div>
         </div>
