@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 import Index from "./pages/Index";
 import Shop from "./pages/Shop";
 import Gallery from "./pages/Gallery";
@@ -36,13 +37,14 @@ const queryClient = new QueryClient();
 
 const App = () => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <CartProvider>
-          <Toaster />
-          <Sonner />
-          
-          <BrowserRouter>
+    <HelmetProvider>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <CartProvider>
+            <Toaster />
+            <Sonner />
+            
+            <BrowserRouter>
             <CartDrawer />
             <Routes>
               {/* Public routes - always accessible */}
@@ -72,10 +74,11 @@ const App = () => {
               {/* Catch-all route */}
               <Route path="*" element={<ProtectedRoutes><PageTransition><NotFound /></PageTransition></ProtectedRoutes>} />
             </Routes>
-          </BrowserRouter>
-        </CartProvider>
-      </TooltipProvider>
-    </QueryClientProvider>
+            </BrowserRouter>
+          </CartProvider>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </HelmetProvider>
   );
 };
 

@@ -1,5 +1,6 @@
 import React from "react";
 import { useParams, Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Clock, User, Tag } from "lucide-react";
@@ -24,9 +25,61 @@ const BlogPost = () => {
     );
   }
 
+  const pageUrl = `https://attczdhexkpxpyqyasgz.lovable.app/blog/${id}`;
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": post.title,
+    "description": post.excerpt,
+    "author": {
+      "@type": "Person",
+      "name": post.author
+    },
+    "datePublished": post.date,
+    "publisher": {
+      "@type": "Organization",
+      "name": "Sister Storage",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://attczdhexkpxpyqyasgz.lovable.app/favicon.ico"
+      }
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": pageUrl
+    },
+    "articleSection": post.category,
+    "keywords": `${post.category}, bangle storage, jewelry organization, South Asian culture`
+  };
+
   return (
     <Layout>
-      <article className="container-custom py-12 max-w-4xl mx-auto">
+      <Helmet>
+        <title>{post.title} | Sister Storage Blog</title>
+        <meta name="description" content={post.excerpt} />
+        
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content={pageUrl} />
+        <meta property="og:title" content={post.title} />
+        <meta property="og:description" content={post.excerpt} />
+        <meta property="article:author" content={post.author} />
+        <meta property="article:published_time" content={post.date} />
+        <meta property="article:section" content={post.category} />
+        
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content={pageUrl} />
+        <meta name="twitter:title" content={post.title} />
+        <meta name="twitter:description" content={post.excerpt} />
+        
+        {/* Structured Data */}
+        <script type="application/ld+json">
+          {JSON.stringify(structuredData)}
+        </script>
+      </Helmet>
+      
+      <article className="container-custom py-12 max-w-4xl mx-auto" itemScope itemType="https://schema.org/BlogPosting">
         {/* Back Button */}
         <Button variant="ghost" asChild className="mb-8">
           <Link to="/blog">
@@ -44,12 +97,14 @@ const BlogPost = () => {
             {post.category}
           </span>
           
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">{post.title}</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-6" itemProp="headline">{post.title}</h1>
           
           <div className="flex flex-wrap gap-6 text-muted-foreground text-sm">
             <div className="flex items-center gap-2">
               <User className="w-4 h-4" />
-              <span>{post.author}</span>
+              <span itemProp="author" itemScope itemType="https://schema.org/Person">
+                <span itemProp="name">{post.author}</span>
+              </span>
             </div>
             <div className="flex items-center gap-2">
               <Clock className="w-4 h-4" />
@@ -59,7 +114,7 @@ const BlogPost = () => {
               <Tag className="w-4 h-4" />
               <span>{post.difficulty}</span>
             </div>
-            <span>{post.date}</span>
+            <time dateTime={post.date} itemProp="datePublished">{post.date}</time>
           </div>
         </div>
 
@@ -72,11 +127,15 @@ const BlogPost = () => {
         </div>
 
         {/* Content */}
-        <div className="prose prose-lg max-w-none">
-          <p className="text-xl text-muted-foreground mb-8">{post.excerpt}</p>
+        <div className="prose prose-lg max-w-none" itemProp="articleBody">
+          <p className="text-xl text-muted-foreground mb-8" itemProp="description">{post.excerpt}</p>
           
           <div className="space-y-8" dangerouslySetInnerHTML={{ __html: content }} />
         </div>
+        
+        {/* Hidden meta for SEO */}
+        <meta itemProp="articleSection" content={post.category} />
+        <meta itemProp="wordCount" content={content.split(' ').length.toString()} />
 
         {/* CTA Section */}
         <div className="mt-16 p-8 bg-primary/5 rounded-lg text-center">
