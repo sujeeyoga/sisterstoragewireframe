@@ -1,6 +1,8 @@
 
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { categoryTree } from "@/data/catalog";
 import { findCategoryPathBySlug } from "@/lib/catalog";
 
@@ -11,10 +13,22 @@ interface BreadcrumbsProps {
 
 const Breadcrumbs = ({ productName, primaryCategorySlug }: BreadcrumbsProps) => {
   const path = primaryCategorySlug ? findCategoryPathBySlug(categoryTree, primaryCategorySlug) ?? [] : [];
+  const navigate = useNavigate();
 
   return (
-    <nav aria-label="Breadcrumb" className="mb-6 text-xs">
-      <ol className="flex flex-wrap items-center gap-2 text-muted-foreground">
+    <div className="mb-6">
+      <div className="flex items-center gap-4">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2 hover:bg-accent"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back
+        </Button>
+        <nav aria-label="Breadcrumb" className="text-xs">
+          <ol className="flex flex-wrap items-center gap-2 text-muted-foreground">
         <li>
           <Link to="/" className="hover:text-[hsl(var(--primary))]">Home</Link>
         </li>
@@ -33,8 +47,10 @@ const Breadcrumbs = ({ productName, primaryCategorySlug }: BreadcrumbsProps) => 
 
         <li className="text-foreground/40">/</li>
         <li className="text-foreground">{productName}</li>
-      </ol>
-    </nav>
+          </ol>
+        </nav>
+      </div>
+    </div>
   );
 };
 
