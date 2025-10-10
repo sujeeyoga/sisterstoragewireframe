@@ -89,7 +89,7 @@ const Hero = () => {
             <div className="w-full max-w-[700px] pl-[5vw] pr-6 md:pr-8 lg:pr-8 py-24 md:py-32 lg:py-40">
               <div 
                 className="flex flex-col space-y-2 lg:space-y-3 text-white"
-                style={{ transform: `translateY(${offset * 0.5}px)` }}
+                style={{ transform: `translateY(${offset * 0.2}px)` }}
               >
                 {/* Badge */}
                 <Badge 
