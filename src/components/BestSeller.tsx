@@ -73,9 +73,7 @@ const BestSeller = () => {
           </p>
         </div>
         
-        <div className="grid md:grid-cols-2 gap-3 md:gap-4 max-w-7xl mx-auto rounded-3xl overflow-hidden my-8">
-          {/* Left Column - First and Third Images Stacked */}
-          <div className="flex flex-col gap-3 md:gap-4">
+        <div className="flex flex-col md:flex-row gap-3 md:gap-4 max-w-7xl mx-auto my-8">
             <Card className="group border-none shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 bg-white relative rounded-3xl overflow-hidden aspect-square">
               <Link to={`/shop/${buyCards[0].id}`} className="block h-full">
                 <div className="relative group-hover:overflow-visible h-full">
@@ -165,8 +163,6 @@ const BestSeller = () => {
                 </div>
               </Link>
             </Card>
-          </div>
-
         </div>
         
         <div className="text-center mt-16 md:mt-20">
