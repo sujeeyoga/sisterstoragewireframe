@@ -122,7 +122,7 @@ const BestSeller = () => {
               </Link>
             </Card>
 
-            <Card className="group border-none shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 bg-white relative rounded-3xl overflow-hidden aspect-[4/3]">
+            <Card className="group border-none shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 bg-white relative rounded-3xl overflow-hidden aspect-[3/4]">
               <Link to={`/shop/${buyCards[1].id}`} className="block h-full">
                 <div className="relative group-hover:overflow-visible h-full">
                   {!loadedImages[buyCards[1].id] && (
