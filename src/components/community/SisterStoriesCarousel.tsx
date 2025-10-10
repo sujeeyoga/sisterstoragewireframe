@@ -95,6 +95,8 @@ export const SisterStoriesCarousel = () => {
 
         if (entry.isIntersecting) {
           setVisibleVideos(prev => new Set([...prev, videoId]));
+          // Ensure the play overlay is available even if metadata hasn't loaded (iOS/Incognito)
+          setLoadingVideos(prev => ({ ...prev, [videoId]: false }));
           const video = videoRefs.current[videoId];
           if (video && video.paused && video.readyState >= 2) {
             video.play().catch(() => {
@@ -225,6 +227,7 @@ export const SisterStoriesCarousel = () => {
                       controlsList="nodownload nofullscreen noremoteplayback"
                       disablePictureInPicture
                       onLoadedData={() => handleVideoLoad(story.id)}
+                      onLoadedMetadata={() => handleVideoLoad(story.id)}
                       onPlay={() => setPlayingVideos(prev => new Set([...prev, story.id]))}
                       onPause={() => setPlayingVideos(prev => {
                         const newSet = new Set(prev);
@@ -247,7 +250,7 @@ export const SisterStoriesCarousel = () => {
                     </video>
                     
                     {/* Play button overlay for mobile */}
-                    {!playingVideos.has(story.id) && !loadingVideos[story.id] && (
+                    {!playingVideos.has(story.id) && (
                       <div 
                         className="absolute inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm cursor-pointer z-20"
                         onClick={(e) => handleVideoClick(story.id, e)}
