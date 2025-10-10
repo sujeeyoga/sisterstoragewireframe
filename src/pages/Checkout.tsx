@@ -642,37 +642,49 @@ const Checkout = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 {/* Cart Items */}
-                <div className="space-y-3 max-h-64 overflow-y-auto">
+                <div className="space-y-4 max-h-80 overflow-y-auto">
                   {items.map((item) => (
-                    <div key={item.id} className="flex gap-3 pb-3 border-b">
-                      {item.image.startsWith('http') ? (
-                        <img 
-                          src={item.image} 
-                          alt={item.name}
-                          className="w-16 h-16 object-cover rounded"
-                        />
-                      ) : (
-                        <div 
-                          className="w-16 h-16 rounded flex items-center justify-center"
-                          style={{ backgroundColor: item.image.startsWith('#') ? item.image : '#e90064' }}
-                        >
-                          <span className="text-white font-bold text-xs">SS</span>
+                    <div key={item.id} className="space-y-2 pb-4 border-b last:border-0">
+                      <div className="flex gap-3">
+                        {item.image.startsWith('http') ? (
+                          <img 
+                            src={item.image} 
+                            alt={item.name}
+                            className="w-16 h-16 object-cover rounded"
+                          />
+                        ) : (
+                          <div 
+                            className="w-16 h-16 rounded flex items-center justify-center flex-shrink-0"
+                            style={{ backgroundColor: item.image.startsWith('#') ? item.image : '#e90064' }}
+                          >
+                            <span className="text-white font-bold text-xs">SS</span>
+                          </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium line-clamp-2 mb-1">{item.name}</p>
+                          <div className="space-y-0.5">
+                            <p className="text-xs text-gray-600">
+                              Unit Price: <span className="font-medium">${item.price.toFixed(2)}</span>
+                            </p>
+                            <p className="text-xs text-gray-600">
+                              Quantity: <span className="font-medium">{item.quantity}</span>
+                            </p>
+                          </div>
                         </div>
-                      )}
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium line-clamp-2">{item.name}</p>
-                        <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
-                        <p className="text-sm font-semibold text-[hsl(var(--brand-pink))]">
-                          ${(item.price * item.quantity).toFixed(2)}
-                        </p>
+                        <button
+                          onClick={() => removeItem(item.id)}
+                          className="flex-shrink-0 text-gray-400 hover:text-red-500 transition-colors p-1 h-fit"
+                          aria-label="Remove item"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
                       </div>
-                      <button
-                        onClick={() => removeItem(item.id)}
-                        className="flex-shrink-0 text-gray-400 hover:text-red-500 transition-colors p-1 h-fit"
-                        aria-label="Remove item"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
+                      <div className="flex justify-between items-center pl-[76px]">
+                        <span className="text-xs text-gray-500">Item Subtotal:</span>
+                        <span className="text-sm font-semibold text-[hsl(var(--brand-pink))]">
+                          ${(item.price * item.quantity).toFixed(2)}
+                        </span>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -696,10 +708,16 @@ const Checkout = () => {
                     </div>
                   )}
                   
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Tax</span>
-                    <span className="font-medium">${taxAmount.toFixed(2)}</span>
-                  </div>
+                  {giftWrappingFee > 0 && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 flex items-center gap-1">
+                        <Gift className="h-3 w-3" />
+                        Gift Wrapping
+                      </span>
+                      <span className="font-medium">${giftWrappingFee.toFixed(2)}</span>
+                    </div>
+                  )}
+                  
                   <div className="flex justify-between">
                     <span className="text-gray-600">Shipping</span>
                     <span className="font-medium">
@@ -711,10 +729,15 @@ const Checkout = () => {
                     </span>
                   </div>
                   {selectedRate && (
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-gray-500 pl-4">
                       {selectedRate.name} - {selectedRate.delivery_days} business days
                     </p>
                   )}
+                  
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Tax ({(taxRate * 100).toFixed(2)}%)</span>
+                    <span className="font-medium">${taxAmount.toFixed(2)}</span>
+                  </div>
                 </div>
 
                 <Separator />
