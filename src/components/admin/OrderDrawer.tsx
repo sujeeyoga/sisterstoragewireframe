@@ -17,7 +17,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { format } from 'date-fns';
-import { Package, DollarSign, User, MapPin, CreditCard } from 'lucide-react';
+import { Package, DollarSign, User, MapPin, CreditCard, Truck, ExternalLink } from 'lucide-react';
+import { StallionFulfillmentDialog } from './StallionFulfillmentDialog';
 
 interface OrderDrawerProps {
   order: {
@@ -28,8 +29,15 @@ interface OrderDrawerProps {
     date_created: string;
     billing: any;
     shipping: any;
+    shipping_address?: any;
     line_items: any[];
     payment_method_title?: string;
+    fulfillment_status?: string;
+    tracking_number?: string;
+    stallion_shipment_id?: string;
+    shipping_label_url?: string;
+    customer_name?: string;
+    customer_email?: string;
   };
   open: boolean;
   onClose: () => void;
@@ -38,6 +46,7 @@ interface OrderDrawerProps {
 
 export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawerProps) {
   const [newStatus, setNewStatus] = useState(order.status);
+  const [fulfillmentDialogOpen, setFulfillmentDialogOpen] = useState(false);
 
   const handleStatusUpdate = () => {
     onStatusUpdate(newStatus);
@@ -204,6 +213,75 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
 
           <Separator />
 
+          {/* Stallion Express Fulfillment */}
+          <div className="space-y-3">
+            <h3 className="font-semibold flex items-center gap-2">
+              <Truck className="h-4 w-4" />
+              Fulfillment
+            </h3>
+            
+            {order.fulfillment_status === 'fulfilled' ? (
+              <div className="space-y-3">
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-green-900">Order Fulfilled</span>
+                    <Badge variant="outline" className="bg-green-100 text-green-700 border-green-300">
+                      Shipped
+                    </Badge>
+                  </div>
+                  {order.tracking_number && (
+                    <div className="text-sm text-green-700">
+                      <span className="font-medium">Tracking:</span> {order.tracking_number}
+                    </div>
+                  )}
+                </div>
+                
+                <div className="flex gap-2">
+                  {order.shipping_label_url && (
+                    <Button variant="outline" size="sm" className="flex-1" asChild>
+                      <a href={order.shipping_label_url} target="_blank" rel="noopener noreferrer">
+                        <ExternalLink className="h-4 w-4 mr-2" />
+                        View Label
+                      </a>
+                    </Button>
+                  )}
+                  {order.tracking_number && (
+                    <Button variant="outline" size="sm" className="flex-1" asChild>
+                      <a 
+                        href={`https://www.stallionexpress.ca/tracking?tracking_number=${order.tracking_number}`} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                      >
+                        <Truck className="h-4 w-4 mr-2" />
+                        Track Package
+                      </a>
+                    </Button>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                  <p className="text-sm text-amber-900">
+                    {order.fulfillment_status === 'processing' 
+                      ? 'Fulfillment in progress'
+                      : 'Order awaiting fulfillment'}
+                  </p>
+                </div>
+                <Button 
+                  onClick={() => setFulfillmentDialogOpen(true)}
+                  className="w-full"
+                  disabled={!order.shipping_address && !order.shipping}
+                >
+                  <Truck className="h-4 w-4 mr-2" />
+                  Fulfill with Stallion Express
+                </Button>
+              </div>
+            )}
+          </div>
+
+          <Separator />
+
           {/* Order Total */}
           <div className="space-y-3">
             <h3 className="font-semibold flex items-center gap-2">
@@ -223,6 +301,16 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
             </div>
           </div>
         </div>
+
+        <StallionFulfillmentDialog
+          order={order}
+          open={fulfillmentDialogOpen}
+          onClose={() => setFulfillmentDialogOpen(false)}
+          onSuccess={() => {
+            setFulfillmentDialogOpen(false);
+            onClose();
+          }}
+        />
       </SheetContent>
     </Sheet>
   );

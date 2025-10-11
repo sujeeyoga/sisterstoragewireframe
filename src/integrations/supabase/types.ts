@@ -85,51 +85,66 @@ export type Database = {
           created_at: string | null
           customer_email: string
           customer_name: string | null
+          fulfilled_at: string | null
+          fulfillment_status: string
           id: string
           items: Json
           order_number: string
           payment_status: string
           shipping: number | null
           shipping_address: Json | null
+          shipping_label_url: string | null
+          stallion_shipment_id: string | null
           status: string
           stripe_session_id: string
           subtotal: number
           tax: number | null
           total: number
+          tracking_number: string | null
           updated_at: string | null
         }
         Insert: {
           created_at?: string | null
           customer_email: string
           customer_name?: string | null
+          fulfilled_at?: string | null
+          fulfillment_status?: string
           id?: string
           items?: Json
           order_number: string
           payment_status?: string
           shipping?: number | null
           shipping_address?: Json | null
+          shipping_label_url?: string | null
+          stallion_shipment_id?: string | null
           status?: string
           stripe_session_id: string
           subtotal: number
           tax?: number | null
           total: number
+          tracking_number?: string | null
           updated_at?: string | null
         }
         Update: {
           created_at?: string | null
           customer_email?: string
           customer_name?: string | null
+          fulfilled_at?: string | null
+          fulfillment_status?: string
           id?: string
           items?: Json
           order_number?: string
           payment_status?: string
           shipping?: number | null
           shipping_address?: Json | null
+          shipping_label_url?: string | null
+          stallion_shipment_id?: string | null
           status?: string
           stripe_session_id?: string
           subtotal?: number
           tax?: number | null
           total?: number
+          tracking_number?: string | null
           updated_at?: string | null
         }
         Relationships: []

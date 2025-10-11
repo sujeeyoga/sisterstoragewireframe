@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Settings, Percent, Gift, Mail, Star, Package, AlertTriangle } from "lucide-react";
+import { Settings, Percent, Gift, Mail, Star, Package, AlertTriangle, MapPin } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
@@ -148,6 +148,50 @@ export function StoreSettings() {
 
   const [preorderBadgeText, setPreorderBadgeText] = useState<string>(
     (preorderSettings?.setting_value as any)?.badgeText || "Pre-Order"
+  );
+
+  // Fulfillment Address Settings
+  const { data: fulfillmentAddress } = useQuery({
+    queryKey: ['store-settings', 'fulfillment-address'],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('store_settings')
+        .select('*')
+        .eq('setting_key', 'fulfillment_address')
+        .maybeSingle();
+      return data;
+    },
+  });
+
+  const [fulfillmentName, setFulfillmentName] = useState<string>(
+    (fulfillmentAddress?.setting_value as any)?.name || ""
+  );
+  const [fulfillmentCompany, setFulfillmentCompany] = useState<string>(
+    (fulfillmentAddress?.setting_value as any)?.company || ""
+  );
+  const [fulfillmentStreet1, setFulfillmentStreet1] = useState<string>(
+    (fulfillmentAddress?.setting_value as any)?.street1 || ""
+  );
+  const [fulfillmentStreet2, setFulfillmentStreet2] = useState<string>(
+    (fulfillmentAddress?.setting_value as any)?.street2 || ""
+  );
+  const [fulfillmentCity, setFulfillmentCity] = useState<string>(
+    (fulfillmentAddress?.setting_value as any)?.city || ""
+  );
+  const [fulfillmentProvince, setFulfillmentProvince] = useState<string>(
+    (fulfillmentAddress?.setting_value as any)?.province || ""
+  );
+  const [fulfillmentPostalCode, setFulfillmentPostalCode] = useState<string>(
+    (fulfillmentAddress?.setting_value as any)?.postal_code || ""
+  );
+  const [fulfillmentCountry, setFulfillmentCountry] = useState<string>(
+    (fulfillmentAddress?.setting_value as any)?.country || "CA"
+  );
+  const [fulfillmentPhone, setFulfillmentPhone] = useState<string>(
+    (fulfillmentAddress?.setting_value as any)?.phone || ""
+  );
+  const [fulfillmentEmail, setFulfillmentEmail] = useState<string>(
+    (fulfillmentAddress?.setting_value as any)?.email || ""
   );
 
   // Mutations
@@ -347,12 +391,135 @@ export function StoreSettings() {
     notifyEmail: (preorderSettings?.setting_value as any)?.notifyEmail || false,
   }));
 
+  const updateFulfillmentAddressMutation = createUpdateMutation('fulfillment_address', ['store-settings', 'fulfillment-address'], () => ({
+    name: fulfillmentName,
+    company: fulfillmentCompany,
+    street1: fulfillmentStreet1,
+    street2: fulfillmentStreet2,
+    city: fulfillmentCity,
+    province: fulfillmentProvince,
+    postal_code: fulfillmentPostalCode,
+    country: fulfillmentCountry,
+    phone: fulfillmentPhone,
+    email: fulfillmentEmail,
+  }));
+
   return (
     <div className="p-8 space-y-6">
       <div>
         <h1 className="text-3xl font-bold">Store Settings</h1>
         <p className="text-muted-foreground mt-1">Manage global store configurations</p>
       </div>
+
+      {/* Fulfillment Address */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <MapPin className="h-5 w-5" />
+            Fulfillment Address
+          </CardTitle>
+          <CardDescription>Configure your warehouse/shipping address for Stallion Express fulfillment</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="fulfillmentName">Contact Name *</Label>
+              <Input
+                id="fulfillmentName"
+                value={fulfillmentName}
+                onChange={(e) => setFulfillmentName(e.target.value)}
+                placeholder="John Doe"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="fulfillmentCompany">Company Name</Label>
+              <Input
+                id="fulfillmentCompany"
+                value={fulfillmentCompany}
+                onChange={(e) => setFulfillmentCompany(e.target.value)}
+                placeholder="Sister Storage"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="fulfillmentStreet1">Street Address *</Label>
+            <Input
+              id="fulfillmentStreet1"
+              value={fulfillmentStreet1}
+              onChange={(e) => setFulfillmentStreet1(e.target.value)}
+              placeholder="123 Main St"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="fulfillmentStreet2">Street Address Line 2</Label>
+            <Input
+              id="fulfillmentStreet2"
+              value={fulfillmentStreet2}
+              onChange={(e) => setFulfillmentStreet2(e.target.value)}
+              placeholder="Suite 100"
+            />
+          </div>
+
+          <div className="grid grid-cols-3 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="fulfillmentCity">City *</Label>
+              <Input
+                id="fulfillmentCity"
+                value={fulfillmentCity}
+                onChange={(e) => setFulfillmentCity(e.target.value)}
+                placeholder="Toronto"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="fulfillmentProvince">Province *</Label>
+              <Input
+                id="fulfillmentProvince"
+                value={fulfillmentProvince}
+                onChange={(e) => setFulfillmentProvince(e.target.value)}
+                placeholder="ON"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="fulfillmentPostalCode">Postal Code *</Label>
+              <Input
+                id="fulfillmentPostalCode"
+                value={fulfillmentPostalCode}
+                onChange={(e) => setFulfillmentPostalCode(e.target.value)}
+                placeholder="M5V 3A8"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="fulfillmentPhone">Phone *</Label>
+              <Input
+                id="fulfillmentPhone"
+                type="tel"
+                value={fulfillmentPhone}
+                onChange={(e) => setFulfillmentPhone(e.target.value)}
+                placeholder="(416) 555-0123"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="fulfillmentEmail">Email *</Label>
+              <Input
+                id="fulfillmentEmail"
+                type="email"
+                value={fulfillmentEmail}
+                onChange={(e) => setFulfillmentEmail(e.target.value)}
+                placeholder="fulfillment@sisterstrage.com"
+              />
+            </div>
+          </div>
+
+          <Button onClick={() => updateFulfillmentAddressMutation.mutate()}>
+            Save Fulfillment Address
+          </Button>
+        </CardContent>
+      </Card>
 
       {/* Coming Soon Page */}
       <Card>

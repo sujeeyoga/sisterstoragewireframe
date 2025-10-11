@@ -22,6 +22,8 @@ interface Order {
   };
   line_items: any[];
   payment_method_title?: string;
+  fulfillment_status?: string;
+  tracking_number?: string;
 }
 
 interface OrderCardProps {
@@ -51,6 +53,13 @@ export function OrderCard({ order, onView, isSelected, onSelect, selectionMode }
   const relativeTime = getRelativeTime(order.date_created);
   
   const getFulfillmentInfo = () => {
+    if (order.tracking_number) {
+      return {
+        icon: <Truck className="h-3 w-3" />,
+        text: `Tracking: ${order.tracking_number}`,
+        badge: 'Shipped'
+      };
+    }
     if (order.shipping?.address_1) {
       return {
         icon: <Truck className="h-3 w-3" />,
@@ -64,6 +73,13 @@ export function OrderCard({ order, onView, isSelected, onSelect, selectionMode }
   };
   
   const fulfillment = getFulfillmentInfo();
+  
+  const fulfillmentStatusConfig = {
+    unfulfilled: { label: 'Unfulfilled', className: 'bg-amber-50 text-amber-700 border-amber-200' },
+    processing: { label: 'Processing', className: 'bg-blue-50 text-blue-700 border-blue-200' },
+    fulfilled: { label: 'Fulfilled', className: 'bg-green-50 text-green-700 border-green-200' },
+    cancelled: { label: 'Cancelled', className: 'bg-zinc-100 text-zinc-700 border-zinc-300' },
+  };
   
   const getContextualActions = () => {
     switch (order.status) {
@@ -108,6 +124,14 @@ export function OrderCard({ order, onView, isSelected, onSelect, selectionMode }
             <Badge variant="outline" className={`${status.className} border`}>
               {status.label}
             </Badge>
+            {order.fulfillment_status && (
+              <>
+                <span>·</span>
+                <Badge variant="outline" className={`${fulfillmentStatusConfig[order.fulfillment_status as keyof typeof fulfillmentStatusConfig]?.className || ''} border`}>
+                  {fulfillmentStatusConfig[order.fulfillment_status as keyof typeof fulfillmentStatusConfig]?.label || order.fulfillment_status}
+                </Badge>
+              </>
+            )}
             <span>·</span>
             <span>{relativeTime}</span>
           </div>

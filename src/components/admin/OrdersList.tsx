@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -41,6 +41,35 @@ export function OrdersList() {
   });
   
   const queryClient = useQueryClient();
+  
+  // Real-time subscription for new orders
+  useEffect(() => {
+    const channel = supabase
+      .channel('orders-realtime')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'orders'
+        },
+        (payload) => {
+          console.log('Order change:', payload);
+          queryClient.invalidateQueries({ queryKey: ['admin-orders'] });
+          
+          if (payload.eventType === 'INSERT') {
+            toast.success('New order received!', {
+              description: `Order #${payload.new.order_number || payload.new.id}`,
+            });
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
   
   const { data: orders, isLoading, error } = useQuery({
     queryKey: ['admin-orders', activeStatus, filters],
