@@ -9,7 +9,6 @@ interface PerformanceImageProps {
   height?: number;
   loading?: 'eager' | 'lazy';
   priority?: boolean;
-  fetchPriority?: 'high' | 'low' | 'auto';
   placeholder?: string;
   fallback?: React.ReactNode;
   onLoad?: () => void;
@@ -26,7 +25,6 @@ const PerformanceImage: React.FC<PerformanceImageProps> = ({
   height,
   loading = 'lazy',
   priority = false,
-  fetchPriority = 'auto',
   placeholder,
   fallback,
   onLoad,
@@ -76,7 +74,6 @@ const PerformanceImage: React.FC<PerformanceImageProps> = ({
         width={width}
         height={height}
         loading={priority ? 'eager' : loading}
-        fetchPriority={priority ? 'high' : fetchPriority}
         className={cn(
           "transition-opacity duration-300",
           imageState === 'loaded' ? 'opacity-100' : 'opacity-0',
