@@ -8,7 +8,7 @@ const Hero = () => {
   const { ref: parallaxRef, offset } = useOptimizedParallax({ speed: 0.3 });
 
   return (
-    <section ref={parallaxRef} className="relative w-full overflow-hidden" aria-label="Hero section">
+    <section ref={parallaxRef} className="relative w-full overflow-hidden pt-20 md:pt-24" aria-label="Hero section">
       {/* Mobile: Stacked Layout */}
       <div className="md:hidden flex flex-col">
         <div className="bg-[hsl(var(--brand-pink))] py-16 px-4 h-[75vh] flex items-center">
