@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,8 +8,13 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 import { ImageUploader } from '@/components/admin/ImageUploader';
+import { OrderDrawer } from '@/components/admin/OrderDrawer';
+import { toast } from 'sonner';
 
 export function AnalyticsDashboard() {
+  const [selectedOrder, setSelectedOrder] = useState<any>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
   const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: ['admin-analytics'],
     queryFn: async () => {
@@ -149,6 +155,68 @@ export function AnalyticsDashboard() {
     );
   };
 
+  const handleOrderClick = async (order: any) => {
+    try {
+      // Fetch full order details based on source
+      if (order.source === 'stripe') {
+        const { data, error } = await supabase
+          .from('orders')
+          .select('*')
+          .eq('id', order.id)
+          .single();
+        
+        if (error) throw error;
+        
+        // Map Stripe order to OrderDrawer format
+        setSelectedOrder({
+          ...data,
+          date_created: data.created_at,
+          billing: {
+            first_name: data.customer_name?.split(' ')[0] || '',
+            last_name: data.customer_name?.split(' ').slice(1).join(' ') || '',
+            email: data.customer_email,
+          },
+          line_items: data.items || [],
+        });
+      } else {
+        const { data, error } = await supabase
+          .from('woocommerce_orders')
+          .select('*')
+          .eq('id', order.id)
+          .single();
+        
+        if (error) throw error;
+        setSelectedOrder(data);
+      }
+      
+      setDrawerOpen(true);
+    } catch (error) {
+      console.error('Error fetching order:', error);
+      toast.error('Failed to load order details');
+    }
+  };
+
+  const handleStatusUpdate = async (status: string) => {
+    if (!selectedOrder) return;
+    
+    try {
+      const table = selectedOrder.order_number?.startsWith('ORD') ? 'orders' : 'woocommerce_orders';
+      const { error } = await supabase
+        .from(table)
+        .update({ status })
+        .eq('id', selectedOrder.id);
+      
+      if (error) throw error;
+      
+      toast.success('Order status updated');
+      setDrawerOpen(false);
+      setSelectedOrder(null);
+    } catch (error) {
+      console.error('Error updating order:', error);
+      toast.error('Failed to update order status');
+    }
+  };
+
   return (
     <div className="space-y-6 p-6">
       <div>
@@ -231,7 +299,11 @@ export function AnalyticsDashboard() {
               {recentOrders?.map((order: any) => {
                 const total = typeof order.total === 'number' ? order.total : parseFloat(String(order.total || '0'));
                 return (
-                  <div key={`${order.source}-${order.id}`} className="flex items-center justify-between">
+                  <div 
+                    key={`${order.source}-${order.id}`} 
+                    className="flex items-center justify-between p-3 rounded-lg hover:bg-accent transition-colors cursor-pointer"
+                    onClick={() => handleOrderClick(order)}
+                  >
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
                         <p className="text-sm font-medium">Order #{order.order_number}</p>
@@ -302,6 +374,19 @@ export function AnalyticsDashboard() {
 
       {/* Image Uploader */}
       <ImageUploader />
+
+      {/* Order Details Drawer */}
+      {selectedOrder && (
+        <OrderDrawer
+          order={selectedOrder}
+          open={drawerOpen}
+          onClose={() => {
+            setDrawerOpen(false);
+            setSelectedOrder(null);
+          }}
+          onStatusUpdate={handleStatusUpdate}
+        />
+      )}
     </div>
   );
 }
