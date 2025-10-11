@@ -1,7 +1,8 @@
-import { lazy, Suspense, useEffect } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import BaseLayout from "@/components/layout/BaseLayout";
 import Hero from "@/components/Hero";
 import CommunityStoriesCarousels from "@/components/community/CommunityStoriesCarousels";
+import LoadingScreen from "@/components/ui/LoadingScreen";
 
 // Lazy load below-the-fold content (except videos which load eagerly)
 const BestSeller = lazy(() => import("@/components/BestSeller"));
@@ -9,6 +10,8 @@ const OrganizationGallery = lazy(() => import("@/components/OrganizationGallery"
 const PromotionalBanner = lazy(() => import("@/components/PromotionalBanner"));
 
 const Index = () => {
+  const [showLoading, setShowLoading] = useState(true);
+
   // Ensure body scroll is enabled on mount
   useEffect(() => {
     document.body.style.overflow = '';
@@ -16,8 +19,11 @@ const Index = () => {
   }, []);
 
   return (
-    <BaseLayout variant="standard" spacing="none" showFooter={true}>
-      <div className="min-h-screen bg-white -mt-28">
+    <>
+      {showLoading && <LoadingScreen onLoadingComplete={() => setShowLoading(false)} />}
+      
+      <BaseLayout variant="standard" spacing="none" showFooter={true}>
+        <div className="min-h-screen bg-white -mt-28">
         {/* Hero Section */}
         <Hero />
         
@@ -38,8 +44,9 @@ const Index = () => {
         <Suspense fallback={<div className="h-64" />}>
           <PromotionalBanner />
         </Suspense>
-      </div>
-    </BaseLayout>
+        </div>
+      </BaseLayout>
+    </>
   );
 };
 
