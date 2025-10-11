@@ -11,10 +11,6 @@ const OrganizationGallery = () => {
       alt: 'Elegant jewelry storage solution'
     },
     {
-      src: '/lovable-uploads/76c5f6ac-f27b-4f26-8377-759dfc17c71d.png',
-      alt: 'Beautiful bangle organization system'
-    },
-    {
       src: '/lovable-uploads/0e5fe1c0-12f8-439f-94d5-ec1da8ca09c8.png',
       alt: 'Sister Storage product showcase'
     }
@@ -55,11 +51,11 @@ const OrganizationGallery = () => {
             />
           </div>
 
-          {/* Fourth Image */}
+          {/* Third Image */}
           <div className="relative w-full aspect-square rounded-3xl shadow-lg md:hover:shadow-2xl transition-shadow duration-300 group overflow-hidden animate-fade-in">
             <PerformanceImage
-              src={galleryImages[3].src}
-              alt={galleryImages[3].alt}
+              src={galleryImages[2].src}
+              alt={galleryImages[2].alt}
               className="w-full h-full object-cover block md:group-hover:scale-105 transition-transform duration-500 ease-out"
               loading="lazy"
             />
