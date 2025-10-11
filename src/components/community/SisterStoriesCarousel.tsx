@@ -85,8 +85,8 @@ export const SisterStoriesCarousel = () => {
   useEffect(() => {
     const options = {
       root: null,
-      rootMargin: '100px',
-      threshold: 0.5
+      rootMargin: '0px',
+      threshold: 0.15
     };
 
     const observer = new IntersectionObserver((entries) => {
@@ -183,11 +183,12 @@ export const SisterStoriesCarousel = () => {
                       src={story.video}
                       crossOrigin="anonymous"
                       muted={unmutedVideo !== story.id}
+                      autoPlay
                       loop
                       playsInline
                       webkit-playsinline="true"
                       x5-playsinline="true"
-                      preload="metadata"
+                      preload="auto"
                       controlsList="nodownload nofullscreen noremoteplayback"
                       disablePictureInPicture
                       onLoadedData={() => handleVideoLoad(story.id)}
