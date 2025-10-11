@@ -122,46 +122,6 @@ export const SisterStoriesCarousel = () => {
     setLoadingVideos(prev => ({ ...prev, [storyId]: false }));
   };
 
-  const handleVideoClick = async (storyId: string, event: React.MouseEvent | React.TouchEvent) => {
-    event.preventDefault();
-    event.stopPropagation();
-    const video = videoRefs.current[storyId];
-    if (!video) return;
-
-    // If video isn't playing yet, start it
-    if (!playingVideos.has(storyId)) {
-      try {
-        // Reset video to start if it was paused
-        video.currentTime = 0;
-        
-        // Important for iOS - must be muted for programmatic play
-        video.muted = true;
-        
-        // Attempt to play
-        const playPromise = video.play();
-        if (playPromise !== undefined) {
-          await playPromise;
-          setPlayingVideos(prev => new Set([...prev, storyId]));
-          console.log(`Video ${storyId} playing successfully`);
-        }
-      } catch (error) {
-        console.error('Failed to play video:', error);
-        // Try one more time after a brief delay (iOS quirk)
-        setTimeout(async () => {
-          try {
-            await video.play();
-            setPlayingVideos(prev => new Set([...prev, storyId]));
-          } catch (retryError) {
-            console.error('Retry failed:', retryError);
-          }
-        }, 100);
-      }
-    } else {
-      // Toggle mute
-      setUnmutedVideo(prev => prev === storyId ? null : storyId);
-    }
-  };
-
   if (isLoading) {
     return (
       <div className="w-full">
@@ -202,7 +162,6 @@ export const SisterStoriesCarousel = () => {
             loop: true,
             skipSnaps: false,
             dragFree: false,
-            watchDrag: true,
           }}
           className="w-full"
         >
@@ -210,10 +169,10 @@ export const SisterStoriesCarousel = () => {
             {videoStories.map((story) => (
               <CarouselItem key={story.id} className="pl-5 basis-auto flex-shrink-0 flex justify-center items-center">
                 <Card 
-                  className="overflow-hidden border-0 bg-transparent cursor-pointer h-full active:scale-95 transition-transform duration-200"
+                  className="overflow-hidden border-0 bg-transparent h-full"
                 >
                   <div 
-                    className="relative w-[900px] h-[540px] overflow-hidden bg-black cursor-pointer rounded-2xl shadow-xl"
+                    className="relative w-[900px] h-[540px] overflow-hidden bg-black rounded-2xl shadow-xl"
                     data-video-id={story.id}
                   >
                     <video
@@ -245,10 +204,6 @@ export const SisterStoriesCarousel = () => {
                           readyState: e.currentTarget.readyState
                         });
                         setLoadingVideos(prev => ({ ...prev, [story.id]: false }));
-                      }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setUnmutedVideo(prev => prev === story.id ? null : story.id);
                       }}
                       className="w-full h-full object-cover"
                       style={{ backgroundColor: '#000' }}
