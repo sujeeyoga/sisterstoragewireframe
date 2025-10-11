@@ -11,7 +11,7 @@ const Hero = () => {
     <section ref={parallaxRef} className="relative w-full overflow-hidden md:pt-32" aria-label="Hero section">
       {/* Mobile: Stacked Layout */}
       <div className="md:hidden flex flex-col">
-        <div className="bg-[hsl(var(--brand-pink))] pt-32 pb-16 px-4 h-[75vh] flex items-center">
+        <div className="bg-[hsl(var(--brand-pink))] pt-40 pb-16 px-4 h-[75vh] flex items-center">
           <div 
             className="flex flex-col space-y-3 text-white pt-54"
             style={{ transform: `translateY(${-offset * 0.1}px)` }}
@@ -82,7 +82,7 @@ const Hero = () => {
             <div className="grid grid-cols-2 w-full py-4 md:py-6 lg:py-8">
               <div className="col-span-1"></div>
               
-              <div className="col-span-1 pr-2 md:pr-3 lg:pr-4">
+              <div className="col-span-1 pr-2 md:pr-3 lg:pr-4 pt-8 md:pt-12 lg:pt-16">
                 <div className="flex flex-col gap-2 lg:gap-3 text-white">
                   <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black leading-[0.9] tracking-tighter">
                     CULTURE /<br />
