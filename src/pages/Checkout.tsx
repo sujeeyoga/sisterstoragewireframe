@@ -127,7 +127,14 @@ const Checkout = () => {
   
   // Get shipping cost from selected rate
   const selectedRate = shippingRates.find(rate => rate.postage_type === selectedShippingRate);
-  const shippingCost = selectedRate ? parseFloat(selectedRate.total) : 0;
+  let shippingCost = selectedRate ? parseFloat(selectedRate.total) : 0;
+  
+  // Apply free shipping for orders over $50 in Toronto
+  const isToronto = formData.city.toLowerCase().includes('toronto');
+  const qualifiesForFreeShipping = discountedSubtotal >= 50 && isToronto;
+  if (qualifiesForFreeShipping) {
+    shippingCost = 0;
+  }
   
   const total = discountedSubtotal + giftWrappingFee + taxAmount + shippingCost;
 
@@ -772,16 +779,23 @@ const Checkout = () => {
                   <div className="flex justify-between">
                     <span className="text-gray-600">Shipping</span>
                     <span className="font-medium">
-                      {shippingCost === 0 ? (
+                      {shippingCost === 0 && selectedShippingRate ? (
+                        <span className="text-green-600 font-semibold">FREE</span>
+                      ) : shippingCost === 0 ? (
                         <span className="text-gray-400">Calculate shipping</span>
                       ) : (
                         `$${shippingCost.toFixed(2)}`
                       )}
                     </span>
                   </div>
-                  {selectedRate && (
+                  {qualifiesForFreeShipping && (
+                    <p className="text-xs text-green-600 font-medium pl-4">
+                      🎉 Free shipping applied for Toronto orders over $50!
+                    </p>
+                  )}
+                  {selectedRate && !qualifiesForFreeShipping && (
                     <p className="text-xs text-gray-500 pl-4">
-                      {selectedRate.name} - {selectedRate.delivery_days} business days
+                      {selectedRate.postage_type} - {selectedRate.delivery_days} business days
                     </p>
                   )}
                   
