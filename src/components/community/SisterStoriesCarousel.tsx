@@ -4,6 +4,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
 import { supabase } from '@/integrations/supabase/client';
 import { Play } from 'lucide-react';
+import Autoplay from 'embla-carousel-autoplay';
 
 interface VideoStory {
   id: string;
@@ -21,6 +22,10 @@ export const SisterStoriesCarousel = () => {
   const [visibleVideos, setVisibleVideos] = useState<Set<string>>(new Set());
   const [playingVideos, setPlayingVideos] = useState<Set<string>>(new Set());
   const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({});
+  
+  const autoplayPlugin = useRef(
+    Autoplay({ delay: 3000, stopOnInteraction: true, stopOnMouseEnter: true })
+  );
 
   console.log('SisterStoriesCarousel: Rendering with', videoStories.length, 'videos, loading:', isLoading);
 
@@ -192,10 +197,11 @@ export const SisterStoriesCarousel = () => {
       {/* Carousel Container */}
       <div className="w-full max-w-[100vw]">
         <Carousel
+          plugins={[autoplayPlugin.current]}
           opts={{
             align: "start",
-            loop: false,
-            dragFree: true,
+            loop: true,
+            dragFree: false,
           }}
           className="w-full"
         >
