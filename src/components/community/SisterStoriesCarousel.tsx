@@ -196,11 +196,13 @@ export const SisterStoriesCarousel = () => {
       {/* Carousel Container */}
       <div className="w-full max-w-[100vw]">
         <Carousel
-          plugins={[Autoplay({ delay: 4000, stopOnInteraction: false, stopOnMouseEnter: true })]}
+          plugins={[Autoplay({ delay: 4000, stopOnInteraction: true, stopOnMouseEnter: true })]}
           opts={{
             align: "center",
             loop: true,
             skipSnaps: false,
+            dragFree: false,
+            watchDrag: true,
           }}
           className="w-full"
         >
