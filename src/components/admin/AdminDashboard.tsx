@@ -38,24 +38,34 @@ export const AdminDashboard = () => {
     };
   }, [queryClient]);
 
-  const { data: stats, isLoading } = useQuery({
+  const { data: stats, isLoading, error } = useQuery({
     queryKey: ['admin-dashboard-stats'],
     queryFn: async () => {
+      console.log('Dashboard stats query starting...');
+      
       // Get last 30 days data
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
       // Fetch WooCommerce orders
-      const { data: wooOrders } = await supabase
+      const { data: wooOrders, error: wooError } = await supabase
         .from('woocommerce_orders')
         .select('*')
         .gte('date_created', thirtyDaysAgo.toISOString());
+      
+      console.log('WooCommerce orders:', wooOrders?.length || 0, wooError);
 
       // Fetch Stripe orders
-      const { data: stripeOrders } = await supabase
+      const { data: stripeOrders, error: stripeError } = await supabase
         .from('orders')
         .select('*')
         .gte('created_at', thirtyDaysAgo.toISOString());
+      
+      console.log('Stripe orders:', stripeOrders?.length || 0, stripeError);
+      
+      if (stripeError) {
+        console.error('Stripe orders error:', stripeError);
+      }
 
       // Combine all orders
       const allOrders = [
@@ -97,8 +107,8 @@ export const AdminDashboard = () => {
         .from('woocommerce_products')
         .select('*', { count: 'exact', head: true })
         .eq('in_stock', false);
-
-      return {
+      
+      const results = {
         totalRevenue,
         totalOrders,
         avgOrderValue,
@@ -110,8 +120,13 @@ export const AdminDashboard = () => {
         totalProducts: totalProducts || 0,
         outOfStock: outOfStock || 0,
       };
+      
+      console.log('Dashboard stats results:', results);
+      return results;
     },
   });
+  
+  console.log('Dashboard stats:', stats, 'Loading:', isLoading, 'Error:', error);
 
   const { data: recentOrders } = useQuery({
     queryKey: ['admin-recent-orders'],
