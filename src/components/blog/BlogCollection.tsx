@@ -31,7 +31,7 @@ const BlogCollection = ({ collections, setSelectedCategory }: BlogCollectionProp
           Explore our culturally inspired collections, featuring stories and organization tips that celebrate our heritage.
         </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-2 gap-6 mb-8">
           {displayedCollections.map((collection) => (
             <div 
               key={collection.id}
