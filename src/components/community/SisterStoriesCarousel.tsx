@@ -22,10 +22,6 @@ export const SisterStoriesCarousel = () => {
   const [visibleVideos, setVisibleVideos] = useState<Set<string>>(new Set());
   const [playingVideos, setPlayingVideos] = useState<Set<string>>(new Set());
   const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({});
-  
-  const autoplayPlugin = useRef(
-    Autoplay({ delay: 3000, stopOnInteraction: true, stopOnMouseEnter: true })
-  );
 
   console.log('SisterStoriesCarousel: Rendering with', videoStories.length, 'videos, loading:', isLoading);
 
@@ -197,11 +193,10 @@ export const SisterStoriesCarousel = () => {
       {/* Carousel Container */}
       <div className="w-full max-w-[100vw]">
         <Carousel
-          plugins={[autoplayPlugin.current]}
+          plugins={[Autoplay({ delay: 3000, stopOnInteraction: true })]}
           opts={{
             align: "start",
             loop: true,
-            dragFree: false,
           }}
           className="w-full"
         >
