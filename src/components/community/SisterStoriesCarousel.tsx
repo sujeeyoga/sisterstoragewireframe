@@ -219,7 +219,7 @@ export const SisterStoriesCarousel = () => {
                       <div 
                         className="absolute inset-0 flex items-center justify-center pointer-events-none z-10"
                       >
-                        <div className="bg-black/50 text-white text-2xl px-6 py-3 rounded-full backdrop-blur-sm font-semibold">
+                        <div className="bg-black/50 text-white text-xs px-4 py-2 rounded-full backdrop-blur-sm font-semibold">
                           Tap to unmute
                         </div>
                       </div>
