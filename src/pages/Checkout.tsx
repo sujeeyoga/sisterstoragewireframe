@@ -776,6 +776,32 @@ const Checkout = () => {
                     </div>
                   )}
                   
+                  {/* Free Shipping Progress for Toronto */}
+                  {isToronto && !qualifiesForFreeShipping && discountedSubtotal > 0 && (
+                    <div className="bg-gradient-to-r from-pink-50 to-purple-50 border border-[hsl(var(--brand-pink))]/20 rounded-lg p-3 my-2">
+                      <div className="flex items-start gap-2">
+                        <Truck className="h-4 w-4 text-[hsl(var(--brand-pink))] mt-0.5 flex-shrink-0" />
+                        <div className="flex-1">
+                          <p className="text-xs font-semibold text-[hsl(var(--brand-pink))] mb-1">
+                            Toronto Free Shipping
+                          </p>
+                          <p className="text-xs text-gray-700">
+                            Spend <span className="font-bold text-[hsl(var(--brand-pink))]">
+                              ${(50 - discountedSubtotal).toFixed(2)} more
+                            </span> to unlock FREE shipping!
+                          </p>
+                        </div>
+                      </div>
+                      {/* Progress bar */}
+                      <div className="mt-2 w-full bg-gray-200 rounded-full h-2">
+                        <div 
+                          className="bg-gradient-to-r from-[hsl(var(--brand-pink))] to-purple-400 h-2 rounded-full transition-all duration-300"
+                          style={{ width: `${Math.min((discountedSubtotal / 50) * 100, 100)}%` }}
+                        />
+                      </div>
+                    </div>
+                  )}
+                  
                   <div className="flex justify-between">
                     <span className="text-gray-600">Shipping</span>
                     <span className="font-medium">
@@ -789,9 +815,21 @@ const Checkout = () => {
                     </span>
                   </div>
                   {qualifiesForFreeShipping && (
-                    <p className="text-xs text-green-600 font-medium pl-4">
-                      🎉 Free shipping applied for Toronto orders over $50!
-                    </p>
+                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-500/30 rounded-lg p-3 my-2">
+                      <div className="flex items-center gap-2">
+                        <div className="flex-shrink-0 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                          <span className="text-white text-xs">✓</span>
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-xs font-bold text-green-700">
+                            🎉 FREE Shipping Unlocked!
+                          </p>
+                          <p className="text-xs text-green-600">
+                            Toronto orders over $50 ship free
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   )}
                   {selectedRate && !qualifiesForFreeShipping && (
                     <p className="text-xs text-gray-500 pl-4">
