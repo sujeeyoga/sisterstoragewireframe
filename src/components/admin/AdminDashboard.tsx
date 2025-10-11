@@ -2,15 +2,17 @@ import { useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { DollarSign, ShoppingCart, Package, Truck, Clock, CheckCircle2, TrendingUp, AlertCircle } from 'lucide-react';
+import { DollarSign, ShoppingCart, Package, Truck, Clock, CheckCircle2, TrendingUp, AlertCircle, Users } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 import HomeImageOptimizer from './HomeImageOptimizer';
+import { useVisitorPresence } from '@/hooks/useVisitorPresence';
 
 export const AdminDashboard = () => {
+  const { visitorCount } = useVisitorPresence();
   const queryClient = useQueryClient();
 
   // Real-time subscription for order updates
@@ -199,6 +201,28 @@ export const AdminDashboard = () => {
 
       {/* Revenue & Orders KPIs */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {/* Live Visitors Card */}
+        <Card className="hover:shadow-lg transition-shadow">
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              Live Visitors
+            </CardTitle>
+            <Users className="h-4 w-4 text-blue-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {visitorCount}
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              Currently browsing
+            </p>
+            <div className="mt-2 flex items-center gap-2">
+              <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+              <span className="text-xs text-muted-foreground">Live</span>
+            </div>
+          </CardContent>
+        </Card>
+        
         <Card className="hover:shadow-lg transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">

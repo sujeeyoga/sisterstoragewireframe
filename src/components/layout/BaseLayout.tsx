@@ -6,6 +6,7 @@ import SaleBanner from "@/components/SaleBanner";
 import useScrollDirection from "@/hooks/use-scroll-direction";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ArrowLeft } from "lucide-react";
+import { useVisitorPresence } from "@/hooks/useVisitorPresence";
 
 export type LayoutVariant = 'standard' | 'brand' | 'minimal' | 'full';
 export type SpacingVariant = 'none' | 'compact' | 'normal' | 'spacious';
@@ -36,6 +37,10 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
   const { position } = useScrollDirection(10);
   const isMobile = useIsMobile();
   const navRef = useRef<HTMLDivElement | null>(null);
+  
+  // Track visitor presence (only track for non-admin pages)
+  const shouldTrack = !location.pathname.startsWith('/admin');
+  useVisitorPresence(shouldTrack);
 
   // ===== UTILITY FUNCTIONS =====
   const getBackgroundClasses = () => {
