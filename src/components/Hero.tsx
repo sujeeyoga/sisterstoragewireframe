@@ -11,7 +11,7 @@ const Hero = () => {
     <section ref={parallaxRef} className="relative w-full overflow-hidden md:pt-32" aria-label="Hero section">
       {/* Mobile: Stacked Layout */}
       <div className="md:hidden flex flex-col">
-        <div className="bg-[hsl(var(--brand-pink))] pt-28 pb-16 px-4 h-[75vh] flex items-center">
+        <div className="bg-[hsl(var(--brand-pink))] pt-35 pb-16 px-4 h-[75vh] flex items-center">
           <div className="flex flex-col space-y-3 text-white pt-54">
             <Badge 
               variant="secondary" 
