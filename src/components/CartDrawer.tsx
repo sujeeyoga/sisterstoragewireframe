@@ -2,15 +2,19 @@ import React, { useEffect } from 'react';
 import { X, Trash2, Plus, Minus, ShoppingBag, Tag, Truck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/contexts/CartContext';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import Logo from '@/components/ui/Logo';
 import { useStoreDiscount } from '@/hooks/useStoreDiscount';
 
 const CartDrawer = () => {
   const { items, removeItem, updateQuantity, totalItems, subtotal, isOpen, setIsOpen } = useCart();
   const { discount, applyDiscount, getDiscountAmount } = useStoreDiscount();
+  const location = useLocation();
   const drawerContentRef = React.useRef<HTMLDivElement>(null);
   const drawerRef = React.useRef<HTMLDivElement>(null);
+  
+  // Hide floating button when cart is open or on checkout page
+  const shouldHideFloatingButton = isOpen || location.pathname === '/checkout';
 
   // Scroll viewport to show drawer when it opens
   useEffect(() => {
@@ -40,19 +44,21 @@ const CartDrawer = () => {
 
   return (
     <>
-      {/* Floating Cart Button - Always Visible */}
-      <button
-        onClick={() => setIsOpen(true)}
-        className="fixed bottom-24 right-6 z-[99999] w-20 h-20 bg-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))]/90 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110"
-        aria-label="Open shopping cart"
-      >
-        <ShoppingBag className="h-9 w-9" />
-        {totalItems > 0 && (
-          <span className="absolute -top-1 -right-1 bg-white text-[hsl(var(--brand-pink))] rounded-full text-xs w-5 h-5 flex items-center justify-center font-semibold border-2 border-[hsl(var(--brand-pink))]">
-            {totalItems}
-          </span>
-        )}
-      </button>
+      {/* Floating Cart Button - Hidden when drawer is open or on checkout page */}
+      {!shouldHideFloatingButton && (
+        <button
+          onClick={() => setIsOpen(true)}
+          className="fixed bottom-24 right-6 z-50 w-20 h-20 bg-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))]/90 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110"
+          aria-label="Open shopping cart"
+        >
+          <ShoppingBag className="h-9 w-9" />
+          {totalItems > 0 && (
+            <span className="absolute -top-1 -right-1 bg-white text-[hsl(var(--brand-pink))] rounded-full text-xs w-5 h-5 flex items-center justify-center font-semibold border-2 border-[hsl(var(--brand-pink))]">
+              {totalItems}
+            </span>
+          )}
+        </button>
+      )}
 
       {/* Cart Drawer */}
       <div className={`fixed inset-0 z-[9999] transition-opacity duration-300 ${isOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'}`}>
