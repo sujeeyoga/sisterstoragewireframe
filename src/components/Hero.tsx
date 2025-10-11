@@ -5,14 +5,17 @@ import heroMainImage from '@/assets/hero-bg-main.jpg';
 import { useOptimizedParallax } from '@/hooks/use-optimized-parallax';
 
 const Hero = () => {
-  const { ref: parallaxRef, offset } = useOptimizedParallax({ speed: 0.3 });
+  const { ref: parallaxRef, offset } = useOptimizedParallax({ speed: 0.5 });
 
   return (
     <section ref={parallaxRef} className="relative w-full overflow-hidden md:pt-32" aria-label="Hero section">
       {/* Mobile: Stacked Layout */}
       <div className="md:hidden flex flex-col">
         <div className="bg-[hsl(var(--brand-pink))] pt-32 pb-16 px-4 h-[75vh] flex items-center">
-          <div className="flex flex-col space-y-3 text-white pt-54">
+          <div 
+            className="flex flex-col space-y-3 text-white pt-54"
+            style={{ transform: `translateY(${-offset * 0.2}px)` }}
+          >
             <Badge 
               variant="secondary" 
               className="bg-white text-[hsl(var(--brand-pink))] px-4 py-2 text-base font-bold w-fit rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
@@ -56,7 +59,7 @@ const Hero = () => {
             src={heroMainImage}
             alt="Woman showcasing Sister Storage jewelry organization solution"
             className="w-full h-full object-cover"
-            style={{ transform: `translateY(${-offset}px)` }}
+            style={{ transform: `translateY(${-offset * 0.6}px)` }}
             loading="eager"
             fetchPriority="high"
           />
@@ -66,7 +69,10 @@ const Hero = () => {
       {/* Desktop: Overlapping Layout */}
       <div className="hidden md:block">
         {/* Background Image */}
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[70%] h-[100%] overflow-hidden animate-[slide-in-right_1.2s_ease-out]">
+        <div 
+          className="absolute right-0 top-1/2 -translate-y-1/2 w-[70%] h-[100%] overflow-hidden animate-[slide-in-right_1.2s_ease-out]"
+          style={{ transform: `translateY(calc(-50% + ${offset * 0.3}px))` }}
+        >
           <img
             src={heroMainImage}
             alt="Woman showcasing Sister Storage jewelry organization solution"
