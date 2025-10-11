@@ -2,7 +2,6 @@
 import { Button } from '@/components/ui/button';
 import { ShoppingBag } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import AnimatedText from '@/components/ui/animated-text';
 
 interface HeroContentProps {
   scrollPosition: number;
@@ -14,36 +13,22 @@ const HeroContent = ({ scrollPosition }: HeroContentProps) => {
 
   return (
     <div className="w-full">
-      <AnimatedText
-        as="span"
-        className="inline-block px-6 py-3 mb-6 text-sm font-bold bg-white text-[hsl(var(--brand-pink))] rounded-full shadow-lg"
-        animation="breath-fade-up-1"
-      >
+      <span className="inline-block px-6 py-3 mb-6 text-sm font-bold bg-white text-[hsl(var(--brand-pink))] rounded-full shadow-lg">
         Beautifully Organized
-      </AnimatedText>
+      </span>
       
-      <AnimatedText
-        as="h1"
-        className="text-6xl md:text-8xl lg:text-9xl xl:text-[12rem] 2xl:text-[14rem] font-black text-white mb-3 leading-none tracking-tight"
-        animation="breath-fade-up-2"
-        words
-      >
+      <h1 className="text-6xl md:text-8xl lg:text-9xl xl:text-[12rem] 2xl:text-[14rem] font-black text-white mb-3 leading-none tracking-tight">
         CULTURE / WITHOUT CLUTTER.
-      </AnimatedText>
+      </h1>
       
-      <AnimatedText
-        as="h2"
-        className="text-2xl md:text-4xl lg:text-5xl xl:text-6xl text-white mb-10 mt-8 font-black leading-none tracking-tight"
-        animation="breath-fade-up-3"
-      >
+      <h2 className="text-2xl md:text-4xl lg:text-5xl xl:text-6xl text-white mb-10 mt-8 font-black leading-none tracking-tight">
         BROUGHT TO YOU BY SISTERS WHO GET IT.
-      </AnimatedText>
+      </h2>
 
       <div className="flex flex-col items-center gap-8 mb-6">
         <Button 
           variant="buy"
           size="buy"
-          className="animate-breath-fade-up-4"
           style={{ transform: `scaleX(${scaleX})` }}
           asChild
         >
@@ -54,14 +39,10 @@ const HeroContent = ({ scrollPosition }: HeroContentProps) => {
         </Button>
       </div>
       
-      <AnimatedText
-        as="p"
-        className="text-lg text-white max-w-xl leading-relaxed font-medium opacity-90"
-        animation="breath-fade-up-5"
-      >
+      <p className="text-lg text-white max-w-xl leading-relaxed font-medium opacity-90">
         Made by sisters, for sisters.<br />
         Clutter never had a place in our culture.
-      </AnimatedText>
+      </p>
     </div>
   );
 };
