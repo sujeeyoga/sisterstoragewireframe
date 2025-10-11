@@ -16,20 +16,41 @@ export function AnalyticsDashboard() {
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-      const { data: orders, error } = await supabase
-        .from('woocommerce_orders')
-        .select('*')
-        .gte('date_created', thirtyDaysAgo.toISOString());
+      // Fetch WooCommerce and Stripe orders in parallel
+      const [wooRes, stripeRes] = await Promise.all([
+        supabase
+          .from('woocommerce_orders')
+          .select('*')
+          .gte('date_created', thirtyDaysAgo.toISOString()),
+        supabase
+          .from('orders')
+          .select('*')
+          .gte('created_at', thirtyDaysAgo.toISOString()),
+      ]);
 
-      if (error) throw error;
+      if (wooRes.error) throw wooRes.error;
+      if (stripeRes.error) throw stripeRes.error;
 
-      const totalOrders = orders?.length || 0;
-      const totalRevenue = orders?.reduce((sum, order) => {
-        const orderTotal = order.total as any;
-        return sum + (typeof orderTotal === 'number' ? orderTotal : parseFloat(String(orderTotal || '0')));
-      }, 0) || 0;
+      const wooOrders = wooRes.data || [];
+      const stripeOrders = stripeRes.data || [];
+
+      const allOrders = [
+        ...wooOrders.map((o) => ({
+          total: typeof o.total === 'number' ? o.total : parseFloat(String(o.total || '0')),
+          status: o.status as string,
+          refunded: (o.status as string) === 'refunded',
+        })),
+        ...stripeOrders.map((o: any) => ({
+          total: typeof o.total === 'number' ? o.total : parseFloat(String(o.total || '0')),
+          status: (o.status as string) || 'pending',
+          refunded: ((o.payment_status as string) === 'refunded') || ((o.status as string) === 'refunded'),
+        })),
+      ];
+
+      const totalOrders = allOrders.length;
+      const totalRevenue = allOrders.reduce((sum, o) => sum + (Number.isFinite(o.total) ? o.total : 0), 0);
       const averageOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
-      const refundedOrders = orders?.filter(o => o.status === 'refunded').length || 0;
+      const refundedOrders = allOrders.filter((o) => o.refunded).length;
 
       return {
         totalOrders,
@@ -43,14 +64,45 @@ export function AnalyticsDashboard() {
   const { data: recentOrders } = useQuery({
     queryKey: ['admin-recent-orders'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('woocommerce_orders')
-        .select('*')
-        .order('date_created', { ascending: false })
-        .limit(5);
+      const [wooRes, stripeRes] = await Promise.all([
+        supabase
+          .from('woocommerce_orders')
+          .select('*')
+          .order('date_created', { ascending: false })
+          .limit(5),
+        supabase
+          .from('orders')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(5),
+      ]);
 
-      if (error) throw error;
-      return data;
+      if (wooRes.error) throw wooRes.error;
+      if (stripeRes.error) throw stripeRes.error;
+
+      const wooOrders = (wooRes.data || []).map((order: any) => ({
+        id: order.id,
+        order_number: String(order.id),
+        customer_name: `${order?.billing?.first_name || ''} ${order?.billing?.last_name || ''}`.trim() || 'Guest',
+        total: typeof order.total === 'number' ? order.total : parseFloat(String(order.total || '0')),
+        status: order.status as string,
+        date: order.date_created as string,
+        source: 'woocommerce' as const,
+      }));
+
+      const stripeOrders = (stripeRes.data || []).map((order: any) => ({
+        id: order.id,
+        order_number: order.order_number as string,
+        customer_name: (order.customer_name as string) || 'Guest',
+        total: typeof order.total === 'number' ? order.total : parseFloat(String(order.total || '0')),
+        status: (order.status as string) || 'pending',
+        date: order.created_at as string,
+        source: 'stripe' as const,
+      }));
+
+      return [...wooOrders, ...stripeOrders]
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+        .slice(0, 5);
     },
   });
 
@@ -176,19 +228,20 @@ export function AnalyticsDashboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {recentOrders?.map((order) => {
-                const billing = order.billing as any;
-                const orderTotal = order.total as any;
-                const total = typeof orderTotal === 'number' ? orderTotal : parseFloat(String(orderTotal || '0'));
+              {recentOrders?.map((order: any) => {
+                const total = typeof order.total === 'number' ? order.total : parseFloat(String(order.total || '0'));
                 return (
-                  <div key={order.id} className="flex items-center justify-between">
+                  <div key={`${order.source}-${order.id}`} className="flex items-center justify-between">
                     <div className="space-y-1">
-                      <p className="text-sm font-medium">Order #{order.id}</p>
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm font-medium">Order #{order.order_number}</p>
+                        <Badge variant="outline" className="text-xs">{order.source === 'stripe' ? 'Stripe' : 'Woo'}</Badge>
+                      </div>
                       <p className="text-xs text-muted-foreground">
-                        {billing?.first_name} {billing?.last_name}
+                        {order.customer_name}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {format(new Date(order.date_created), 'MMM dd, HH:mm')}
+                        {format(new Date(order.date), 'MMM dd, HH:mm')}
                       </p>
                     </div>
                     <div className="text-right space-y-1">
