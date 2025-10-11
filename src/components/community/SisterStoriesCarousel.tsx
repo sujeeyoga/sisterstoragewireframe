@@ -158,16 +158,16 @@ export const SisterStoriesCarousel = () => {
         <Carousel
           plugins={[Autoplay({ delay: 4000, stopOnInteraction: true, stopOnMouseEnter: true })]}
           opts={{
-            align: "center",
+            align: "start",
             loop: true,
             skipSnaps: false,
             dragFree: false,
           }}
           className="w-full"
         >
-          <CarouselContent className="flex justify-center items-center -ml-5">
+          <CarouselContent className="-ml-5">
             {videoStories.map((story) => (
-              <CarouselItem key={story.id} className="pl-5 basis-full md:basis-auto flex-shrink-0 flex justify-center items-center">
+              <CarouselItem key={story.id} className="pl-5 basis-full flex-shrink-0">
                 <Card 
                   className="overflow-hidden border-0 bg-transparent h-full w-full"
                 >
