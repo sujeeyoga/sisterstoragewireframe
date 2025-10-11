@@ -1,10 +1,10 @@
 import { lazy, Suspense, useEffect } from "react";
 import BaseLayout from "@/components/layout/BaseLayout";
 import Hero from "@/components/Hero";
+import CommunityStoriesCarousels from "@/components/community/CommunityStoriesCarousels";
 
-// Lazy load below-the-fold content
+// Lazy load below-the-fold content (except videos which load eagerly)
 const BestSeller = lazy(() => import("@/components/BestSeller"));
-const CommunityStoriesCarousels = lazy(() => import("@/components/community/CommunityStoriesCarousels"));
 const OrganizationGallery = lazy(() => import("@/components/OrganizationGallery"));
 const PromotionalBanner = lazy(() => import("@/components/PromotionalBanner"));
 
@@ -21,10 +21,8 @@ const Index = () => {
         {/* Hero Section */}
         <Hero />
         
-        {/* Styled by Our Sisters - Community carousel */}
-        <Suspense fallback={<div className="h-96" />}>
-          <CommunityStoriesCarousels />
-        </Suspense>
+        {/* Styled by Our Sisters - Community carousel - Loads eagerly */}
+        <CommunityStoriesCarousels />
         
         {/* Best Sellers - Product carousel */}
         <Suspense fallback={<div className="h-64" />}>
