@@ -36,39 +36,39 @@ const OrganizationGallery = () => {
         {/* Gallery Grid */}
         <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-center max-w-[2304px] mx-auto px-5">
           {/* First Image */}
-          <div className="relative w-full aspect-square rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 group overflow-hidden animate-fade-in">
+          <div className="relative w-full aspect-square rounded-3xl shadow-lg md:hover:shadow-2xl transition-shadow duration-300 group overflow-hidden animate-fade-in">
             <PerformanceImage
               src={galleryImages[0].src}
               alt={galleryImages[0].alt}
-              className="w-full h-full object-cover block group-hover:scale-110 transition-transform duration-700 ease-out"
+              className="w-full h-full object-cover block md:group-hover:scale-105 transition-transform duration-500 ease-out"
               loading="eager"
             />
           </div>
 
           {/* Second Image */}
           <div className="w-full">
-            <div className="relative aspect-[3/4] rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 group overflow-hidden animate-fade-in">
+            <div className="relative aspect-[3/4] rounded-3xl shadow-lg md:hover:shadow-2xl transition-shadow duration-300 group overflow-hidden animate-fade-in">
               <PerformanceImage
                 src={galleryImages[1].src}
                 alt={galleryImages[1].alt}
-                className="w-full h-full object-cover block group-hover:scale-110 transition-transform duration-700 ease-out"
+                className="w-full h-full object-cover block md:group-hover:scale-105 transition-transform duration-500 ease-out"
                 loading="eager"
               />
             </div>
           </div>
 
           {/* Fourth Image */}
-          <div className="relative w-full aspect-square rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 group overflow-hidden animate-fade-in">
+          <div className="relative w-full aspect-square rounded-3xl shadow-lg md:hover:shadow-2xl transition-shadow duration-300 group overflow-hidden animate-fade-in">
             <PerformanceImage
               src={galleryImages[3].src}
               alt={galleryImages[3].alt}
-              className="w-full h-full object-cover block group-hover:scale-110 transition-transform duration-700 ease-out"
+              className="w-full h-full object-cover block md:group-hover:scale-105 transition-transform duration-500 ease-out"
               loading="lazy"
             />
             {/* Instagram Icon Overlay */}
-            <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors duration-500">
+            <div className="absolute inset-0 flex items-center justify-center bg-black/20 md:group-hover:bg-black/30 transition-colors duration-300">
               <svg
-                className="w-24 h-24 md:w-40 md:h-40 text-white drop-shadow-2xl group-hover:scale-110 transition-transform duration-500"
+                className="w-24 h-24 md:w-40 md:h-40 text-white drop-shadow-2xl md:group-hover:scale-110 transition-transform duration-300"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"

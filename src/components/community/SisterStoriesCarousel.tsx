@@ -203,7 +203,7 @@ export const SisterStoriesCarousel = () => {
             {videoStories.map((story) => (
               <CarouselItem key={story.id} className="px-8 basis-auto flex-shrink-0 flex justify-center items-center">
                 <Card 
-                  className="overflow-hidden border-0 bg-transparent group cursor-pointer transition-transform duration-300 hover:scale-105 h-full"
+                  className="overflow-hidden border-0 bg-transparent cursor-pointer h-full active:scale-95 transition-transform duration-200"
                 >
                   <div 
                     className="relative w-[263px] h-[540px] overflow-hidden bg-black cursor-pointer rounded-2xl shadow-xl"
