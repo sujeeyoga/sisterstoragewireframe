@@ -154,7 +154,7 @@ export const SisterStoriesCarousel = () => {
       <div className="absolute right-0 top-0 bottom-0 w-[5%] bg-gradient-to-l from-[hsl(var(--brand-gray))] to-transparent z-10 pointer-events-none hidden md:block" />
       
       {/* Carousel Container */}
-      <div className="w-full max-w-[100vw]">
+      <div className="w-full max-w-[100vw] min-h-[60vh]">
         <Carousel
           plugins={[Autoplay({ delay: 4000, stopOnInteraction: true, stopOnMouseEnter: true })]}
           opts={{
