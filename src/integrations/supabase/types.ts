@@ -91,6 +91,7 @@ export type Database = {
           items: Json
           order_number: string
           payment_status: string
+          refund_amount: number | null
           shipping: number | null
           shipping_address: Json | null
           shipping_label_url: string | null
@@ -114,6 +115,7 @@ export type Database = {
           items?: Json
           order_number: string
           payment_status?: string
+          refund_amount?: number | null
           shipping?: number | null
           shipping_address?: Json | null
           shipping_label_url?: string | null
@@ -137,6 +139,7 @@ export type Database = {
           items?: Json
           order_number?: string
           payment_status?: string
+          refund_amount?: number | null
           shipping?: number | null
           shipping_address?: Json | null
           shipping_label_url?: string | null
@@ -422,12 +425,18 @@ export type Database = {
           created_at: string | null
           currency: string | null
           date_created: string | null
+          fulfilled_at: string | null
+          fulfillment_status: string
           id: number
           line_items: Json | null
           meta_data: Json | null
+          refund_amount: number | null
           shipping: Json | null
+          shipping_label_url: string | null
+          shipping_notification_sent_at: string | null
           status: string
           total: number | null
+          tracking_number: string | null
           updated_at: string | null
           user_id: string | null
         }
@@ -436,12 +445,18 @@ export type Database = {
           created_at?: string | null
           currency?: string | null
           date_created?: string | null
+          fulfilled_at?: string | null
+          fulfillment_status?: string
           id: number
           line_items?: Json | null
           meta_data?: Json | null
+          refund_amount?: number | null
           shipping?: Json | null
+          shipping_label_url?: string | null
+          shipping_notification_sent_at?: string | null
           status: string
           total?: number | null
+          tracking_number?: string | null
           updated_at?: string | null
           user_id?: string | null
         }
@@ -450,12 +465,18 @@ export type Database = {
           created_at?: string | null
           currency?: string | null
           date_created?: string | null
+          fulfilled_at?: string | null
+          fulfillment_status?: string
           id?: number
           line_items?: Json | null
           meta_data?: Json | null
+          refund_amount?: number | null
           shipping?: Json | null
+          shipping_label_url?: string | null
+          shipping_notification_sent_at?: string | null
           status?: string
           total?: number | null
+          tracking_number?: string | null
           updated_at?: string | null
           user_id?: string | null
         }

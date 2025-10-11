@@ -31,6 +31,18 @@ export const AdminDashboard = () => {
           queryClient.invalidateQueries({ queryKey: ['admin-recent-orders'] });
         }
       )
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'woocommerce_orders'
+        },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ['admin-dashboard-stats'] });
+          queryClient.invalidateQueries({ queryKey: ['admin-recent-orders'] });
+        }
+      )
       .subscribe();
 
     return () => {
@@ -67,34 +79,50 @@ export const AdminDashboard = () => {
         console.error('Stripe orders error:', stripeError);
       }
 
-      // Combine all orders
+      // Combine all orders with refund tracking
       const allOrders = [
         ...(wooOrders || []).map(o => ({ 
           total: Number(o.total), 
           status: o.status,
-          fulfillment_status: null 
+          fulfillment_status: o.fulfillment_status || 'unfulfilled',
+          refund_amount: Number(o.refund_amount || 0),
+          currency: o.currency || 'CAD'
         })),
         ...(stripeOrders || []).map(o => ({ 
           total: Number(o.total), 
           status: o.status,
-          fulfillment_status: o.fulfillment_status 
+          fulfillment_status: o.fulfillment_status || 'unfulfilled',
+          refund_amount: Number(o.refund_amount || 0),
+          currency: 'CAD'
         }))
       ];
 
       const totalRevenue = allOrders.reduce((sum, order) => sum + order.total, 0);
+      const totalRefunds = allOrders.reduce((sum, order) => sum + order.refund_amount, 0);
+      const netRevenue = totalRevenue - totalRefunds;
       const totalOrders = allOrders.length;
       const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
+      
+      // Currency breakdown
+      const currencyBreakdown = allOrders.reduce((acc, order) => {
+        const currency = order.currency || 'CAD';
+        if (!acc[currency]) acc[currency] = { total: 0, count: 0 };
+        acc[currency].total += order.total;
+        acc[currency].count += 1;
+        return acc;
+      }, {} as Record<string, { total: number; count: number }>);
 
       // Order status breakdown
       const pendingOrders = allOrders.filter(o => o.status === 'pending' || o.status === 'on-hold').length;
       const processingOrders = allOrders.filter(o => o.status === 'processing').length;
       const completedOrders = allOrders.filter(o => o.status === 'completed').length;
+      const refundedOrders = allOrders.filter(o => o.status === 'refunded' && o.refund_amount > 0).length;
 
-      // Fulfillment status (from Stripe orders only)
-      const unfulfilledOrders = (stripeOrders || []).filter(o => 
+      // Fulfillment status (from both Stripe and WooCommerce orders)
+      const unfulfilledOrders = allOrders.filter(o => 
         o.fulfillment_status === 'unfulfilled' || !o.fulfillment_status
       ).length;
-      const fulfilledOrders = (stripeOrders || []).filter(o => 
+      const fulfilledOrders = allOrders.filter(o => 
         o.fulfillment_status === 'fulfilled'
       ).length;
 
@@ -110,6 +138,9 @@ export const AdminDashboard = () => {
       
       const results = {
         totalRevenue,
+        netRevenue,
+        totalRefunds,
+        refundedOrders,
         totalOrders,
         avgOrderValue,
         pendingOrders,
@@ -119,6 +150,7 @@ export const AdminDashboard = () => {
         fulfilledOrders,
         totalProducts: totalProducts || 0,
         outOfStock: outOfStock || 0,
+        currencyBreakdown,
       };
       
       console.log('Dashboard stats results:', results);
@@ -150,7 +182,7 @@ export const AdminDashboard = () => {
         customer: `${(order.billing as any)?.first_name || ''} ${(order.billing as any)?.last_name || ''}`.trim() || 'Guest',
         total: Number(order.total),
         status: order.status,
-        fulfillment_status: null,
+        fulfillment_status: order.fulfillment_status || 'unfulfilled',
         date: order.date_created,
         source: 'woocommerce' as const
       }));
@@ -215,7 +247,7 @@ export const AdminDashboard = () => {
       </div>
 
       {/* Revenue & Orders KPIs */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
         {/* Live Visitors Card */}
         <Card className="hover:shadow-lg transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -241,7 +273,7 @@ export const AdminDashboard = () => {
         <Card className="hover:shadow-lg transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Total Revenue
+              Net Revenue
             </CardTitle>
             <DollarSign className="h-4 w-4 text-green-600" />
           </CardHeader>
@@ -251,11 +283,21 @@ export const AdminDashboard = () => {
             ) : (
               <>
                 <div className="text-2xl font-bold">
-                  ${stats?.totalRevenue.toFixed(2) || '0.00'}
+                  ${stats?.netRevenue.toFixed(2) || '0.00'}
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Gross sales (30d)
+                  After ${stats?.totalRefunds.toFixed(2) || '0.00'} refunds
                 </p>
+                {stats && Object.keys(stats.currencyBreakdown).length > 1 && (
+                  <div className="mt-2 pt-2 border-t">
+                    <p className="text-xs font-medium mb-1">By Currency:</p>
+                    {Object.entries(stats.currencyBreakdown).map(([curr, data]: [string, any]) => (
+                      <p key={curr} className="text-xs text-muted-foreground">
+                        {curr}: ${data.total.toFixed(2)} ({data.count} orders)
+                      </p>
+                    ))}
+                  </div>
+                )}
               </>
             )}
           </CardContent>
@@ -371,6 +413,17 @@ export const AdminDashboard = () => {
                     {stats?.completedOrders || 0}
                   </Badge>
                 </div>
+                {stats && stats.refundedOrders > 0 && (
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-red-50 border border-red-200">
+                    <div className="flex items-center gap-2">
+                      <AlertCircle className="h-4 w-4 text-red-600" />
+                      <span className="font-medium">Refunded</span>
+                    </div>
+                    <Badge variant="outline" className="bg-red-100 text-red-700">
+                      {stats.refundedOrders}
+                    </Badge>
+                  </div>
+                )}
               </div>
             )}
           </CardContent>
