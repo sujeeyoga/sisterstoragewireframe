@@ -5,13 +5,13 @@ const SaleBanner = ({}: SaleBannerProps) => {
   // Create content items with separators - using exact requirements
   const contentItems = [{
     icon: <BadgePercent className="h-3 w-3 text-brand-pink mr-1 shrink-0" />,
-    text: "Summer End Sale - 20% Off"
+    text: "Free Shipping Over $50 in Toronto"
   }, {
     icon: <BadgePercent className="h-3 w-3 text-brand-pink mr-1 shrink-0" />,
-    text: "Free Shipping on Orders Over $75"
+    text: "Free Shipping Over $50 in Toronto"
   }, {
     icon: <BadgePercent className="h-3 w-3 text-brand-pink mr-1 shrink-0" />,
-    text: "Limited Time Only"
+    text: "Free Shipping Over $50 in Toronto"
   }];
 
   // Duplicate content multiple times for seamless infinite loop

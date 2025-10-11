@@ -119,14 +119,17 @@ const Checkout = () => {
   const taxRate = getTaxRate(formData.province);
   const discountedSubtotal = discount?.enabled ? applyDiscount(subtotal) : subtotal;
   const discountAmount = discount?.enabled ? getDiscountAmount(subtotal) : 0;
-  const taxAmount = discountedSubtotal * taxRate;
+  const giftWrappingFee = includeGiftWrapping && giftOptions?.wrappingEnabled ? (giftOptions.wrappingPrice || 0) : 0;
+  
+  // Calculate tax on subtotal (after discount) plus gift wrapping
+  const taxableAmount = discountedSubtotal + giftWrappingFee;
+  const taxAmount = taxableAmount * taxRate;
   
   // Get shipping cost from selected rate
   const selectedRate = shippingRates.find(rate => rate.postage_type === selectedShippingRate);
   const shippingCost = selectedRate ? parseFloat(selectedRate.total) : 0;
   
-  const giftWrappingFee = includeGiftWrapping && giftOptions?.wrappingEnabled ? (giftOptions.wrappingPrice || 0) : 0;
-  const total = discountedSubtotal + taxAmount + shippingCost + giftWrappingFee;
+  const total = discountedSubtotal + giftWrappingFee + taxAmount + shippingCost;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
