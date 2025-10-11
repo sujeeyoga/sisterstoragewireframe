@@ -215,11 +215,6 @@ export const SisterStoriesCarousel = () => {
                   <div 
                     className="relative w-[900px] h-[540px] overflow-hidden bg-black cursor-pointer rounded-2xl shadow-xl"
                     data-video-id={story.id}
-                    onClick={(e) => {
-                      if (playingVideos.has(story.id)) {
-                        setUnmutedVideo(prev => prev === story.id ? null : story.id);
-                      }
-                    }}
                   >
                     <video
                       ref={(el) => {
@@ -251,7 +246,11 @@ export const SisterStoriesCarousel = () => {
                         });
                         setLoadingVideos(prev => ({ ...prev, [story.id]: false }));
                       }}
-                      className="w-full h-full object-cover transition-all duration-300 group-hover:scale-105"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setUnmutedVideo(prev => prev === story.id ? null : story.id);
+                      }}
+                      className="w-full h-full object-cover"
                       style={{ backgroundColor: '#000' }}
                     >
                       <source src={story.video} type="video/mp4" />
@@ -269,27 +268,27 @@ export const SisterStoriesCarousel = () => {
                       </div>
                     )}
                     
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/0 opacity-0 group-hover:opacity-100 transition-all duration-300" />
-                    <div className="absolute bottom-0 left-0 right-0 p-6 text-white transform translate-y-20 group-hover:translate-y-0 transition-all duration-300 ease-out">
+                    <div className="absolute bottom-0 left-0 right-0 p-6 text-white pointer-events-none">
                       <h4 className="font-semibold text-sm mb-1">{story.title}</h4>
                       <p className="text-xs opacity-90 mb-1">{story.author}</p>
                       <p className="text-xs opacity-75">{story.description}</p>
                     </div>
+                    
                     {/* Mute/Unmute button */}
                     {playingVideos.has(story.id) && (
                       <div 
-                        className="absolute top-3 right-3 bg-black/30 text-white text-xs px-2 py-1 rounded-full backdrop-blur-sm cursor-pointer z-20"
+                        className="absolute top-3 right-3 bg-black/50 text-white text-xs px-3 py-2 rounded-full backdrop-blur-sm cursor-pointer z-20 hover:bg-black/70 transition-colors"
                         onClick={(e) => {
                           e.stopPropagation();
                           setUnmutedVideo(prev => prev === story.id ? null : story.id);
                         }}
                       >
                         {unmutedVideo === story.id ? (
-                        <svg className="w-3 h-3 inline" fill="currentColor" viewBox="0 0 20 20">
+                        <svg className="w-4 h-4 inline" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clipRule="evenodd" />
                         </svg>
                       ) : (
-                          <svg className="w-3 h-3 inline" fill="currentColor" viewBox="0 0 20 20">
+                          <svg className="w-4 h-4 inline" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM12.293 7.293a1 1 0 011.414 0L15 8.586l1.293-1.293a1 1 0 111.414 1.414L16.414 10l1.293 1.293a1 1 0 01-1.414 1.414L15 11.414l-1.293 1.293a1 1 0 01-1.414-1.414L13.586 10l-1.293-1.293a1 1 0 010-1.414z" clipRule="evenodd" />
                           </svg>
                         )}

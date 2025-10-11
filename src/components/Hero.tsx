@@ -61,7 +61,6 @@ const Hero = () => {
             className="w-full h-full object-cover"
             style={{ transform: `translateY(${-offset * 0.25}px)` }}
             loading="eager"
-            fetchPriority="high"
           />
         </div>
 
@@ -81,7 +80,6 @@ const Hero = () => {
             alt="Woman showcasing Sister Storage jewelry organization solution"
             className="w-full h-full object-contain object-right"
             loading="eager"
-            fetchPriority="high"
           />
         </div>
 
