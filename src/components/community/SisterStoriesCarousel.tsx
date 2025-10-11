@@ -146,12 +146,12 @@ export const SisterStoriesCarousel = () => {
   }
 
   return (
-    <div className="w-full overflow-hidden relative flex justify-center items-center">
+    <div className="w-full overflow-hidden relative flex justify-center items-center px-4 md:px-0">
       {/* Left fade gradient - 5% */}
-      <div className="absolute left-0 top-0 bottom-0 w-[5%] bg-gradient-to-r from-[hsl(var(--brand-gray))] to-transparent z-10 pointer-events-none" />
+      <div className="absolute left-0 top-0 bottom-0 w-[5%] bg-gradient-to-r from-[hsl(var(--brand-gray))] to-transparent z-10 pointer-events-none hidden md:block" />
       
       {/* Right fade gradient - 5% */}
-      <div className="absolute right-0 top-0 bottom-0 w-[5%] bg-gradient-to-l from-[hsl(var(--brand-gray))] to-transparent z-10 pointer-events-none" />
+      <div className="absolute right-0 top-0 bottom-0 w-[5%] bg-gradient-to-l from-[hsl(var(--brand-gray))] to-transparent z-10 pointer-events-none hidden md:block" />
       
       {/* Carousel Container */}
       <div className="w-full max-w-[100vw]">
@@ -167,12 +167,12 @@ export const SisterStoriesCarousel = () => {
         >
           <CarouselContent className="flex justify-center items-center -ml-5">
             {videoStories.map((story) => (
-              <CarouselItem key={story.id} className="pl-5 basis-auto flex-shrink-0 flex justify-center items-center">
+              <CarouselItem key={story.id} className="pl-5 basis-full md:basis-auto flex-shrink-0 flex justify-center items-center">
                 <Card 
-                  className="overflow-hidden border-0 bg-transparent h-full"
+                  className="overflow-hidden border-0 bg-transparent h-full w-full"
                 >
                   <div 
-                    className="relative w-[900px] h-[540px] overflow-hidden bg-black rounded-2xl shadow-xl"
+                    className="relative w-full max-w-[900px] aspect-video overflow-hidden bg-black rounded-2xl shadow-xl"
                     data-video-id={story.id}
                   >
                     <video
