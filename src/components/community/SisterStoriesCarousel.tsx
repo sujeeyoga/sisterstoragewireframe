@@ -183,6 +183,7 @@ export const SisterStoriesCarousel = () => {
                       src={story.video}
                       crossOrigin="anonymous"
                       muted={unmutedVideo !== story.id}
+                      autoPlay
                       loop
                       playsInline
                       webkit-playsinline="true"
