@@ -1,19 +1,41 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { DollarSign, ShoppingCart, Package, Truck, Clock, CheckCircle2, TrendingUp, AlertCircle, Users } from 'lucide-react';
+import { DollarSign, ShoppingCart, Package, Truck, Clock, CheckCircle2, TrendingUp, AlertCircle, Users, Calendar } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { format } from 'date-fns';
-import HomeImageOptimizer from './HomeImageOptimizer';
+import { format, subDays } from 'date-fns';
 import { useVisitorPresence } from '@/hooks/useVisitorPresence';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar as CalendarComponent } from '@/components/ui/calendar';
+import { cn } from '@/lib/utils';
+
+type DateRangePreset = '7d' | '30d' | '90d' | 'custom';
 
 export const AdminDashboard = () => {
   const { visitorCount } = useVisitorPresence();
   const queryClient = useQueryClient();
+  const [dateRange, setDateRange] = useState<DateRangePreset>('30d');
+  const [customStartDate, setCustomStartDate] = useState<Date>();
+  const [customEndDate, setCustomEndDate] = useState<Date>();
+
+  const getDateRangeStart = () => {
+    if (dateRange === 'custom' && customStartDate) {
+      return customStartDate;
+    }
+    const days = dateRange === '7d' ? 7 : dateRange === '30d' ? 30 : 90;
+    return subDays(new Date(), days);
+  };
+
+  const getDateRangeEnd = () => {
+    if (dateRange === 'custom' && customEndDate) {
+      return customEndDate;
+    }
+    return new Date();
+  };
 
   // Real-time subscription for order updates
   useEffect(() => {
@@ -51,19 +73,19 @@ export const AdminDashboard = () => {
   }, [queryClient]);
 
   const { data: stats, isLoading, error } = useQuery({
-    queryKey: ['admin-dashboard-stats'],
+    queryKey: ['admin-dashboard-stats', dateRange, customStartDate, customEndDate],
     queryFn: async () => {
       console.log('Dashboard stats query starting...');
       
-      // Get last 30 days data
-      const thirtyDaysAgo = new Date();
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+      const startDate = getDateRangeStart();
+      const endDate = getDateRangeEnd();
 
       // Fetch WooCommerce orders
       const { data: wooOrders, error: wooError } = await supabase
         .from('woocommerce_orders')
         .select('*')
-        .gte('date_created', thirtyDaysAgo.toISOString());
+        .gte('date_created', startDate.toISOString())
+        .lte('date_created', endDate.toISOString());
       
       console.log('WooCommerce orders:', wooOrders?.length || 0, wooError);
 
@@ -71,7 +93,8 @@ export const AdminDashboard = () => {
       const { data: stripeOrders, error: stripeError } = await supabase
         .from('orders')
         .select('*')
-        .gte('created_at', thirtyDaysAgo.toISOString());
+        .gte('created_at', startDate.toISOString())
+        .lte('created_at', endDate.toISOString());
       
       console.log('Stripe orders:', stripeOrders?.length || 0, stripeError);
       
@@ -238,12 +261,123 @@ export const AdminDashboard = () => {
 
   return (
     <div className="p-8 space-y-8">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold mb-2">Dashboard</h1>
-        <p className="text-muted-foreground">
-          Real-time overview of your store performance (last 30 days)
-        </p>
+      {/* Header with Date Range Selector */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold mb-2">Dashboard</h1>
+          <p className="text-muted-foreground">
+            Real-time overview of your store performance
+          </p>
+        </div>
+        
+        {/* Date Range Selector */}
+        <div className="flex items-center gap-2">
+          <Button
+            variant={dateRange === '7d' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setDateRange('7d')}
+          >
+            7 Days
+          </Button>
+          <Button
+            variant={dateRange === '30d' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setDateRange('30d')}
+          >
+            30 Days
+          </Button>
+          <Button
+            variant={dateRange === '90d' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setDateRange('90d')}
+          >
+            90 Days
+          </Button>
+          
+          {/* Custom Date Range */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant={dateRange === 'custom' ? 'default' : 'outline'}
+                size="sm"
+                className="gap-2"
+              >
+                <Calendar className="h-4 w-4" />
+                Custom
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-4" align="end">
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Start Date</label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !customStartDate && "text-muted-foreground"
+                        )}
+                      >
+                        <Calendar className="mr-2 h-4 w-4" />
+                        {customStartDate ? format(customStartDate, "PPP") : "Pick start date"}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <CalendarComponent
+                        mode="single"
+                        selected={customStartDate}
+                        onSelect={setCustomStartDate}
+                        initialFocus
+                        className="pointer-events-auto"
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+                
+                <div>
+                  <label className="text-sm font-medium mb-2 block">End Date</label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !customEndDate && "text-muted-foreground"
+                        )}
+                      >
+                        <Calendar className="mr-2 h-4 w-4" />
+                        {customEndDate ? format(customEndDate, "PPP") : "Pick end date"}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <CalendarComponent
+                        mode="single"
+                        selected={customEndDate}
+                        onSelect={setCustomEndDate}
+                        disabled={(date) => customStartDate ? date < customStartDate : false}
+                        initialFocus
+                        className="pointer-events-auto"
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+                
+                <Button
+                  className="w-full"
+                  onClick={() => {
+                    if (customStartDate && customEndDate) {
+                      setDateRange('custom');
+                    }
+                  }}
+                  disabled={!customStartDate || !customEndDate}
+                >
+                  Apply Custom Range
+                </Button>
+              </div>
+            </PopoverContent>
+          </Popover>
+        </div>
       </div>
 
       {/* Revenue & Orders KPIs */}
@@ -286,7 +420,7 @@ export const AdminDashboard = () => {
                   ${stats?.netRevenue.toFixed(2) || '0.00'}
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
-                  After ${stats?.totalRefunds.toFixed(2) || '0.00'} refunds
+                  After ${stats?.totalRefunds.toFixed(2) || '0.00'} in refunds
                 </p>
                 {stats && Object.keys(stats.currencyBreakdown).length > 1 && (
                   <div className="mt-2 pt-2 border-t">
@@ -582,9 +716,6 @@ export const AdminDashboard = () => {
           </div>
         </CardContent>
       </Card>
-
-      {/* Image Optimizer */}
-      <HomeImageOptimizer />
     </div>
   );
 };
