@@ -156,15 +156,15 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
         <SaleBanner />
       </div>
       
-      {/* Navigation: White navbar floating below banner with pink background */}
-      <nav 
-        ref={navRef} 
-        className="fixed top-10 left-0 right-0 z-50 py-3 bg-[hsl(var(--brand-pink))]"
-      >
-        <div className="w-[min(1100px,calc(100%-40px))] mx-auto rounded-[25px] bg-white shadow-lg px-4 py-2">
+      {/* Navigation wrapper with pink background */}
+      <div className="fixed top-10 left-0 right-0 z-50 py-3 bg-[hsl(var(--brand-pink))]">
+        <nav 
+          ref={navRef} 
+          className="w-[min(1100px,calc(100%-40px))] mx-auto rounded-[25px] bg-white shadow-lg px-4 py-2"
+        >
           <Navbar position={position} />
-        </div>
-      </nav>
+        </nav>
+      </div>
       
       {/* Main content with proper top spacing */}
       <main className="bg-background pt-28" style={{ outline: 'none' }}>
