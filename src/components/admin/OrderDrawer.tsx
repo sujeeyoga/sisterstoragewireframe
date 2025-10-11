@@ -151,7 +151,7 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
           </div>
 
           {/* Shipping Address */}
-          {order.shipping && (
+          {(order.shipping || order.shipping_address) && (
             <>
               <Separator />
               <div className="space-y-3">
@@ -159,13 +159,33 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
                   <MapPin className="h-4 w-4" />
                   Shipping Address
                 </h3>
-                <div className="text-sm text-muted-foreground space-y-1">
-                  <p>{order.shipping?.address_1}</p>
-                  {order.shipping?.address_2 && <p>{order.shipping.address_2}</p>}
-                  <p>
-                    {order.shipping?.city}, {order.shipping?.state} {order.shipping?.postcode}
-                  </p>
-                  <p>{order.shipping?.country}</p>
+                <div className="text-sm text-muted-foreground space-y-1 bg-muted/30 rounded-lg p-3">
+                  {(() => {
+                    // Handle both WooCommerce (shipping) and Stripe (shipping_address) formats
+                    const addr = order.shipping_address || order.shipping || {};
+                    const name = addr.name || `${addr.first_name || ''} ${addr.last_name || ''}`.trim();
+                    const street1 = addr.address || addr.address_1 || addr.line1 || '';
+                    const street2 = addr.address_2 || addr.line2 || '';
+                    const city = addr.city || '';
+                    const state = addr.state || addr.province || '';
+                    const postal = addr.postcode || addr.postal_code || '';
+                    const country = addr.country || '';
+                    
+                    return (
+                      <>
+                        {name && <p className="font-medium text-foreground">{name}</p>}
+                        {street1 && <p className="break-words">{street1}</p>}
+                        {street2 && <p className="break-words">{street2}</p>}
+                        {(city || state || postal) && (
+                          <p>
+                            {city}{city && (state || postal) ? ', ' : ''}
+                            {state} {postal}
+                          </p>
+                        )}
+                        {country && <p>{country}</p>}
+                      </>
+                    );
+                  })()}
                 </div>
               </div>
             </>
