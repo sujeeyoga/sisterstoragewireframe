@@ -51,7 +51,7 @@ const Hero = () => {
           </div>
         </div>
 
-        <div className="w-full h-[70vh] overflow-hidden -mb-64">
+        <div className="w-full h-[85vh] overflow-hidden -mb-64">
           <img
             src={heroMainImage}
             alt="Woman showcasing Sister Storage jewelry organization solution"
