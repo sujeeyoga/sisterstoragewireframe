@@ -167,7 +167,7 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
       </nav>
       
       {/* Static pink background strip behind nav */}
-      <div className="h-20 bg-[hsl(var(--brand-pink))]" />
+      <div className="h-[88px] bg-[hsl(var(--brand-pink))] pt-3 pb-3" />
       
       {/* Main content with proper top spacing */}
       <main className="bg-background" style={{ outline: 'none' }}>
