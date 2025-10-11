@@ -60,7 +60,7 @@ const BestSeller = () => {
             Shop Now
           </span>
           <h2 className="text-4xl md:text-6xl lg:text-7xl font-black text-white mb-8 leading-[0.95] tracking-wide">
-            <span className="text-white">BEST SELLERS</span>
+            BEST SELLERS
           </h2>
           <p className="text-white text-lg md:text-xl leading-relaxed font-light">
             Everyone's go-to organizers — and for good reason.

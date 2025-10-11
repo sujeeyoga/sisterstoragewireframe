@@ -46,15 +46,13 @@ const OrganizationGallery = () => {
           </div>
 
           {/* Second Image */}
-          <div className="w-full">
-            <div className="relative aspect-[3/4] rounded-3xl shadow-lg md:hover:shadow-2xl transition-shadow duration-300 group overflow-hidden animate-fade-in">
+          <div className="relative w-full aspect-[3/4] rounded-3xl shadow-lg md:hover:shadow-2xl transition-shadow duration-300 group overflow-hidden animate-fade-in">
               <PerformanceImage
                 src={galleryImages[1].src}
                 alt={galleryImages[1].alt}
                 className="w-full h-full object-cover block md:group-hover:scale-105 transition-transform duration-500 ease-out"
                 loading="eager"
-              />
-            </div>
+            />
           </div>
 
           {/* Fourth Image */}

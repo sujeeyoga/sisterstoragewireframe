@@ -30,8 +30,7 @@ const shippingZones = [
 
 const Delivery = () => {
   return (
-    <div className="w-full">{/* Spacing controlled by Section wrapper */}
-      <div className="container-custom">
+    <div className="container-custom">
         <div className="text-center max-w-lg mx-auto mb-10 md:mb-12 px-4">
           <span className="text-[#E90064] font-medium">Shipping Info</span>
           <h2 className="text-3xl md:text-5xl font-bold mt-2 mb-3">Free Shipping Policy</h2>
@@ -85,7 +84,6 @@ const Delivery = () => {
           <p className="text-gray-600 text-sm">
             * Standard shipping rates apply for US orders under $250. Contact us for international shipping options.
           </p>
-        </div>
       </div>
     </div>
   );
