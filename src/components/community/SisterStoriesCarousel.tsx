@@ -86,7 +86,7 @@ export const SisterStoriesCarousel = () => {
     const options = {
       root: null,
       rootMargin: '100px',
-      threshold: 0.3
+      threshold: 0.5
     };
 
     const observer = new IntersectionObserver((entries) => {
@@ -94,15 +94,18 @@ export const SisterStoriesCarousel = () => {
         const videoId = entry.target.getAttribute('data-video-id');
         if (!videoId) return;
 
+        const video = videoRefs.current[videoId];
+        if (!video) return;
+
         if (entry.isIntersecting) {
           setVisibleVideos(prev => new Set([...prev, videoId]));
           setLoadingVideos(prev => ({ ...prev, [videoId]: false }));
-          const video = videoRefs.current[videoId];
-          if (video && video.paused) {
-            video.play().catch(() => {
-              // Ignore autoplay errors on mobile/incognito
-            });
-          }
+          video.play().catch(() => {
+            // Ignore autoplay errors
+          });
+        } else {
+          video.pause();
+          video.currentTime = 0;
         }
       });
     }, options);
@@ -193,10 +196,11 @@ export const SisterStoriesCarousel = () => {
       {/* Carousel Container */}
       <div className="w-full max-w-[100vw]">
         <Carousel
-          plugins={[Autoplay({ delay: 3000, stopOnInteraction: true })]}
+          plugins={[Autoplay({ delay: 4000, stopOnInteraction: false, stopOnMouseEnter: true })]}
           opts={{
-            align: "start",
+            align: "center",
             loop: true,
+            skipSnaps: false,
           }}
           className="w-full"
         >
