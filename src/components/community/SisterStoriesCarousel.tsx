@@ -172,7 +172,8 @@ export const SisterStoriesCarousel = () => {
                   className="overflow-hidden border-0 bg-transparent h-full w-full"
                 >
                   <div 
-                    className="relative w-full max-w-[900px] aspect-video overflow-hidden bg-black rounded-2xl shadow-xl"
+                    className="relative w-full max-w-[900px] overflow-hidden bg-black rounded-2xl shadow-xl"
+                    style={{ aspectRatio: '16 / 9' }}
                     data-video-id={story.id}
                   >
                     <video
