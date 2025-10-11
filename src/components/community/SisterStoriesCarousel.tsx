@@ -204,14 +204,14 @@ export const SisterStoriesCarousel = () => {
           }}
           className="w-full"
         >
-          <CarouselContent className="flex justify-center items-center">
+          <CarouselContent className="flex justify-center items-center -ml-5">
             {videoStories.map((story) => (
-              <CarouselItem key={story.id} className="px-8 basis-auto flex-shrink-0 flex justify-center items-center">
+              <CarouselItem key={story.id} className="pl-5 basis-auto flex-shrink-0 flex justify-center items-center">
                 <Card 
                   className="overflow-hidden border-0 bg-transparent cursor-pointer h-full active:scale-95 transition-transform duration-200"
                 >
                   <div 
-                    className="relative w-[263px] h-[540px] overflow-hidden bg-black cursor-pointer rounded-2xl shadow-xl"
+                    className="relative w-[900px] h-[540px] overflow-hidden bg-black cursor-pointer rounded-2xl shadow-xl"
                     data-video-id={story.id}
                     onClick={(e) => {
                       if (playingVideos.has(story.id)) {
