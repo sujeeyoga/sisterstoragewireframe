@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -12,6 +12,7 @@ export const AdminProtectedRoute = ({ children }: AdminProtectedRouteProps) => {
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const hasShownToast = useRef(false);
 
   useEffect(() => {
     checkAdminAccess();
@@ -32,6 +33,22 @@ export const AdminProtectedRoute = ({ children }: AdminProtectedRouteProps) => {
 
     return () => subscription.unsubscribe();
   }, []);
+
+  // Handle access denied toast in useEffect to avoid render loop
+  useEffect(() => {
+    if (isAuthenticated === true && isAdmin === false && !hasShownToast.current) {
+      hasShownToast.current = true;
+      toast({
+        title: "Access Denied",
+        description: "You don't have permission to access the admin panel.",
+        variant: "destructive",
+      });
+
+      setTimeout(() => {
+        navigate('/');
+      }, 1500);
+    }
+  }, [isAuthenticated, isAdmin, navigate, toast]);
 
   const checkAdminAccess = async () => {
     try {
@@ -106,16 +123,6 @@ export const AdminProtectedRoute = ({ children }: AdminProtectedRouteProps) => {
 
   // Authenticated but not admin
   if (!isAdmin) {
-    toast({
-      title: "Access Denied",
-      description: "You don't have permission to access the admin panel.",
-      variant: "destructive",
-    });
-
-    setTimeout(() => {
-      navigate('/');
-    }, 1500);
-
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center space-y-4">
