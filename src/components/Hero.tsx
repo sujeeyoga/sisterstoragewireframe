@@ -5,7 +5,7 @@ import heroMainImage from '@/assets/hero-bg-main.jpg';
 import { useOptimizedParallax } from '@/hooks/use-optimized-parallax';
 
 const Hero = () => {
-  const { ref: parallaxRef, offset } = useOptimizedParallax({ speed: 0.5 });
+  const { ref: parallaxRef, offset } = useOptimizedParallax({ speed: 0.15 });
 
   return (
     <section ref={parallaxRef} className="relative w-full overflow-hidden md:pt-32" aria-label="Hero section">
@@ -14,7 +14,7 @@ const Hero = () => {
         <div className="bg-[hsl(var(--brand-pink))] pt-32 pb-16 px-4 h-[75vh] flex items-center">
           <div 
             className="flex flex-col space-y-3 text-white pt-54"
-            style={{ transform: `translateY(${-offset * 0.2}px)` }}
+            style={{ transform: `translateY(${-offset * 0.1}px)` }}
           >
             <Badge 
               variant="secondary" 
@@ -54,16 +54,19 @@ const Hero = () => {
           </div>
         </div>
 
-        <div className="w-full h-[80vh] overflow-hidden -mb-12">
+        <div className="w-full h-[80vh] overflow-hidden">
           <img
             src={heroMainImage}
             alt="Woman showcasing Sister Storage jewelry organization solution"
             className="w-full h-full object-cover"
-            style={{ transform: `translateY(${-offset * 0.6}px)` }}
+            style={{ transform: `translateY(${-offset * 0.25}px)` }}
             loading="eager"
             fetchPriority="high"
           />
         </div>
+
+        {/* Pink section to cover white space */}
+        <div className="bg-[hsl(var(--brand-pink))] h-32 -mt-12"></div>
       </div>
 
       {/* Desktop: Overlapping Layout */}
@@ -71,7 +74,7 @@ const Hero = () => {
         {/* Background Image */}
         <div 
           className="absolute right-0 top-1/2 -translate-y-1/2 w-[70%] h-[100%] overflow-hidden animate-[slide-in-right_1.2s_ease-out]"
-          style={{ transform: `translateY(calc(-50% + ${offset * 0.3}px))` }}
+          style={{ transform: `translateY(calc(-50% + ${offset * 0.15}px))` }}
         >
           <img
             src={heroMainImage}
