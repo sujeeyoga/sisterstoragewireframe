@@ -150,6 +150,32 @@ export function StallionFulfillmentDialog({ order, open, onClose, onSuccess }: S
         })
         .eq('id', String(order.id));
 
+      // Send shipping notification email
+      try {
+        const orderData = await supabase
+          .from('orders')
+          .select('*')
+          .eq('id', String(order.id))
+          .single();
+
+        if (orderData.data) {
+          await supabase.functions.invoke('send-shipping-notification', {
+            body: {
+              orderId: order.id,
+              customerEmail: orderData.data.customer_email,
+              customerName: orderData.data.customer_name || 'Customer',
+              orderNumber: orderData.data.order_number,
+              trackingNumber: shipment.tracking_number,
+              carrier: 'Stallion Express',
+              items: orderData.data.items || []
+            }
+          });
+        }
+      } catch (emailError) {
+        console.error('Failed to send shipping notification:', emailError);
+        // Don't fail the fulfillment if email fails
+      }
+
       setStep('confirm');
       onSuccess();
     } catch (error) {

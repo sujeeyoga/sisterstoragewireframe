@@ -94,6 +94,7 @@ export type Database = {
           shipping: number | null
           shipping_address: Json | null
           shipping_label_url: string | null
+          shipping_notification_sent_at: string | null
           stallion_shipment_id: string | null
           status: string
           stripe_session_id: string
@@ -116,6 +117,7 @@ export type Database = {
           shipping?: number | null
           shipping_address?: Json | null
           shipping_label_url?: string | null
+          shipping_notification_sent_at?: string | null
           stallion_shipment_id?: string | null
           status?: string
           stripe_session_id: string
@@ -138,6 +140,7 @@ export type Database = {
           shipping?: number | null
           shipping_address?: Json | null
           shipping_label_url?: string | null
+          shipping_notification_sent_at?: string | null
           stallion_shipment_id?: string | null
           status?: string
           stripe_session_id?: string

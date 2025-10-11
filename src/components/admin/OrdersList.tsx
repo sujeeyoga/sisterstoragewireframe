@@ -7,6 +7,7 @@ import { OrdersHeader } from './OrdersHeader';
 import { OrderFilters, OrderFiltersState } from './OrderFilters';
 import { OrderBulkBar } from './OrderBulkBar';
 import { OrderDrawer } from './OrderDrawer';
+import { BulkFulfillmentDialog } from './BulkFulfillmentDialog';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Package, RotateCcw } from 'lucide-react';
@@ -34,6 +35,7 @@ export function OrdersList() {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [selectedOrderIds, setSelectedOrderIds] = useState<Set<number | string>>(new Set());
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [bulkFulfillOpen, setBulkFulfillOpen] = useState(false);
   const [filters, setFilters] = useState<OrderFiltersState>({
     dateRange: 'all',
     statuses: [],
@@ -216,11 +218,11 @@ export function OrdersList() {
   };
   
   const handleBulkFulfill = () => {
-    toast.info('Bulk fulfill functionality coming soon');
+    setBulkFulfillOpen(true);
   };
   
   const handleBulkPrint = () => {
-    toast.info('Bulk print functionality coming soon');
+    toast.info('Print labels functionality coming soon');
   };
   
   const filterCount = 
@@ -357,6 +359,16 @@ export function OrdersList() {
           }}
         />
       )}
+
+      <BulkFulfillmentDialog
+        orderIds={Array.from(selectedOrderIds)}
+        open={bulkFulfillOpen}
+        onClose={() => setBulkFulfillOpen(false)}
+        onSuccess={() => {
+          setSelectedOrderIds(new Set());
+          setBulkFulfillOpen(false);
+        }}
+      />
     </div>
   );
 }

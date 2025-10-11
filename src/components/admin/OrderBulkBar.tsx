@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { Printer, Package, MoreHorizontal } from 'lucide-react';
+import { Printer, Package, Truck } from 'lucide-react';
 
 interface OrderBulkBarProps {
   selectedCount: number;
@@ -23,11 +23,11 @@ export function OrderBulkBar({ selectedCount, onFulfill, onPrint, onCancel }: Or
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={onPrint}>
             <Printer className="h-4 w-4 mr-2" />
-            Print
+            Print Labels
           </Button>
           <Button size="sm" onClick={onFulfill}>
-            <Package className="h-4 w-4 mr-2" />
-            Fulfill
+            <Truck className="h-4 w-4 mr-2" />
+            Bulk Fulfill
           </Button>
         </div>
       </div>
