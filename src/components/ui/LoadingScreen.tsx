@@ -8,11 +8,11 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ onLoadingComplete }) => {
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
-    // Hide loading screen after a short delay
+    // Hide loading screen after a short delay (faster for SEO)
     const timer = setTimeout(() => {
       setIsVisible(false);
       onLoadingComplete?.();
-    }, 1500);
+    }, 600);
 
     return () => clearTimeout(timer);
   }, [onLoadingComplete]);
@@ -23,7 +23,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ onLoadingComplete }) => {
     <div 
       className="fixed inset-0 z-[9999] bg-[hsl(var(--brand-pink))] flex items-center justify-center animate-fade-out"
       style={{
-        animation: isVisible ? 'none' : 'fade-out 0.5s ease-out forwards'
+        animation: isVisible ? 'none' : 'fade-out 0.3s ease-out forwards'
       }}
     >
       <div className="text-center animate-fade-in">
