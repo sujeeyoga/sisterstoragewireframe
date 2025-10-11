@@ -192,18 +192,26 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
               <Package className="h-4 w-4" />
               Items ({order.line_items?.length || 0})
             </h3>
-            <div className="space-y-3">
+            <div className="space-y-2 bg-muted/30 rounded-lg p-4">
               {order.line_items?.map((item: any, index: number) => {
-                const itemTotal = item.total as any;
+                const itemPrice = item.price || 0;
+                const itemTotal = item.total || (itemPrice * item.quantity);
                 const total = typeof itemTotal === 'number' ? itemTotal : parseFloat(String(itemTotal || '0'));
+                const unitPrice = typeof itemPrice === 'number' ? itemPrice : parseFloat(String(itemPrice || '0'));
+                
                 return (
-                  <div key={index} className="flex justify-between items-start">
-                    <div className="flex-1">
+                  <div key={index} className="flex justify-between items-start py-2 border-b border-border/50 last:border-0">
+                    <div className="flex-1 space-y-1">
                       <p className="font-medium text-sm">{item.name}</p>
-                      <p className="text-xs text-muted-foreground">Qty: {item.quantity}</p>
+                      <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                        <span>Qty: {item.quantity}</span>
+                        {unitPrice > 0 && (
+                          <span>@ ${unitPrice.toFixed(2)} each</span>
+                        )}
+                      </div>
                     </div>
-                    <p className="font-medium text-sm">
-                      {order.currency || 'CAD'} ${total.toFixed(2)}
+                    <p className="font-semibold text-sm ml-4">
+                      ${total.toFixed(2)}
                     </p>
                   </div>
                 );
@@ -288,16 +296,45 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
               <DollarSign className="h-4 w-4" />
               Order Total
             </h3>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span>Subtotal:</span>
-                <span>{order.currency || 'CAD'} ${Number(order.total).toFixed(2)}</span>
-              </div>
-              <Separator />
-              <div className="flex justify-between font-bold text-base">
-                <span>Total:</span>
-                <span>{order.currency || 'CAD'} ${Number(order.total).toFixed(2)}</span>
-              </div>
+            <div className="space-y-2 text-sm bg-muted/30 rounded-lg p-4">
+              {/* Calculate subtotal from line items */}
+              {(() => {
+                const itemsSubtotal = order.line_items?.reduce((sum: number, item: any) => {
+                  const itemTotal = item.total || (item.price * item.quantity) || 0;
+                  const total = typeof itemTotal === 'number' ? itemTotal : parseFloat(String(itemTotal || '0'));
+                  return sum + total;
+                }, 0) || 0;
+                
+                const shipping = (order as any).shipping_cost || (order as any).shipping || 0;
+                const tax = (order as any).tax || (order as any).tax_amount || 0;
+                const total = Number(order.total);
+                
+                return (
+                  <>
+                    <div className="flex justify-between text-muted-foreground">
+                      <span>Subtotal:</span>
+                      <span>${itemsSubtotal.toFixed(2)}</span>
+                    </div>
+                    {shipping > 0 && (
+                      <div className="flex justify-between text-muted-foreground">
+                        <span>Shipping:</span>
+                        <span>${Number(shipping).toFixed(2)}</span>
+                      </div>
+                    )}
+                    {tax > 0 && (
+                      <div className="flex justify-between text-muted-foreground">
+                        <span>Tax:</span>
+                        <span>${Number(tax).toFixed(2)}</span>
+                      </div>
+                    )}
+                    <Separator className="my-2" />
+                    <div className="flex justify-between font-bold text-base pt-1">
+                      <span>Total:</span>
+                      <span>{order.currency || 'CAD'} ${total.toFixed(2)}</span>
+                    </div>
+                  </>
+                );
+              })()}
             </div>
           </div>
         </div>
