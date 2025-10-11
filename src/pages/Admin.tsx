@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AdminLayout } from '@/components/admin/AdminLayout';
-import { AnalyticsDashboard } from '@/components/admin/AnalyticsDashboard';
+import { AdminDashboard } from '@/components/admin/AdminDashboard';
 import { ProductsTable } from '@/components/admin/ProductsTable';
 import { ProductForm } from '@/components/admin/ProductForm';
 import { SectionsManager } from '@/components/admin/SectionsManager';
@@ -38,7 +38,7 @@ const Admin = () => {
   return (
     <AdminLayout>
       <Routes>
-        <Route index element={<AnalyticsDashboard />} />
+        <Route index element={<AdminDashboard />} />
         <Route path="orders" element={<OrdersList />} />
         <Route path="products" element={<ProductsTable />} />
         <Route path="products/:id" element={<ProductForm />} />
