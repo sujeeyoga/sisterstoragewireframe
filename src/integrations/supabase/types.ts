@@ -80,6 +80,60 @@ export type Database = {
         }
         Relationships: []
       }
+      orders: {
+        Row: {
+          created_at: string | null
+          customer_email: string
+          customer_name: string | null
+          id: string
+          items: Json
+          order_number: string
+          payment_status: string
+          shipping: number | null
+          shipping_address: Json | null
+          status: string
+          stripe_session_id: string
+          subtotal: number
+          tax: number | null
+          total: number
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          customer_email: string
+          customer_name?: string | null
+          id?: string
+          items?: Json
+          order_number: string
+          payment_status?: string
+          shipping?: number | null
+          shipping_address?: Json | null
+          status?: string
+          stripe_session_id: string
+          subtotal: number
+          tax?: number | null
+          total: number
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          customer_email?: string
+          customer_name?: string | null
+          id?: string
+          items?: Json
+          order_number?: string
+          payment_status?: string
+          shipping?: number | null
+          shipping_address?: Json | null
+          status?: string
+          stripe_session_id?: string
+          subtotal?: number
+          tax?: number | null
+          total?: number
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       shop_sections: {
         Row: {
           background_color: string | null
