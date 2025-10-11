@@ -183,12 +183,11 @@ export const SisterStoriesCarousel = () => {
                       src={story.video}
                       crossOrigin="anonymous"
                       muted={unmutedVideo !== story.id}
-                      autoPlay
                       loop
                       playsInline
                       webkit-playsinline="true"
                       x5-playsinline="true"
-                      preload="auto"
+                      preload="metadata"
                       controlsList="nodownload nofullscreen noremoteplayback"
                       disablePictureInPicture
                       onLoadedData={() => handleVideoLoad(story.id)}
