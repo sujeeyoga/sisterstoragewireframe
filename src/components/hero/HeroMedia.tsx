@@ -27,11 +27,13 @@ const HeroMedia = () => {
       {/* First Hero Image - slides in from left then fades out */}
       <div className="absolute inset-0 z-10">
         <img
-          src="https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-27-scaled.jpg"
+          src="https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/hero-images/a501115d-f6f4-4f74-bdbe-1b73ba1bc625.png"
           alt="Sister Storage lifestyle home organization scene showcasing beautiful storage solutions"
           className={`absolute inset-0 w-full h-full object-cover animate-slide-in-left transition-opacity duration-1000 ${
             fadeOutImage ? 'opacity-0' : 'opacity-100'
           }`}
+          loading="eager"
+          fetchPriority="high"
         />
       </div>
 
@@ -39,11 +41,12 @@ const HeroMedia = () => {
       {showSecondImage && (
         <div className="absolute inset-0 z-10">
           <img
-            src="https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-43-scaled.jpg"
+            src="https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/hero-images/b0963b41-dee1-4ccb-b8bc-7144c4ea6285.png"
             alt="Sister Storage lifestyle home organization showcasing elegant storage solutions"
             className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
               fadeOutSecondImage ? 'opacity-0' : 'opacity-100'
             }`}
+            loading="eager"
           />
         </div>
       )}
