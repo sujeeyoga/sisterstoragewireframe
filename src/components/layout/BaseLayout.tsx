@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { useLocation, Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SaleBanner from "@/components/SaleBanner";
 import useScrollDirection from "@/hooks/use-scroll-direction";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ArrowLeft } from "lucide-react";
@@ -150,16 +151,23 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
   // Standard layout with navigation
   return (
     <div className={`min-h-screen ${getBackgroundClasses()} ${className}`} style={{ position: 'relative' }}>
-      {/* Navigation: White navbar that scrolls with user */}
+      {/* Sale Banner - Fixed at top */}
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <SaleBanner />
+      </div>
+      
+      {/* Navigation: White navbar floating below banner */}
       <nav 
         ref={navRef} 
-        className="sticky top-0 left-0 right-0 z-50 w-[min(1100px,calc(100%-40px))] mx-auto rounded-[25px] bg-white shadow-lg px-4 py-2 my-3"
+        className="fixed top-10 left-0 right-0 z-50 py-3"
       >
-        <Navbar position={position} />
+        <div className="w-[min(1100px,calc(100%-40px))] mx-auto rounded-[25px] bg-white shadow-lg px-4 py-2">
+          <Navbar position={position} />
+        </div>
       </nav>
       
-      {/* Main content */}
-      <main className="bg-background" style={{ outline: 'none' }}>
+      {/* Main content with proper top spacing */}
+      <main className="bg-background pt-28" style={{ outline: 'none' }}>
         {children}
       </main>
       
