@@ -75,10 +75,15 @@ serve(async (req) => {
       const tax = taxItem ? (taxItem.amount_total || 0) / 100 : 0;
       const total = (session.amount_total || 0) / 100;
 
+      // Generate a proper order number
+      const timestamp = Date.now().toString().slice(-8);
+      const randomSuffix = Math.random().toString(36).substring(2, 6).toUpperCase();
+      const orderNumber = `SS-${timestamp}-${randomSuffix}`;
+
       // Prepare email data
       const emailData = {
         customerName: shippingAddress?.name || session.customer_details?.name || 'Customer',
-        orderNumber: session.id.substring(0, 10).toUpperCase(),
+        orderNumber,
         orderDate: new Date().toLocaleDateString('en-US', { 
           year: 'numeric', 
           month: 'long', 
