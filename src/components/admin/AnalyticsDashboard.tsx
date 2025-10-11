@@ -228,61 +228,69 @@ export function AnalyticsDashboard() {
 
       {/* KPI Cards - Bento Box Style */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="bg-white rounded-xl border-[0.5px] border-pink-500 shadow-sm hover:shadow-md transition-shadow">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-            <DollarSign className="h-4 w-4 text-pink-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              ${stats?.totalRevenue.toFixed(2) || '0.00'}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Gross Merchandise Value
-            </p>
-          </CardContent>
-        </Card>
+        <Link to="/admin/orders">
+          <Card className="bg-white rounded-xl border-[0.5px] border-pink-500 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+              <DollarSign className="h-4 w-4 text-pink-500" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                ${stats?.totalRevenue.toFixed(2) || '0.00'}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Gross Merchandise Value
+              </p>
+            </CardContent>
+          </Card>
+        </Link>
 
-        <Card className="bg-white rounded-xl border-[0.5px] border-pink-500 shadow-sm hover:shadow-md transition-shadow">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Orders</CardTitle>
-            <ShoppingCart className="h-4 w-4 text-pink-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats?.totalOrders || 0}</div>
-            <p className="text-xs text-muted-foreground">
-              Total orders placed
-            </p>
-          </CardContent>
-        </Card>
+        <Link to="/admin/orders">
+          <Card className="bg-white rounded-xl border-[0.5px] border-pink-500 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Orders</CardTitle>
+              <ShoppingCart className="h-4 w-4 text-pink-500" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats?.totalOrders || 0}</div>
+              <p className="text-xs text-muted-foreground">
+                Total orders placed
+              </p>
+            </CardContent>
+          </Card>
+        </Link>
 
-        <Card className="bg-white rounded-xl border-[0.5px] border-pink-500 shadow-sm hover:shadow-md transition-shadow">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Avg Order Value</CardTitle>
-            <TrendingUp className="h-4 w-4 text-pink-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              ${stats?.averageOrderValue.toFixed(2) || '0.00'}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Per order average
-            </p>
-          </CardContent>
-        </Card>
+        <Link to="/admin/orders">
+          <Card className="bg-white rounded-xl border-[0.5px] border-pink-500 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Avg Order Value</CardTitle>
+              <TrendingUp className="h-4 w-4 text-pink-500" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                ${stats?.averageOrderValue.toFixed(2) || '0.00'}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Per order average
+              </p>
+            </CardContent>
+          </Card>
+        </Link>
 
-        <Card className="bg-white rounded-xl border-[0.5px] border-pink-500 shadow-sm hover:shadow-md transition-shadow">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Refunds</CardTitle>
-            <RotateCcw className="h-4 w-4 text-pink-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats?.refundedOrders || 0}</div>
-            <p className="text-xs text-muted-foreground">
-              Refunded orders
-            </p>
-          </CardContent>
-        </Card>
+        <Link to="/admin/orders">
+          <Card className="bg-white rounded-xl border-[0.5px] border-pink-500 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Refunds</CardTitle>
+              <RotateCcw className="h-4 w-4 text-pink-500" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats?.refundedOrders || 0}</div>
+              <p className="text-xs text-muted-foreground">
+                Refunded orders
+              </p>
+            </CardContent>
+          </Card>
+        </Link>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
