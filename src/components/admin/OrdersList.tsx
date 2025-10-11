@@ -12,23 +12,27 @@ import { Button } from '@/components/ui/button';
 import { Package, RotateCcw } from 'lucide-react';
 
 interface Order {
-  id: number;
+  id: number | string;
   status: string;
   total: number;
-  currency: string;
+  currency?: string;
   date_created: string;
   billing: any;
   shipping: any;
   line_items: any[];
   payment_method_title?: string;
   meta_data?: any;
+  source?: 'woocommerce' | 'stripe';
+  stripe_session_id?: string;
+  customer_email?: string;
+  order_number?: string;
 }
 
 export function OrdersList() {
   const [search, setSearch] = useState('');
   const [activeStatus, setActiveStatus] = useState('all');
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-  const [selectedOrderIds, setSelectedOrderIds] = useState<Set<number>>(new Set());
+  const [selectedOrderIds, setSelectedOrderIds] = useState<Set<number | string>>(new Set());
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [filters, setFilters] = useState<OrderFiltersState>({
     dateRange: 'all',
@@ -41,18 +45,25 @@ export function OrdersList() {
   const { data: orders, isLoading, error } = useQuery({
     queryKey: ['admin-orders', activeStatus, filters],
     queryFn: async () => {
-      let query = supabase
+      // Fetch from both WooCommerce and Stripe orders
+      let wooQuery = supabase
         .from('woocommerce_orders')
+        .select('*');
+      
+      let stripeQuery = supabase
+        .from('orders')
         .select('*');
       
       // Apply status filter
       if (activeStatus !== 'all') {
-        query = query.eq('status', activeStatus);
+        wooQuery = wooQuery.eq('status', activeStatus);
+        stripeQuery = stripeQuery.eq('status', activeStatus);
       }
       
       // Apply additional filters
       if (filters.statuses.length > 0) {
-        query = query.in('status', filters.statuses);
+        wooQuery = wooQuery.in('status', filters.statuses);
+        stripeQuery = stripeQuery.in('status', filters.statuses);
       }
       
       // Date range filter
@@ -68,27 +79,75 @@ export function OrdersList() {
           startDate.setDate(now.getDate() - 30);
         }
         
-        query = query.gte('date_created', startDate.toISOString());
+        wooQuery = wooQuery.gte('date_created', startDate.toISOString());
+        stripeQuery = stripeQuery.gte('created_at', startDate.toISOString());
       }
+      
+      // Fetch both
+      const [wooResult, stripeResult] = await Promise.all([
+        wooQuery,
+        stripeQuery
+      ]);
+      
+      if (wooResult.error) {
+        console.error('WooCommerce orders fetch error:', wooResult.error);
+      }
+      if (stripeResult.error) {
+        console.error('Stripe orders fetch error:', stripeResult.error);
+      }
+      
+      // Transform and combine orders
+      const wooOrders = (wooResult.data || []).map(order => ({
+        ...order,
+        source: 'woocommerce' as const,
+        date_created: order.date_created || order.created_at
+      }));
+      
+      const stripeOrders = (stripeResult.data || []).map(order => ({
+        id: order.id,
+        status: order.status,
+        total: Number(order.total),
+        currency: 'CAD',
+        date_created: order.created_at,
+        billing: order.shipping_address ? {
+          first_name: order.customer_name?.split(' ')[0] || '',
+          last_name: order.customer_name?.split(' ').slice(1).join(' ') || '',
+          email: order.customer_email
+        } : {},
+        shipping: order.shipping_address || {},
+        line_items: order.items || [],
+        source: 'stripe' as const,
+        stripe_session_id: order.stripe_session_id,
+        customer_email: order.customer_email,
+        order_number: order.order_number
+      }));
+      
+      // Combine and sort
+      const allOrders = [...wooOrders, ...stripeOrders];
       
       // Apply sorting
-      const sortColumn = filters.sortBy.includes('amount') ? 'total' : 'date_created';
+      const sortByAmount = filters.sortBy.includes('amount');
       const ascending = filters.sortBy === 'oldest' || filters.sortBy === 'amount_low';
-      query = query.order(sortColumn, { ascending });
       
-      const { data, error } = await query;
-      if (error) {
-        console.error('Orders fetch error:', error);
-        throw error;
-      }
-      return data as Order[];
+      allOrders.sort((a, b) => {
+        if (sortByAmount) {
+          return ascending ? a.total - b.total : b.total - a.total;
+        } else {
+          const aDate = new Date(a.date_created).getTime();
+          const bDate = new Date(b.date_created).getTime();
+          return ascending ? aDate - bDate : bDate - aDate;
+        }
+      });
+      
+      return allOrders as Order[];
     },
   });
   
   const updateStatusMutation = useMutation({
-    mutationFn: async ({ orderId, status }: { orderId: number; status: string }) => {
+    mutationFn: async ({ orderId, status, source }: { orderId: number | string; status: string; source?: 'woocommerce' | 'stripe' }) => {
+      const tableName = source === 'stripe' ? 'orders' : 'woocommerce_orders';
       const { error } = await supabase
-        .from('woocommerce_orders')
+        .from(tableName)
         .update({ status, updated_at: new Date().toISOString() })
         .eq('id', orderId);
       
@@ -110,12 +169,14 @@ export function OrdersList() {
       order.id.toString().includes(searchLower) ||
       order.billing?.first_name?.toLowerCase().includes(searchLower) ||
       order.billing?.last_name?.toLowerCase().includes(searchLower) ||
-      order.billing?.email?.toLowerCase().includes(searchLower);
+      order.billing?.email?.toLowerCase().includes(searchLower) ||
+      order.customer_email?.toLowerCase().includes(searchLower) ||
+      order.order_number?.toLowerCase().includes(searchLower);
     
     return matchesSearch;
   });
   
-  const handleSelectOrder = (orderId: number, checked: boolean) => {
+  const handleSelectOrder = (orderId: number | string, checked: boolean) => {
     const newSelected = new Set(selectedOrderIds);
     if (checked) {
       newSelected.add(orderId);
@@ -259,7 +320,11 @@ export function OrdersList() {
           open={!!selectedOrder}
           onClose={() => setSelectedOrder(null)}
           onStatusUpdate={(newStatus) => {
-            updateStatusMutation.mutate({ orderId: selectedOrder.id, status: newStatus });
+            updateStatusMutation.mutate({ 
+              orderId: selectedOrder.id, 
+              status: newStatus,
+              source: selectedOrder.source 
+            });
           }}
         />
       )}

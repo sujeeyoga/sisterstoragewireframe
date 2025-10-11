@@ -5,10 +5,10 @@ import { Package, Truck, MapPin } from 'lucide-react';
 import { getRelativeTime } from '@/lib/dateHelpers';
 
 interface Order {
-  id: number;
+  id: number | string;
   status: string;
   total: number;
-  currency: string;
+  currency?: string;
   date_created: string;
   billing: {
     first_name?: string;

@@ -133,7 +133,7 @@ serve(async (req) => {
           tax: emailData.tax,
           total: emailData.total,
           shipping_address: emailData.shippingAddress,
-          status: 'paid',
+          status: 'processing',
           payment_status: 'paid',
         });
 

@@ -21,10 +21,10 @@ import { Package, DollarSign, User, MapPin, CreditCard } from 'lucide-react';
 
 interface OrderDrawerProps {
   order: {
-    id: number;
+    id: number | string;
     status: string;
     total: number;
-    currency: string;
+    currency?: string;
     date_created: string;
     billing: any;
     shipping: any;
@@ -194,7 +194,7 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
                       <p className="text-xs text-muted-foreground">Qty: {item.quantity}</p>
                     </div>
                     <p className="font-medium text-sm">
-                      {order.currency} ${total.toFixed(2)}
+                      {order.currency || 'CAD'} ${total.toFixed(2)}
                     </p>
                   </div>
                 );
@@ -213,12 +213,12 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span>Subtotal:</span>
-                <span>{order.currency} ${Number(order.total).toFixed(2)}</span>
+                <span>{order.currency || 'CAD'} ${Number(order.total).toFixed(2)}</span>
               </div>
               <Separator />
               <div className="flex justify-between font-bold text-base">
                 <span>Total:</span>
-                <span>{order.currency} ${Number(order.total).toFixed(2)}</span>
+                <span>{order.currency || 'CAD'} ${Number(order.total).toFixed(2)}</span>
               </div>
             </div>
           </div>
