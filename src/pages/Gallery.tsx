@@ -18,19 +18,18 @@ const Gallery = () => {
     { id: 5, url: "/lovable-uploads/8620f7af-c089-458c-bef9-78d6cd77f04e.png", title: "Storage Solutions" },
     { id: 6, url: "/lovable-uploads/ce6528ec-56be-4176-919f-4285946c18b2.png", title: "Bangle Display" },
     { id: 7, url: "/lovable-uploads/c6544fac-3f2f-4a6a-a01e-5ca149720fcb.png", title: "Jewelry Party" },
-    { id: 8, url: "/lovable-uploads/b0963b41-dee1-4ccb-b8bc-7144c4ea6285.png", title: "Golden Elegance" },
-    { id: 9, url: "/lovable-uploads/e9628188-8ef0-426b-9858-08b2848fd690.png", title: "Sister Collection" },
-    { id: 10, url: "/lovable-uploads/ff4988e3-c51c-4391-a440-95e03d111656.png", title: "Organized Beauty" },
-    { id: 11, url: "/lovable-uploads/2a4c457a-7695-47d3-9912-ab2900c6ea25.png", title: "Bundle Collection" },
-    { id: 12, url: "/lovable-uploads/76c5f6ac-f27b-4f26-8377-759dfc17c71d.png", title: "Travel Set" },
-    { id: 13, url: "/lovable-uploads/b32a7860-b957-41e7-9c5c-cbd348260cf2.png", title: "Everyday Staples" },
-    { id: 14, url: "/lovable-uploads/03cc68a5-5bfc-4417-bf01-d43578ffa321.png", title: "Forever Collection" },
-    { id: 15, url: "/lovable-uploads/3e91b1f2-e5b6-4cee-a7b7-806a5815546b.png", title: "Premium Storage" },
-    { id: 16, url: "/lovable-uploads/4ef08ea3-3380-4111-b4a1-eb939cba275b.png", title: "Luxury Box" },
-    { id: 17, url: "/lovable-uploads/a501115d-f6f4-4f74-bdbe-1b73ba1bc625.png", title: "Classic Design" },
-    { id: 18, url: "/lovable-uploads/c3b682be-b949-4e16-8aff-82cc8e879642.png", title: "Modern Style" },
-    { id: 19, url: "/lovable-uploads/e60a5afe-c0c9-4913-bf6a-eff94188c606.png", title: "Elegant Touch" },
-    { id: 20, url: "/lovable-uploads/fb8da55a-c9bb-419e-a96f-175a667875e1.png", title: "Refined Beauty" }
+    { id: 8, url: "/lovable-uploads/e9628188-8ef0-426b-9858-08b2848fd690.png", title: "Sister Collection" },
+    { id: 9, url: "/lovable-uploads/ff4988e3-c51c-4391-a440-95e03d111656.png", title: "Organized Beauty" },
+    { id: 10, url: "/lovable-uploads/2a4c457a-7695-47d3-9912-ab2900c6ea25.png", title: "Bundle Collection" },
+    { id: 11, url: "/lovable-uploads/76c5f6ac-f27b-4f26-8377-759dfc17c71d.png", title: "Travel Set" },
+    { id: 12, url: "/lovable-uploads/b32a7860-b957-41e7-9c5c-cbd348260cf2.png", title: "Everyday Staples" },
+    { id: 13, url: "/lovable-uploads/03cc68a5-5bfc-4417-bf01-d43578ffa321.png", title: "Forever Collection" },
+    { id: 14, url: "/lovable-uploads/3e91b1f2-e5b6-4cee-a7b7-806a5815546b.png", title: "Premium Storage" },
+    { id: 15, url: "/lovable-uploads/4ef08ea3-3380-4111-b4a1-eb939cba275b.png", title: "Luxury Box" },
+    { id: 16, url: "/lovable-uploads/a501115d-f6f4-4f74-bdbe-1b73ba1bc625.png", title: "Classic Design" },
+    { id: 17, url: "/lovable-uploads/c3b682be-b949-4e16-8aff-82cc8e879642.png", title: "Modern Style" },
+    { id: 18, url: "/lovable-uploads/e60a5afe-c0c9-4913-bf6a-eff94188c606.png", title: "Elegant Touch" },
+    { id: 19, url: "/lovable-uploads/fb8da55a-c9bb-419e-a96f-175a667875e1.png", title: "Refined Beauty" }
   ];
 
   const filteredItems = galleryImages.slice(0, itemsToShow);
