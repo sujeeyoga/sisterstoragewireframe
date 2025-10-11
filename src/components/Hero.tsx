@@ -16,13 +16,6 @@ const Hero = () => {
             className="flex flex-col space-y-3 text-white pt-54"
             style={{ transform: `translateY(${-offset * 0.1}px)` }}
           >
-            <Badge 
-              variant="secondary" 
-              className="bg-white text-[hsl(var(--brand-pink))] px-4 py-2 text-base font-bold w-fit rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-            >
-              Beautifully Organized
-            </Badge>
-
             <h1 className="text-[6rem] font-black leading-[0.9] tracking-tighter">
               CULTURE /<br />
               WITHOUT<br />
@@ -91,13 +84,6 @@ const Hero = () => {
               
               <div className="col-span-1 pr-2 md:pr-3 lg:pr-4">
                 <div className="flex flex-col gap-2 lg:gap-3 text-white">
-                  <Badge 
-                    variant="secondary" 
-                    className="bg-white text-[hsl(var(--brand-pink))] px-3 py-1.5 text-[10px] md:text-xs font-bold w-fit rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-                  >
-                    Beautifully Organized
-                  </Badge>
-
                   <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black leading-[0.9] tracking-tighter">
                     CULTURE /<br />
                     WITHOUT<br />
