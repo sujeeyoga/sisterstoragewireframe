@@ -9,7 +9,6 @@ import { useDebounce } from '@/hooks/useDebounce';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
-import { loadStripe } from '@stripe/stripe-js';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -394,31 +393,12 @@ const Checkout = () => {
         // Mark cart as recovered before redirecting to payment
         await markAsRecovered();
         
-        try {
-          // Try Stripe.js redirect first if a publishable key is available
-          // @ts-ignore - env may not exist in this environment
-          const pk = (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_STRIPE_PUBLISHABLE_KEY) || undefined;
-          if (pk) {
-            const stripe = await loadStripe(pk);
-            if (!stripe) throw new Error('Failed to load Stripe');
-            
-            // @ts-ignore - redirectToCheckout exists in @stripe/stripe-js but types may be outdated
-            const { error: redirectError } = await stripe.redirectToCheckout({
-              sessionId: data.sessionId
-            });
-            
-            if (redirectError) throw redirectError;
-            return; // Success
-          } else {
-            throw new Error('No publishable key configured');
-          }
-        } catch (redirectErr) {
-          console.warn('Stripe.js redirect failed, falling back to session URL:', redirectErr);
-          if (data?.url) {
-            window.location.href = data.url;
-            return;
-          }
-          throw redirectErr instanceof Error ? redirectErr : new Error('Stripe redirect failed');
+        // Redirect to Stripe checkout
+        if (data?.url) {
+          window.location.href = data.url;
+          return;
+        } else {
+          throw new Error('No checkout URL received');
         }
       } else {
         console.error('No session ID in response:', data);
