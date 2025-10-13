@@ -26,7 +26,25 @@ export function useProducts() {
         return fallbackProducts;
       }
 
-      return data.map((dbProduct: any) => transformProduct(dbProduct));
+      // Transform products and merge with static data for missing images
+      return data.map((dbProduct: any) => {
+        const transformed = transformProduct(dbProduct);
+        
+        // If product has no images or empty images array, use static data as fallback
+        if (!transformed.images || transformed.images.length === 0 || !transformed.images[0]) {
+          const staticProduct = fallbackProducts.find(p => 
+            p.id === transformed.id || 
+            p.sku === transformed.sku ||
+            p.slug === transformed.slug
+          );
+          
+          if (staticProduct?.images && staticProduct.images.length > 0) {
+            return { ...transformed, images: staticProduct.images };
+          }
+        }
+        
+        return transformed;
+      });
     },
     staleTime: 1000 * 60 * 5, // 5 minutes
     gcTime: 1000 * 60 * 10, // 10 minutes
@@ -49,17 +67,32 @@ export function useProduct(idOrSlug: string) {
         query = query.eq('slug', idOrSlug);
       }
 
-      const { data, error } = await query.single();
+      const { data, error } = await query.maybeSingle();
 
       if (error || !data) {
         console.error('Error fetching product:', error);
         // Fallback to static products
-        const fallback = fallbackProducts.find(p => p.id === idOrSlug || p.sku === idOrSlug);
+        const fallback = fallbackProducts.find(p => p.id === idOrSlug || p.sku === idOrSlug || p.slug === idOrSlug);
         if (!fallback) throw new Error('Product not found');
         return fallback;
       }
 
-      return transformProduct(data as any);
+      const transformed = transformProduct(data as any);
+      
+      // If product has no images, use static data as fallback
+      if (!transformed.images || transformed.images.length === 0 || !transformed.images[0]) {
+        const staticProduct = fallbackProducts.find(p => 
+          p.id === transformed.id || 
+          p.sku === transformed.sku ||
+          p.slug === transformed.slug
+        );
+        
+        if (staticProduct?.images && staticProduct.images.length > 0) {
+          return { ...transformed, images: staticProduct.images };
+        }
+      }
+      
+      return transformed;
     },
     enabled: !!idOrSlug,
     staleTime: 1000 * 60 * 5,
@@ -79,11 +112,28 @@ export function useProductsByCategory(category: string) {
           .eq('visible', true)
           .order('name');
 
-        if (error || !data) {
-          return fallbackProducts;
-        }
+      if (error || !data) {
+        return fallbackProducts;
+      }
 
-        return data.map((dbProduct: any) => transformProduct(dbProduct));
+      return data.map((dbProduct: any) => {
+        const transformed = transformProduct(dbProduct);
+        
+        // If product has no images, use static data as fallback
+        if (!transformed.images || transformed.images.length === 0 || !transformed.images[0]) {
+          const staticProduct = fallbackProducts.find(p => 
+            p.id === transformed.id || 
+            p.sku === transformed.sku ||
+            p.slug === transformed.slug
+          );
+          
+          if (staticProduct?.images && staticProduct.images.length > 0) {
+            return { ...transformed, images: staticProduct.images };
+          }
+        }
+        
+        return transformed;
+      });
       }
 
       const { data, error } = await supabase
@@ -99,7 +149,24 @@ export function useProductsByCategory(category: string) {
         return fallbackProducts.filter(p => p.category === category);
       }
 
-        return data.map((dbProduct: any) => transformProduct(dbProduct));
+      return data.map((dbProduct: any) => {
+        const transformed = transformProduct(dbProduct);
+        
+        // If product has no images, use static data as fallback
+        if (!transformed.images || transformed.images.length === 0 || !transformed.images[0]) {
+          const staticProduct = fallbackProducts.find(p => 
+            p.id === transformed.id || 
+            p.sku === transformed.sku ||
+            p.slug === transformed.slug
+          );
+          
+          if (staticProduct?.images && staticProduct.images.length > 0) {
+            return { ...transformed, images: staticProduct.images };
+          }
+        }
+        
+        return transformed;
+      });
     },
     staleTime: 1000 * 60 * 5,
   });
@@ -123,7 +190,24 @@ export function useBestSellers(limit: number = 4) {
         return fallbackProducts.filter(p => p.bestSeller).slice(0, limit);
       }
 
-      return data.map((dbProduct: any) => transformProduct(dbProduct));
+      return data.map((dbProduct: any) => {
+        const transformed = transformProduct(dbProduct);
+        
+        // If product has no images, use static data as fallback
+        if (!transformed.images || transformed.images.length === 0 || !transformed.images[0]) {
+          const staticProduct = fallbackProducts.find(p => 
+            p.id === transformed.id || 
+            p.sku === transformed.sku ||
+            p.slug === transformed.slug
+          );
+          
+          if (staticProduct?.images && staticProduct.images.length > 0) {
+            return { ...transformed, images: staticProduct.images };
+          }
+        }
+        
+        return transformed;
+      });
     },
     staleTime: 1000 * 60 * 5,
   });
