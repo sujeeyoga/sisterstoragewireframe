@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
-import { products } from "@/data/products";
 import { productTaxonomyMap } from "@/data/product-taxonomy";
+import { useProducts } from "./useProducts";
 
 export interface Filters {
   category?: string;
@@ -13,6 +13,7 @@ export interface Filters {
 
 export const useShopFilters = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const { data: products = [], isLoading } = useProducts();
 
   const filters: Filters = useMemo(() => {
     const getArr = (k: string) => (searchParams.get(k)?.split(",").filter(Boolean) ?? []);
@@ -32,7 +33,7 @@ export const useShopFilters = () => {
       ...p,
       taxonomy: productTaxonomyMap[p.id] ?? { categorySlugs: [], attributes: {} },
     }));
-  }, []);
+  }, [products]);
 
   const filteredProducts = useMemo(() => {
     let items = augmentedProducts;
@@ -113,5 +114,6 @@ export const useShopFilters = () => {
     sortedProducts,
     updateFilters,
     updateSort,
+    isLoading,
   };
 };
