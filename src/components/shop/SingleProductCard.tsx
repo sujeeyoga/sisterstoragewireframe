@@ -41,13 +41,22 @@ const SingleProductCard = ({ product }: SingleProductCardProps) => {
     <div className="group h-full flex flex-col">
       <Link to={`/shop/${product.id}`} className="block flex-1 flex flex-col">
         {/* Product Image */}
-        <div className="aspect-square mb-4 overflow-hidden rounded-sm">
-          <div 
-            className="w-full h-full flex items-center justify-center text-white font-medium text-sm transition-transform duration-300 group-hover:scale-105"
-            style={{ backgroundColor: product.color }}
-          >
-            <span className="line-clamp-1 text-center px-2">{product.name}</span>
-          </div>
+        <div className="aspect-square mb-4 overflow-hidden rounded-sm bg-gray-50">
+          {product.images?.[0] ? (
+            <img 
+              src={product.images[0]} 
+              alt={product.name}
+              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              loading="lazy"
+            />
+          ) : (
+            <div 
+              className="w-full h-full flex items-center justify-center text-white font-medium text-sm"
+              style={{ backgroundColor: product.color || '#e5e7eb' }}
+            >
+              <span className="line-clamp-1 text-center px-2">{product.name}</span>
+            </div>
+          )}
         </div>
         
         {/* Product Info - Flex Layout */}
