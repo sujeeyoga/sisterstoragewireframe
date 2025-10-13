@@ -3,7 +3,7 @@ import { Product } from "@/types/product";
 // Best Seller Hero Product
 export const featuredProduct = {
   id: "bundle-3",
-  title: "Family Edition",
+  title: "The Complete Family Set",
   subtitle: "The ultimate set for you and yours. Complete storage solution.",
   price: 174.00,
   compareAt: 240.00,
@@ -22,7 +22,7 @@ export const products: Product[] = [
   // ============= BUNDLES (TOP SELLERS FIRST) =============
   {
     id: "bundle-3",
-    name: "Family Edition",
+    name: "The Complete Family Set",
     description: "BIG. BUNDLE. LOVE.",
     shortDescription: "4 Large Boxes, 2 Medium Boxes, 2 Travel Boxes",
     bundleContents: "4 Large Boxes, 2 Medium Boxes, 2 Travel Boxes",
