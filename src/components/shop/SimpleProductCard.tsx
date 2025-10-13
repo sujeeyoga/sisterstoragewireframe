@@ -104,8 +104,8 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
         
         {/* What's Included */}
         {(bullets || rodCount || product.originalPrice || product.bundleContents) && (
-          <div className="bg-gray-50/80 rounded-xl p-4 border border-gray-100">
-            <h3 className="text-sm font-bold text-[hsl(var(--brand-pink))] uppercase tracking-wider mb-2">
+          <div className="space-y-2">
+            <h3 className="text-sm font-bold text-[hsl(var(--brand-pink))] uppercase tracking-wider">
               What's Included
             </h3>
             <ul className="space-y-2">
