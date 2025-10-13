@@ -13,7 +13,7 @@ export const featuredProduct = {
   contents: [
     { qty: 4, label: "Large", rodsEach: 4, detail: "4 rods each" },
     { qty: 2, label: "Medium", rodsEach: 2, detail: "2 rods each" },
-    { qty: 2, label: "Small", rodsEach: 1, detail: "1 rod each" },
+    { qty: 2, label: "Travel", rodsEach: 1, detail: "1 rod each" },
   ],
 };
 
@@ -24,8 +24,8 @@ export const products: Product[] = [
     id: "bundle-3",
     name: "Family Edition",
     description: "BIG. BUNDLE. LOVE.",
-    shortDescription: "4 Large Boxes, 2 Medium Boxes, 2 Small Boxes",
-    bundleContents: "4 Large Boxes, 2 Medium Boxes, 2 Small Boxes",
+    shortDescription: "4 Large Boxes, 2 Medium Boxes, 2 Travel Boxes",
+    bundleContents: "4 Large Boxes, 2 Medium Boxes, 2 Travel Boxes",
     price: 174.00,
     stripePriceId: "price_1SGKRyDkJNZeOpMwrEmPHrtg",
     category: "bundles",
@@ -45,10 +45,10 @@ export const products: Product[] = [
   },
   {
     id: "bundle-2",
-    name: "Sister Staples",
+    name: "Together Bundle",
     description: "SMART. SET. READY.",
-    shortDescription: "3 Large Boxes, 2 Medium Boxes, 1 Small Box",
-    bundleContents: "3 Large Boxes, 2 Medium Boxes, 1 Small Box",
+    shortDescription: "3 Large Boxes, 2 Medium Boxes, 1 Travel Box",
+    bundleContents: "3 Large Boxes, 2 Medium Boxes, 1 Travel Box",
     price: 137.00,
     stripePriceId: "price_1SGKRxDkJNZeOpMwdoeKbQQN",
     category: "bundles",
