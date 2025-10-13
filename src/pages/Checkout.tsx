@@ -352,7 +352,8 @@ const Checkout = () => {
       return;
     }
     
-    if (!selectedShippingRate) {
+    // Only require shipping selection if not qualified for free shipping
+    if (!qualifiesForFreeShipping && !selectedShippingRate) {
       toast({
         title: 'Select Shipping Method',
         description: 'Please calculate and select a shipping method',
@@ -611,8 +612,25 @@ const Checkout = () => {
                 </CardContent>
               </Card>
 
-              {/* Shipping Options - Show prominently after address */}
-              {shippingRates.length > 0 && (
+              {/* Free Shipping Message for GTA customers */}
+              {qualifiesForFreeShipping && (
+                <Card className="border-2 border-green-500 bg-green-50">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-green-700">
+                      <Truck className="h-5 w-5" />
+                      Free Shipping Applied! 🎉
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-green-800 font-medium">
+                      Your order qualifies for FREE shipping because you're in the Greater Toronto Area and your order is over $50!
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Shipping Options - Show only if not qualified for free shipping */}
+              {!qualifiesForFreeShipping && shippingRates.length > 0 && (
                 <Card className="border-2 border-[hsl(var(--brand-pink))]">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-[hsl(var(--brand-pink))]">
