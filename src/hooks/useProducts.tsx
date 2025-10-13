@@ -136,12 +136,12 @@ export function useProductsByCategory(category: string) {
       });
       }
 
+      // Query products by checking if category slug exists in categories array
       const { data, error } = await supabase
         .from('woocommerce_products')
         .select('*')
         .eq('in_stock', true)
         .eq('visible', true)
-        .contains('categories', [{ slug: category }])
         .order('name');
 
       if (error || !data) {
@@ -149,7 +149,13 @@ export function useProductsByCategory(category: string) {
         return fallbackProducts.filter(p => p.category === category);
       }
 
-      return data.map((dbProduct: any) => {
+      // Filter products by category slug on the client side
+      const filteredData = data.filter((product: any) => {
+        const categories = product.categories || [];
+        return categories.some((cat: any) => cat.slug === category);
+      });
+
+      return filteredData.map((dbProduct: any) => {
         const transformed = transformProduct(dbProduct);
         
         // If product has no images, use static data as fallback
