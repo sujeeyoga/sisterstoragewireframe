@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { DollarSign, ShoppingCart, Package, Truck, Clock, CheckCircle2, TrendingUp, AlertCircle, Users, Calendar } from 'lucide-react';
@@ -12,6 +12,8 @@ import { useVisitorPresence } from '@/hooks/useVisitorPresence';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
+import { Switch } from '@/components/ui/switch';
+import { toast } from 'sonner';
 
 type DateRangePreset = '7d' | '30d' | '90d' | 'custom';
 
@@ -36,6 +38,44 @@ export const AdminDashboard = () => {
     }
     return new Date();
   };
+
+  // Query for Coming Soon setting
+  const { data: comingSoonSetting, isLoading: isLoadingComingSoon } = useQuery({
+    queryKey: ['store-settings', 'coming-soon'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('store_settings')
+        .select('*')
+        .eq('setting_key', 'coming_soon')
+        .maybeSingle();
+      
+      if (error && error.code !== 'PGRST116') throw error;
+      return data;
+    },
+  });
+
+  // Mutation to update Coming Soon setting
+  const updateComingSoonMutation = useMutation({
+    mutationFn: async (enabled: boolean) => {
+      const { error } = await supabase
+        .from('store_settings')
+        .upsert({
+          setting_key: 'coming_soon',
+          enabled,
+          setting_value: {}
+        });
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['store-settings', 'coming-soon'] });
+      toast.success('Coming Soon page setting updated');
+    },
+    onError: (error) => {
+      console.error('Failed to update Coming Soon setting:', error);
+      toast.error('Failed to update setting');
+    }
+  });
 
   // Real-time subscription for order updates
   useEffect(() => {
@@ -261,6 +301,34 @@ export const AdminDashboard = () => {
 
   return (
     <div className="p-8 space-y-8">
+      {/* Coming Soon Toggle */}
+      <Card className="border-primary/20 bg-primary/5">
+        <CardContent className="flex items-center justify-between py-4">
+          <div>
+            <h3 className="font-semibold text-lg">Coming Soon Page</h3>
+            <p className="text-sm text-muted-foreground">
+              Show a "Coming Soon" page to all visitors (admins can still access)
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            {isLoadingComingSoon ? (
+              <Skeleton className="h-6 w-11" />
+            ) : (
+              <>
+                <span className="text-sm font-medium">
+                  {comingSoonSetting?.enabled ? 'Enabled' : 'Disabled'}
+                </span>
+                <Switch
+                  checked={comingSoonSetting?.enabled || false}
+                  onCheckedChange={(checked) => updateComingSoonMutation.mutate(checked)}
+                  disabled={updateComingSoonMutation.isPending}
+                />
+              </>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Header with Date Range Selector */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
