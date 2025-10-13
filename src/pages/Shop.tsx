@@ -4,6 +4,7 @@ import HeroSection from "@/components/shop/sections/HeroSection";
 import ProductsSection from "@/components/shop/sections/ProductsSection";
 import FooterSection from "@/components/shop/sections/FooterSection";
 import { DiscountBanner } from "@/components/shop/DiscountBanner";
+import LocationDiscountBanner from "@/components/shop/LocationDiscountBanner";
 import { useShopFilters } from "@/hooks/useShopFilters";
 import { useShopSEO } from "@/hooks/useShopSEO";
 import { featuredProduct } from "@/data/products";
@@ -17,6 +18,7 @@ const Shop = () => {
   return (
     <BaseLayout variant="standard" pageId="shop" spacing="normal">
       <div className="bg-background min-h-screen">
+        <LocationDiscountBanner />
         <DiscountBanner />
         <HeroSection product={featuredProduct} />
         <ProductsSection products={sortedProducts} />
