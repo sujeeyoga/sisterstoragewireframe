@@ -179,8 +179,8 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
                 {/* Divider */}
                 <div className="mx-6 my-6 h-px bg-gray-200" />
 
-                {/* Additional Navigation Items */}
-                <div className="px-6 space-y-1">
+                {/* Additional Navigation Items - Hidden per user request */}
+                {/* <div className="px-6 space-y-1">
                   {[
                     { name: 'OUR STORY', path: '/our-story' },
                     { name: 'BLOG', path: '/blog' },
@@ -203,7 +203,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
                       </Link>
                     );
                   })}
-                </div>
+                </div> */}
 
                 {/* Divider */}
                 <div className="mx-6 my-6 h-px bg-gray-200" />
