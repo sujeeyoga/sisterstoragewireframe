@@ -172,7 +172,7 @@ export const SisterStoriesCarousel = () => {
                   className="overflow-hidden border-0 bg-transparent h-full w-full"
                 >
                   <div 
-                    className="relative w-full max-w-[360px] sm:max-w-[420px] md:max-w-[480px] lg:max-w-[540px] overflow-hidden bg-black rounded-2xl shadow-xl"
+                    className="relative w-full max-w-[360px] sm:max-w-[420px] md:max-w-[480px] lg:max-w-[540px] overflow-hidden bg-[hsl(var(--brand-pink))] rounded-2xl shadow-xl"
                     style={{ aspectRatio: '9 / 16' }}
                     data-video-id={story.id}
                   >
@@ -208,7 +208,7 @@ export const SisterStoriesCarousel = () => {
                         setLoadingVideos(prev => ({ ...prev, [story.id]: false }));
                       }}
                       className="w-full h-full object-cover"
-                      style={{ backgroundColor: '#000' }}
+                      style={{ backgroundColor: 'hsl(var(--brand-pink))' }}
                     >
                       <source src={story.video} type="video/mp4" />
                       Your browser does not support the video tag.
