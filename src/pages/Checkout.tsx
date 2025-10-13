@@ -128,9 +128,8 @@ const Checkout = () => {
   const selectedRate = shippingRates.find(rate => rate.postage_type === selectedShippingRate);
   let shippingCost = selectedRate ? parseFloat(selectedRate.total) : 0;
   
-  // Apply free shipping for orders over $50 in Toronto
-  const isToronto = formData.city.toLowerCase().includes('toronto');
-  const qualifiesForFreeShipping = discountedSubtotal >= 50 && isToronto;
+  // Apply free shipping for orders over $50
+  const qualifiesForFreeShipping = discountedSubtotal >= 50;
   if (qualifiesForFreeShipping) {
     shippingCost = 0;
   }
@@ -756,14 +755,14 @@ const Checkout = () => {
                     </div>
                   )}
                   
-                  {/* Free Shipping Progress for Toronto */}
-                  {isToronto && !qualifiesForFreeShipping && discountedSubtotal > 0 && (
+                  {/* Free Shipping Progress */}
+                  {!qualifiesForFreeShipping && discountedSubtotal > 0 && (
                     <div className="bg-gradient-to-r from-pink-50 to-purple-50 border border-[hsl(var(--brand-pink))]/20 rounded-lg p-3 my-2">
                       <div className="flex items-start gap-2">
                         <Truck className="h-4 w-4 text-[hsl(var(--brand-pink))] mt-0.5 flex-shrink-0" />
                         <div className="flex-1">
                           <p className="text-xs font-semibold text-[hsl(var(--brand-pink))] mb-1">
-                            Toronto Free Shipping
+                            Free Shipping Over $50
                           </p>
                           <p className="text-xs text-gray-700">
                             Spend <span className="font-bold text-[hsl(var(--brand-pink))]">
