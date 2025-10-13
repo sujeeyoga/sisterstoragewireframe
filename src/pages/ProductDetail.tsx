@@ -5,6 +5,7 @@ import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
 import { useStoreDiscount } from "@/hooks/useStoreDiscount";
 import { useInventorySettings } from "@/hooks/useInventorySettings";
+import { useProduct } from "@/hooks/useProducts";
 import ProductImage from "@/components/product/ProductImage";
 import ProductInfo from "@/components/product/ProductInfo";
 import Breadcrumbs from "@/components/product/Breadcrumbs";
@@ -25,11 +26,24 @@ const ProductDetail = () => {
   const { discount, applyDiscount } = useStoreDiscount();
   const { lowStock, preorders, isLowStock, isOutOfStock } = useInventorySettings();
   
-  // Find the product based on the URL parameter
-  const product = shopProducts.find(p => p.id === productId);
+  // Fetch product from Supabase (supports both ID and slug)
+  const { data: product, isLoading } = useProduct(productId || "");
   const taxonomy = product ? productTaxonomyMap[product.id] : undefined;
   const attributes = taxonomy?.attributes;
   const primaryCategorySlug = taxonomy?.categorySlugs?.[0];
+  
+  // Handle loading state
+  if (isLoading) {
+    return (
+      <Layout>
+        <div className="flex-grow flex items-center justify-center">
+          <div className="text-center">
+            <p className="text-sm text-gray-600">Loading product...</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
   
   // Handle case where product isn't found
   if (!product) {
