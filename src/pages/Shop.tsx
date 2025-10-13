@@ -10,7 +10,7 @@ import { useShopSEO } from "@/hooks/useShopSEO";
 import { featuredProduct } from "@/data/products";
 
 const Shop = () => {
-  const { sortedProducts } = useShopFilters();
+  const { sortedProducts, isLoading } = useShopFilters();
   
   // SEO setup
   useShopSEO(sortedProducts);
@@ -21,7 +21,10 @@ const Shop = () => {
         <LocationDiscountBanner />
         <DiscountBanner />
         <HeroSection product={featuredProduct} />
-        <ProductsSection products={sortedProducts} />
+        <ProductsSection 
+          products={sortedProducts} 
+          isLoading={isLoading}
+        />
         <FooterSection />
       </div>
     </BaseLayout>
