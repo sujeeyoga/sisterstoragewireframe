@@ -193,9 +193,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
           {/* Rod Count - Fixed Height */}
           <div className="min-h-[4rem] mb-3 flex justify-center">
             {attrs?.rodCount && (
-              <div className="inline-flex flex-col items-center bg-[hsl(var(--primary))] text-primary-foreground rounded-lg px-3 py-2">
-                <span className="text-xs font-medium">RODS</span>
-                <span className="text-2xl font-bold">{attrs.rodCount}</span>
+              <div className="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-4 py-2 rounded-lg">
+                <div className="text-center">
+                  <span className="text-xs font-bold uppercase tracking-wider block">Rods</span>
+                  <span className="text-2xl font-thin">{attrs.rodCount}</span>
+                </div>
               </div>
             )}
           </div>

@@ -117,10 +117,13 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
                 </li>
               )}
               {rodCount && !product.bundleContents && (
-                <li>
-                  <p className="text-gray-600 text-2xl leading-relaxed font-medium">
-                    {rodCount} Rod{rodCount !== '1' ? 's' : ''}
-                  </p>
+                <li className="flex justify-center">
+                  <div className="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-4 py-2 rounded-lg">
+                    <div className="text-center">
+                      <span className="text-xs font-bold uppercase tracking-wider block">Rods</span>
+                      <span className="text-2xl font-thin">{rodCount}</span>
+                    </div>
+                  </div>
                 </li>
               )}
               {bullets && bullets.map((line, i) => (
