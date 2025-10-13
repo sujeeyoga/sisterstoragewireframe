@@ -5,7 +5,7 @@ import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
 import { useStoreDiscount } from "@/hooks/useStoreDiscount";
 import { useInventorySettings } from "@/hooks/useInventorySettings";
-import { useProduct } from "@/hooks/useProducts";
+import { useProduct, useProductsByCategory } from "@/hooks/useProducts";
 import ProductImage from "@/components/product/ProductImage";
 import ProductInfo from "@/components/product/ProductInfo";
 import Breadcrumbs from "@/components/product/Breadcrumbs";
@@ -14,7 +14,6 @@ import Layout from "@/components/layout/Layout";
 import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, Package } from "lucide-react";
 
-import { products as shopProducts } from "@/data/products";
 import { productTaxonomyMap } from "@/data/product-taxonomy";
 
 const ProductDetail = () => {
@@ -31,6 +30,9 @@ const ProductDetail = () => {
   const taxonomy = product ? productTaxonomyMap[product.id] : undefined;
   const attributes = taxonomy?.attributes;
   const primaryCategorySlug = taxonomy?.categorySlugs?.[0];
+  
+  // Fetch related products from the same category
+  const { data: categoryProducts = [] } = useProductsByCategory(product?.category || "");
   
   // Handle loading state
   if (isLoading) {
@@ -60,10 +62,10 @@ const ProductDetail = () => {
     );
   }
   
-  // Get related products from same category
-  const relatedProducts = shopProducts
-    .filter((p) => p.category === product.category && p.id !== product.id)
-    .slice(0, 3);
+  // Get related products from same category (excluding current product)
+  const relatedProducts = categoryProducts
+    .filter((p) => p.id !== product.id)
+    .slice(0, 4);
   
   const discountedPrice = discount?.enabled ? applyDiscount(product.price) : product.price;
 
