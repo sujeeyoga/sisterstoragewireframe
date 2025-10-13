@@ -30,9 +30,10 @@ const ProductDetail = () => {
   const taxonomy = product ? productTaxonomyMap[product.id] : undefined;
   const attributes = taxonomy?.attributes;
   const primaryCategorySlug = taxonomy?.categorySlugs?.[0];
+  const primaryCategory = product?.categories?.[0];
   
   // Fetch related products from the same category
-  const { data: categoryProducts = [] } = useProductsByCategory(product?.category || "");
+  const { data: categoryProducts = [], isLoading: isLoadingRelated } = useProductsByCategory(primaryCategory || "");
   
   // Handle loading state
   if (isLoading) {

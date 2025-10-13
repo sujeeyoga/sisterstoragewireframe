@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { DatabaseProduct, transformProduct, Product } from '@/types/product';
-import { products as fallbackProducts } from '@/data/products';
 
 // Fetch all products from database
 export function useProducts() {
@@ -17,34 +16,16 @@ export function useProducts() {
 
       if (error) {
         console.error('Error fetching products:', error);
-        // Fallback to static products if database fails
-        return fallbackProducts;
+        return [];
       }
 
       if (!data || data.length === 0) {
-        console.warn('No products in database, using fallback');
-        return fallbackProducts;
+        console.warn('No products in database');
+        return [];
       }
 
-      // Transform products and merge with static data for missing images
-      return data.map((dbProduct: any) => {
-        const transformed = transformProduct(dbProduct);
-        
-        // If product has no images or empty images array, use static data as fallback
-        if (!transformed.images || transformed.images.length === 0 || !transformed.images[0]) {
-          const staticProduct = fallbackProducts.find(p => 
-            p.id === transformed.id || 
-            p.sku === transformed.sku ||
-            p.slug === transformed.slug
-          );
-          
-          if (staticProduct?.images && staticProduct.images.length > 0) {
-            return { ...transformed, images: staticProduct.images };
-          }
-        }
-        
-        return transformed;
-      });
+      // Transform products
+      return data.map((dbProduct: any) => transformProduct(dbProduct));
     },
     staleTime: 1000 * 60 * 5, // 5 minutes
     gcTime: 1000 * 60 * 10, // 10 minutes
@@ -71,28 +52,10 @@ export function useProduct(idOrSlug: string) {
 
       if (error || !data) {
         console.error('Error fetching product:', error);
-        // Fallback to static products
-        const fallback = fallbackProducts.find(p => p.id === idOrSlug || p.sku === idOrSlug || p.slug === idOrSlug);
-        if (!fallback) throw new Error('Product not found');
-        return fallback;
+        throw new Error('Product not found');
       }
 
-      const transformed = transformProduct(data as any);
-      
-      // If product has no images, use static data as fallback
-      if (!transformed.images || transformed.images.length === 0 || !transformed.images[0]) {
-        const staticProduct = fallbackProducts.find(p => 
-          p.id === transformed.id || 
-          p.sku === transformed.sku ||
-          p.slug === transformed.slug
-        );
-        
-        if (staticProduct?.images && staticProduct.images.length > 0) {
-          return { ...transformed, images: staticProduct.images };
-        }
-      }
-      
-      return transformed;
+      return transformProduct(data as any);
     },
     enabled: !!idOrSlug,
     staleTime: 1000 * 60 * 5,
@@ -113,27 +76,10 @@ export function useProductsByCategory(category: string) {
           .order('name');
 
       if (error || !data) {
-        return fallbackProducts;
+        return [];
       }
 
-      return data.map((dbProduct: any) => {
-        const transformed = transformProduct(dbProduct);
-        
-        // If product has no images, use static data as fallback
-        if (!transformed.images || transformed.images.length === 0 || !transformed.images[0]) {
-          const staticProduct = fallbackProducts.find(p => 
-            p.id === transformed.id || 
-            p.sku === transformed.sku ||
-            p.slug === transformed.slug
-          );
-          
-          if (staticProduct?.images && staticProduct.images.length > 0) {
-            return { ...transformed, images: staticProduct.images };
-          }
-        }
-        
-        return transformed;
-      });
+      return data.map((dbProduct: any) => transformProduct(dbProduct));
       }
 
       // Query products by checking if category slug exists in categories array
@@ -146,7 +92,7 @@ export function useProductsByCategory(category: string) {
 
       if (error || !data) {
         console.error('Error fetching products by category:', error);
-        return fallbackProducts.filter(p => p.category === category);
+        return [];
       }
 
       // Filter products by category slug on the client side
@@ -155,24 +101,7 @@ export function useProductsByCategory(category: string) {
         return categories.some((cat: any) => cat.slug === category);
       });
 
-      return filteredData.map((dbProduct: any) => {
-        const transformed = transformProduct(dbProduct);
-        
-        // If product has no images, use static data as fallback
-        if (!transformed.images || transformed.images.length === 0 || !transformed.images[0]) {
-          const staticProduct = fallbackProducts.find(p => 
-            p.id === transformed.id || 
-            p.sku === transformed.sku ||
-            p.slug === transformed.slug
-          );
-          
-          if (staticProduct?.images && staticProduct.images.length > 0) {
-            return { ...transformed, images: staticProduct.images };
-          }
-        }
-        
-        return transformed;
-      });
+      return filteredData.map((dbProduct: any) => transformProduct(dbProduct));
     },
     staleTime: 1000 * 60 * 5,
   });
@@ -193,27 +122,10 @@ export function useBestSellers(limit: number = 4) {
 
       if (error || !data) {
         console.error('Error fetching best sellers:', error);
-        return fallbackProducts.filter(p => p.bestSeller).slice(0, limit);
+        return [];
       }
 
-      return data.map((dbProduct: any) => {
-        const transformed = transformProduct(dbProduct);
-        
-        // If product has no images, use static data as fallback
-        if (!transformed.images || transformed.images.length === 0 || !transformed.images[0]) {
-          const staticProduct = fallbackProducts.find(p => 
-            p.id === transformed.id || 
-            p.sku === transformed.sku ||
-            p.slug === transformed.slug
-          );
-          
-          if (staticProduct?.images && staticProduct.images.length > 0) {
-            return { ...transformed, images: staticProduct.images };
-          }
-        }
-        
-        return transformed;
-      });
+      return data.map((dbProduct: any) => transformProduct(dbProduct));
     },
     staleTime: 1000 * 60 * 5,
   });
