@@ -19,7 +19,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
 import AddressAutocomplete from '@/components/checkout/AddressAutocomplete';
 import Logo from '@/components/ui/Logo';
-import { ArrowLeft, ShoppingBag, CreditCard, Truck, Trash2, Tag, Loader2, Package, Gift, Mail } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, CreditCard, Truck, Trash2, Tag, Loader2, Package, Gift, Mail, MapPin } from 'lucide-react';
 
 // Province mapping and validation
 const PROVINCE_MAP: Record<string, string> = {
@@ -128,8 +128,18 @@ const Checkout = () => {
   const selectedRate = shippingRates.find(rate => rate.postage_type === selectedShippingRate);
   let shippingCost = selectedRate ? parseFloat(selectedRate.total) : 0;
   
-  // Apply free shipping for orders over $50
-  const qualifiesForFreeShipping = discountedSubtotal >= 50;
+  // Check if postal code is in GTA (Greater Toronto Area)
+  const isGTAPostalCode = (postalCode: string): boolean => {
+    if (!postalCode) return false;
+    const cleaned = postalCode.replace(/\s/g, '').toUpperCase();
+    // GTA postal codes: M (Toronto), L1-L9 (surrounding areas)
+    return cleaned.startsWith('M') || 
+           /^L[1-9]/.test(cleaned);
+  };
+  
+  // Apply free shipping for GTA orders over $50
+  const isInGTA = isGTAPostalCode(formData.postalCode);
+  const qualifiesForFreeShipping = discountedSubtotal >= 50 && isInGTA;
   if (qualifiesForFreeShipping) {
     shippingCost = 0;
   }
@@ -755,14 +765,14 @@ const Checkout = () => {
                     </div>
                   )}
                   
-                  {/* Free Shipping Progress */}
-                  {!qualifiesForFreeShipping && discountedSubtotal > 0 && (
+                  {/* Free Shipping Progress for GTA */}
+                  {isInGTA && !qualifiesForFreeShipping && discountedSubtotal > 0 && (
                     <div className="bg-gradient-to-r from-pink-50 to-purple-50 border border-[hsl(var(--brand-pink))]/20 rounded-lg p-3 my-2">
                       <div className="flex items-start gap-2">
                         <Truck className="h-4 w-4 text-[hsl(var(--brand-pink))] mt-0.5 flex-shrink-0" />
                         <div className="flex-1">
                           <p className="text-xs font-semibold text-[hsl(var(--brand-pink))] mb-1">
-                            Free Shipping Over $50
+                            GTA Free Shipping
                           </p>
                           <p className="text-xs text-gray-700">
                             Spend <span className="font-bold text-[hsl(var(--brand-pink))]">
@@ -777,6 +787,23 @@ const Checkout = () => {
                           className="bg-gradient-to-r from-[hsl(var(--brand-pink))] to-purple-400 h-2 rounded-full transition-all duration-300"
                           style={{ width: `${Math.min((discountedSubtotal / 50) * 100, 100)}%` }}
                         />
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Non-GTA Message */}
+                  {!isInGTA && formData.postalCode && discountedSubtotal > 0 && (
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 my-2">
+                      <div className="flex items-start gap-2">
+                        <MapPin className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                        <div className="flex-1">
+                          <p className="text-xs font-semibold text-blue-600 mb-1">
+                            Outside GTA
+                          </p>
+                          <p className="text-xs text-gray-700">
+                            Free shipping available for GTA orders over $50. Your location: {formData.postalCode}
+                          </p>
+                        </div>
                       </div>
                     </div>
                   )}
