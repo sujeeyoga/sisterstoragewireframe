@@ -59,11 +59,16 @@ export const AdminDashboard = () => {
     mutationFn: async (enabled: boolean) => {
       const { error } = await supabase
         .from('store_settings')
-        .upsert({
-          setting_key: 'coming_soon',
-          enabled,
-          setting_value: {}
-        });
+        .upsert(
+          {
+            setting_key: 'coming_soon',
+            enabled,
+            setting_value: {}
+          },
+          {
+            onConflict: 'setting_key'
+          }
+        );
       
       if (error) throw error;
     },
