@@ -16,6 +16,11 @@ interface ProductInfoProps {
     features?: string[];
     stock?: number;
     bundleContents?: string;
+    attributes?: {
+      rodCount?: string[];
+      size?: string[];
+      [key: string]: any;
+    };
   };
   quantity: number;
   setQuantity: (quantity: number) => void;
@@ -24,6 +29,10 @@ interface ProductInfoProps {
 }
 
 const ProductInfo = ({ product, quantity, setQuantity, onAddToCart, onBuyNow }: ProductInfoProps) => {
+  // Extract rod count for individual products
+  const rodCount = product.attributes?.rodCount?.[0];
+  const showRodCount = rodCount && product.category !== 'bundles';
+
   return (
     <div className="space-y-3 max-h-[1080px] max-w-[300px] overflow-y-auto">
       {/* Category Badge & Title Section */}
@@ -39,6 +48,18 @@ const ProductInfo = ({ product, quantity, setQuantity, onAddToCart, onBuyNow }: 
       <div className="pb-3 border-b border-gray-200">
         <p className="text-xs text-gray-700 leading-relaxed">{product.description}</p>
       </div>
+      
+      {/* Rod Count Display for Individual Products */}
+      {showRodCount && (
+        <div className="pb-3 border-b border-gray-200">
+          <div className="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-4 py-3 rounded-lg">
+            <div className="text-center">
+              <span className="text-xs font-bold uppercase tracking-wider block mb-1">Rods</span>
+              <span className="text-3xl font-thin">{rodCount}</span>
+            </div>
+          </div>
+        </div>
+      )}
       
       {/* Bundle Contents for bundles */}
       {product.category === 'bundles' && product.bundleContents && (
