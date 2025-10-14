@@ -99,9 +99,10 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
           <Link to={`/shop/${product.id}`}>
             <h3 className="text-3xl lg:text-4xl font-bold text-gray-900 leading-tight line-clamp-2 hover:text-pink-600 transition-colors uppercase">{product.name.replace(/\bSmall\b/gi, '').trim()}</h3>
           </Link>
-          <p className="text-gray-600 text-lg leading-relaxed line-clamp-2">
-            {product.description?.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim()}
-          </p>
+          <div 
+            className="text-gray-600 text-lg leading-relaxed line-clamp-2"
+            dangerouslySetInnerHTML={{ __html: product.description || '' }}
+          />
         </div>
         
         {/* What's Included */}

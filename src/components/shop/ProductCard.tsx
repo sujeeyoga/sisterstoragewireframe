@@ -172,7 +172,10 @@ const ProductCard = ({ product }: ProductCardProps) => {
           
           {/* Description - Fixed Height */}
           <div className="h-[3rem] mb-3">
-            <p className="text-muted-foreground text-lg line-clamp-2">{product.description}</p>
+            <div 
+              className="text-muted-foreground text-lg line-clamp-2"
+              dangerouslySetInnerHTML={{ __html: product.description }}
+            />
           </div>
           
           {/* Material - Fixed Height */}
