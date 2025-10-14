@@ -96,34 +96,20 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
   useEffect(() => {
     if (!isLoaded || !inputRef.current || !window.google) return;
 
-    // Initialize autocomplete with Canada restriction
+    // Initialize autocomplete with Canada restriction but allow manual entry
     autocompleteRef.current = new window.google.maps.places.Autocomplete(inputRef.current, {
       componentRestrictions: { country: 'ca' },
       fields: ['address_components', 'formatted_address'],
       types: ['address']
     });
 
-    // Handle place selection
+    // Handle place selection (only when user selects from dropdown)
     const handlePlaceChanged = () => {
       const place = autocompleteRef.current?.getPlace();
       
+      // Only process if user actually selected a place from dropdown
       if (!place?.address_components) {
-        // Fallback: parse from freeform string when Places API is unavailable
-        const raw = inputRef.current?.value || '';
-        const parts = raw.split(',').map(p => p.trim()).filter(Boolean);
-        const street = formatAddress(parts[0] || raw.trim());
-
-        const provinceMatch = raw.match(/\b(AB|BC|MB|NB|NL|NT|NS|NU|ON|PE|QC|SK|YT)\b/i);
-        const postalMatch = raw.match(/([A-Za-z]\d[A-Za-z])\s?\d[A-Za-z]\d/i);
-        const city = formatCity(parts.length > 1 ? parts[1] : '');
-        const province = provinceMatch ? provinceMatch[1].toUpperCase() : '';
-        const postalCode = postalMatch ? formatPostalCode(postalMatch[0]) : '';
-
-        if (street && city && province) {
-          onChange(street);
-          onAddressSelect({ address: street, city, province, postalCode });
-        }
-        return;
+        return; // Let manual entry work normally
       }
 
       const components: any = {};
@@ -190,15 +176,16 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
         ref={inputRef}
         id="address"
         name="address"
-        placeholder="Start typing your address..."
+        placeholder="123 Main Street"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className={error ? 'border-red-500' : ''}
         autoComplete="off"
+        required
       />
       {error && <p className="text-sm text-red-500">{error}</p>}
       <p className="text-xs text-gray-500">
-        Start typing to see address suggestions
+        Type your full street address or select from suggestions
       </p>
     </div>
   );
