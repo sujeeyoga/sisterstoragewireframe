@@ -17,6 +17,7 @@ import { BulkImageOptimizer } from '@/components/admin/BulkImageOptimizer';
 import ImageMigrationTool from '@/components/admin/ImageMigrationTool';
 import ShippingManager from '@/components/admin/ShippingManager';
 import ShippingSettings from '@/components/admin/ShippingSettings';
+import { TextsManager } from '@/components/admin/TextsManager';
 import Uploads from '@/pages/Uploads';
 
 const Admin = () => {
@@ -48,6 +49,7 @@ const Admin = () => {
         <Route path="shipping-settings" element={<ShippingSettings />} />
         <Route path="sections" element={<SectionsManager />} />
         <Route path="pages" element={<PagesManager />} />
+        <Route path="texts" element={<TextsManager />} />
         <Route path="hero-images" element={<HeroImagesManager />} />
         <Route path="optimize-images" element={<BulkImageOptimizer />} />
         <Route path="migrate-images" element={<ImageMigrationTool />} />

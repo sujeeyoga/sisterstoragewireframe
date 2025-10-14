@@ -239,6 +239,42 @@ export type Database = {
         }
         Relationships: []
       }
+      site_texts: {
+        Row: {
+          button_text: string | null
+          created_at: string | null
+          description: string | null
+          enabled: boolean
+          id: string
+          section_key: string
+          subtitle: string | null
+          title: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          button_text?: string | null
+          created_at?: string | null
+          description?: string | null
+          enabled?: boolean
+          id?: string
+          section_key: string
+          subtitle?: string | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          button_text?: string | null
+          created_at?: string | null
+          description?: string | null
+          enabled?: boolean
+          id?: string
+          section_key?: string
+          subtitle?: string | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       store_settings: {
         Row: {
           created_at: string | null
