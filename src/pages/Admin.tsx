@@ -16,6 +16,7 @@ import { HeroImagesManager } from '@/components/admin/HeroImagesManager';
 import { BulkImageOptimizer } from '@/components/admin/BulkImageOptimizer';
 import ImageMigrationTool from '@/components/admin/ImageMigrationTool';
 import ShippingManager from '@/components/admin/ShippingManager';
+import ShippingSettings from '@/components/admin/ShippingSettings';
 import Uploads from '@/pages/Uploads';
 
 const Admin = () => {
@@ -44,6 +45,7 @@ const Admin = () => {
         <Route path="products/:id" element={<ProductForm />} />
         <Route path="customers" element={<CustomersTable />} />
         <Route path="shipping" element={<ShippingManager />} />
+        <Route path="shipping-settings" element={<ShippingSettings />} />
         <Route path="sections" element={<SectionsManager />} />
         <Route path="pages" element={<PagesManager />} />
         <Route path="hero-images" element={<HeroImagesManager />} />

@@ -6,6 +6,7 @@ import { useGiftOptions } from '@/hooks/useGiftOptions';
 import { useNewsletterSettings } from '@/hooks/useNewsletterSettings';
 import { useAbandonedCart } from '@/hooks/useAbandonedCart';
 import { useDebounce } from '@/hooks/useDebounce';
+import { useShippingSettings } from '@/hooks/useShippingSettings';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
@@ -66,6 +67,7 @@ const Checkout = () => {
   const { discount, applyDiscount, getDiscountAmount } = useStoreDiscount();
   const { giftOptions } = useGiftOptions();
   const { newsletter } = useNewsletterSettings();
+  const { shippingSettings } = useShippingSettings();
   
   const [isProcessing, setIsProcessing] = useState(false);
   const [isLoadingRates, setIsLoadingRates] = useState(false);
@@ -140,12 +142,21 @@ const Checkout = () => {
   // Check if customer is in Toronto
   const isInToronto = formData.city.toLowerCase().includes('toronto');
   const isInGTA = isGTAPostalCode(formData.postalCode);
-  const qualifiesForFreeShipping = discountedSubtotal >= 50 && isInGTA && !isInToronto;
   
-  // Apply Toronto flat rate ($3.99) or free shipping for GTA orders over $50
-  if (isInToronto) {
-    shippingCost = 3.99;
-  } else if (qualifiesForFreeShipping) {
+  // Apply shipping rules from settings
+  const torontoFlatRate = shippingSettings?.toronto_flat_rate.enabled 
+    ? shippingSettings.toronto_flat_rate.rate 
+    : 3.99;
+  const gtaThreshold = shippingSettings?.gta_free_shipping.enabled
+    ? shippingSettings.gta_free_shipping.threshold
+    : 50;
+  
+  const qualifiesForFreeShipping = discountedSubtotal >= gtaThreshold && isInGTA && !isInToronto;
+  
+  // Apply Toronto flat rate or free shipping for GTA orders over threshold
+  if (isInToronto && shippingSettings?.toronto_flat_rate.enabled) {
+    shippingCost = torontoFlatRate;
+  } else if (qualifiesForFreeShipping && shippingSettings?.gta_free_shipping.enabled) {
     shippingCost = 0;
   }
   
@@ -628,7 +639,7 @@ const Checkout = () => {
                   </CardHeader>
                   <CardContent>
                     <p className="text-green-800 font-medium">
-                      Your order qualifies for FREE shipping because you're in the Greater Toronto Area and your order is over $50!
+                      Your order qualifies for FREE shipping because you're in the Greater Toronto Area and your order is over ${gtaThreshold.toFixed(2)}!
                     </p>
                   </CardContent>
                 </Card>
@@ -645,7 +656,7 @@ const Checkout = () => {
                   </CardHeader>
                   <CardContent>
                     <p className="text-[hsl(var(--brand-pink))] font-medium">
-                      Great news! All Toronto orders ship for just $3.99 flat rate.
+                      Great news! All Toronto orders ship for just ${torontoFlatRate.toFixed(2)} flat rate.
                     </p>
                   </CardContent>
                 </Card>
@@ -816,7 +827,7 @@ const Checkout = () => {
                           </p>
                           <p className="text-xs text-gray-700">
                             Spend <span className="font-bold text-[hsl(var(--brand-pink))]">
-                              ${(50 - discountedSubtotal).toFixed(2)} more
+                              ${(gtaThreshold - discountedSubtotal).toFixed(2)} more
                             </span> to unlock FREE shipping!
                           </p>
                         </div>
@@ -825,7 +836,7 @@ const Checkout = () => {
                       <div className="mt-2 w-full bg-gray-200 rounded-full h-2">
                         <div 
                           className="bg-gradient-to-r from-[hsl(var(--brand-pink))] to-purple-400 h-2 rounded-full transition-all duration-300"
-                          style={{ width: `${Math.min((discountedSubtotal / 50) * 100, 100)}%` }}
+                          style={{ width: `${Math.min((discountedSubtotal / gtaThreshold) * 100, 100)}%` }}
                         />
                       </div>
                     </div>
@@ -843,7 +854,7 @@ const Checkout = () => {
                             Toronto Flat Rate
                           </p>
                           <p className="text-xs text-gray-700">
-                            All Toronto orders ship for just $3.99
+                            All Toronto orders ship for just ${torontoFlatRate.toFixed(2)}
                           </p>
                         </div>
                       </div>
@@ -860,7 +871,7 @@ const Checkout = () => {
                             Outside GTA
                           </p>
                           <p className="text-xs text-gray-700">
-                            Free shipping available for GTA orders over $50. Your location: {formData.postalCode}
+                            Free shipping available for GTA orders over ${gtaThreshold.toFixed(2)}. Your location: {formData.postalCode}
                           </p>
                         </div>
                       </div>
@@ -890,7 +901,7 @@ const Checkout = () => {
                             🎉 FREE Shipping Unlocked!
                           </p>
                           <p className="text-xs text-green-600">
-                            Toronto orders over $50 ship free
+                            GTA orders over ${gtaThreshold.toFixed(2)} ship free
                           </p>
                         </div>
                       </div>
