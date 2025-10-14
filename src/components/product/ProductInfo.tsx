@@ -46,10 +46,12 @@ const ProductInfo = ({ product, quantity, setQuantity, onAddToCart, onBuyNow }: 
       
       {/* Description */}
       <div className="pb-3 border-b border-gray-200">
-        <div 
-          className="text-xs text-gray-700 leading-relaxed prose prose-sm max-w-none"
-          dangerouslySetInnerHTML={{ __html: product.description }}
-        />
+        {product.description && (
+          <div 
+            className="text-xs text-gray-700 leading-relaxed"
+            dangerouslySetInnerHTML={{ __html: product.description }}
+          />
+        )}
       </div>
       
       {/* Rod Count Display for Individual Products */}
