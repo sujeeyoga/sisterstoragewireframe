@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { MapPin } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { MapPin, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 const GOOGLE_PLACES_API_KEY = 'AIzaSyDvBbDzbTVIhYqSyKMLsTDjc89Rnaoy4Zc';
 
@@ -78,6 +80,7 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const autocompleteRef = useRef<any>(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isGettingLocation, setIsGettingLocation] = useState(false);
 
   useEffect(() => {
     // Load Google Places API script
@@ -166,12 +169,117 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
     };
   }, [isLoaded, onChange, onAddressSelect]);
 
+  const handleUseMyLocation = async () => {
+    if (!navigator.geolocation) {
+      toast.error("Geolocation is not supported by your browser");
+      return;
+    }
+
+    setIsGettingLocation(true);
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          const { latitude, longitude } = position.coords;
+          
+          // Use Google Geocoding API to reverse geocode
+          const geocoder = new window.google.maps.Geocoder();
+          const latlng = { lat: latitude, lng: longitude };
+
+          geocoder.geocode({ location: latlng }, (results: any, status: any) => {
+            if (status === 'OK' && results && results[0]) {
+              const place = results[0];
+              
+              // Extract address components
+              let streetNumber = '';
+              let route = '';
+              let city = '';
+              let province = '';
+              let postalCode = '';
+
+              place.address_components.forEach((component: any) => {
+                const types = component.types;
+                
+                if (types.includes('street_number')) {
+                  streetNumber = component.long_name;
+                } else if (types.includes('route')) {
+                  route = component.long_name;
+                } else if (types.includes('locality') || types.includes('sublocality')) {
+                  city = formatCity(component.long_name);
+                } else if (types.includes('administrative_area_level_1')) {
+                  const provinceName = component.long_name;
+                  province = PROVINCE_MAP[provinceName] || component.short_name;
+                } else if (types.includes('postal_code')) {
+                  postalCode = formatPostalCode(component.long_name);
+                }
+              });
+
+              const fullAddress = formatAddress(`${streetNumber} ${route}`.trim());
+
+              // Update the input field
+              if (inputRef.current) {
+                inputRef.current.value = fullAddress;
+              }
+              onChange(fullAddress);
+
+              // Call the address select callback
+              if (onAddressSelect && fullAddress && city && province && postalCode) {
+                onAddressSelect({
+                  address: fullAddress,
+                  city,
+                  province,
+                  postalCode,
+                });
+              }
+
+              toast.success("Location found! Address populated.");
+            } else {
+              toast.error("Unable to find address for your location");
+            }
+            setIsGettingLocation(false);
+          });
+        } catch (error) {
+          console.error("Error reverse geocoding:", error);
+          toast.error("Unable to get address from location");
+          setIsGettingLocation(false);
+        }
+      },
+      (error) => {
+        console.error("Error getting location:", error);
+        toast.error("Unable to access your location. Please check your browser settings.");
+        setIsGettingLocation(false);
+      }
+    );
+  };
+
   return (
     <div className="space-y-2">
-      <Label htmlFor="address" className="flex items-center gap-2">
-        <MapPin className="h-4 w-4" />
-        Street Address
-      </Label>
+      <div className="flex items-center justify-between">
+        <Label htmlFor="address" className="flex items-center gap-2">
+          <MapPin className="h-4 w-4" />
+          Street Address
+        </Label>
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          onClick={handleUseMyLocation}
+          disabled={isGettingLocation || !isLoaded}
+          className="h-auto py-1 px-2 text-xs"
+        >
+          {isGettingLocation ? (
+            <>
+              <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+              Getting location...
+            </>
+          ) : (
+            <>
+              <MapPin className="h-3 w-3 mr-1" />
+              Use my location
+            </>
+          )}
+        </Button>
+      </div>
       <Input
         ref={inputRef}
         id="address"
