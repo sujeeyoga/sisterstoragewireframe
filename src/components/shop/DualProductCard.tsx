@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ShoppingBag, Star } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
-import { Product } from "./ProductCard";
+import { Product } from "@/types/product";
 
 interface DualProductCardProps {
   products: [Product, Product?]; // Array with 1 or 2 products
@@ -65,9 +65,12 @@ const DualProductCard = ({ products }: DualProductCardProps) => {
         
         {/* Description - Fixed Height */}
         <div className="h-[3rem] mb-3">
-          <p className="text-sm text-gray-600 line-clamp-2">
-            {product.description || "Premium storage solution for your jewelry collection"}
-          </p>
+          {product.description && (
+            <div 
+              className="text-sm text-gray-600 line-clamp-2"
+              dangerouslySetInnerHTML={{ __html: product.description }}
+            />
+          )}
         </div>
         
         {/* Price & Action - Fixed at Bottom */}

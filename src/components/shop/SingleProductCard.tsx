@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ShoppingBag } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
-import { Product } from "./ProductCard";
+import { Product } from "@/types/product";
 import { productTaxonomyMap } from "@/data/product-taxonomy";
 
 interface SingleProductCardProps {

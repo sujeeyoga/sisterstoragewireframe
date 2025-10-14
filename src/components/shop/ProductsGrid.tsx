@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Product } from "./ProductCard";
+import { Product } from "@/types/product";
 import SingleProductCard from "./SingleProductCard";
 
 interface ProductsGridProps {

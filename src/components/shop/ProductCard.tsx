@@ -11,26 +11,8 @@ import { productTaxonomyMap } from "@/data/product-taxonomy";
 import { useStoreDiscount } from "@/hooks/useStoreDiscount";
 import { useInventorySettings } from "@/hooks/useInventorySettings";
 
-export interface Product {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  originalPrice?: number;
-  category: string;
-  color: string;
-  images?: string[];
-  features: string[];
-  material: string;
-  bestSeller?: boolean;
-  newArrival?: boolean;
-  limitedEdition?: boolean;
-  stock: number;
-  stockQuantity?: number;
-  sku?: string;
-  caption?: string;
-  funnelStage?: string;
-}
+import type { Product } from "@/types/product";
+
 
 interface ProductCardProps {
   product: Product;
