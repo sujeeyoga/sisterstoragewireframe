@@ -460,6 +460,34 @@
     }
   }
 
+  @keyframes rainbow-glow {
+    0% {
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.5), 0 0 40px rgba(255, 0, 0, 0.3);
+    }
+    16% {
+      box-shadow: 0 0 20px rgba(255, 127, 0, 0.5), 0 0 40px rgba(255, 127, 0, 0.3);
+    }
+    32% {
+      box-shadow: 0 0 20px rgba(255, 255, 0, 0.5), 0 0 40px rgba(255, 255, 0, 0.3);
+    }
+    48% {
+      box-shadow: 0 0 20px rgba(0, 255, 0, 0.5), 0 0 40px rgba(0, 255, 0, 0.3);
+    }
+    64% {
+      box-shadow: 0 0 20px rgba(0, 127, 255, 0.5), 0 0 40px rgba(0, 127, 255, 0.3);
+    }
+    80% {
+      box-shadow: 0 0 20px rgba(127, 0, 255, 0.5), 0 0 40px rgba(127, 0, 255, 0.3);
+    }
+    100% {
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.5), 0 0 40px rgba(255, 0, 0, 0.3);
+    }
+  }
+
+  .rainbow-glow {
+    animation: rainbow-glow 3s linear infinite;
+  }
+
   .animate-slide-down {
     animation: slide-down 0.8s ease-out;
   }

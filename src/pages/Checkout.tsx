@@ -711,24 +711,26 @@ const Checkout = () => {
                 </Card>
               )}
 
-              <Button 
-                type="submit" 
-                className="w-full bg-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))]/90"
-                size="lg"
-                disabled={isProcessing}
-              >
-                {isProcessing ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Redirecting to Stripe...
-                  </>
-                ) : (
-                  <>
-                    <CreditCard className="mr-2 h-4 w-4" />
-                    Continue to Payment - ${total.toFixed(2)}
-                  </>
-                )}
-              </Button>
+              <div className="mt-8 mb-6">
+                <Button 
+                  type="submit" 
+                  className="w-full bg-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))]/90 rainbow-glow"
+                  size="lg"
+                  disabled={isProcessing}
+                >
+                  {isProcessing ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Redirecting to Stripe...
+                    </>
+                  ) : (
+                    <>
+                      <CreditCard className="mr-2 h-4 w-4" />
+                      Continue to Payment - ${total.toFixed(2)}
+                    </>
+                  )}
+                </Button>
+              </div>
             </form>
           </div>
 
