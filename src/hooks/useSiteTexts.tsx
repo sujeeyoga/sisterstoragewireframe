@@ -36,8 +36,16 @@ export function useSiteTexts(sectionKey?: string) {
     staleTime: 60000, // Cache for 1 minute
   });
 
+  const getText = (key: string): SiteText | undefined => {
+    if (Array.isArray(data)) {
+      return data.find((text) => text.section_key === key);
+    }
+    return undefined;
+  };
+
   return {
     texts: data,
     isLoading,
+    getText,
   };
 }

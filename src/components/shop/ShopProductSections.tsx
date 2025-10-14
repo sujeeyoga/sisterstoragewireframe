@@ -2,12 +2,15 @@ import React from "react";
 import { Product } from "@/types/product";
 import BundleCard from "./BundleCard";
 import SimpleProductCard from "./SimpleProductCard";
+import { useSiteTexts } from "@/hooks/useSiteTexts";
 
 interface ShopProductSectionsProps {
   products: Product[];
 }
 
 const ShopProductSections = ({ products }: ShopProductSectionsProps) => {
+  const { getText } = useSiteTexts();
+  
   // Memoize filtered products to prevent unnecessary recalculations
   const bundles = React.useMemo(() => 
     products.filter(p => p.category === 'bundles'), 
@@ -23,6 +26,10 @@ const ShopProductSections = ({ products }: ShopProductSectionsProps) => {
     products.filter(p => p.category === 'organizers'), 
     [products]
   );
+  
+  const bundlesText = getText('shop_bundles');
+  const boxesText = getText('shop_boxes');
+  const pouchesText = getText('shop_pouches');
 
   return (
     <div className="grid gap-8">
@@ -33,10 +40,10 @@ const ShopProductSections = ({ products }: ShopProductSectionsProps) => {
             <header className="flex items-end justify-between gap-4 mb-6">
               <div>
                 <h2 className="text-3xl md:text-4xl font-bold text-foreground uppercase tracking-wide">
-                  Top-Selling Bundles
+                  {bundlesText?.title || 'Top-Selling Bundles'}
                 </h2>
                 <p className="text-base text-muted-foreground uppercase tracking-wide mt-1">
-                  Complete collections for every Sister
+                  {bundlesText?.subtitle || 'Complete collections for every Sister'}
                 </p>
               </div>
             </header>
@@ -57,10 +64,10 @@ const ShopProductSections = ({ products }: ShopProductSectionsProps) => {
             <header className="flex items-end justify-between gap-4 mb-6">
               <div>
                 <h2 className="text-3xl md:text-4xl font-bold text-foreground uppercase tracking-wide">
-                  Individual Boxes
+                  {boxesText?.title || 'Individual Boxes'}
                 </h2>
                 <p className="text-base text-muted-foreground uppercase tracking-wide mt-1">
-                  Build your own perfect collection
+                  {boxesText?.subtitle || 'Build your own perfect collection'}
                 </p>
               </div>
             </header>
@@ -81,10 +88,10 @@ const ShopProductSections = ({ products }: ShopProductSectionsProps) => {
             <header className="flex items-end justify-between gap-4 mb-6">
               <div>
                 <h2 className="text-3xl md:text-4xl font-bold text-foreground uppercase tracking-wide">
-                  Jewelry Pouches
+                  {pouchesText?.title || 'Jewelry Pouches'}
                 </h2>
                 <p className="text-base text-muted-foreground uppercase tracking-wide mt-1">
-                  Soft protection, travel-ready
+                  {pouchesText?.subtitle || 'Soft protection, travel-ready'}
                 </p>
               </div>
             </header>
