@@ -48,7 +48,7 @@ const ProductInfo = ({ product, quantity, setQuantity, onAddToCart, onBuyNow }: 
       <div className="pb-3 border-b border-gray-200">
         {product.description && (
           <div 
-            className="text-xs text-gray-700 leading-relaxed"
+            className="text-xs text-gray-700 leading-relaxed prose prose-sm max-w-none [&_strong]:font-bold [&_strong]:text-gray-900 [&_em]:italic [&_em]:text-gray-600 [&_p]:mb-3 [&_p:last-child]:mb-0 [&_br]:block [&_br]:my-1"
             dangerouslySetInnerHTML={{ __html: product.description }}
           />
         )}
