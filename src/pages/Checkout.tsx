@@ -137,10 +137,15 @@ const Checkout = () => {
            /^L[1-9]/.test(cleaned);
   };
   
-  // Apply free shipping for GTA orders over $50
+  // Check if customer is in Toronto
+  const isInToronto = formData.city.toLowerCase().includes('toronto');
   const isInGTA = isGTAPostalCode(formData.postalCode);
-  const qualifiesForFreeShipping = discountedSubtotal >= 50 && isInGTA;
-  if (qualifiesForFreeShipping) {
+  const qualifiesForFreeShipping = discountedSubtotal >= 50 && isInGTA && !isInToronto;
+  
+  // Apply Toronto flat rate ($3.99) or free shipping for GTA orders over $50
+  if (isInToronto) {
+    shippingCost = 3.99;
+  } else if (qualifiesForFreeShipping) {
     shippingCost = 0;
   }
   
@@ -352,8 +357,8 @@ const Checkout = () => {
       return;
     }
     
-    // Only require shipping selection if not qualified for free shipping
-    if (!qualifiesForFreeShipping && !selectedShippingRate) {
+    // Only require shipping selection if not qualified for free shipping or Toronto flat rate
+    if (!qualifiesForFreeShipping && !isInToronto && !selectedShippingRate) {
       toast({
         title: 'Select Shipping Method',
         description: 'Please calculate and select a shipping method',
@@ -629,8 +634,25 @@ const Checkout = () => {
                 </Card>
               )}
 
-              {/* Shipping Options - Show only if not qualified for free shipping */}
-              {!qualifiesForFreeShipping && shippingRates.length > 0 && (
+              {/* Toronto Flat Rate Message */}
+              {isInToronto && !qualifiesForFreeShipping && (
+                <Card className="border-2 border-[hsl(var(--brand-pink))] bg-pink-50">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-[hsl(var(--brand-pink))]">
+                      <Truck className="h-5 w-5" />
+                      Toronto Flat Rate Shipping
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-[hsl(var(--brand-pink))] font-medium">
+                      Great news! All Toronto orders ship for just $3.99 flat rate.
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Shipping Options - Show only if not qualified for free shipping and not Toronto */}
+              {!qualifiesForFreeShipping && !isInToronto && shippingRates.length > 0 && (
                 <Card className="border-2 border-[hsl(var(--brand-pink))]">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-[hsl(var(--brand-pink))]">
@@ -783,8 +805,8 @@ const Checkout = () => {
                     </div>
                   )}
                   
-                  {/* Free Shipping Progress for GTA */}
-                  {isInGTA && !qualifiesForFreeShipping && discountedSubtotal > 0 && (
+                  {/* Free Shipping Progress for GTA (excluding Toronto) */}
+                  {isInGTA && !isInToronto && !qualifiesForFreeShipping && discountedSubtotal > 0 && (
                     <div className="bg-gradient-to-r from-pink-50 to-purple-50 border border-[hsl(var(--brand-pink))]/20 rounded-lg p-3 my-2">
                       <div className="flex items-start gap-2">
                         <Truck className="h-4 w-4 text-[hsl(var(--brand-pink))] mt-0.5 flex-shrink-0" />
@@ -805,6 +827,25 @@ const Checkout = () => {
                           className="bg-gradient-to-r from-[hsl(var(--brand-pink))] to-purple-400 h-2 rounded-full transition-all duration-300"
                           style={{ width: `${Math.min((discountedSubtotal / 50) * 100, 100)}%` }}
                         />
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Toronto Flat Rate Message */}
+                  {isInToronto && (
+                    <div className="bg-gradient-to-r from-pink-50 to-purple-50 border border-[hsl(var(--brand-pink))]/20 rounded-lg p-3 my-2">
+                      <div className="flex items-center gap-2">
+                        <div className="flex-shrink-0 w-6 h-6 bg-[hsl(var(--brand-pink))] rounded-full flex items-center justify-center">
+                          <MapPin className="h-3 w-3 text-white" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-xs font-bold text-[hsl(var(--brand-pink))]">
+                            Toronto Flat Rate
+                          </p>
+                          <p className="text-xs text-gray-700">
+                            All Toronto orders ship for just $3.99
+                          </p>
+                        </div>
                       </div>
                     </div>
                   )}
