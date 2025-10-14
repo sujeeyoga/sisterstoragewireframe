@@ -41,10 +41,43 @@ export const useStallionShipping = () => {
   const getRates = async (request: RateRequest) => {
     setLoading(true);
     try {
+      // Format the request for Stallion API v4
+      const formattedRequest = {
+        from_address: {
+          name: request.from.name || '',
+          address1: request.from.street1 || '',
+          city: request.from.city || '',
+          province_code: request.from.province || '',
+          postal_code: (request.from.postal_code || '').replace(/\s/g, '').toUpperCase(),
+          country_code: request.from.country || 'CA',
+        },
+        to_address: {
+          name: request.to.name || '',
+          address1: request.to.street1 || '',
+          city: request.to.city || '',
+          province_code: request.to.province || '',
+          postal_code: (request.to.postal_code || '').replace(/\s/g, '').toUpperCase(),
+          country_code: request.to.country || 'CA',
+          phone: request.to.phone || '',
+          email: request.to.email || '',
+        },
+        weight: request.packages[0]?.weight || 1,
+        weight_unit: request.packages[0]?.units === 'metric' ? 'kg' : 'lb',
+        length: request.packages[0]?.length || 30,
+        width: request.packages[0]?.width || 20,
+        height: request.packages[0]?.height || 10,
+        size_unit: request.packages[0]?.units === 'metric' ? 'cm' : 'in',
+        package_contents: 'Jewelry storage accessories',
+        value: 100,
+        currency: 'CAD',
+      };
+
+      console.log('Formatted get-rates request:', formattedRequest);
+
       const { data, error } = await supabase.functions.invoke('stallion-express', {
         body: {
           action: 'get-rates',
-          data: request,
+          data: formattedRequest,
         },
       });
 
@@ -71,10 +104,45 @@ export const useStallionShipping = () => {
   const createShipment = async (request: ShipmentRequest) => {
     setLoading(true);
     try {
+      // Format the request for Stallion API v4
+      const formattedRequest = {
+        from_address: {
+          name: request.from.name || '',
+          address1: request.from.street1 || '',
+          city: request.from.city || '',
+          province_code: request.from.province || '',
+          postal_code: (request.from.postal_code || '').replace(/\s/g, '').toUpperCase(),
+          country_code: request.from.country || 'CA',
+        },
+        to_address: {
+          name: request.to.name || '',
+          address1: request.to.street1 || '',
+          city: request.to.city || '',
+          province_code: request.to.province || '',
+          postal_code: (request.to.postal_code || '').replace(/\s/g, '').toUpperCase(),
+          country_code: request.to.country || 'CA',
+          phone: request.to.phone || '',
+          email: request.to.email || '',
+        },
+        weight: request.packages[0]?.weight || 1,
+        weight_unit: request.packages[0]?.units === 'metric' ? 'kg' : 'lb',
+        length: request.packages[0]?.length || 30,
+        width: request.packages[0]?.width || 20,
+        height: request.packages[0]?.height || 10,
+        size_unit: request.packages[0]?.units === 'metric' ? 'cm' : 'in',
+        package_contents: 'Jewelry storage accessories',
+        value: 100,
+        currency: 'CAD',
+        postage_type: request.postage_type || 'DOM.EP',
+        reference: request.reference || '',
+      };
+
+      console.log('Formatted create-shipment request:', formattedRequest);
+
       const { data, error } = await supabase.functions.invoke('stallion-express', {
         body: {
           action: 'create-shipment',
-          data: request,
+          data: formattedRequest,
         },
       });
 

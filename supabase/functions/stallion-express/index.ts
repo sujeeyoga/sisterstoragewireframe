@@ -15,6 +15,32 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // Helper function to format Canadian postal codes
+  const formatPostalCode = (postalCode: string): string => {
+    if (!postalCode) return '';
+    // Remove all spaces and convert to uppercase
+    const cleaned = postalCode.replace(/\s/g, '').toUpperCase();
+    // Canadian postal codes should be 6 characters
+    if (cleaned.length !== 6) {
+      console.warn(`Invalid postal code length: ${postalCode} -> ${cleaned}`);
+      return cleaned;
+    }
+    // Return without space for Stallion API
+    return cleaned;
+  };
+
+  // Helper function to format address data for Stallion API
+  const formatAddressForStallion = (address: any) => {
+    if (!address) return address;
+    
+    return {
+      ...address,
+      postal_code: address.postal_code ? formatPostalCode(address.postal_code) : '',
+      province_code: address.province_code || address.province || '',
+      address1: address.address1 || address.street || address.address || '',
+    };
+  };
+
   try {
     const { action, data } = await req.json();
 
@@ -22,7 +48,20 @@ serve(async (req) => {
       throw new Error('Stallion Express API token not configured');
     }
 
-    console.log('Stallion Express request:', { action, data });
+    // Format addresses if present in the data
+    let formattedData = { ...data };
+    if (data.from_address) {
+      formattedData.from_address = formatAddressForStallion(data.from_address);
+    }
+    if (data.to_address) {
+      formattedData.to_address = formatAddressForStallion(data.to_address);
+    }
+
+    console.log('Stallion Express request:', { 
+      action, 
+      originalData: data,
+      formattedData 
+    });
 
     let endpoint = '';
     let method = 'GET';
@@ -33,13 +72,13 @@ serve(async (req) => {
       case 'get-rates':
         endpoint = '/rates';
         method = 'POST';
-        body = JSON.stringify(data);
+        body = JSON.stringify(formattedData);
         break;
 
       case 'create-shipment':
         endpoint = '/shipments';
         method = 'POST';
-        body = JSON.stringify(data);
+        body = JSON.stringify(formattedData);
         break;
 
       case 'get-shipment':

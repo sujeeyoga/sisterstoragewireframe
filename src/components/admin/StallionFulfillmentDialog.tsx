@@ -61,6 +61,11 @@ export function StallionFulfillmentDialog({ order, open, onClose, onSuccess }: S
     },
   });
 
+  const formatPostalCode = (postalCode: string): string => {
+    if (!postalCode) return '';
+    return postalCode.replace(/\s/g, '').toUpperCase();
+  };
+
   const handleGetRates = async () => {
     if (!fulfillmentAddress) {
       toast.error('Please configure fulfillment address in Store Settings first');
@@ -73,25 +78,39 @@ export function StallionFulfillmentDialog({ order, open, onClose, onSuccess }: S
       return;
     }
 
+    const postalCode = formatPostalCode(shippingAddr.postcode || shippingAddr.postal_code || '');
+    
+    // Validate postal code
+    if (!postalCode || postalCode.length !== 6) {
+      toast.error(`Invalid postal code: ${shippingAddr.postcode || shippingAddr.postal_code}. Canadian postal codes must be 6 characters (e.g., M5V3A8).`);
+      return;
+    }
+
     try {
+      // Convert imperial to metric for Stallion API
+      const weightKg = parseFloat(weight) * 0.453592; // lbs to kg
+      const lengthCm = parseFloat(length) * 2.54; // inches to cm
+      const widthCm = parseFloat(width) * 2.54;
+      const heightCm = parseFloat(height) * 2.54;
+
       const ratesData = await getRates({
         from: fulfillmentAddress as any,
         to: {
-          name: order.customer_name || `${shippingAddr.first_name} ${shippingAddr.last_name}`,
-          street1: shippingAddr.address_1 || shippingAddr.line1,
-          street2: shippingAddr.address_2 || shippingAddr.line2,
-          city: shippingAddr.city,
-          province: shippingAddr.state || shippingAddr.province,
-          postal_code: shippingAddr.postcode || shippingAddr.postal_code,
-          country: shippingAddr.country || 'CA',
-          email: order.customer_email || shippingAddr.email,
+          name: order.customer_name || `${shippingAddr.first_name || ''} ${shippingAddr.last_name || ''}`.trim(),
+          street1: shippingAddr.address_1 || shippingAddr.line1 || shippingAddr.address1 || '',
+          street2: shippingAddr.address_2 || shippingAddr.line2 || shippingAddr.address2 || '',
+          city: shippingAddr.city || '',
+          province: shippingAddr.state || shippingAddr.province || shippingAddr.province_code || '',
+          postal_code: postalCode,
+          country: shippingAddr.country || shippingAddr.country_code || 'CA',
+          email: order.customer_email || shippingAddr.email || '',
         },
         packages: [{
-          weight: parseFloat(weight),
-          length: parseFloat(length),
-          width: parseFloat(width),
-          height: parseFloat(height),
-          units: 'imperial'
+          weight: weightKg,
+          length: lengthCm,
+          width: widthCm,
+          height: heightCm,
+          units: 'metric'
         }]
       });
 
@@ -106,26 +125,33 @@ export function StallionFulfillmentDialog({ order, open, onClose, onSuccess }: S
     if (!selectedRate || !fulfillmentAddress) return;
 
     const shippingAddr = order.shipping_address || order.billing;
+    const postalCode = formatPostalCode(shippingAddr.postcode || shippingAddr.postal_code || '');
     
     try {
+      // Convert imperial to metric for Stallion API
+      const weightKg = parseFloat(weight) * 0.453592;
+      const lengthCm = parseFloat(length) * 2.54;
+      const widthCm = parseFloat(width) * 2.54;
+      const heightCm = parseFloat(height) * 2.54;
+
       const shipment = await createShipment({
         from: fulfillmentAddress as any,
         to: {
-          name: order.customer_name || `${shippingAddr.first_name} ${shippingAddr.last_name}`,
-          street1: shippingAddr.address_1 || shippingAddr.line1,
-          street2: shippingAddr.address_2 || shippingAddr.line2,
-          city: shippingAddr.city,
-          province: shippingAddr.state || shippingAddr.province,
-          postal_code: shippingAddr.postcode || shippingAddr.postal_code,
-          country: shippingAddr.country || 'CA',
-          email: order.customer_email || shippingAddr.email,
+          name: order.customer_name || `${shippingAddr.first_name || ''} ${shippingAddr.last_name || ''}`.trim(),
+          street1: shippingAddr.address_1 || shippingAddr.line1 || shippingAddr.address1 || '',
+          street2: shippingAddr.address_2 || shippingAddr.line2 || shippingAddr.address2 || '',
+          city: shippingAddr.city || '',
+          province: shippingAddr.state || shippingAddr.province || shippingAddr.province_code || '',
+          postal_code: postalCode,
+          country: shippingAddr.country || shippingAddr.country_code || 'CA',
+          email: order.customer_email || shippingAddr.email || '',
         },
         packages: [{
-          weight: parseFloat(weight),
-          length: parseFloat(length),
-          width: parseFloat(width),
-          height: parseFloat(height),
-          units: 'imperial'
+          weight: weightKg,
+          length: lengthCm,
+          width: widthCm,
+          height: heightCm,
+          units: 'metric'
         }],
         postage_type: selectedRate,
         reference: `Order-${order.id}`

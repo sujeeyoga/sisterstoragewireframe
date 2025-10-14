@@ -65,6 +65,11 @@ export function BulkFulfillmentDialog({ orderIds, open, onClose, onSuccess }: Bu
     },
   });
 
+  const formatPostalCode = (postalCode: string): string => {
+    if (!postalCode) return '';
+    return postalCode.replace(/\s/g, '').toUpperCase();
+  };
+
   const processOrders = async () => {
     if (!fulfillmentAddress) {
       toast.error('Please configure fulfillment address in Store Settings first');
@@ -93,26 +98,45 @@ export function BulkFulfillmentDialog({ orderIds, open, onClose, onSuccess }: Bu
         continue;
       }
 
+      const postalCode = formatPostalCode((shippingAddr as any).postcode || (shippingAddr as any).postal_code || '');
+      
+      // Validate postal code
+      if (!postalCode || postalCode.length !== 6) {
+        processResults.push({ 
+          orderId: order.id, 
+          success: false, 
+          error: `Invalid postal code: ${(shippingAddr as any).postcode || (shippingAddr as any).postal_code}` 
+        });
+        setProgress(((i + 1) / orders.length) * 100);
+        continue;
+      }
+
       try {
+        // Convert imperial to metric for Stallion API
+        const weightKg = parseFloat(weight) * 0.453592;
+        const lengthCm = parseFloat(length) * 2.54;
+        const widthCm = parseFloat(width) * 2.54;
+        const heightCm = parseFloat(height) * 2.54;
+
         // Create shipment
         const shipment = await createShipment({
           from: fulfillmentAddress as any,
           to: {
-            name: order.customer_name || `${(shippingAddr as any).first_name} ${(shippingAddr as any).last_name}`,
-            street1: (shippingAddr as any).address_1 || (shippingAddr as any).line1,
-            street2: (shippingAddr as any).address_2 || (shippingAddr as any).line2,
-            city: (shippingAddr as any).city,
-            province: (shippingAddr as any).state || (shippingAddr as any).province,
-            postal_code: (shippingAddr as any).postcode || (shippingAddr as any).postal_code,
-            country: (shippingAddr as any).country || 'CA',
-            email: order.customer_email || (shippingAddr as any).email,
+            name: order.customer_name || `${(shippingAddr as any).first_name || ''} ${(shippingAddr as any).last_name || ''}`.trim(),
+            street1: (shippingAddr as any).address_1 || (shippingAddr as any).line1 || (shippingAddr as any).address1 || '',
+            street2: (shippingAddr as any).address_2 || (shippingAddr as any).line2 || (shippingAddr as any).address2 || '',
+            city: (shippingAddr as any).city || '',
+            province: (shippingAddr as any).state || (shippingAddr as any).province || (shippingAddr as any).province_code || '',
+            postal_code: postalCode,
+            country: (shippingAddr as any).country || (shippingAddr as any).country_code || 'CA',
+            email: order.customer_email || (shippingAddr as any).email || '',
           },
           packages: [{
-            weight: parseFloat(weight),
-            length: parseFloat(length),
-            width: parseFloat(width),
-            height: parseFloat(height),
-            units: 'imperial'
+            weight: weightKg,
+            length: lengthCm,
+            width: widthCm,
+            height: heightCm,
+            units: 'metric'
           }],
           postage_type: 'DOM.EP',
           reference: `Order-${order.id}`
