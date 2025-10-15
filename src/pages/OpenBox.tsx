@@ -4,9 +4,14 @@ import Layout from "@/components/layout/Layout";
 import { useProducts } from "@/hooks/useProducts";
 import SimpleProductCard from "@/components/shop/SimpleProductCard";
 import { Package } from "lucide-react";
+import { useSiteTexts } from "@/hooks/useSiteTexts";
+import { EditableText } from "@/components/admin/EditableText";
 
 const OpenBox = () => {
   const { data: products = [], isLoading } = useProducts();
+  const { texts: heroTexts } = useSiteTexts('openbox_hero');
+  
+  const heroText = heroTexts as any;
   
   // Filter products by checking if categories array includes open-box slug
   const openBoxProducts = products.filter(p => 
@@ -31,13 +36,25 @@ const OpenBox = () => {
           <div className="max-w-7xl mx-auto text-center">
             <div className="flex items-center justify-center gap-3 mb-4">
               <Package className="w-12 h-12 text-[#ff6b35]" aria-hidden="true" />
-              <h1 className="text-5xl md:text-6xl font-bold text-gray-900 uppercase">
-                Open Box Deals
-              </h1>
+              {heroText && (
+                <EditableText
+                  siteTextId={heroText.id}
+                  field="title"
+                  value={heroText.title}
+                  as="h1"
+                  className="text-5xl md:text-6xl font-bold text-gray-900 uppercase"
+                />
+              )}
             </div>
-            <p className="text-xl text-gray-700 max-w-2xl mx-auto">
-              Quality products at unbeatable prices. Limited quantities available - these deals won&apos;t last long!
-            </p>
+            {heroText && (
+              <EditableText
+                siteTextId={heroText.id}
+                field="description"
+                value={heroText.description}
+                as="p"
+                className="text-xl text-gray-700 max-w-2xl mx-auto"
+              />
+            )}
           </div>
         </header>
 

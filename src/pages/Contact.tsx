@@ -5,8 +5,18 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Mail, Phone, MapPin, Clock, MessageSquare } from 'lucide-react';
+import { useSiteTexts } from '@/hooks/useSiteTexts';
+import { EditableText } from '@/components/admin/EditableText';
 
 const Contact = () => {
+  const { texts: heroTexts } = useSiteTexts('contact_hero');
+  const { texts: phoneTexts } = useSiteTexts('contact_phone');
+  const { texts: locationTexts } = useSiteTexts('contact_location');
+  
+  const heroText = heroTexts as any;
+  const phoneText = phoneTexts as any;
+  const locationText = locationTexts as any;
+  
   return (
     <BaseLayout>
       <main className="min-h-screen bg-background">
@@ -15,11 +25,24 @@ const Contact = () => {
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-16">
                 <span className="text-primary font-medium">Get in Touch</span>
-                <h1 className="text-4xl md:text-5xl font-bold mt-2 mb-4">Contact Our Sister Team</h1>
-                <p className="text-muted-foreground max-w-2xl mx-auto">
-                  We're here to help with any questions about our products, orders, or organization tips. 
-                  Reach out to our sisterhood of support specialists.
-                </p>
+                {heroText && (
+                  <>
+                    <EditableText
+                      siteTextId={heroText.id}
+                      field="title"
+                      value={heroText.title}
+                      as="h1"
+                      className="text-4xl md:text-5xl font-bold mt-2 mb-4"
+                    />
+                    <EditableText
+                      siteTextId={heroText.id}
+                      field="description"
+                      value={heroText.description}
+                      as="p"
+                      className="text-muted-foreground max-w-2xl mx-auto"
+                    />
+                  </>
+                )}
               </div>
 
               <div className="grid md:grid-cols-2 gap-12">
@@ -66,20 +89,37 @@ const Contact = () => {
 
                 {/* Contact Information */}
                 <div className="space-y-6">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <Phone className="h-5 w-5 text-primary" />
-                        Phone Support
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="font-semibold text-lg mb-2">1-800-SISTERS</p>
-                      <p className="text-muted-foreground">Monday-Friday: 8AM-8PM EST</p>
-                      <p className="text-muted-foreground">Saturday: 9AM-6PM EST</p>
-                      <p className="text-muted-foreground">Sunday: 10AM-4PM EST</p>
-                    </CardContent>
-                  </Card>
+                  {phoneText && (
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <Phone className="h-5 w-5 text-primary" />
+                          <EditableText
+                            siteTextId={phoneText.id}
+                            field="title"
+                            value={phoneText.title}
+                            as="span"
+                          />
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <EditableText
+                          siteTextId={phoneText.id}
+                          field="subtitle"
+                          value={phoneText.subtitle}
+                          as="p"
+                          className="font-semibold text-lg mb-2"
+                        />
+                        <EditableText
+                          siteTextId={phoneText.id}
+                          field="description"
+                          value={phoneText.description}
+                          as="p"
+                          className="text-muted-foreground whitespace-pre-line"
+                        />
+                      </CardContent>
+                    </Card>
+                  )}
 
                   <Card>
                     <CardHeader>
@@ -104,20 +144,32 @@ const Contact = () => {
                     </CardContent>
                   </Card>
 
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <MapPin className="h-5 w-5 text-primary" />
-                        Our Location
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="font-medium mb-2">Sister Storage Headquarters</p>
-                      <p className="text-muted-foreground">123 Organization Avenue</p>
-                      <p className="text-muted-foreground">Culture District</p>
-                      <p className="text-muted-foreground">New York, NY 10001</p>
-                    </CardContent>
-                  </Card>
+                  {locationText && (
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <MapPin className="h-5 w-5 text-primary" />
+                          Our Location
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <EditableText
+                          siteTextId={locationText.id}
+                          field="title"
+                          value={locationText.title}
+                          as="p"
+                          className="font-medium mb-2"
+                        />
+                        <EditableText
+                          siteTextId={locationText.id}
+                          field="description"
+                          value={locationText.description}
+                          as="p"
+                          className="text-muted-foreground whitespace-pre-line"
+                        />
+                      </CardContent>
+                    </Card>
+                  )}
 
                   <Card>
                     <CardHeader>

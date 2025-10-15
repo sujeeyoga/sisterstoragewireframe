@@ -3,6 +3,8 @@ import { EnhancedScrollFade } from "@/components/ui/enhanced-scroll-fade";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import StyledBySisters from "@/components/StyledBySisters";
 import { Button } from "@/components/ui/button";
+import { useSiteTexts } from "@/hooks/useSiteTexts";
+import { EditableText } from "@/components/admin/EditableText";
 
 const testimonials = [
   {
@@ -73,6 +75,18 @@ const storyMilestones = [
 ];
 
 const OurStory = () => {
+  const { texts: heroTexts } = useSiteTexts('our_story_hero');
+  const { texts: beginningTexts } = useSiteTexts('our_story_beginning');
+  const { texts: solutionTexts } = useSiteTexts('our_story_solution');
+  const { texts: testimonialsTexts } = useSiteTexts('our_story_testimonials');
+  const { texts: ctaTexts } = useSiteTexts('our_story_cta');
+  
+  const heroText = heroTexts as any;
+  const beginningText = beginningTexts as any;
+  const solutionText = solutionTexts as any;
+  const testimonialsText = testimonialsTexts as any;
+  const ctaText = ctaTexts as any;
+  
   return (
     <BaseLayout variant="standard" pageId="our-story">
       {/* Hero Section */}
@@ -83,13 +97,24 @@ const OurStory = () => {
               <span className="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
               <span className="text-primary font-medium text-sm">Our Journey</span>
             </div>
-            <h1 className="text-4xl md:text-6xl font-black tracking-tight mb-6">
-              Our Story &
-              <span className="block text-primary">Customer Love</span>
-            </h1>
-            <p className="text-muted-foreground text-lg md:text-xl leading-relaxed max-w-2xl mx-auto">
-              Built by sisters, for sisters. We set out to solve a simple problem: beautifully organizing what matters to us—without the clutter.
-            </p>
+            {heroText && (
+              <>
+                <EditableText
+                  siteTextId={heroText.id}
+                  field="title"
+                  value={heroText.title}
+                  as="h1"
+                  className="text-4xl md:text-6xl font-black tracking-tight mb-6"
+                />
+                <EditableText
+                  siteTextId={heroText.id}
+                  field="description"
+                  value={heroText.description}
+                  as="p"
+                  className="text-muted-foreground text-lg md:text-xl leading-relaxed max-w-2xl mx-auto"
+                />
+              </>
+            )}
           </EnhancedScrollFade>
         </div>
       </section>
@@ -117,25 +142,43 @@ const OurStory = () => {
         <div className="mx-auto max-w-3xl px-6">
           <EnhancedScrollFade preset="subtle">
             <div className="space-y-8">
-              <div>
-                <h2 className="text-2xl md:text-3xl font-bold mb-4">The Beginning</h2>
-                <p className="text-muted-foreground text-lg leading-relaxed mb-6">
-                  It started with a simple frustration. We had beautiful bangles—gifts from family, pieces we'd collected over the years, jewelry that told our stories. But we had nowhere to properly store them.
-                </p>
-                <p className="text-muted-foreground leading-relaxed mb-6">
-                  They sat in boxes, tangled in drawers, or worse—hidden away where we'd forget about them entirely. We knew there had to be a better way.
-                </p>
-              </div>
+              {beginningText && (
+                <div>
+                  <EditableText
+                    siteTextId={beginningText.id}
+                    field="title"
+                    value={beginningText.title}
+                    as="h2"
+                    className="text-2xl md:text-3xl font-bold mb-4"
+                  />
+                  <EditableText
+                    siteTextId={beginningText.id}
+                    field="description"
+                    value={beginningText.description}
+                    as="p"
+                    className="text-muted-foreground text-lg leading-relaxed mb-6"
+                  />
+                </div>
+              )}
 
-              <div>
-                <h2 className="text-2xl md:text-3xl font-bold mb-4">The Solution</h2>
-                <p className="text-muted-foreground leading-relaxed mb-6">
-                  From kitchen tables to studios, we designed, tested, and refined each detail so it fits our culture and our homes. This is more than storage—it's a way to keep our stories visible, cared for, and ready for every day.
-                </p>
-                <p className="text-muted-foreground leading-relaxed">
-                  Every organizer we create celebrates what makes our jewelry special, turning storage into display, and chaos into calm.
-                </p>
-              </div>
+              {solutionText && (
+                <div>
+                  <EditableText
+                    siteTextId={solutionText.id}
+                    field="title"
+                    value={solutionText.title}
+                    as="h2"
+                    className="text-2xl md:text-3xl font-bold mb-4"
+                  />
+                  <EditableText
+                    siteTextId={solutionText.id}
+                    field="description"
+                    value={solutionText.description}
+                    as="p"
+                    className="text-muted-foreground leading-relaxed mb-6"
+                  />
+                </div>
+              )}
             </div>
           </EnhancedScrollFade>
         </div>
@@ -150,10 +193,24 @@ const OurStory = () => {
                 <span className="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
                 <span className="text-primary font-medium text-sm">Customer Love</span>
               </div>
-              <h2 className="text-3xl md:text-5xl font-bold mb-4">What Our Sisters Are Saying</h2>
-              <p className="text-muted-foreground text-lg">
-                Don't just take our word for it—hear from our community of organized enthusiasts
-              </p>
+              {testimonialsText && (
+                <>
+                  <EditableText
+                    siteTextId={testimonialsText.id}
+                    field="title"
+                    value={testimonialsText.title}
+                    as="h2"
+                    className="text-3xl md:text-5xl font-bold mb-4"
+                  />
+                  <EditableText
+                    siteTextId={testimonialsText.id}
+                    field="description"
+                    value={testimonialsText.description}
+                    as="p"
+                    className="text-muted-foreground text-lg"
+                  />
+                </>
+              )}
             </div>
             
             <div className="max-w-5xl mx-auto">
@@ -209,14 +266,37 @@ const OurStory = () => {
       <section className="py-16 md:py-24 bg-gradient-to-b from-background to-primary/5">
         <div className="mx-auto max-w-2xl px-6 text-center">
           <EnhancedScrollFade preset="medium">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Join Our Story</h2>
-            <p className="text-muted-foreground text-lg mb-8 leading-relaxed">
-              Become part of our community of sisters who organize with love, intention, and cultural pride.
-            </p>
+            {ctaText && (
+              <>
+                <EditableText
+                  siteTextId={ctaText.id}
+                  field="title"
+                  value={ctaText.title}
+                  as="h2"
+                  className="text-3xl md:text-4xl font-bold mb-4"
+                />
+                <EditableText
+                  siteTextId={ctaText.id}
+                  field="description"
+                  value={ctaText.description}
+                  as="p"
+                  className="text-muted-foreground text-lg mb-8 leading-relaxed"
+                />
+              </>
+            )}
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" asChild>
-                <a href="/shop">Shop Our Collection</a>
-              </Button>
+              {ctaText && (
+                <Button size="lg" asChild>
+                  <a href="/shop">
+                    <EditableText
+                      siteTextId={ctaText.id}
+                      field="button_text"
+                      value={ctaText.button_text}
+                      as="span"
+                    />
+                  </a>
+                </Button>
+              )}
               <Button variant="outline" size="lg" asChild>
                 <a href="/">Explore More</a>
               </Button>

@@ -5,6 +5,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Gift as GiftIcon, Heart, Sparkles, Package } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useSiteTexts } from '@/hooks/useSiteTexts';
+import { EditableText } from '@/components/admin/EditableText';
+import { EditableImage } from '@/components/admin/EditableImage';
 
 const giftSets = [
   {
@@ -37,6 +40,16 @@ const giftSets = [
 ];
 
 const Gift = () => {
+  const { texts: heroTexts } = useSiteTexts('gift_hero');
+  const { texts: collectionsTexts } = useSiteTexts('gift_collections');
+  const { texts: featuresTexts } = useSiteTexts('gift_features_title');
+  const { texts: ctaTexts } = useSiteTexts('gift_cta');
+  
+  const heroText = heroTexts as any;
+  const collectionsText = collectionsTexts as any;
+  const featuresText = featuresTexts as any;
+  const ctaText = ctaTexts as any;
+  
   return (
     <BaseLayout>
       <main className="min-h-screen bg-background">
@@ -49,17 +62,36 @@ const Gift = () => {
                   <GiftIcon className="h-4 w-4 text-primary" />
                   <span className="text-primary font-medium">Gift with Culture</span>
                 </div>
-                <h1 className="text-4xl md:text-6xl font-bold mb-6">
-                  Give the Gift of <span className="text-primary">Organization</span>
-                </h1>
-                <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-                  Share the beauty of organized living with thoughtfully curated gift sets that celebrate culture and style.
-                </p>
+                {heroText && (
+                  <>
+                    <EditableText
+                      siteTextId={heroText.id}
+                      field="title"
+                      value={heroText.title}
+                      as="h1"
+                      className="text-4xl md:text-6xl font-bold mb-6"
+                    />
+                    <EditableText
+                      siteTextId={heroText.id}
+                      field="description"
+                      value={heroText.description}
+                      as="p"
+                      className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto"
+                    />
+                  </>
+                )}
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Button size="lg" className="px-8">
-                    <GiftIcon className="h-4 w-4 mr-2" />
-                    Shop Gift Sets
-                  </Button>
+                  {heroText && (
+                    <Button size="lg" className="px-8">
+                      <GiftIcon className="h-4 w-4 mr-2" />
+                      <EditableText
+                        siteTextId={heroText.id}
+                        field="button_text"
+                        value={heroText.button_text}
+                        as="span"
+                      />
+                    </Button>
+                  )}
                   <Button variant="outline" size="lg" className="px-8">
                     Gift Cards Available
                   </Button>
@@ -74,17 +106,31 @@ const Gift = () => {
           <div className="container-custom px-4">
             <EnhancedScrollFade>
               <div className="text-center mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">Curated Gift Collections</h2>
-                <p className="text-muted-foreground max-w-2xl mx-auto">
-                  Each gift set is thoughtfully assembled to bring joy, organization, and cultural celebration to your loved ones.
-                </p>
+                {collectionsText && (
+                  <>
+                    <EditableText
+                      siteTextId={collectionsText.id}
+                      field="title"
+                      value={collectionsText.title}
+                      as="h2"
+                      className="text-3xl md:text-4xl font-bold mb-4"
+                    />
+                    <EditableText
+                      siteTextId={collectionsText.id}
+                      field="description"
+                      value={collectionsText.description}
+                      as="p"
+                      className="text-muted-foreground max-w-2xl mx-auto"
+                    />
+                  </>
+                )}
               </div>
 
               <div className="grid md:grid-cols-3 gap-8">
                 {giftSets.map((giftSet) => (
                   <Card key={giftSet.id} className="overflow-hidden hover:shadow-lg transition-shadow">
                     <div className="aspect-square overflow-hidden">
-                      <img 
+                      <EditableImage
                         src={giftSet.image} 
                         alt={giftSet.name}
                         className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
@@ -129,7 +175,15 @@ const Gift = () => {
           <div className="container-custom px-4">
             <EnhancedScrollFade>
               <div className="text-center mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">Why Choose Sister Storage Gifts?</h2>
+                {featuresText && (
+                  <EditableText
+                    siteTextId={featuresText.id}
+                    field="title"
+                    value={featuresText.title}
+                    as="h2"
+                    className="text-3xl md:text-4xl font-bold mb-4"
+                  />
+                )}
               </div>
 
               <div className="grid md:grid-cols-3 gap-8">
@@ -178,16 +232,37 @@ const Gift = () => {
           <div className="container-custom px-4">
             <EnhancedScrollFade>
               <div className="text-center max-w-2xl mx-auto">
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                  Ready to Give the Perfect Gift?
-                </h2>
-                <p className="text-muted-foreground mb-8">
-                  Can't decide? Our gift cards let your loved ones choose exactly what speaks to them.
-                </p>
+                {ctaText && (
+                  <>
+                    <EditableText
+                      siteTextId={ctaText.id}
+                      field="title"
+                      value={ctaText.title}
+                      as="h2"
+                      className="text-3xl md:text-4xl font-bold mb-4"
+                    />
+                    <EditableText
+                      siteTextId={ctaText.id}
+                      field="description"
+                      value={ctaText.description}
+                      as="p"
+                      className="text-muted-foreground mb-8"
+                    />
+                  </>
+                )}
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Button size="lg" asChild>
-                    <Link to="/shop">Shop All Gifts</Link>
-                  </Button>
+                  {ctaText && (
+                    <Button size="lg" asChild>
+                      <Link to="/shop">
+                        <EditableText
+                          siteTextId={ctaText.id}
+                          field="button_text"
+                          value={ctaText.button_text}
+                          as="span"
+                        />
+                      </Link>
+                    </Button>
+                  )}
                   <Button variant="outline" size="lg">Purchase Gift Card</Button>
                 </div>
               </div>
