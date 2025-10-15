@@ -688,12 +688,27 @@ export const ProductForm = () => {
               </div>
 
               <div className="space-y-4">
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    id="manage_stock"
-                    {...register('manage_stock')}
-                  />
-                  <Label htmlFor="manage_stock">Manage Stock</Label>
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      id="manage_stock"
+                      checked={manageStock}
+                      onCheckedChange={(checked) => {
+                        setValue('manage_stock', checked);
+                        if (!checked) {
+                          // Clear stock quantity when switching to unlimited
+                          setValue('stock_quantity', null);
+                        }
+                        setSaveStatus('unsaved');
+                      }}
+                    />
+                    <Label htmlFor="manage_stock">Track Stock Quantity</Label>
+                  </div>
+                  <p className="text-xs text-muted-foreground ml-8">
+                    {manageStock 
+                      ? 'Stock is limited to a specific quantity' 
+                      : '✓ Unlimited stock - quantity not tracked'}
+                  </p>
                 </div>
 
                 {manageStock && (
@@ -703,17 +718,22 @@ export const ProductForm = () => {
                       id="stock_quantity"
                       type="number"
                       {...register('stock_quantity', { valueAsNumber: true })}
-                      placeholder="0"
+                      placeholder="Enter available quantity"
                     />
                   </div>
                 )}
 
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    id="in_stock"
-                    {...register('in_stock')}
-                  />
-                  <Label htmlFor="in_stock">In Stock</Label>
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      id="in_stock"
+                      {...register('in_stock')}
+                    />
+                    <Label htmlFor="in_stock">Available for Purchase</Label>
+                  </div>
+                  <p className="text-xs text-muted-foreground ml-8">
+                    Toggle off to temporarily hide from shop
+                  </p>
                 </div>
               </div>
 
