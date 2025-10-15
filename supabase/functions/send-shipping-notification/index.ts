@@ -151,18 +151,22 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Shipping notification sent successfully:", emailResponse);
 
-    // Update order to mark notification as sent
+    // Update order to mark notification as sent (background task)
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    await supabase
-      .from("orders")
-      .update({ 
-        shipping_notification_sent_at: new Date().toISOString() 
-      })
-      .eq("id", orderId);
+    const updateTask = async () => {
+      await supabase
+        .from("orders")
+        .update({ 
+          shipping_notification_sent_at: new Date().toISOString() 
+        })
+        .eq("id", orderId);
+    };
+
+    EdgeRuntime.waitUntil(updateTask());
 
     return new Response(JSON.stringify(emailResponse), {
       status: 200,

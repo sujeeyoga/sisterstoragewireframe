@@ -143,11 +143,15 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Email sent successfully:", emailResponse);
 
-    // Update abandoned cart with reminder sent timestamp
-    await supabase
-      .from("abandoned_carts")
-      .update({ reminder_sent_at: new Date().toISOString() })
-      .eq("id", abandonedCart.id);
+    // Update abandoned cart with reminder sent timestamp (background task)
+    const updateTask = async () => {
+      await supabase
+        .from("abandoned_carts")
+        .update({ reminder_sent_at: new Date().toISOString() })
+        .eq("id", abandonedCart.id);
+    };
+    
+    EdgeRuntime.waitUntil(updateTask());
 
     return new Response(
       JSON.stringify({ 
