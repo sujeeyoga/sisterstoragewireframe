@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -18,10 +18,13 @@ export function AdminEditModeProvider({ children }: { children: ReactNode }) {
   const { toast } = useToast();
 
   // Check admin status on mount
-  useState(() => {
+  useEffect(() => {
     const checkAdmin = async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) {
+        setIsAdmin(false);
+        return;
+      }
 
       const { data } = await supabase
         .from('user_roles')
@@ -32,7 +35,7 @@ export function AdminEditModeProvider({ children }: { children: ReactNode }) {
       setIsAdmin(data?.role === 'admin');
     };
     checkAdmin();
-  });
+  }, []);
 
   const toggleEditMode = () => {
     if (!isAdmin) {
@@ -43,10 +46,11 @@ export function AdminEditModeProvider({ children }: { children: ReactNode }) {
       });
       return;
     }
-    setIsEditMode(!isEditMode);
+    const newMode = !isEditMode;
+    setIsEditMode(newMode);
     toast({
-      title: isEditMode ? "Edit Mode Disabled" : "Edit Mode Enabled",
-      description: isEditMode 
+      title: newMode ? "Edit Mode Enabled" : "Edit Mode Disabled",
+      description: newMode 
         ? "Click elements to edit them" 
         : "Changes saved automatically"
     });
