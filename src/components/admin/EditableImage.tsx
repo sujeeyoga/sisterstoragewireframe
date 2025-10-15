@@ -25,10 +25,18 @@ export function EditableImage({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
-  const handleClick = () => {
-    if (isEditMode && fileInputRef.current) {
-      fileInputRef.current.click();
-    }
+  const handleClick = (e: React.MouseEvent) => {
+    if (!isEditMode) return;
+    e.preventDefault();
+    e.stopPropagation();
+    fileInputRef.current?.click();
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (!isEditMode) return;
+    e.preventDefault();
+    e.stopPropagation();
+    fileInputRef.current?.click();
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -94,6 +102,7 @@ export function EditableImage({
         alt={alt} 
         className={`${className} ${isEditMode ? 'cursor-pointer hover:opacity-80 transition-opacity' : ''}`}
         onClick={handleClick}
+        onTouchStart={handleTouchStart}
       />
       <input
         ref={fileInputRef}

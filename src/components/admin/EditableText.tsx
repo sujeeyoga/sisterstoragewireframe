@@ -36,10 +36,18 @@ export function EditableText({
     }
   }, [isEditing]);
 
-  const handleClick = () => {
-    if (isEditMode) {
-      setIsEditing(true);
-    }
+  const handleClick = (e: React.MouseEvent) => {
+    if (!isEditMode) return;
+    e.preventDefault();
+    e.stopPropagation();
+    setIsEditing(true);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (!isEditMode) return;
+    e.preventDefault();
+    e.stopPropagation();
+    setIsEditing(true);
   };
 
   const handleBlur = async () => {
@@ -89,6 +97,7 @@ export function EditableText({
       <Component 
         className={`${className} ${isEditMode ? 'cursor-pointer hover:bg-primary/10 rounded px-1 transition-colors' : ''}`}
         onClick={handleClick}
+        onTouchStart={handleTouchStart}
       >
         {value || placeholder}
       </Component>
