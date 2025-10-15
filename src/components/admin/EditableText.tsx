@@ -36,6 +36,12 @@ export function EditableText({
     }
   }, [isEditing]);
 
+  const [isTouch, setIsTouch] = useState(false);
+  useEffect(() => {
+    const touchCapable = typeof window !== 'undefined' && (('ontouchstart' in window) || (navigator.maxTouchPoints > 0));
+    setIsTouch(touchCapable);
+  }, []);
+
   const handleClick = (e: React.MouseEvent) => {
     if (!isEditMode) return;
     e.preventDefault();
@@ -101,7 +107,7 @@ export function EditableText({
       >
         {value || placeholder}
       </Component>
-      {isHovered && (
+      {(isHovered || isTouch) && (
         <Pencil className="absolute -top-2 -right-2 w-4 h-4 text-primary bg-background rounded-full p-0.5 border border-primary" />
       )}
     </div>

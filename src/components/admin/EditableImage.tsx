@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useAdminEditMode } from '@/contexts/AdminEditModeContext';
 import { Upload, Pencil } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
@@ -24,6 +24,12 @@ export function EditableImage({
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+
+  const [isTouch, setIsTouch] = useState(false);
+  useEffect(() => {
+    const touchCapable = typeof window !== 'undefined' && (('ontouchstart' in window) || (navigator.maxTouchPoints > 0));
+    setIsTouch(touchCapable);
+  }, []);
 
   const handleClick = (e: React.MouseEvent) => {
     if (!isEditMode) return;
@@ -123,7 +129,7 @@ export function EditableImage({
           )}
         </div>
       )}
-      {isHovered && !isUploading && (
+      {(isHovered || isTouch) && !isUploading && (
         <Pencil className="absolute top-2 right-2 w-6 h-6 text-white bg-primary rounded-full p-1 border-2 border-white" />
       )}
     </div>
