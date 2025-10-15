@@ -106,31 +106,26 @@ serve(async (req) => {
 
       console.log("Sending order confirmation email to:", customerEmail);
 
-      // Send order confirmation email asynchronously (non-blocking)
-      EdgeRuntime.waitUntil(
-        (async () => {
-          try {
-            const { data: emailResult, error: emailError } = await supabase.functions.invoke(
-              'send-email',
-              {
-                body: {
-                  type: 'order_confirmation',
-                  to: customerEmail,
-                  data: emailData,
-                },
-              }
-            );
-
-            if (emailError) {
-              console.error("Error sending email:", emailError);
-            } else {
-              console.log("Order confirmation email sent successfully:", emailResult);
-            }
-          } catch (error) {
-            console.error("Failed to send order confirmation email:", error);
-          }
-        })()
-      );
+      // Send order confirmation email asynchronously
+      // Don't await this so webhook returns quickly
+      supabase.functions.invoke(
+        'send-email',
+        {
+          body: {
+            type: 'order_confirmation',
+            to: customerEmail,
+            data: emailData,
+          },
+        }
+      ).then(({ data: emailResult, error: emailError }) => {
+        if (emailError) {
+          console.error("Error sending email:", emailError);
+        } else {
+          console.log("Order confirmation email sent successfully:", emailResult);
+        }
+      }).catch((error) => {
+        console.error("Failed to send order confirmation email:", error);
+      });
 
       // Store order in database for admin tracking
       const { error: orderError } = await supabase
