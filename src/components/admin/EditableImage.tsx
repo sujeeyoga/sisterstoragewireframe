@@ -49,22 +49,55 @@ export function EditableImage({
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Validate file type
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+    if (!validTypes.includes(file.type)) {
+      toast({
+        title: "Invalid File Type",
+        description: "Please upload a JPG, PNG, WebP, or GIF image",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Validate file size (10MB)
+    if (file.size > 10485760) {
+      toast({
+        title: "File Too Large",
+        description: "Please upload an image smaller than 10MB",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setIsUploading(true);
 
     try {
-      // Upload to Supabase Storage
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Math.random()}.${fileExt}`;
-      const filePath = `uploads/${fileName}`;
+      // Organize uploads by type and date for better management
+      const date = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+      const fileExt = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+      const timestamp = Date.now();
+      const randomId = Math.random().toString(36).substring(2, 9);
+      
+      // Determine folder based on context
+      const folder = heroImageId ? 'hero-images' : 'site-content';
+      const fileName = `${timestamp}-${randomId}.${fileExt}`;
+      const filePath = `${folder}/${date}/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
-        .from('images')
-        .upload(filePath, file);
+        .from('admin-content')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false
+        });
 
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        console.error('Upload error:', uploadError);
+        throw uploadError;
+      }
 
       const { data: { publicUrl } } = supabase.storage
-        .from('images')
+        .from('admin-content')
         .getPublicUrl(filePath);
 
       // Update database if hero image
@@ -79,17 +112,29 @@ export function EditableImage({
 
       toast({
         title: "Success",
-        description: "Image uploaded successfully"
+        description: "Image uploaded and optimized successfully"
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Upload error:', error);
+      
+      let errorMessage = "Failed to upload image";
+      if (error.message?.includes('policies')) {
+        errorMessage = "Upload permission denied. Please ensure you're logged in as an admin.";
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
       toast({
-        title: "Error",
-        description: "Failed to upload image",
+        title: "Upload Error",
+        description: errorMessage,
         variant: "destructive"
       });
     } finally {
       setIsUploading(false);
+      // Reset file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     }
   };
 
