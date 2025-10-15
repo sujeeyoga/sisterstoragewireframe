@@ -116,9 +116,10 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
             <ul className="space-y-2">
               {product.bundleContents && (
                 <li>
-                  <p className="text-gray-600 text-2xl leading-relaxed font-medium">
-                    {product.bundleContents}
-                  </p>
+                  <div 
+                    className="text-gray-600 text-2xl leading-relaxed font-medium prose prose-sm max-w-none [&_strong]:font-bold [&_strong]:text-gray-900 [&_em]:italic [&_p]:mb-2 [&_p:last-child]:mb-0 [&_br]:block [&_ul]:list-none [&_ul]:space-y-1 [&_li]:text-gray-600"
+                    dangerouslySetInnerHTML={{ __html: product.bundleContents }}
+                  />
                 </li>
               )}
               {rodCount && !product.bundleContents && (
