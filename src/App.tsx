@@ -24,6 +24,8 @@ import Gift from "./pages/Gift";
 import Checkout from "./pages/Checkout";
 import OpenBox from "./pages/OpenBox";
 import { CartProvider } from "./contexts/CartContext";
+import { AdminEditModeProvider } from "./contexts/AdminEditModeContext";
+import { EditModeToggle } from "./components/admin/EditModeToggle";
 import CartDrawer from "../src/components/CartDrawer";
 import OurStory from "./pages/OurStory";
 import Admin from "./pages/Admin";
@@ -55,12 +57,14 @@ const App = () => {
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
-          <CartProvider>
-            <Toaster />
-            <Sonner />
-            
-            <BrowserRouter>
-            <CartDrawer />
+          <AdminEditModeProvider>
+            <CartProvider>
+              <Toaster />
+              <Sonner />
+              <EditModeToggle />
+              
+              <BrowserRouter>
+              <CartDrawer />
             <Routes>
               {/* Public routes - always accessible */}
               <Route path="/admin-setup" element={<AdminSetup />} />
@@ -90,7 +94,8 @@ const App = () => {
               <Route path="*" element={<ProtectedRoutes><PageTransition><NotFound /></PageTransition></ProtectedRoutes>} />
             </Routes>
             </BrowserRouter>
-          </CartProvider>
+            </CartProvider>
+          </AdminEditModeProvider>
         </TooltipProvider>
       </QueryClientProvider>
     </HelmetProvider>
