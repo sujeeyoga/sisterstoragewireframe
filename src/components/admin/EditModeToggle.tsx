@@ -10,19 +10,20 @@ export function EditModeToggle() {
   return (
     <Button
       variant={isEditMode ? "default" : "outline"}
-      size="sm"
+      size="lg"
       onClick={toggleEditMode}
-      className="fixed bottom-4 right-4 z-50 shadow-lg"
+      className="fixed bottom-6 right-6 z-[9999] shadow-2xl min-h-[56px] min-w-[56px] touch-manipulation hover:scale-105 active:scale-95 transition-transform"
+      aria-label={isEditMode ? "Exit Edit Mode" : "Enter Edit Mode"}
     >
       {isEditMode ? (
         <>
-          <Check className="w-4 h-4 mr-2" />
-          Exit Edit Mode
+          <Check className="w-5 h-5 md:mr-2" />
+          <span className="hidden md:inline">Exit Edit Mode</span>
         </>
       ) : (
         <>
-          <Pencil className="w-4 h-4 mr-2" />
-          Edit Mode
+          <Pencil className="w-5 h-5 md:mr-2" />
+          <span className="hidden md:inline">Edit Mode</span>
         </>
       )}
     </Button>
