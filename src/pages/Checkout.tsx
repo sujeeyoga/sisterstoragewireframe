@@ -20,7 +20,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
 import AddressAutocomplete from '@/components/checkout/AddressAutocomplete';
 import Logo from '@/components/ui/Logo';
-import { ArrowLeft, ShoppingBag, CreditCard, Truck, Trash2, Tag, Loader2, Package, Gift, Mail, MapPin } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, CreditCard, Truck, Trash2, Tag, Loader2, Package, Gift, Mail, MapPin, Plus, Minus } from 'lucide-react';
 
 // Province mapping and validation
 const PROVINCE_MAP: Record<string, string> = {
@@ -62,7 +62,7 @@ const formatPostalCode = (code: string): string => {
 
 const Checkout = () => {
   const navigate = useNavigate();
-  const { items, subtotal, clearCart, removeItem } = useCart();
+  const { items, subtotal, clearCart, removeItem, updateQuantity } = useCart();
   const { toast } = useToast();
   const { discount, applyDiscount, getDiscountAmount } = useStoreDiscount();
   const { giftOptions } = useGiftOptions();
@@ -762,13 +762,32 @@ const Checkout = () => {
                         )}
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium line-clamp-2 mb-1">{item.name}</p>
-                          <div className="space-y-0.5">
+                          <div className="space-y-1">
                             <p className="text-xs text-gray-600">
                               Unit Price: <span className="font-medium">${item.price.toFixed(2)}</span>
                             </p>
-                            <p className="text-xs text-gray-600">
-                              Quantity: <span className="font-medium">{item.quantity}</span>
-                            </p>
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs text-gray-600">Qty:</span>
+                              <div className="flex items-center border border-gray-300 rounded">
+                                <button
+                                  onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                                  className="w-6 h-6 flex items-center justify-center hover:bg-gray-100 transition-colors"
+                                  aria-label="Decrease quantity"
+                                >
+                                  <Minus className="h-3 w-3" />
+                                </button>
+                                <span className="w-8 h-6 flex items-center justify-center text-xs font-medium border-x border-gray-300">
+                                  {item.quantity}
+                                </span>
+                                <button
+                                  onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                                  className="w-6 h-6 flex items-center justify-center hover:bg-gray-100 transition-colors"
+                                  aria-label="Increase quantity"
+                                >
+                                  <Plus className="h-3 w-3" />
+                                </button>
+                              </div>
+                            </div>
                           </div>
                         </div>
                         <button
