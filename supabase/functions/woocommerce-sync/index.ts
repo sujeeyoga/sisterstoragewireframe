@@ -66,11 +66,16 @@ Deno.serve(async (req: Request) => {
   const consumerSecret = Deno.env.get("WOOCOMMERCE_CONSUMER_SECRET");
 
   if (!baseUrl || !consumerKey || !consumerSecret) {
-    await supabase.from("woocommerce_sync_log").insert({
-      status: "error",
-      sync_type: "products",
-      message: "Missing WooCommerce secrets",
-    });
+    // Log error in background
+    const logTask = async () => {
+      await supabase.from("woocommerce_sync_log").insert({
+        status: "error",
+        sync_type: "products",
+        message: "Missing WooCommerce secrets",
+      });
+    };
+    EdgeRuntime.waitUntil(logTask());
+    
     return new Response(JSON.stringify({ error: "Missing WooCommerce secrets" }), {
       status: 500,
       headers: { "Content-Type": "application/json", ...corsHeaders },
@@ -194,13 +199,16 @@ Deno.serve(async (req: Request) => {
     }
     console.log(`Synced ${customersProcessed} customers`);
 
-    // Log success
-    await supabase.from("woocommerce_sync_log").insert({
-      status: "success",
-      sync_type: "products_and_customers",
-      records_processed: productsProcessed + customersProcessed,
-      message: `Synced ${productsProcessed} products and ${customersProcessed} customers`,
-    });
+    // Log success in background
+    const logSuccessTask = async () => {
+      await supabase.from("woocommerce_sync_log").insert({
+        status: "success",
+        sync_type: "products_and_customers",
+        records_processed: productsProcessed + customersProcessed,
+        message: `Synced ${productsProcessed} products and ${customersProcessed} customers`,
+      });
+    };
+    EdgeRuntime.waitUntil(logSuccessTask());
 
     return new Response(
       JSON.stringify({ 
@@ -215,11 +223,15 @@ Deno.serve(async (req: Request) => {
     const message = e instanceof Error ? e.message : String(e);
     console.error("Sync error:", message);
     
-    await supabase.from("woocommerce_sync_log").insert({
-      status: "error",
-      sync_type: "products_and_customers",
-      message,
-    });
+    // Log error in background
+    const logErrorTask = async () => {
+      await supabase.from("woocommerce_sync_log").insert({
+        status: "error",
+        sync_type: "products_and_customers",
+        message,
+      });
+    };
+    EdgeRuntime.waitUntil(logErrorTask());
 
     return new Response(JSON.stringify({ error: message }), {
       status: 500,
