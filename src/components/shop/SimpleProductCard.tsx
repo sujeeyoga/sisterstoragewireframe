@@ -61,6 +61,8 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
             <img 
               src={product.images[0]} 
               alt={product.name}
+              loading="lazy"
+              decoding="async"
               className={cn(
                 "w-full aspect-square object-cover transition-all duration-700 group-hover:scale-105",
                 imageLoaded ? "opacity-100" : "opacity-0"

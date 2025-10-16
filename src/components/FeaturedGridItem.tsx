@@ -39,6 +39,7 @@ const FeaturedGridItem: React.FC<FeaturedGridItemProps> = ({
       <img
         src={image}
         alt={title}
+        fetchPriority="low"
         className="w-full h-full object-cover transform-gpu group-hover:scale-105 transition-transform duration-300"
         loading="lazy"
         decoding="async"

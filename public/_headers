@@ -6,19 +6,30 @@
 /lovable-uploads/*
   Cache-Control: public, max-age=31536000, immutable
 
-# Image assets - cache for 1 year
+# Image assets - cache for 1 year with performance headers
 *.jpg
   Cache-Control: public, max-age=31536000, immutable
+  Content-Type: image/jpeg
+  Accept-Ranges: bytes
 *.jpeg
   Cache-Control: public, max-age=31536000, immutable
+  Content-Type: image/jpeg
+  Accept-Ranges: bytes
 *.png
   Cache-Control: public, max-age=31536000, immutable
+  Content-Type: image/png
+  Accept-Ranges: bytes
 *.webp
   Cache-Control: public, max-age=31536000, immutable
+  Content-Type: image/webp
+  Accept-Ranges: bytes
 *.svg
   Cache-Control: public, max-age=31536000, immutable
+  Content-Type: image/svg+xml
 *.gif
   Cache-Control: public, max-age=31536000, immutable
+  Content-Type: image/gif
+  Accept-Ranges: bytes
 
 # Fonts - cache for 1 year
 *.woff
