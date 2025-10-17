@@ -57,7 +57,7 @@ serve(async (req) => {
         .map(item => ({
           name: item.description || 'Product',
           quantity: item.quantity || 1,
-          price: (item.amount_total || 0) / 100,
+          price: (item.price?.unit_amount || 0) / 100,
         }));
 
       // Calculate totals
