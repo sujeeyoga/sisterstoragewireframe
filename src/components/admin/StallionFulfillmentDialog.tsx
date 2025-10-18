@@ -18,6 +18,8 @@ interface Order {
   customer_name?: string;
   customer_email?: string;
   billing?: any;
+  shipping?: any;
+  source?: 'woocommerce' | 'stripe';
 }
 
 interface StallionFulfillmentDialogProps {
@@ -163,37 +165,40 @@ export function StallionFulfillmentDialog({ order, open, onClose, onSuccess }: S
       // Get shipping label
       const label = await getLabel(shipment.id);
 
-      // Update order in database
+      // Update order in the correct database table
+      const tableName = order.source === 'stripe' ? 'orders' : 'woocommerce_orders';
       await supabase
-        .from('orders')
+        .from(tableName)
         .update({
           fulfillment_status: 'fulfilled',
           tracking_number: shipment.tracking_number,
           stallion_shipment_id: shipment.id,
           shipping_label_url: label.url,
           fulfilled_at: new Date().toISOString(),
-          status: 'processing'
+          status: order.source === 'stripe' ? 'processing' : 'completed'
         })
         .eq('id', String(order.id));
 
       // Send shipping notification email
       try {
+        const tableName = order.source === 'stripe' ? 'orders' : 'woocommerce_orders';
         const orderData = await supabase
-          .from('orders')
+          .from(tableName)
           .select('*')
           .eq('id', String(order.id))
           .single();
 
         if (orderData.data) {
+          const data: any = orderData.data;
           await supabase.functions.invoke('send-shipping-notification', {
             body: {
               orderId: order.id,
-              customerEmail: orderData.data.customer_email,
-              customerName: orderData.data.customer_name || 'Customer',
-              orderNumber: orderData.data.order_number,
+              customerEmail: data.customer_email || data.billing?.email || '',
+              customerName: data.customer_name || `${data.billing?.first_name || ''} ${data.billing?.last_name || ''}`.trim() || 'Customer',
+              orderNumber: data.order_number || String(order.id),
               trackingNumber: shipment.tracking_number,
               carrier: 'Stallion Express',
-              items: orderData.data.items || []
+              items: data.items || data.line_items || []
             }
           });
         }

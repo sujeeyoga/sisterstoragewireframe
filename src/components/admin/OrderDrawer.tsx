@@ -296,14 +296,26 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
                       : 'Order awaiting fulfillment'}
                   </p>
                 </div>
-                <Button 
-                  onClick={() => setFulfillmentDialogOpen(true)}
-                  className="w-full"
-                  disabled={!order.shipping_address && !order.shipping}
-                >
-                  <Truck className="h-4 w-4 mr-2" />
-                  Fulfill with Stallion Express
-                </Button>
+                <div className="grid grid-cols-2 gap-2">
+                  <Button 
+                    onClick={() => setFulfillmentDialogOpen(true)}
+                    variant="default"
+                    disabled={!order.shipping_address && !order.shipping}
+                  >
+                    <Truck className="h-4 w-4 mr-2" />
+                    Ship Now
+                  </Button>
+                  <Button 
+                    onClick={() => {
+                      onStatusUpdate('completed');
+                      onClose();
+                    }}
+                    variant="outline"
+                  >
+                    <Package className="h-4 w-4 mr-2" />
+                    Mark Complete
+                  </Button>
+                </div>
               </div>
             )}
           </div>
