@@ -1,4 +1,5 @@
 import { Product } from "@/types/product";
+import shopHeroImg from '@/assets/optimized/shop-hero.jpg';
 
 // Best Seller Hero Product
 export const featuredProduct = {
@@ -8,7 +9,7 @@ export const featuredProduct = {
   price: 174.00,
   compareAt: 240.00,
   ratingCount: 156,
-  image: "https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/Sister%20Storage%20Assets/HERO%20IMAGE%20REPLACEMENT/1759979141544-6zp7u6.jpg",
+  image: shopHeroImg,
   badge: "BEST SELLER",
   contents: [
     { qty: 4, label: "Large", rodsEach: 4, detail: "4 rods each" },
