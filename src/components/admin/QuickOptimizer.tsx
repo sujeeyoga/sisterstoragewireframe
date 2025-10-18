@@ -54,10 +54,13 @@ export function QuickOptimizer() {
         <div className="bg-muted p-4 rounded-lg space-y-2 text-sm">
           <p className="font-semibold">Images to optimize:</p>
           <ul className="space-y-1 ml-4 list-disc">
-            <li>e1ae51b5... → organized-jewelry-bangles.webp</li>
-            <li>2a4c457a... → elegant-jewelry-storage.webp</li>
-            <li>0e5fe1c0... → sister-storage-showcase.webp</li>
+            <li>e1ae51b5... → organized-jewelry-bangles.png</li>
+            <li>2a4c457a... → elegant-jewelry-storage.png</li>
+            <li>0e5fe1c0... → sister-storage-showcase.png</li>
           </ul>
+          <p className="text-xs text-muted-foreground mt-2">
+            Original file types (PNG) will be preserved.
+          </p>
         </div>
 
         <Button

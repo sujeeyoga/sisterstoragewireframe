@@ -17,22 +17,25 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    // Images to optimize with their new names
+    // Images to optimize with their new names (keeping original file type)
     const imagesToOptimize = [
       {
         oldPath: "lovable-uploads/e1ae51b5-7916-4137-825e-7f197dff06a3.png",
-        newName: "organized-jewelry-bangles.webp",
-        bucket: "sister"
+        newName: "organized-jewelry-bangles.png",
+        bucket: "sister",
+        contentType: "image/png"
       },
       {
         oldPath: "lovable-uploads/2a4c457a-7695-47d3-9912-ab2900c6ea25.png",
-        newName: "elegant-jewelry-storage.webp",
-        bucket: "sister"
+        newName: "elegant-jewelry-storage.png",
+        bucket: "sister",
+        contentType: "image/png"
       },
       {
         oldPath: "lovable-uploads/0e5fe1c0-12f8-439f-94d5-ec1da8ca09c8.png",
-        newName: "sister-storage-showcase.webp",
-        bucket: "sister"
+        newName: "sister-storage-showcase.png",
+        bucket: "sister",
+        contentType: "image/png"
       }
     ];
 
@@ -54,17 +57,14 @@ serve(async (req) => {
           continue;
         }
 
-        // Use Sharp via Deno FFI would be complex, so we'll use a simpler approach
-        // Just copy and rename to homepage folder for now
-        // The actual compression can be done by the client-side tool or manually
-        
+        // Copy and rename to homepage folder, preserving original file type
         const destPath = `homepage/${image.newName}`;
 
-        // Upload to new location
+        // Upload to new location with original content type
         const { error: uploadError } = await supabase.storage
           .from("images")
           .upload(destPath, fileData, {
-            contentType: "image/webp",
+            contentType: image.contentType,
             cacheControl: "3600",
             upsert: true
           });
