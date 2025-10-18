@@ -37,7 +37,8 @@ const OrganizationGallery = () => {
               src={galleryImages[0].src}
               alt={galleryImages[0].alt}
               className="w-full h-full object-cover block md:group-hover:scale-105 transition-transform duration-500 ease-out"
-              loading="eager"
+              loading="lazy"
+              sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
             />
           </div>
 
@@ -47,8 +48,7 @@ const OrganizationGallery = () => {
               src={galleryImages[1].src}
               alt={galleryImages[1].alt}
               className="w-full h-full object-cover block md:group-hover:scale-105 transition-transform duration-500 ease-out"
-              loading="eager"
-              priority
+              loading="lazy"
               sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
           />
           </div>
@@ -59,8 +59,7 @@ const OrganizationGallery = () => {
               src={galleryImages[2].src}
               alt={galleryImages[2].alt}
               className="w-full h-full object-cover block md:group-hover:scale-105 transition-transform duration-500 ease-out"
-              loading="eager"
-              priority
+              loading="lazy"
               sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
             />
             {/* Instagram Icon Overlay */}
