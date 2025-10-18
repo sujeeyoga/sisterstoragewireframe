@@ -11,9 +11,17 @@ const Hero = () => {
   const { ref: parallaxRef, offset } = useOptimizedParallax({ speed: 0.15 });
   const { texts, isLoading } = useSiteTexts('homepage_hero');
   
-  if (isLoading || !texts) return null;
+  // Default fallback text to show immediately while loading
+  const defaultText: any = {
+    id: 'default',
+    title: 'SISTER STORAGE',
+    subtitle: 'JEWELRY ORGANIZATION',
+    button_text: 'SHOP NOW',
+    description: 'The perfect solution for organizing your jewelry collection'
+  };
   
-  const heroText = texts as any;
+  // Get first text or use default
+  const heroText: any = (Array.isArray(texts) && texts.length > 0 ? texts[0] : texts) || defaultText;
 
   return (
     <section ref={parallaxRef} className="relative w-full overflow-hidden md:pt-32" aria-label="Hero section">
@@ -70,10 +78,13 @@ const Hero = () => {
 
         <div className="w-full h-[80vh] overflow-hidden">
           <div style={{ transform: `translateY(${-offset * 0.25}px)` }}>
-            <EditableImage
+            <img
               src={heroMainImage}
               alt="Woman showcasing Sister Storage jewelry organization solution"
               className="w-full h-full object-cover"
+              loading="eager"
+              fetchPriority="high"
+              decoding="async"
             />
           </div>
         </div>
@@ -89,10 +100,12 @@ const Hero = () => {
           className="absolute right-0 top-1/2 -translate-y-1/2 w-[70%] h-[100%] overflow-hidden animate-[slide-in-right_1.2s_ease-out]"
           style={{ transform: `translateY(calc(-50% + ${offset * 0.15}px))` }}
         >
-          <EditableImage
+          <img
             src={heroMainImage}
             alt="Woman showcasing Sister Storage jewelry organization solution"
             className="w-full h-full object-contain object-right"
+            loading="eager"
+            decoding="async"
           />
         </div>
 
