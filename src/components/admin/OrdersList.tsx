@@ -36,6 +36,7 @@ export function OrdersList() {
   const [selectedOrderIds, setSelectedOrderIds] = useState<Set<number | string>>(new Set());
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [bulkFulfillOpen, setBulkFulfillOpen] = useState(false);
+  const [selectionMode, setSelectionMode] = useState(false);
   const [filters, setFilters] = useState<OrderFiltersState>({
     dateRange: 'all',
     statuses: [],
@@ -225,6 +226,13 @@ export function OrdersList() {
     toast.info('Print labels functionality coming soon');
   };
   
+  const toggleSelectionMode = () => {
+    if (selectionMode) {
+      setSelectedOrderIds(new Set());
+    }
+    setSelectionMode(!selectionMode);
+  };
+  
   const filterCount = 
     (filters.dateRange !== 'all' ? 1 : 0) + 
     filters.statuses.length + 
@@ -240,6 +248,8 @@ export function OrdersList() {
           onStatusChange={setActiveStatus}
           onFilterClick={() => setFiltersOpen(true)}
           filterCount={filterCount}
+          selectionMode={selectionMode}
+          onToggleSelection={toggleSelectionMode}
         />
         <div className="p-4 space-y-4">
           {[1, 2, 3, 4, 5].map((i) => (
@@ -260,6 +270,8 @@ export function OrdersList() {
           onStatusChange={setActiveStatus}
           onFilterClick={() => setFiltersOpen(true)}
           filterCount={filterCount}
+          selectionMode={selectionMode}
+          onToggleSelection={toggleSelectionMode}
         />
         <div className="p-8 text-center space-y-4">
           <Package className="h-16 w-16 mx-auto text-muted-foreground/50" />
@@ -278,8 +290,6 @@ export function OrdersList() {
     );
   }
   
-  const selectionMode = selectedOrderIds.size > 0;
-  
   return (
     <div className="min-h-screen bg-background pb-20">
       <OrdersHeader
@@ -289,6 +299,8 @@ export function OrdersList() {
         onStatusChange={setActiveStatus}
         onFilterClick={() => setFiltersOpen(true)}
         filterCount={filterCount}
+        selectionMode={selectionMode}
+        onToggleSelection={toggleSelectionMode}
       />
       
       <div className="p-4 space-y-4">

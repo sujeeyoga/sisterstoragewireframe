@@ -1,6 +1,6 @@
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Search, Filter, ArrowUpDown, MoreVertical, ArrowLeft, RefreshCw } from 'lucide-react';
+import { Search, Filter, ArrowUpDown, MoreVertical, ArrowLeft, RefreshCw, CheckSquare, Square } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { useState } from 'react';
@@ -14,6 +14,8 @@ interface OrdersHeaderProps {
   onFilterClick: () => void;
   filterCount?: number;
   onBackClick?: () => void;
+  selectionMode?: boolean;
+  onToggleSelection?: () => void;
 }
 
 const statusChips = [
@@ -33,6 +35,8 @@ export function OrdersHeader({
   onFilterClick,
   filterCount = 0,
   onBackClick,
+  selectionMode,
+  onToggleSelection,
 }: OrdersHeaderProps) {
   const [isSyncing, setIsSyncing] = useState(false);
 
@@ -66,6 +70,16 @@ export function OrdersHeader({
         )}
         <h1 className="text-base font-semibold flex-1 text-center">Orders</h1>
         <div className="flex gap-2">
+          {onToggleSelection && (
+            <Button 
+              variant={selectionMode ? "default" : "ghost"}
+              size="icon"
+              onClick={onToggleSelection}
+              title={selectionMode ? "Cancel selection" : "Select orders"}
+            >
+              {selectionMode ? <CheckSquare className="h-5 w-5" /> : <Square className="h-5 w-5" />}
+            </Button>
+          )}
           <Button 
             variant="ghost" 
             size="icon"
