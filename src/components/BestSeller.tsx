@@ -5,13 +5,16 @@ import { Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import AddToCartBar from '@/components/cart/AddToCartBar';
+import starterSetImg from '@/assets/optimized/starter-set.jpg';
+import familySetImg from '@/assets/optimized/family-set.jpg';
+import sisterStaplesImg from '@/assets/optimized/sister-staples.jpg';
 const buyCards = [{
   id: "bundle-1",
   name: 'Starter Set',
   price: 90.00,
   originalPrice: null,
   stripePriceId: "price_1SGKRwDkJNZeOpMwTtMXQrHE",
-  image: 'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/Starter-Set-2x-Large-1x-Medium-Box-1x-Small-Box/1759980850863-5xgr2a.jpg',
+  image: starterSetImg,
   badge: "STARTER BUNDLE",
   description: "START. SAFE. STYLE.",
   rodCount: 11,
@@ -24,7 +27,7 @@ const buyCards = [{
   price: 174.00,
   originalPrice: null,
   stripePriceId: "price_1SGKRyDkJNZeOpMwrEmPHrtg",
-  image: 'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/The-Complete-Family-Set-4-Large-2-Medium-2-Travel/1759980920453-ezsfq.jpg',
+  image: familySetImg,
   badge: "BEST SELLER",
   description: "BIG. BUNDLE. LOVE.",
   rodCount: 22,
@@ -37,7 +40,7 @@ const buyCards = [{
   price: 137.00,
   originalPrice: null,
   stripePriceId: "price_1SGKRxDkJNZeOpMwdoeKbQQN",
-  image: 'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/Sister%20Storage%20Assets/Together%20Bundle-%203%20Large%202%20Medium%201%20Travel/1759979157485-d2rva.jpg',
+  image: sisterStaplesImg,
   badge: "SMART SET",
   description: "SMART. SET. READY.",
   rodCount: 17,
