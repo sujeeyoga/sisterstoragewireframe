@@ -9,9 +9,10 @@ import { productTaxonomyMap } from "@/data/product-taxonomy";
 
 interface SingleProductCardProps {
   product: Product;
+  priority?: boolean;
 }
 
-const SingleProductCard = ({ product }: SingleProductCardProps) => {
+const SingleProductCard = ({ product, priority = false }: SingleProductCardProps) => {
   const { addItem, setIsOpen } = useCart();
   const { toast } = useToast();
   
@@ -47,7 +48,8 @@ const SingleProductCard = ({ product }: SingleProductCardProps) => {
               src={product.images[0]} 
               alt={product.name}
               className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-              loading="lazy"
+              loading={priority ? "eager" : "lazy"}
+              decoding="async"
             />
           ) : (
             <div 
