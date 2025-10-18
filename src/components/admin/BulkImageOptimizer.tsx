@@ -38,6 +38,8 @@ export function BulkImageOptimizer() {
   const [search, setSearch] = useState('');
   const [minSize, setMinSize] = useState(0); // Minimum file size in KB
   const [previewImage, setPreviewImage] = useState<StorageImage | null>(null);
+  const [renameEnabled, setRenameEnabled] = useState(false);
+  const [namingPattern, setNamingPattern] = useState('optimized-{index}');
   const { toast } = useToast();
 
   // Known homepage static images (Featured Grid + Promotional Section)
@@ -180,6 +182,21 @@ export function BulkImageOptimizer() {
     return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
   };
 
+  const generateNewName = (originalName: string, index: number): string => {
+    if (!renameEnabled) return originalName;
+    
+    const ext = originalName.split('.').pop() || 'jpg';
+    const nameWithoutExt = originalName.replace(/\.[^/.]+$/, '');
+    const date = new Date().toISOString().split('T')[0];
+    
+    return namingPattern
+      .replace('{index}', String(index + 1).padStart(3, '0'))
+      .replace('{original}', nameWithoutExt)
+      .replace('{date}', date)
+      .replace('{timestamp}', Date.now().toString())
+      + '.' + ext;
+  };
+
   const optimizeSelectedImages = async () => {
     if (selectedImages.size === 0) {
       toast({
@@ -197,7 +214,8 @@ export function BulkImageOptimizer() {
     let completed = 0;
     let totalSaved = 0;
 
-    for (const image of selectedImagesList) {
+    for (let i = 0; i < selectedImagesList.length; i++) {
+      const image = selectedImagesList[i];
       try {
         // Download the image
         const response = await fetch(image.url);
@@ -228,7 +246,11 @@ export function BulkImageOptimizer() {
           // Determine destination bucket and path
           const destBucket = image.isStatic ? 'images' : bucket;
           const baseName = image.name.split('/').pop() || image.name;
-          const destPath = image.isStatic ? `hero-images/${baseName}` : (image.path || image.name);
+          
+          // Generate new name if renaming is enabled
+          const newName = generateNewName(baseName, i);
+          const folder = image.path?.includes('/') ? image.path.split('/').slice(0, -1).join('/') + '/' : '';
+          const destPath = image.isStatic ? `hero-images/${newName}` : (renameEnabled ? `${folder}${newName}` : (image.path || image.name));
 
           // Upload the optimized image (replace the original)
           const { error: uploadError } = await supabase.storage
@@ -362,6 +384,45 @@ export function BulkImageOptimizer() {
             <p className="text-sm text-muted-foreground mt-1">
               Images larger than this will be resized. Aspect ratio preserved.
             </p>
+          </div>
+
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <Checkbox
+                id="rename-toggle"
+                checked={renameEnabled}
+                onCheckedChange={(checked) => setRenameEnabled(checked as boolean)}
+                disabled={optimizing}
+              />
+              <Label htmlFor="rename-toggle" className="cursor-pointer">
+                Rename files during optimization
+              </Label>
+            </div>
+            
+            {renameEnabled && (
+              <div>
+                <Label htmlFor="naming-pattern">Naming Pattern</Label>
+                <Input
+                  id="naming-pattern"
+                  value={namingPattern}
+                  onChange={(e) => setNamingPattern(e.target.value)}
+                  placeholder="e.g., product-{index}"
+                  disabled={optimizing}
+                  className="mt-1"
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Available placeholders: {'{index}'} (001, 002...), {'{original}'} (original name), {'{date}'} (YYYY-MM-DD), {'{timestamp}'}
+                </p>
+                {selectedImages.size > 0 && (
+                  <div className="mt-2 p-2 bg-muted rounded text-xs">
+                    <p className="font-semibold mb-1">Preview:</p>
+                    <p className="font-mono">
+                      {generateNewName(images.find(img => selectedImages.has(img.id))?.name || 'example.jpg', 0)}
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
