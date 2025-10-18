@@ -85,66 +85,18 @@ export function OrdersList() {
     };
   }, [queryClient]);
   
-  // Get total count for pagination
-  const { data: totalCount } = useQuery({
-    queryKey: ['admin-orders-count', activeStatus, filters],
-    queryFn: async () => {
-      let wooQuery = supabase
-        .from('woocommerce_orders')
-        .select('id', { count: 'exact', head: true });
-      
-      let stripeQuery = supabase
-        .from('orders')
-        .select('id', { count: 'exact', head: true });
-      
-      if (activeStatus !== 'all') {
-        wooQuery = wooQuery.eq('status', activeStatus);
-        stripeQuery = stripeQuery.eq('status', activeStatus);
-      }
-      
-      if (filters.statuses.length > 0) {
-        wooQuery = wooQuery.in('status', filters.statuses);
-        stripeQuery = stripeQuery.in('status', filters.statuses);
-      }
-      
-      if (filters.dateRange !== 'all') {
-        const now = new Date();
-        let startDate = new Date();
-        
-        if (filters.dateRange === 'today') {
-          startDate.setHours(0, 0, 0, 0);
-        } else if (filters.dateRange === '7d') {
-          startDate.setDate(now.getDate() - 7);
-        } else if (filters.dateRange === '30d') {
-          startDate.setDate(now.getDate() - 30);
-        }
-        
-        wooQuery = wooQuery.gte('date_created', startDate.toISOString());
-        stripeQuery = stripeQuery.gte('created_at', startDate.toISOString());
-      }
-      
-      const [wooResult, stripeResult] = await Promise.all([wooQuery, stripeQuery]);
-      
-      return (wooResult.count || 0) + (stripeResult.count || 0);
-    },
-  });
-
   const { data: orders, isLoading, error } = useQuery({
-    queryKey: ['admin-orders', activeStatus, filters, currentPage],
+    queryKey: ['admin-orders', activeStatus, filters, currentPage, search],
     queryFn: async () => {
-      // Calculate offset for pagination
-      const offset = (currentPage - 1) * itemsPerPage;
       
-      // Fetch from both WooCommerce and Stripe orders with pagination
+      // Fetch ALL orders from both sources (we'll paginate client-side after search)
       let wooQuery = supabase
         .from('woocommerce_orders')
-        .select('*')
-        .range(offset, offset + itemsPerPage - 1);
+        .select('*');
       
       let stripeQuery = supabase
         .from('orders')
-        .select('*')
-        .range(offset, offset + itemsPerPage - 1);
+        .select('*');
       
       // Apply status filter
       if (activeStatus !== 'all') {
@@ -214,8 +166,24 @@ export function OrdersList() {
         order_number: order.order_number
       }));
       
-      // Combine and sort
-      const allOrders = [...wooOrders, ...stripeOrders];
+      // Combine orders
+      let allOrders = [...wooOrders, ...stripeOrders];
+      
+      // Apply search filter BEFORE pagination
+      if (search) {
+        const searchLower = search.toLowerCase();
+        allOrders = allOrders.filter(order => {
+          const billing = order.billing as any;
+          return (
+            order.id.toString().includes(searchLower) ||
+            billing?.first_name?.toLowerCase().includes(searchLower) ||
+            billing?.last_name?.toLowerCase().includes(searchLower) ||
+            billing?.email?.toLowerCase().includes(searchLower) ||
+            (order as any).customer_email?.toLowerCase().includes(searchLower) ||
+            (order as any).order_number?.toLowerCase().includes(searchLower)
+          );
+        });
+      }
       
       // Apply sorting
       const sortByAmount = filters.sortBy.includes('amount');
@@ -231,7 +199,14 @@ export function OrdersList() {
         }
       });
       
-      return allOrders as Order[];
+      // Apply pagination AFTER search and sort
+      const offset = (currentPage - 1) * itemsPerPage;
+      const paginatedOrders = allOrders.slice(offset, offset + itemsPerPage);
+      
+      return {
+        orders: paginatedOrders as Order[],
+        totalCount: allOrders.length
+      };
     },
   });
   
@@ -255,19 +230,6 @@ export function OrdersList() {
     },
   });
   
-  const filteredOrders = orders?.filter(order => {
-    const searchLower = search.toLowerCase();
-    const matchesSearch = 
-      order.id.toString().includes(searchLower) ||
-      order.billing?.first_name?.toLowerCase().includes(searchLower) ||
-      order.billing?.last_name?.toLowerCase().includes(searchLower) ||
-      order.billing?.email?.toLowerCase().includes(searchLower) ||
-      order.customer_email?.toLowerCase().includes(searchLower) ||
-      order.order_number?.toLowerCase().includes(searchLower);
-    
-    return matchesSearch;
-  });
-  
   const handleSelectOrder = (orderId: number | string, checked: boolean) => {
     const newSelected = new Set(selectedOrderIds);
     if (checked) {
@@ -282,7 +244,11 @@ export function OrdersList() {
     setBulkFulfillOpen(true);
   };
   
+  const [isPrintingLabels, setIsPrintingLabels] = useState(false);
+  
   const handleBulkPrint = async () => {
+    setIsPrintingLabels(true);
+    try {
     // Fetch orders to get label URLs
     const stringIds = Array.from(selectedOrderIds).filter(id => typeof id === 'string');
     const numberIds = Array.from(selectedOrderIds).filter(id => typeof id === 'number');
@@ -312,11 +278,17 @@ export function OrdersList() {
       }, index * 300); // 300ms delay between each to avoid popup blocking
     });
     
-    toast.success(`Opening ${ordersWithLabels.length} label(s)`, {
-      description: ordersWithLabels.length < allOrders.length 
-        ? `${allOrders.length - ordersWithLabels.length} order(s) don't have labels yet`
-        : undefined
-    });
+      toast.success(`Opening ${ordersWithLabels.length} label(s)`, {
+        description: ordersWithLabels.length < allOrders.length 
+          ? `${allOrders.length - ordersWithLabels.length} order(s) don't have labels yet`
+          : undefined
+      });
+    } catch (error) {
+      console.error('Error fetching labels:', error);
+      toast.error('Failed to fetch shipping labels');
+    } finally {
+      setIsPrintingLabels(false);
+    }
   };
   
   const toggleSelectionMode = () => {
@@ -336,11 +308,16 @@ export function OrdersList() {
     setCurrentPage(1); // Reset to first page
   };
   
+  const handleSearchChange = (value: string) => {
+    setSearch(value);
+    setCurrentPage(1); // Reset to first page on search
+  };
+  
   const handleSelectAll = () => {
-    if (filteredOrders) {
-      const allIds = new Set(filteredOrders.map(o => o.id));
+    if (orders?.orders) {
+      const allIds = new Set(orders.orders.map(o => o.id));
       setSelectedOrderIds(allIds);
-      toast.success(`Selected ${allIds.size} orders`);
+      toast.success(`Selected ${allIds.size} orders on this page`);
     }
   };
   
@@ -358,7 +335,7 @@ export function OrdersList() {
       <div className="min-h-screen bg-background">
         <OrdersHeader
           search={search}
-          onSearchChange={setSearch}
+          onSearchChange={handleSearchChange}
           activeStatus={activeStatus}
           onStatusChange={handleStatusChange}
           onFilterClick={() => setFiltersOpen(true)}
@@ -412,7 +389,7 @@ export function OrdersList() {
     <div className="min-h-screen bg-background pb-20">
       <OrdersHeader
         search={search}
-        onSearchChange={setSearch}
+        onSearchChange={handleSearchChange}
         activeStatus={activeStatus}
         onStatusChange={handleStatusChange}
         onFilterClick={() => setFiltersOpen(true)}
@@ -425,7 +402,7 @@ export function OrdersList() {
       />
       
       <div className="p-4 space-y-4">
-        {!filteredOrders || filteredOrders.length === 0 ? (
+        {!orders?.orders || orders.orders.length === 0 ? (
           <div className="py-12 text-center space-y-4">
             <Package className="h-16 w-16 mx-auto text-muted-foreground/50" />
             <div>
@@ -450,7 +427,7 @@ export function OrdersList() {
             )}
           </div>
         ) : (
-          filteredOrders.map((order) => (
+          orders.orders.map((order) => (
             <OrderCard
               key={order.id}
               order={order}
@@ -463,7 +440,7 @@ export function OrdersList() {
         )}
         
         {/* Pagination */}
-        {filteredOrders && filteredOrders.length > 0 && totalCount && totalCount > itemsPerPage && (
+        {orders?.orders && orders.orders.length > 0 && orders.totalCount > itemsPerPage && (
           <div className="flex justify-center pt-8 pb-4">
             <Pagination>
               <PaginationContent>
@@ -473,10 +450,10 @@ export function OrdersList() {
                     className="cursor-pointer"
                   />
                 )}
-                {Array.from({ length: Math.ceil(totalCount / itemsPerPage) }, (_, i) => i + 1)
+                {Array.from({ length: Math.ceil((orders?.totalCount || 0) / itemsPerPage) }, (_, i) => i + 1)
                   .filter(page => {
                     // Show first, last, current, and ±1 around current
-                    const totalPages = Math.ceil(totalCount / itemsPerPage);
+                    const totalPages = Math.ceil((orders?.totalCount || 0) / itemsPerPage);
                     return page === 1 || 
                            page === totalPages || 
                            Math.abs(page - currentPage) <= 1;
@@ -501,7 +478,7 @@ export function OrdersList() {
                       </React.Fragment>
                     );
                   })}
-                {currentPage < Math.ceil((totalCount || 0) / itemsPerPage) && (
+                {currentPage < Math.ceil((orders?.totalCount || 0) / itemsPerPage) && (
                   <PaginationNext 
                     onClick={() => setCurrentPage(p => p + 1)}
                     className="cursor-pointer"
@@ -518,6 +495,7 @@ export function OrdersList() {
         onFulfill={handleBulkFulfill}
         onPrint={handleBulkPrint}
         onCancel={() => setSelectedOrderIds(new Set())}
+        isPrinting={isPrintingLabels}
       />
       
       <OrderFilters
@@ -550,6 +528,11 @@ export function OrdersList() {
         onSuccess={() => {
           setSelectedOrderIds(new Set());
           setBulkFulfillOpen(false);
+        }}
+        onRetryFailed={(failedIds) => {
+          // Set selection to only failed orders and reopen dialog
+          setSelectedOrderIds(new Set(failedIds));
+          setTimeout(() => setBulkFulfillOpen(true), 300);
         }}
       />
     </div>

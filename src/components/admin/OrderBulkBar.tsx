@@ -1,14 +1,15 @@
 import { Button } from '@/components/ui/button';
-import { Printer, Package, Truck } from 'lucide-react';
+import { Printer, Package, Truck, Loader2 } from 'lucide-react';
 
 interface OrderBulkBarProps {
   selectedCount: number;
   onFulfill: () => void;
   onPrint: () => void;
   onCancel: () => void;
+  isPrinting?: boolean;
 }
 
-export function OrderBulkBar({ selectedCount, onFulfill, onPrint, onCancel }: OrderBulkBarProps) {
+export function OrderBulkBar({ selectedCount, onFulfill, onPrint, onCancel, isPrinting }: OrderBulkBarProps) {
   if (selectedCount === 0) return null;
   
   return (
@@ -21,10 +22,20 @@ export function OrderBulkBar({ selectedCount, onFulfill, onPrint, onCancel }: Or
           </Button>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={onPrint} className="flex-1 sm:flex-none min-h-[44px]">
-            <Printer className="h-4 w-4 sm:mr-2" />
-            <span className="hidden sm:inline">Print Labels</span>
-            <span className="sm:hidden">Print</span>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={onPrint} 
+            disabled={isPrinting}
+            className="flex-1 sm:flex-none min-h-[44px]"
+          >
+            {isPrinting ? (
+              <Loader2 className="h-4 w-4 sm:mr-2 animate-spin" />
+            ) : (
+              <Printer className="h-4 w-4 sm:mr-2" />
+            )}
+            <span className="hidden sm:inline">{isPrinting ? 'Loading...' : 'Print Labels'}</span>
+            <span className="sm:hidden">{isPrinting ? '...' : 'Print'}</span>
           </Button>
           <Button size="sm" onClick={onFulfill} className="flex-1 sm:flex-none min-h-[44px]">
             <Truck className="h-4 w-4 sm:mr-2" />

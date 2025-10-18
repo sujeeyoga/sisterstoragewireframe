@@ -28,9 +28,10 @@ interface BulkFulfillmentDialogProps {
   open: boolean;
   onClose: () => void;
   onSuccess: () => void;
+  onRetryFailed?: (failedIds: (string | number)[]) => void;
 }
 
-export function BulkFulfillmentDialog({ orderIds, open, onClose, onSuccess }: BulkFulfillmentDialogProps) {
+export function BulkFulfillmentDialog({ orderIds, open, onClose, onSuccess, onRetryFailed }: BulkFulfillmentDialogProps) {
   const { loading, createShipment, getLabel } = useStallionShipping();
   const queryClient = useQueryClient();
   
@@ -273,19 +274,26 @@ export function BulkFulfillmentDialog({ orderIds, open, onClose, onSuccess }: Bu
   };
   
   const retryFailed = () => {
-    setStep('package');
-    setProgress(0);
-    setResults([]);
-    // Keep package dimensions from previous attempt
+    // This will be called from the dialog parent with filtered IDs
+    handleClose();
+    // Parent will reopen with only failed IDs
   };
 
   const handleClose = () => {
     setStep('package');
     setProgress(0);
     setResults([]);
+    setFailedOrderIds([]);
     onClose();
     if (results.some(r => r.success)) {
       onSuccess();
+    }
+  };
+  
+  const handleRetryFailed = () => {
+    if (onRetryFailed && failedOrderIds.length > 0) {
+      onRetryFailed(failedOrderIds);
+      handleClose();
     }
   };
 
@@ -314,16 +322,23 @@ export function BulkFulfillmentDialog({ orderIds, open, onClose, onSuccess }: Bu
                   <div className="bg-red-50 border border-red-200 rounded-lg p-4">
                     <div className="flex items-start gap-2">
                       <AlertCircle className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
-                      <div className="space-y-2">
+                      <div className="space-y-3 flex-1">
                         <p className="text-sm font-semibold text-red-900">Fulfillment address issues:</p>
                         <ul className="text-sm text-red-800 space-y-1 list-disc list-inside">
                           {validation.errors.map((err, i) => (
                             <li key={i}>{err}</li>
                           ))}
                         </ul>
-                        <p className="text-sm text-red-900 font-medium mt-2">
-                          Please configure your fulfillment address in Store Settings before proceeding.
-                        </p>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="w-full border-red-300 text-red-700 hover:bg-red-50"
+                          onClick={() => {
+                            window.open('/admin?tab=settings', '_blank');
+                          }}
+                        >
+                          Open Store Settings
+                        </Button>
                       </div>
                     </div>
                   </div>
@@ -488,8 +503,8 @@ export function BulkFulfillmentDialog({ orderIds, open, onClose, onSuccess }: Bu
             </ScrollArea>
 
             <div className="flex gap-2">
-              {failedOrderIds.length > 0 && (
-                <Button onClick={retryFailed} variant="outline" className="flex-1">
+              {failedOrderIds.length > 0 && onRetryFailed && (
+                <Button onClick={handleRetryFailed} variant="outline" className="flex-1">
                   Retry {failedOrderIds.length} Failed
                 </Button>
               )}
