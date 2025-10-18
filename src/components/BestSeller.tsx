@@ -73,7 +73,15 @@ const BestSeller = () => {
                 <div className="relative h-full">
                   {!loadedImages[buyCards[0].id] && <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse" />}
                   
-                  <img src={buyCards[0].image} alt={`${buyCards[0].name} - Bundle collection`} className={cn("w-full h-full object-cover transition-opacity duration-500 scale-125", loadedImages[buyCards[0].id] ? "opacity-100" : "opacity-0")} loading="eager" decoding="async" onLoad={() => handleImageLoad(buyCards[0].id)} />
+                  <img 
+                    src={buyCards[0].image} 
+                    alt={`${buyCards[0].name} - Bundle collection`} 
+                    className={cn("w-full h-full object-cover transition-opacity duration-500 scale-125", loadedImages[buyCards[0].id] ? "opacity-100" : "opacity-0")} 
+                    loading="lazy" 
+                    decoding="async"
+                    sizes="(min-width: 768px) 33vw, 280px"
+                    onLoad={() => handleImageLoad(buyCards[0].id)} 
+                  />
                   
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 bg-black/60">
                     <h3 className="text-white text-4xl md:text-5xl font-poppins font-thin drop-shadow-[0_4px_8px_rgba(0,0,0,0.3)] [text-shadow:_-1px_-1px_0_#fff,_1px_-1px_0_#fff,_-1px_1px_0_#fff,_1px_1px_0_#fff]">{buyCards[0].name}</h3>

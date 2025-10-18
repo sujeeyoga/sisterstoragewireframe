@@ -78,14 +78,14 @@ const Hero = () => {
 
         <div className="w-full h-[90vh] overflow-hidden bg-[hsl(var(--brand-pink))]">
           <div className="w-full h-full" style={{ transform: `translateY(${-offset * 0.15}px)` }}>
-            <img
-              src={heroMainImage}
-              alt="Woman showcasing Sister Storage jewelry organization solution"
-              className="w-full h-full object-cover"
-              loading="eager"
-              fetchPriority="high"
-              decoding="async"
-            />
+          <img
+            src={heroMainImage}
+            alt="Woman showcasing Sister Storage jewelry organization solution"
+            className="w-full h-full object-cover"
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
+          />
           </div>
         </div>
       </div>
