@@ -1,7 +1,10 @@
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Search, Filter, ArrowUpDown, MoreVertical, ArrowLeft } from 'lucide-react';
+import { Search, Filter, ArrowUpDown, MoreVertical, ArrowLeft, RefreshCw } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { supabase } from '@/integrations/supabase/client';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface OrdersHeaderProps {
   search: string;
@@ -31,6 +34,27 @@ export function OrdersHeader({
   filterCount = 0,
   onBackClick,
 }: OrdersHeaderProps) {
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  const handleSyncTracking = async () => {
+    setIsSyncing(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('sync-stallion-tracking');
+      
+      if (error) throw error;
+      
+      toast.success(`Tracking sync complete. Updated ${data.updated} orders.`);
+      
+      // Refresh the page to show updated data
+      setTimeout(() => window.location.reload(), 1000);
+    } catch (error: any) {
+      console.error('Sync error:', error);
+      toast.error(error.message || 'Failed to sync tracking');
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
   return (
     <div className="sticky top-0 z-10 bg-background border-b">
       {/* Top Bar */}
@@ -41,9 +65,20 @@ export function OrdersHeader({
           </Button>
         )}
         <h1 className="text-base font-semibold flex-1 text-center">Orders</h1>
-        <Button variant="ghost" size="icon">
-          <MoreVertical className="h-5 w-5" />
-        </Button>
+        <div className="flex gap-2">
+          <Button 
+            variant="ghost" 
+            size="icon"
+            onClick={handleSyncTracking}
+            disabled={isSyncing}
+            title="Sync Stallion Tracking"
+          >
+            <RefreshCw className={`h-5 w-5 ${isSyncing ? 'animate-spin' : ''}`} />
+          </Button>
+          <Button variant="ghost" size="icon">
+            <MoreVertical className="h-5 w-5" />
+          </Button>
+        </div>
       </div>
       
       {/* Search and Filters */}

@@ -470,6 +470,7 @@ export type Database = {
           shipping: Json | null
           shipping_label_url: string | null
           shipping_notification_sent_at: string | null
+          stallion_shipment_id: string | null
           status: string
           total: number | null
           tracking_number: string | null
@@ -490,6 +491,7 @@ export type Database = {
           shipping?: Json | null
           shipping_label_url?: string | null
           shipping_notification_sent_at?: string | null
+          stallion_shipment_id?: string | null
           status: string
           total?: number | null
           tracking_number?: string | null
@@ -510,6 +512,7 @@ export type Database = {
           shipping?: Json | null
           shipping_label_url?: string | null
           shipping_notification_sent_at?: string | null
+          stallion_shipment_id?: string | null
           status?: string
           total?: number | null
           tracking_number?: string | null

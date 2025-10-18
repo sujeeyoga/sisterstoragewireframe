@@ -17,7 +17,9 @@ interface Order {
   customer_name?: string;
   customer_email?: string;
   billing?: any;
+  shipping?: any;
   order_number?: string;
+  source?: 'woocommerce' | 'stripe';
 }
 
 interface BulkFulfillmentDialogProps {
@@ -39,15 +41,32 @@ export function BulkFulfillmentDialog({ orderIds, open, onClose, onSuccess }: Bu
   const [progress, setProgress] = useState(0);
   const [results, setResults] = useState<Array<{ orderId: string | number; success: boolean; error?: string }>>([]);
 
-  // Fetch orders
+  // Fetch orders from both tables
   const { data: orders } = useQuery({
     queryKey: ['bulk-orders', orderIds],
     queryFn: async () => {
-      const { data } = await supabase
+      // Separate string and number IDs
+      const stringIds = orderIds.filter(id => typeof id === 'string');
+      const numberIds = orderIds.filter(id => typeof id === 'number');
+      
+      // Fetch from Stripe orders (string IDs)
+      const { data: stripeOrders } = stringIds.length > 0 ? await supabase
         .from('orders')
         .select('*')
-        .in('id', orderIds.map(String));
-      return data || [];
+        .in('id', stringIds as string[]) : { data: [] };
+      
+      // Fetch from WooCommerce orders (number IDs)
+      const { data: wooOrders } = numberIds.length > 0 ? await supabase
+        .from('woocommerce_orders')
+        .select('*')
+        .in('id', numberIds as number[]) : { data: [] };
+      
+      const allOrders = [
+        ...(stripeOrders || []).map(o => ({ ...o, source: 'stripe' as const })),
+        ...(wooOrders || []).map(o => ({ ...o, source: 'woocommerce' as const }))
+      ];
+      
+      return allOrders;
     },
     enabled: orderIds.length > 0
   });
@@ -86,7 +105,7 @@ export function BulkFulfillmentDialog({ orderIds, open, onClose, onSuccess }: Bu
 
     for (let i = 0; i < orders.length; i++) {
       const order = orders[i];
-      const shippingAddr = order.shipping_address;
+      const shippingAddr = order.shipping_address || order.shipping;
 
       if (!shippingAddr) {
         processResults.push({ 
@@ -122,14 +141,18 @@ export function BulkFulfillmentDialog({ orderIds, open, onClose, onSuccess }: Bu
         const shipment = await createShipment({
           from: fulfillmentAddress as any,
           to: {
-            name: order.customer_name || `${(shippingAddr as any).first_name || ''} ${(shippingAddr as any).last_name || ''}`.trim(),
+            name: order.source === 'stripe' 
+              ? (order.customer_name || '')
+              : `${((order as any).billing?.first_name || '')} ${((order as any).billing?.last_name || '')}`.trim(),
             street1: (shippingAddr as any).address_1 || (shippingAddr as any).line1 || (shippingAddr as any).address1 || '',
             street2: (shippingAddr as any).address_2 || (shippingAddr as any).line2 || (shippingAddr as any).address2 || '',
             city: (shippingAddr as any).city || '',
             province: (shippingAddr as any).state || (shippingAddr as any).province || (shippingAddr as any).province_code || '',
             postal_code: postalCode,
             country: (shippingAddr as any).country || (shippingAddr as any).country_code || 'CA',
-            email: order.customer_email || (shippingAddr as any).email || '',
+            email: order.source === 'stripe' 
+              ? (order.customer_email || '')
+              : ((order as any).billing?.email || (shippingAddr as any).email || ''),
           },
           packages: [{
             weight: weightKg,
@@ -145,16 +168,17 @@ export function BulkFulfillmentDialog({ orderIds, open, onClose, onSuccess }: Bu
         // Get label
         const label = await getLabel(shipment.id);
 
-        // Update order
+        // Update order in the correct table
+        const tableName = order.source === 'stripe' ? 'orders' : 'woocommerce_orders';
         await supabase
-          .from('orders')
+          .from(tableName)
           .update({
             fulfillment_status: 'fulfilled',
             tracking_number: shipment.tracking_number,
             stallion_shipment_id: shipment.id,
             shipping_label_url: label.url,
             fulfilled_at: new Date().toISOString(),
-            status: 'processing'
+            status: order.source === 'stripe' ? 'processing' : 'completed'
           })
           .eq('id', String(order.id));
 
