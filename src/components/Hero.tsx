@@ -76,8 +76,8 @@ const Hero = () => {
           </div>
         </div>
 
-        <div className="w-full h-[80vh] overflow-hidden">
-          <div style={{ transform: `translateY(${-offset * 0.25}px)` }}>
+        <div className="w-full h-[90vh] overflow-hidden bg-[hsl(var(--brand-pink))]">
+          <div className="w-full h-full" style={{ transform: `translateY(${-offset * 0.15}px)` }}>
             <img
               src={heroMainImage}
               alt="Woman showcasing Sister Storage jewelry organization solution"
@@ -88,9 +88,6 @@ const Hero = () => {
             />
           </div>
         </div>
-
-        {/* Pink section to cover white space */}
-        <div className="bg-[hsl(var(--brand-pink))] h-32 -mt-12"></div>
       </div>
 
       {/* Desktop: Overlapping Layout */}
