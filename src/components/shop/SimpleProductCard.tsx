@@ -189,7 +189,7 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
           
           {/* Buy Button */}
           {product.category === 'open-box' ? (
-            <Link to="/shop" className="block w-full">
+            <Link to={`/shop/${product.id}`} className="block w-full">
               <button className="w-full font-bold text-sm py-3 shadow-lg hover:shadow-xl transition-all duration-300 bg-[#ff6b35] text-white rounded-lg flex items-center justify-center gap-2">
                 <Package className="h-4 w-4" />
                 SEE WHAT'S AVAILABLE
