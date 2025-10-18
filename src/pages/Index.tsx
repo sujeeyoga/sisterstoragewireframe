@@ -1,17 +1,14 @@
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import BaseLayout from "@/components/layout/BaseLayout";
 import Hero from "@/components/Hero";
-import CommunityStoriesCarousels from "@/components/community/CommunityStoriesCarousels";
-import LoadingScreen from "@/components/ui/LoadingScreen";
 
-// Lazy load below-the-fold content (except videos which load eagerly)
+// Lazy load all below-the-fold content for better performance
+const CommunityStoriesCarousels = lazy(() => import("@/components/community/CommunityStoriesCarousels"));
 const BestSeller = lazy(() => import("@/components/BestSeller"));
 const OrganizationGallery = lazy(() => import("@/components/OrganizationGallery"));
 const PromotionalBanner = lazy(() => import("@/components/PromotionalBanner"));
 
 const Index = () => {
-  const [showLoading, setShowLoading] = useState(true);
-
   // Ensure body scroll is enabled on mount
   useEffect(() => {
     document.body.style.overflow = '';
@@ -19,16 +16,15 @@ const Index = () => {
   }, []);
 
   return (
-    <>
-      {showLoading && <LoadingScreen onLoadingComplete={() => setShowLoading(false)} />}
-      
-      <BaseLayout variant="standard" spacing="none" showFooter={true}>
-        <div className="min-h-screen bg-white -mt-28">
-        {/* Hero Section */}
+    <BaseLayout variant="standard" spacing="none" showFooter={true}>
+      <div className="min-h-screen bg-white -mt-28">
+        {/* Hero Section - Critical, loads immediately */}
         <Hero />
         
-        {/* Styled by Our Sisters - Community carousel - Loads eagerly */}
-        <CommunityStoriesCarousels />
+        {/* Styled by Our Sisters - Lazy loaded for performance */}
+        <Suspense fallback={<div className="h-64" />}>
+          <CommunityStoriesCarousels />
+        </Suspense>
         
         {/* Best Sellers - Product carousel */}
         <Suspense fallback={<div className="h-64" />}>
@@ -44,9 +40,8 @@ const Index = () => {
         <Suspense fallback={<div className="h-64" />}>
           <PromotionalBanner />
         </Suspense>
-        </div>
-      </BaseLayout>
-    </>
+      </div>
+    </BaseLayout>
   );
 };
 

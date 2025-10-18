@@ -15,6 +15,8 @@ interface PerformanceImageProps {
   onError?: () => void;
   sizes?: string;
   srcSet?: string;
+  webpSrc?: string; // WebP version for modern browsers
+  quality?: number; // For future optimization
 }
 
 const PerformanceImage: React.FC<PerformanceImageProps> = ({
@@ -31,6 +33,7 @@ const PerformanceImage: React.FC<PerformanceImageProps> = ({
   onError,
   sizes,
   srcSet,
+  webpSrc,
   ...props
 }) => {
   const [imageState, setImageState] = useState<'loading' | 'loaded' | 'error'>('loading');
@@ -67,24 +70,49 @@ const PerformanceImage: React.FC<PerformanceImageProps> = ({
         />
       )}
       
-      {/* Main image */}
-      <img
-        src={imageSrc}
-        alt={alt}
-        width={width}
-        height={height}
-        loading={priority ? 'eager' : loading}
-        className={cn(
-          "transition-opacity duration-300",
-          imageState === 'loaded' ? 'opacity-100' : 'opacity-0',
-          className
-        )}
-        onLoad={handleLoad}
-        onError={handleError}
-        sizes={sizes}
-        srcSet={srcSet}
-        {...props}
-      />
+      {/* Picture element for WebP with fallback */}
+      {webpSrc ? (
+        <picture>
+          <source srcSet={webpSrc} type="image/webp" sizes={sizes} />
+          <img
+            src={imageSrc}
+            alt={alt}
+            width={width}
+            height={height}
+            loading={priority ? 'eager' : loading}
+            decoding="async"
+            className={cn(
+              "transition-opacity duration-300",
+              imageState === 'loaded' ? 'opacity-100' : 'opacity-0',
+              className
+            )}
+            onLoad={handleLoad}
+            onError={handleError}
+            sizes={sizes}
+            srcSet={srcSet}
+            {...props}
+          />
+        </picture>
+      ) : (
+        <img
+          src={imageSrc}
+          alt={alt}
+          width={width}
+          height={height}
+          loading={priority ? 'eager' : loading}
+          decoding="async"
+          className={cn(
+            "transition-opacity duration-300",
+            imageState === 'loaded' ? 'opacity-100' : 'opacity-0',
+            className
+          )}
+          onLoad={handleLoad}
+          onError={handleError}
+          sizes={sizes}
+          srcSet={srcSet}
+          {...props}
+        />
+      )}
     </div>
   );
 };
