@@ -15,7 +15,7 @@ import { PagesManager } from '@/components/admin/PagesManager';
 import { HeroImagesManager } from '@/components/admin/HeroImagesManager';
 import { BulkImageOptimizer } from '@/components/admin/BulkImageOptimizer';
 import ImageMigrationTool from '@/components/admin/ImageMigrationTool';
-import ShippingManager from '@/components/admin/ShippingManager';
+import { StallionDashboard } from '@/components/admin/StallionDashboard';
 import ShippingSettings from '@/components/admin/ShippingSettings';
 import { TextsManager } from '@/components/admin/TextsManager';
 import { QuickOptimizer } from '@/components/admin/QuickOptimizer';
@@ -46,7 +46,7 @@ const Admin = () => {
         <Route path="products" element={<ProductsTable />} />
         <Route path="products/:id" element={<ProductForm />} />
         <Route path="customers" element={<CustomersTable />} />
-        <Route path="shipping" element={<ShippingManager />} />
+        <Route path="shipping" element={<StallionDashboard />} />
         <Route path="shipping-settings" element={<ShippingSettings />} />
         <Route path="sections" element={<SectionsManager />} />
         <Route path="pages" element={<PagesManager />} />

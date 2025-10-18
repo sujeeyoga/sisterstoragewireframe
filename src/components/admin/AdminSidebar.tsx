@@ -1,4 +1,4 @@
-import { LayoutDashboard, Package, Layout, RefreshCw, Settings, Users, ShoppingCart, Image, FolderOpen, FileText, Sparkles, Truck, Video, Film, LogOut, DollarSign, Type } from 'lucide-react';
+import { LayoutDashboard, Package, Layout, RefreshCw, Settings, Users, ShoppingCart, Image, FolderOpen, FileText, Sparkles, Truck, Video, Film, LogOut, DollarSign, Type, PackageCheck } from 'lucide-react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -28,7 +28,7 @@ const menuItems = [
   { title: 'Products', url: '/admin/products', icon: Package, end: false },
   { title: 'Sections', url: '/admin/sections', icon: Layout, end: false },
   { title: 'Settings', url: '/admin/settings', icon: Settings, end: false },
-  { title: 'Shipping', url: '/admin/shipping', icon: Truck, end: false },
+  { title: 'Stallion Shipping', url: '/admin/shipping', icon: PackageCheck, end: false },
   { title: 'Shipping Settings', url: '/admin/shipping-settings', icon: DollarSign, end: false },
   { title: 'Sister Stories', url: '/admin/sister-stories', icon: Film, end: false },
   { title: 'Site Content', url: '/admin/texts', icon: Type, end: false },
