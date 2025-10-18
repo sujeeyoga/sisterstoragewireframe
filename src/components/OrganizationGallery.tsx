@@ -3,15 +3,15 @@ import PerformanceImage from '@/components/ui/performance-image';
 const OrganizationGallery = () => {
   const galleryImages = [
     {
-      src: 'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/organized-jewelry-bangles.png',
+      src: '/lovable-uploads/e1ae51b5-7916-4137-825e-7f197dff06a3.png',
       alt: 'Organized jewelry display with bangles'
     },
     {
-      src: 'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/elegant-jewelry-storage.png',
+      src: '/lovable-uploads/2a4c457a-7695-47d3-9912-ab2900c6ea25.png',
       alt: 'Elegant jewelry storage solution'
     },
     {
-      src: 'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/homepage/sister-storage-showcase.png',
+      src: '/lovable-uploads/0e5fe1c0-12f8-439f-94d5-ec1da8ca09c8.png',
       alt: 'Sister Storage product showcase'
     }
   ];
