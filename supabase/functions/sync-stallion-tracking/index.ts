@@ -54,6 +54,7 @@ serve(async (req) => {
 
     let updatedCount = 0;
     let errorCount = 0;
+    const errorDetails: Array<{ orderId: string | number; error: string }> = [];
 
     for (const order of allOrders) {
       try {
@@ -71,7 +72,9 @@ serve(async (req) => {
         );
 
         if (!response.ok) {
-          console.error(`Failed to get tracking for shipment ${order.stallion_shipment_id}:`, response.status);
+          const errorMsg = `Failed to get tracking for shipment ${order.stallion_shipment_id}: ${response.status}`;
+          console.error(errorMsg);
+          errorDetails.push({ orderId: order.id, error: errorMsg });
           errorCount++;
           continue;
         }
@@ -96,7 +99,9 @@ serve(async (req) => {
             .eq('id', order.id);
 
           if (updateError) {
-            console.error(`Failed to update order ${order.id}:`, updateError);
+            const errorMsg = `Failed to update order ${order.id}: ${updateError.message}`;
+            console.error(errorMsg);
+            errorDetails.push({ orderId: order.id, error: errorMsg });
             errorCount++;
           } else {
             console.log(`Updated order ${order.id} to status: ${newStatus}`);
@@ -104,7 +109,9 @@ serve(async (req) => {
           }
         }
       } catch (error) {
-        console.error(`Error processing order ${order.id}:`, error);
+        const errorMsg = `Error processing order ${order.id}: ${error instanceof Error ? error.message : String(error)}`;
+        console.error(errorMsg);
+        errorDetails.push({ orderId: order.id, error: errorMsg });
         errorCount++;
       }
     }
@@ -117,6 +124,7 @@ serve(async (req) => {
         updated: updatedCount,
         errors: errorCount,
         total: allOrders.length,
+        errorDetails: errorDetails.slice(0, 10), // Include first 10 errors
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

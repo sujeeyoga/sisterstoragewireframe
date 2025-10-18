@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
 import { useStallionShipping } from '@/hooks/useStallionShipping';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -39,7 +40,8 @@ export function BulkFulfillmentDialog({ orderIds, open, onClose, onSuccess }: Bu
   const [width, setWidth] = useState('8');
   const [height, setHeight] = useState('6');
   const [progress, setProgress] = useState(0);
-  const [results, setResults] = useState<Array<{ orderId: string | number; success: boolean; error?: string }>>([]);
+  const [results, setResults] = useState<Array<{ orderId: string | number; success: boolean; error?: string; errorCategory?: string }>>([]);
+  const [failedOrderIds, setFailedOrderIds] = useState<(string | number)[]>([]);
 
   // Fetch orders from both tables
   const { data: orders } = useQuery({
@@ -86,12 +88,61 @@ export function BulkFulfillmentDialog({ orderIds, open, onClose, onSuccess }: Bu
 
   const formatPostalCode = (postalCode: string): string => {
     if (!postalCode) return '';
-    return postalCode.replace(/\s/g, '').toUpperCase();
+    const cleaned = postalCode.replace(/\s/g, '').toUpperCase();
+    // Insert space if missing (A1A1A1 -> A1A 1A1)
+    if (cleaned.length === 6 && !cleaned.includes(' ')) {
+      return `${cleaned.slice(0, 3)} ${cleaned.slice(3)}`;
+    }
+    return cleaned;
+  };
+  
+  const validateCanadianPostalCode = (postalCode: string): { valid: boolean; error?: string } => {
+    if (!postalCode) return { valid: false, error: 'Postal code is required' };
+    
+    const formatted = formatPostalCode(postalCode);
+    const regex = /^[A-Z]\d[A-Z] \d[A-Z]\d$/;
+    
+    if (!regex.test(formatted)) {
+      return { 
+        valid: false, 
+        error: `Invalid postal code format: ${postalCode}. Expected format: A1A 1A1` 
+      };
+    }
+    
+    return { valid: true };
+  };
+  
+  const validateFulfillmentAddress = (): { valid: boolean; errors: string[] } => {
+    const errors: string[] = [];
+    
+    if (!fulfillmentAddress) {
+      errors.push('Fulfillment address not configured');
+      return { valid: false, errors };
+    }
+    
+    const addr = fulfillmentAddress as any;
+    
+    if (!addr.name) errors.push('Missing sender name');
+    if (!addr.street1) errors.push('Missing sender street address');
+    if (!addr.city) errors.push('Missing sender city');
+    if (!addr.province) errors.push('Missing sender province');
+    if (!addr.country) errors.push('Missing sender country');
+    
+    const postalValidation = validateCanadianPostalCode(addr.postal_code || '');
+    if (!postalValidation.valid) {
+      errors.push(`Sender: ${postalValidation.error}`);
+    }
+    
+    return { valid: errors.length === 0, errors };
   };
 
   const processOrders = async () => {
-    if (!fulfillmentAddress) {
-      toast.error('Please configure fulfillment address in Store Settings first');
+    // Validate fulfillment address first
+    const addressValidation = validateFulfillmentAddress();
+    if (!addressValidation.valid) {
+      toast.error('Invalid fulfillment address', {
+        description: addressValidation.errors.join('; ')
+      });
       return;
     }
 
@@ -101,7 +152,8 @@ export function BulkFulfillmentDialog({ orderIds, open, onClose, onSuccess }: Bu
     }
 
     setStep('processing');
-    const processResults: Array<{ orderId: string | number; success: boolean; error?: string }> = [];
+    const processResults: Array<{ orderId: string | number; success: boolean; error?: string; errorCategory?: string }> = [];
+    const failed: (string | number)[] = [];
 
     for (let i = 0; i < orders.length; i++) {
       const order = orders[i];
@@ -111,21 +163,27 @@ export function BulkFulfillmentDialog({ orderIds, open, onClose, onSuccess }: Bu
         processResults.push({ 
           orderId: order.id, 
           success: false, 
-          error: 'Missing shipping address' 
+          error: 'Missing shipping address',
+          errorCategory: 'address'
         });
+        failed.push(order.id);
         setProgress(((i + 1) / orders.length) * 100);
         continue;
       }
 
-      const postalCode = formatPostalCode((shippingAddr as any).postcode || (shippingAddr as any).postal_code || '');
+      const rawPostalCode = (shippingAddr as any).postcode || (shippingAddr as any).postal_code || '';
+      const postalCode = formatPostalCode(rawPostalCode);
       
-      // Validate postal code
-      if (!postalCode || postalCode.length !== 6) {
+      // Validate postal code format
+      const postalValidation = validateCanadianPostalCode(rawPostalCode);
+      if (!postalValidation.valid) {
         processResults.push({ 
           orderId: order.id, 
           success: false, 
-          error: `Invalid postal code: ${(shippingAddr as any).postcode || (shippingAddr as any).postal_code}` 
+          error: postalValidation.error,
+          errorCategory: 'validation'
         });
+        failed.push(order.id);
         setProgress(((i + 1) / orders.length) * 100);
         continue;
       }
@@ -185,17 +243,23 @@ export function BulkFulfillmentDialog({ orderIds, open, onClose, onSuccess }: Bu
         processResults.push({ orderId: order.id, success: true });
       } catch (error: any) {
         console.error(`Failed to process order ${order.id}:`, error);
+        const errorMsg = error.message || 'Unknown error';
+        const errorCategory = errorMsg.toLowerCase().includes('address') ? 'address' : 
+                             errorMsg.toLowerCase().includes('postal') ? 'validation' : 'api';
         processResults.push({ 
           orderId: order.id, 
           success: false, 
-          error: error.message || 'Unknown error' 
+          error: errorMsg,
+          errorCategory
         });
+        failed.push(order.id);
       }
 
       setProgress(((i + 1) / orders.length) * 100);
     }
 
     setResults(processResults);
+    setFailedOrderIds(failed);
     setStep('complete');
     queryClient.invalidateQueries({ queryKey: ['admin-orders'] });
     
@@ -206,6 +270,13 @@ export function BulkFulfillmentDialog({ orderIds, open, onClose, onSuccess }: Bu
     if (successCount < processResults.length) {
       toast.error(`Failed to fulfill ${processResults.length - successCount} order(s)`);
     }
+  };
+  
+  const retryFailed = () => {
+    setStep('package');
+    setProgress(0);
+    setResults([]);
+    // Keep package dimensions from previous attempt
   };
 
   const handleClose = () => {
@@ -227,12 +298,40 @@ export function BulkFulfillmentDialog({ orderIds, open, onClose, onSuccess }: Bu
             Bulk Fulfill Orders
           </DialogTitle>
           <DialogDescription>
-            Fulfill {orderIds.length} selected order(s) with Stallion Express
+            {failedOrderIds.length > 0 && step === 'package'
+              ? `Retrying ${failedOrderIds.length} failed order(s)`
+              : `Fulfill ${orderIds.length} selected order(s) with Stallion Express`}
           </DialogDescription>
         </DialogHeader>
 
         {step === 'package' && (
           <div className="space-y-4">
+            {/* Fulfillment Address Validation Warning */}
+            {(() => {
+              const validation = validateFulfillmentAddress();
+              if (!validation.valid) {
+                return (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                    <div className="flex items-start gap-2">
+                      <AlertCircle className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
+                      <div className="space-y-2">
+                        <p className="text-sm font-semibold text-red-900">Fulfillment address issues:</p>
+                        <ul className="text-sm text-red-800 space-y-1 list-disc list-inside">
+                          {validation.errors.map((err, i) => (
+                            <li key={i}>{err}</li>
+                          ))}
+                        </ul>
+                        <p className="text-sm text-red-900 font-medium mt-2">
+                          Please configure your fulfillment address in Store Settings before proceeding.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
+              return null;
+            })()}
+            
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
               <p className="text-sm text-blue-900">
                 All orders will use the same package dimensions. Make sure they are similar in size.
@@ -300,7 +399,11 @@ export function BulkFulfillmentDialog({ orderIds, open, onClose, onSuccess }: Bu
               <Button variant="outline" onClick={handleClose} className="flex-1">
                 Cancel
               </Button>
-              <Button onClick={processOrders} disabled={loading} className="flex-1">
+              <Button 
+                onClick={processOrders} 
+                disabled={loading || !validateFulfillmentAddress().valid} 
+                className="flex-1"
+              >
                 {loading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
                 Start Fulfillment
               </Button>
@@ -348,24 +451,66 @@ export function BulkFulfillmentDialog({ orderIds, open, onClose, onSuccess }: Bu
               </p>
             </div>
 
-            <ScrollArea className="h-48 rounded-lg border p-4">
-              <div className="space-y-2">
+            <ScrollArea className="h-64 rounded-lg border p-4">
+              <div className="space-y-3">
                 {results.map((result) => (
-                  <div key={result.orderId} className="flex items-center justify-between text-sm p-2 rounded bg-muted/50">
-                    <span className="font-mono">Order #{result.orderId}</span>
-                    {result.success ? (
-                      <span className="text-green-600 font-medium">✓ Fulfilled</span>
-                    ) : (
-                      <div className="flex items-center gap-2 text-red-600">
-                        <AlertCircle className="h-4 w-4" />
-                        <span className="font-medium">Failed</span>
+                  <div key={result.orderId} className={`p-3 rounded-lg border ${
+                    result.success ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'
+                  }`}>
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="font-mono text-sm font-medium">Order #{result.orderId}</span>
+                          {result.errorCategory && (
+                            <Badge variant="outline" className="text-xs">
+                              {result.errorCategory}
+                            </Badge>
+                          )}
+                        </div>
+                        {result.error && (
+                          <p className="text-xs text-red-700 mt-1 break-words">
+                            {result.error}
+                          </p>
+                        )}
                       </div>
-                    )}
+                      {result.success ? (
+                        <span className="text-green-600 font-medium text-sm flex-shrink-0">✓ Fulfilled</span>
+                      ) : (
+                        <div className="flex items-center gap-1 text-red-600 flex-shrink-0">
+                          <AlertCircle className="h-4 w-4" />
+                          <span className="font-medium text-sm">Failed</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
             </ScrollArea>
 
+            <div className="flex gap-2">
+              {failedOrderIds.length > 0 && (
+                <Button onClick={retryFailed} variant="outline" className="flex-1">
+                  Retry {failedOrderIds.length} Failed
+                </Button>
+              )}
+              <Button 
+                onClick={() => {
+                  // Copy error log to clipboard
+                  const errorLog = results
+                    .filter(r => !r.success)
+                    .map(r => `Order #${r.orderId}: ${r.error}`)
+                    .join('\n');
+                  navigator.clipboard.writeText(errorLog);
+                  toast.success('Error log copied to clipboard');
+                }}
+                variant="outline"
+                className={failedOrderIds.length > 0 ? 'flex-1' : 'w-full'}
+                disabled={!results.some(r => !r.success)}
+              >
+                Copy Error Log
+              </Button>
+            </div>
+            
             <Button onClick={handleClose} className="w-full">
               Done
             </Button>

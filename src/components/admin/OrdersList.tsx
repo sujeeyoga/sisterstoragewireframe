@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -11,6 +11,15 @@ import { BulkFulfillmentDialog } from './BulkFulfillmentDialog';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Package, RotateCcw } from 'lucide-react';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
 
 interface Order {
   id: number | string;
@@ -37,6 +46,8 @@ export function OrdersList() {
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [bulkFulfillOpen, setBulkFulfillOpen] = useState(false);
   const [selectionMode, setSelectionMode] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(50);
   const [filters, setFilters] = useState<OrderFiltersState>({
     dateRange: 'all',
     statuses: [],
@@ -74,17 +85,66 @@ export function OrdersList() {
     };
   }, [queryClient]);
   
-  const { data: orders, isLoading, error } = useQuery({
-    queryKey: ['admin-orders', activeStatus, filters],
+  // Get total count for pagination
+  const { data: totalCount } = useQuery({
+    queryKey: ['admin-orders-count', activeStatus, filters],
     queryFn: async () => {
-      // Fetch from both WooCommerce and Stripe orders
       let wooQuery = supabase
         .from('woocommerce_orders')
-        .select('*');
+        .select('id', { count: 'exact', head: true });
       
       let stripeQuery = supabase
         .from('orders')
-        .select('*');
+        .select('id', { count: 'exact', head: true });
+      
+      if (activeStatus !== 'all') {
+        wooQuery = wooQuery.eq('status', activeStatus);
+        stripeQuery = stripeQuery.eq('status', activeStatus);
+      }
+      
+      if (filters.statuses.length > 0) {
+        wooQuery = wooQuery.in('status', filters.statuses);
+        stripeQuery = stripeQuery.in('status', filters.statuses);
+      }
+      
+      if (filters.dateRange !== 'all') {
+        const now = new Date();
+        let startDate = new Date();
+        
+        if (filters.dateRange === 'today') {
+          startDate.setHours(0, 0, 0, 0);
+        } else if (filters.dateRange === '7d') {
+          startDate.setDate(now.getDate() - 7);
+        } else if (filters.dateRange === '30d') {
+          startDate.setDate(now.getDate() - 30);
+        }
+        
+        wooQuery = wooQuery.gte('date_created', startDate.toISOString());
+        stripeQuery = stripeQuery.gte('created_at', startDate.toISOString());
+      }
+      
+      const [wooResult, stripeResult] = await Promise.all([wooQuery, stripeQuery]);
+      
+      return (wooResult.count || 0) + (stripeResult.count || 0);
+    },
+  });
+
+  const { data: orders, isLoading, error } = useQuery({
+    queryKey: ['admin-orders', activeStatus, filters, currentPage],
+    queryFn: async () => {
+      // Calculate offset for pagination
+      const offset = (currentPage - 1) * itemsPerPage;
+      
+      // Fetch from both WooCommerce and Stripe orders with pagination
+      let wooQuery = supabase
+        .from('woocommerce_orders')
+        .select('*')
+        .range(offset, offset + itemsPerPage - 1);
+      
+      let stripeQuery = supabase
+        .from('orders')
+        .select('*')
+        .range(offset, offset + itemsPerPage - 1);
       
       // Apply status filter
       if (activeStatus !== 'all') {
@@ -222,8 +282,41 @@ export function OrdersList() {
     setBulkFulfillOpen(true);
   };
   
-  const handleBulkPrint = () => {
-    toast.info('Print labels functionality coming soon');
+  const handleBulkPrint = async () => {
+    // Fetch orders to get label URLs
+    const stringIds = Array.from(selectedOrderIds).filter(id => typeof id === 'string');
+    const numberIds = Array.from(selectedOrderIds).filter(id => typeof id === 'number');
+    
+    const { data: stripeOrders } = stringIds.length > 0 ? await supabase
+      .from('orders')
+      .select('id, shipping_label_url, order_number')
+      .in('id', stringIds as string[]) : { data: [] };
+    
+    const { data: wooOrders } = numberIds.length > 0 ? await supabase
+      .from('woocommerce_orders')
+      .select('id, shipping_label_url')
+      .in('id', numberIds as number[]) : { data: [] };
+    
+    const allOrders = [...(stripeOrders || []), ...(wooOrders || [])];
+    const ordersWithLabels = allOrders.filter(o => o.shipping_label_url);
+    
+    if (ordersWithLabels.length === 0) {
+      toast.error('No shipping labels found for selected orders');
+      return;
+    }
+    
+    // Open each label in a new tab with slight delay
+    ordersWithLabels.forEach((order, index) => {
+      setTimeout(() => {
+        window.open(order.shipping_label_url, '_blank');
+      }, index * 300); // 300ms delay between each to avoid popup blocking
+    });
+    
+    toast.success(`Opening ${ordersWithLabels.length} label(s)`, {
+      description: ordersWithLabels.length < allOrders.length 
+        ? `${allOrders.length - ordersWithLabels.length} order(s) don't have labels yet`
+        : undefined
+    });
   };
   
   const toggleSelectionMode = () => {
@@ -231,6 +324,28 @@ export function OrdersList() {
       setSelectedOrderIds(new Set());
     }
     setSelectionMode(!selectionMode);
+  };
+  
+  const handleStatusChange = (newStatus: string) => {
+    // Clear selection when changing filters
+    if (selectedOrderIds.size > 0) {
+      setSelectedOrderIds(new Set());
+      toast.info('Selection cleared due to filter change');
+    }
+    setActiveStatus(newStatus);
+    setCurrentPage(1); // Reset to first page
+  };
+  
+  const handleSelectAll = () => {
+    if (filteredOrders) {
+      const allIds = new Set(filteredOrders.map(o => o.id));
+      setSelectedOrderIds(allIds);
+      toast.success(`Selected ${allIds.size} orders`);
+    }
+  };
+  
+  const handleDeselectAll = () => {
+    setSelectedOrderIds(new Set());
   };
   
   const filterCount = 
@@ -245,11 +360,14 @@ export function OrdersList() {
           search={search}
           onSearchChange={setSearch}
           activeStatus={activeStatus}
-          onStatusChange={setActiveStatus}
+          onStatusChange={handleStatusChange}
           onFilterClick={() => setFiltersOpen(true)}
           filterCount={filterCount}
           selectionMode={selectionMode}
           onToggleSelection={toggleSelectionMode}
+          onSelectAll={handleSelectAll}
+          onDeselectAll={handleDeselectAll}
+          selectedCount={selectedOrderIds.size}
         />
         <div className="p-4 space-y-4">
           {[1, 2, 3, 4, 5].map((i) => (
@@ -296,11 +414,14 @@ export function OrdersList() {
         search={search}
         onSearchChange={setSearch}
         activeStatus={activeStatus}
-        onStatusChange={setActiveStatus}
+        onStatusChange={handleStatusChange}
         onFilterClick={() => setFiltersOpen(true)}
         filterCount={filterCount}
         selectionMode={selectionMode}
         onToggleSelection={toggleSelectionMode}
+        onSelectAll={handleSelectAll}
+        onDeselectAll={handleDeselectAll}
+        selectedCount={selectedOrderIds.size}
       />
       
       <div className="p-4 space-y-4">
@@ -339,6 +460,56 @@ export function OrdersList() {
               selectionMode={selectionMode}
             />
           ))
+        )}
+        
+        {/* Pagination */}
+        {filteredOrders && filteredOrders.length > 0 && totalCount && totalCount > itemsPerPage && (
+          <div className="flex justify-center pt-8 pb-4">
+            <Pagination>
+              <PaginationContent>
+                {currentPage > 1 && (
+                  <PaginationPrevious 
+                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                    className="cursor-pointer"
+                  />
+                )}
+                {Array.from({ length: Math.ceil(totalCount / itemsPerPage) }, (_, i) => i + 1)
+                  .filter(page => {
+                    // Show first, last, current, and ±1 around current
+                    const totalPages = Math.ceil(totalCount / itemsPerPage);
+                    return page === 1 || 
+                           page === totalPages || 
+                           Math.abs(page - currentPage) <= 1;
+                  })
+                  .map((page, index, array) => {
+                    // Add ellipsis if gap exists
+                    const prevPage = array[index - 1];
+                    const showEllipsis = prevPage && page - prevPage > 1;
+                    
+                    return (
+                      <React.Fragment key={page}>
+                        {showEllipsis && <PaginationEllipsis />}
+                        <PaginationItem>
+                          <PaginationLink
+                            onClick={() => setCurrentPage(page)}
+                            isActive={currentPage === page}
+                            className="cursor-pointer"
+                          >
+                            {page}
+                          </PaginationLink>
+                        </PaginationItem>
+                      </React.Fragment>
+                    );
+                  })}
+                {currentPage < Math.ceil((totalCount || 0) / itemsPerPage) && (
+                  <PaginationNext 
+                    onClick={() => setCurrentPage(p => p + 1)}
+                    className="cursor-pointer"
+                  />
+                )}
+              </PaginationContent>
+            </Pagination>
+          </div>
         )}
       </div>
       

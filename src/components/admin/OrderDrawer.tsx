@@ -17,8 +17,9 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { format } from 'date-fns';
-import { Package, DollarSign, User, MapPin, CreditCard, Truck, ExternalLink } from 'lucide-react';
+import { Package, DollarSign, User, MapPin, CreditCard, Truck, ExternalLink, AlertTriangle } from 'lucide-react';
 import { StallionFulfillmentDialog } from './StallionFulfillmentDialog';
+import { toast } from 'sonner';
 
 interface OrderDrawerProps {
   order: {
@@ -50,6 +51,15 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
 
   const handleStatusUpdate = () => {
     onStatusUpdate(newStatus);
+  };
+  
+  const validateTrackingNumber = (trackingNum: string): boolean => {
+    // Basic validation - not empty and reasonable length
+    if (!trackingNum || trackingNum.trim().length < 5) {
+      return false;
+    }
+    // Could add more specific validation based on carrier format
+    return true;
   };
 
   const getStatusBadge = (status: string) => {
@@ -258,8 +268,14 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
                     </Badge>
                   </div>
                   {order.tracking_number && (
-                    <div className="text-sm text-green-700">
-                      <span className="font-medium">Tracking:</span> {order.tracking_number}
+                    <div className="text-sm">
+                      <span className="font-medium text-green-700">Tracking:</span> {order.tracking_number}
+                      {!validateTrackingNumber(order.tracking_number) && (
+                        <div className="flex items-center gap-1 text-amber-600 mt-1">
+                          <AlertTriangle className="h-3 w-3" />
+                          <span className="text-xs">Invalid tracking number format</span>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>

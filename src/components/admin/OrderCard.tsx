@@ -111,11 +111,13 @@ export function OrderCard({ order, onView, isSelected, onSelect, selectionMode }
     <article className="bg-card rounded-2xl border shadow-sm p-4 space-y-2">
       <div className="flex items-start gap-3">
         {selectionMode && (
-          <Checkbox 
-            checked={isSelected} 
-            onCheckedChange={onSelect}
-            className="mt-1"
-          />
+          <div className="pt-1">
+            <Checkbox 
+              checked={isSelected} 
+              onCheckedChange={onSelect}
+              className="w-5 h-5 sm:w-4 sm:h-4"
+            />
+          </div>
         )}
         <div className="flex-1 space-y-2">
           <div className="text-[13px] text-muted-foreground flex items-center gap-2 flex-wrap">

@@ -38,9 +38,38 @@ export const useStallionShipping = () => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
+  const validateCanadianPostalCode = (postalCode: string): { valid: boolean; formatted: string; error?: string } => {
+    if (!postalCode) return { valid: false, formatted: '', error: 'Postal code is required' };
+    
+    const cleaned = postalCode.replace(/\s/g, '').toUpperCase();
+    const formatted = cleaned.length === 6 ? `${cleaned.slice(0, 3)} ${cleaned.slice(3)}` : cleaned;
+    const regex = /^[A-Z]\d[A-Z] \d[A-Z]\d$/;
+    
+    if (!regex.test(formatted)) {
+      return { 
+        valid: false, 
+        formatted: cleaned,
+        error: `Invalid Canadian postal code: ${postalCode}. Expected format: A1A 1A1` 
+      };
+    }
+    
+    return { valid: true, formatted: cleaned };
+  };
+
   const getRates = async (request: RateRequest) => {
     setLoading(true);
     try {
+      // Validate postal codes
+      const fromPostalValidation = validateCanadianPostalCode(request.from.postal_code);
+      if (!fromPostalValidation.valid) {
+        throw new Error(`From address: ${fromPostalValidation.error}`);
+      }
+      
+      const toPostalValidation = validateCanadianPostalCode(request.to.postal_code);
+      if (!toPostalValidation.valid) {
+        throw new Error(`To address: ${toPostalValidation.error}`);
+      }
+      
       // Format the request for Stallion API v4
       const formattedRequest = {
         from_address: {
@@ -48,7 +77,7 @@ export const useStallionShipping = () => {
           address1: request.from.street1 || '',
           city: request.from.city || '',
           province_code: request.from.province || '',
-          postal_code: (request.from.postal_code || '').replace(/\s/g, '').toUpperCase(),
+          postal_code: fromPostalValidation.formatted,
           country_code: request.from.country || 'CA',
         },
         to_address: {
@@ -56,7 +85,7 @@ export const useStallionShipping = () => {
           address1: request.to.street1 || '',
           city: request.to.city || '',
           province_code: request.to.province || '',
-          postal_code: (request.to.postal_code || '').replace(/\s/g, '').toUpperCase(),
+          postal_code: toPostalValidation.formatted,
           country_code: request.to.country || 'CA',
           phone: request.to.phone || '',
           email: request.to.email || '',
@@ -104,6 +133,17 @@ export const useStallionShipping = () => {
   const createShipment = async (request: ShipmentRequest) => {
     setLoading(true);
     try {
+      // Validate postal codes
+      const fromPostalValidation = validateCanadianPostalCode(request.from.postal_code);
+      if (!fromPostalValidation.valid) {
+        throw new Error(`From address: ${fromPostalValidation.error}`);
+      }
+      
+      const toPostalValidation = validateCanadianPostalCode(request.to.postal_code);
+      if (!toPostalValidation.valid) {
+        throw new Error(`To address: ${toPostalValidation.error}`);
+      }
+      
       // Format the request for Stallion API v4
       const formattedRequest = {
         from_address: {
@@ -111,7 +151,7 @@ export const useStallionShipping = () => {
           address1: request.from.street1 || '',
           city: request.from.city || '',
           province_code: request.from.province || '',
-          postal_code: (request.from.postal_code || '').replace(/\s/g, '').toUpperCase(),
+          postal_code: fromPostalValidation.formatted,
           country_code: request.from.country || 'CA',
         },
         to_address: {
@@ -119,7 +159,7 @@ export const useStallionShipping = () => {
           address1: request.to.street1 || '',
           city: request.to.city || '',
           province_code: request.to.province || '',
-          postal_code: (request.to.postal_code || '').replace(/\s/g, '').toUpperCase(),
+          postal_code: toPostalValidation.formatted,
           country_code: request.to.country || 'CA',
           phone: request.to.phone || '',
           email: request.to.email || '',

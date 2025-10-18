@@ -12,7 +12,7 @@ export function OrderBulkBar({ selectedCount, onFulfill, onPrint, onCancel }: Or
   if (selectedCount === 0) return null;
   
   return (
-    <div className="fixed bottom-0 left-0 right-0 p-3 bg-background border-t shadow-lg z-50 safe-area-inset-bottom">
+    <div className="fixed bottom-0 left-0 right-0 p-3 pb-safe bg-background border-t shadow-lg z-50">
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium">✓ {selectedCount} selected</span>
@@ -21,11 +21,12 @@ export function OrderBulkBar({ selectedCount, onFulfill, onPrint, onCancel }: Or
           </Button>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={onPrint} className="flex-1 sm:flex-none">
+          <Button variant="outline" size="sm" onClick={onPrint} className="flex-1 sm:flex-none min-h-[44px]">
             <Printer className="h-4 w-4 sm:mr-2" />
-            <span className="hidden sm:inline">Print</span>
+            <span className="hidden sm:inline">Print Labels</span>
+            <span className="sm:hidden">Print</span>
           </Button>
-          <Button size="sm" onClick={onFulfill} className="flex-1 sm:flex-none">
+          <Button size="sm" onClick={onFulfill} className="flex-1 sm:flex-none min-h-[44px]">
             <Truck className="h-4 w-4 sm:mr-2" />
             <span className="hidden sm:inline">Bulk</span> Fulfill
           </Button>

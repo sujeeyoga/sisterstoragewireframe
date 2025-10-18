@@ -1,10 +1,17 @@
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Search, Filter, ArrowUpDown, MoreVertical, ArrowLeft, RefreshCw, CheckSquare, Square } from 'lucide-react';
+import { Search, Filter, ArrowUpDown, MoreVertical, ArrowLeft, RefreshCw, CheckSquare, Square, ChevronDown } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { useQuery } from '@tanstack/react-query';
 
 interface OrdersHeaderProps {
   search: string;
@@ -16,6 +23,9 @@ interface OrdersHeaderProps {
   onBackClick?: () => void;
   selectionMode?: boolean;
   onToggleSelection?: () => void;
+  onSelectAll?: () => void;
+  onDeselectAll?: () => void;
+  selectedCount?: number;
 }
 
 const statusChips = [
@@ -37,8 +47,43 @@ export function OrdersHeader({
   onBackClick,
   selectionMode,
   onToggleSelection,
+  onSelectAll,
+  onDeselectAll,
+  selectedCount = 0,
 }: OrdersHeaderProps) {
   const [isSyncing, setIsSyncing] = useState(false);
+  const [lastSyncTime, setLastSyncTime] = useState<Date | null>(null);
+  
+  // Fetch last sync time
+  const { data: lastSync } = useQuery({
+    queryKey: ['last-sync-time'],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('woocommerce_sync_log')
+        .select('created_at')
+        .eq('sync_type', 'tracking')
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      return data?.created_at ? new Date(data.created_at) : null;
+    },
+    refetchInterval: 60000, // Refetch every minute
+  });
+  
+  useEffect(() => {
+    if (lastSync) {
+      setLastSyncTime(lastSync);
+    }
+  }, [lastSync]);
+  
+  const getRelativeTime = (date: Date | null) => {
+    if (!date) return 'Never';
+    const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
+    if (seconds < 60) return 'Just now';
+    if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+    if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+    return `${Math.floor(seconds / 86400)}d ago`;
+  };
 
   const handleSyncTracking = async () => {
     setIsSyncing(true);
@@ -47,7 +92,18 @@ export function OrdersHeader({
       
       if (error) throw error;
       
-      toast.success(`Tracking sync complete. Updated ${data.updated} orders.`);
+      // Show detailed sync results
+      if (data.errors > 0) {
+        toast.success(`Sync complete: ${data.updated} updated, ${data.errors} failed`, {
+          description: `Total: ${data.total} orders checked`
+        });
+      } else {
+        toast.success(`Tracking sync complete`, {
+          description: `Updated ${data.updated} of ${data.total} orders`
+        });
+      }
+      
+      setLastSyncTime(new Date());
       
       // Refresh the page to show updated data
       setTimeout(() => window.location.reload(), 1000);
@@ -68,8 +124,36 @@ export function OrdersHeader({
             <ArrowLeft className="h-5 w-5" />
           </Button>
         )}
-        <h1 className="text-base font-semibold flex-1 text-center">Orders</h1>
+        <h1 className="text-base font-semibold flex-1 text-center">
+          Orders
+          {selectedCount > 0 && (
+            <span className="text-sm text-muted-foreground ml-2">
+              ({selectedCount} selected)
+            </span>
+          )}
+        </h1>
         <div className="flex gap-2">
+          {onToggleSelection && selectionMode && onSelectAll && onDeselectAll && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button 
+                  variant="ghost"
+                  size="icon"
+                  title="Bulk selection options"
+                >
+                  <ChevronDown className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={onSelectAll}>
+                  Select All on Page
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={onDeselectAll}>
+                  Deselect All
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
           {onToggleSelection && (
             <Button 
               variant={selectionMode ? "default" : "ghost"}
@@ -85,9 +169,15 @@ export function OrdersHeader({
             size="icon"
             onClick={handleSyncTracking}
             disabled={isSyncing}
-            title="Sync Stallion Tracking"
+            title={`Sync Stallion Tracking\nLast sync: ${getRelativeTime(lastSyncTime)}`}
+            className="relative"
           >
             <RefreshCw className={`h-5 w-5 ${isSyncing ? 'animate-spin' : ''}`} />
+            {lastSyncTime && (
+              <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 text-[9px] text-muted-foreground whitespace-nowrap">
+                {getRelativeTime(lastSyncTime)}
+              </span>
+            )}
           </Button>
           <Button variant="ghost" size="icon">
             <MoreVertical className="h-5 w-5" />
