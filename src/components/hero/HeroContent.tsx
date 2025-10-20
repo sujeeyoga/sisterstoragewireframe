@@ -18,7 +18,7 @@ const HeroContent = ({ scrollPosition }: HeroContentProps) => {
       </span>
       
       <h1 className="text-6xl md:text-8xl lg:text-9xl xl:text-[12rem] 2xl:text-[14rem] font-black text-white mb-3 leading-none tracking-tight">
-        CULTURE / WITHOUT CLUTTER.
+        CULTURE <span className="text-3xl md:text-4xl lg:text-[4.5rem] xl:text-[6rem] 2xl:text-[7rem]">/</span> WITHOUT CLUTTER.
       </h1>
       
       <h2 className="text-2xl md:text-4xl lg:text-5xl xl:text-6xl text-white mb-10 mt-8 font-black leading-none tracking-tight">
