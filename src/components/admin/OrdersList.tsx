@@ -315,7 +315,7 @@ export function OrdersList() {
   
   const handleSelectAll = () => {
     if (orders?.orders) {
-      const allIds = new Set(orders.orders.map(o => o.id));
+      const allIds = new Set<string | number>(orders.orders.map(o => o.id));
       setSelectedOrderIds(allIds);
       toast.success(`Selected ${allIds.size} orders on this page`);
     }
