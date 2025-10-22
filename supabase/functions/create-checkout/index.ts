@@ -13,9 +13,35 @@ serve(async (req) => {
   }
 
   try {
-    const { items, customerEmail, shippingAddress, shippingCost, shippingMethod, taxAmount, taxRate, province } = await req.json();
+    const { 
+      items, 
+      customerEmail, 
+      customerPhone,
+      shippingAddress, 
+      shippingCost, 
+      shippingMethod, 
+      taxAmount, 
+      taxRate, 
+      province,
+      subtotal,
+      giftWrapping,
+      subscribeNewsletter
+    } = await req.json();
     
-    console.log('Checkout request:', { items, customerEmail, shippingAddress, shippingCost, shippingMethod, taxAmount, taxRate, province });
+    console.log('Checkout request:', { 
+      items, 
+      customerEmail, 
+      customerPhone,
+      shippingAddress, 
+      shippingCost, 
+      shippingMethod, 
+      taxAmount, 
+      taxRate, 
+      province,
+      subtotal,
+      giftWrapping,
+      subscribeNewsletter
+    });
     
     if (!items || items.length === 0) {
       throw new Error("Cart items are required");
@@ -52,15 +78,27 @@ serve(async (req) => {
       customerId = customers.data[0].id;
     }
 
-    // Build line items for Stripe from cart items
+    // Calculate discounted prices if store discount is active
+    let discountPercentage = 0;
+    if (discountData?.setting_value?.percentage) {
+      discountPercentage = discountData.setting_value.percentage;
+      console.log('Store discount active:', discountPercentage, '%');
+    }
+
+    // Build line items for Stripe from cart items with discount already applied
     const lineItems = items.map((item: any) => {
+      // Apply discount to item price if discount exists
+      const discountedPrice = discountPercentage > 0 
+        ? item.price * (1 - discountPercentage / 100)
+        : item.price;
+      
       const itemData: any = {
         price_data: {
           currency: 'cad',
           product_data: {
             name: item.name,
           },
-          unit_amount: Math.round(item.price * 100),
+          unit_amount: Math.round(discountedPrice * 100),
         },
         quantity: item.quantity,
       };
@@ -77,6 +115,21 @@ serve(async (req) => {
 
       return itemData;
     });
+
+    // Add gift wrapping as line item if enabled
+    if (giftWrapping?.enabled && giftWrapping.fee > 0) {
+      lineItems.push({
+        price_data: {
+          currency: 'cad',
+          product_data: {
+            name: 'Gift Wrapping',
+            description: giftWrapping.message ? `Message: ${giftWrapping.message}` : undefined,
+          },
+          unit_amount: Math.round(giftWrapping.fee * 100),
+        },
+        quantity: 1,
+      });
+    }
 
     // Add shipping as a line item
     if (shippingCost && shippingCost > 0) {
@@ -120,36 +173,16 @@ serve(async (req) => {
       metadata: {
         shippingAddress: shippingAddress ? JSON.stringify(shippingAddress) : '',
         shippingMethod: shippingMethod || '',
+        customerPhone: customerPhone || '',
+        giftWrapping: giftWrapping?.enabled ? 'Yes' : 'No',
+        giftMessage: giftWrapping?.message || '',
+        subscribeNewsletter: subscribeNewsletter ? 'Yes' : 'No',
+        discountApplied: discountPercentage > 0 ? `${discountPercentage}%` : 'None',
       },
     };
 
-    // Apply discount if available
-    if (discountData?.setting_value?.percentage) {
-      const discountPercentage = discountData.setting_value.percentage;
-      console.log('Applying discount:', discountPercentage, '%');
-      
-      // Create or get a coupon for this discount
-      const couponId = `store-discount-${discountPercentage}`;
-      
-      try {
-        // Try to retrieve existing coupon
-        await stripe.coupons.retrieve(couponId);
-        console.log('Using existing coupon:', couponId);
-      } catch {
-        // Create new coupon if it doesn't exist
-        await stripe.coupons.create({
-          id: couponId,
-          name: discountData.setting_value.name || 'Store Discount',
-          percent_off: discountPercentage,
-          duration: 'once',
-        });
-        console.log('Created new coupon:', couponId);
-      }
-      
-      sessionParams.discounts = [{
-        coupon: couponId
-      }];
-    }
+    // Note: Discount is already applied to line item prices above, no need for Stripe coupons
+    // This prevents double discount application
 
     // Create checkout session
     const session = await stripe.checkout.sessions.create(sessionParams);

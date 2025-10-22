@@ -3,6 +3,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { MapPin } from 'lucide-react';
 
+// SECURITY NOTE: This Google Places API key should be restricted in Google Cloud Console
+// Go to: https://console.cloud.google.com/apis/credentials
+// Edit your API key and add HTTP referrer restrictions (e.g., your domain: *.lovable.app/*)
+// This prevents unauthorized use of your API key
 const GOOGLE_PLACES_API_KEY = 'AIzaSyDvBbDzbTVIhYqSyKMLsTDjc89Rnaoy4Zc';
 
 interface AddressAutocompleteProps {

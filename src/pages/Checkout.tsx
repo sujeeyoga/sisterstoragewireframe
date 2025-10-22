@@ -336,6 +336,7 @@ const Checkout = () => {
             description: item.description || `${item.name} - Quantity: ${item.quantity}`,
           })),
           customerEmail: formData.email,
+          customerPhone: formData.phone,
           shippingAddress: {
             name: `${formData.firstName} ${formData.lastName}`,
             address: formData.address,
@@ -349,6 +350,13 @@ const Checkout = () => {
           taxAmount: taxAmount,
           taxRate: taxRate,
           province: formData.province,
+          subtotal: subtotal, // Send original subtotal for discount calculation
+          giftWrapping: includeGiftWrapping ? {
+            enabled: true,
+            fee: giftWrappingFee,
+            message: giftMessage
+          } : null,
+          subscribeNewsletter: subscribeNewsletter,
         },
       });
 
