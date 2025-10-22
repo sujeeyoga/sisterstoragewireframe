@@ -155,6 +155,139 @@ export type Database = {
         }
         Relationships: []
       }
+      shipping_fallback_settings: {
+        Row: {
+          enabled: boolean
+          fallback_method_name: string
+          fallback_rate: number
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          enabled?: boolean
+          fallback_method_name: string
+          fallback_rate: number
+          id?: string
+          updated_at?: string
+        }
+        Update: {
+          enabled?: boolean
+          fallback_method_name?: string
+          fallback_rate?: number
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      shipping_zone_rates: {
+        Row: {
+          created_at: string
+          display_order: number
+          enabled: boolean
+          free_threshold: number | null
+          id: string
+          method_name: string
+          rate_amount: number
+          rate_type: string
+          updated_at: string
+          zone_id: string
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number
+          enabled?: boolean
+          free_threshold?: number | null
+          id?: string
+          method_name: string
+          rate_amount?: number
+          rate_type: string
+          updated_at?: string
+          zone_id: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number
+          enabled?: boolean
+          free_threshold?: number | null
+          id?: string
+          method_name?: string
+          rate_amount?: number
+          rate_type?: string
+          updated_at?: string
+          zone_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shipping_zone_rates_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "shipping_zones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shipping_zone_rules: {
+        Row: {
+          created_at: string
+          id: string
+          rule_type: string
+          rule_value: string
+          zone_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          rule_type: string
+          rule_value: string
+          zone_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          rule_type?: string
+          rule_value?: string
+          zone_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shipping_zone_rules_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "shipping_zones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shipping_zones: {
+        Row: {
+          created_at: string
+          description: string | null
+          enabled: boolean
+          id: string
+          name: string
+          priority: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          enabled?: boolean
+          id?: string
+          name: string
+          priority?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          enabled?: boolean
+          id?: string
+          name?: string
+          priority?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       shop_sections: {
         Row: {
           background_color: string | null
