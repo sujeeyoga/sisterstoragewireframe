@@ -100,104 +100,96 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
   useEffect(() => {
     if (!isLoaded || !inputRef.current || !window.google) return;
 
-    // Initialize autocomplete with Canada restriction but allow manual entry
+    // Initialize autocomplete with Canada restriction
     autocompleteRef.current = new window.google.maps.places.Autocomplete(inputRef.current, {
       componentRestrictions: { country: 'ca' },
       fields: ['address_components', 'formatted_address'],
       types: ['address']
     });
 
-    // Handle place selection (only when user selects from dropdown)
+    // Handle place selection - fires when user clicks a suggestion
     const handlePlaceChanged = () => {
-      // Add a small delay to ensure place data is fully loaded
-      setTimeout(() => {
-        const place = autocompleteRef.current?.getPlace();
-        
-        console.log('Place changed event:', place);
-        
-        // Only process if user actually selected a place from dropdown
-        if (!place?.address_components) {
-          console.log('No address components found, skipping');
-          return; // Let manual entry work normally
-        }
-
-        const components: any = {};
-        
-        // Parse address components into a simple object
-        place.address_components.forEach((component: any) => {
-          const type = component.types[0];
-          components[type] = {
-            long: component.long_name,
-            short: component.short_name
-          };
-        });
-
-        // Build address from components
-        const streetNumber = components.street_number?.long || '';
-        const route = components.route?.long || '';
-        const rawAddress = `${streetNumber} ${route}`.trim();
-        const fullAddress = formatAddress(rawAddress);
-        
-        // Use sublocality (e.g., Scarborough) if available, otherwise use locality (e.g., Toronto)
-        const rawCity = components.sublocality_level_1?.long || components.sublocality?.long || components.locality?.long || '';
-        const city = formatCity(rawCity);
-        
-        // Get 2-letter province code (try mapping first, then short_name)
-        const provinceLong = components.administrative_area_level_1?.long || '';
-        const provinceShort = components.administrative_area_level_1?.short || '';
-        const province = PROVINCE_MAP[provinceLong] || provinceShort || '';
-        
-        // Format Canadian postal code (A1A1A1)
-        const rawPostalCode = components.postal_code?.long || '';
-        const postalCode = rawPostalCode ? formatPostalCode(rawPostalCode) : '';
-
-        console.log('Parsed address data:', { fullAddress, city, province, postalCode });
-
-        if (fullAddress && city && province) {
-          // Set the formatted value immediately - this updates the input instantly
-          if (inputRef.current) {
-            inputRef.current.value = fullAddress;
-          }
-          
-          // Call callbacks to update parent component
-          onChange(fullAddress);
-          onAddressSelect({
-            address: fullAddress,
-            city,
-            province,
-            postalCode
-          });
-          
-          console.log('Address data sent to parent');
-        } else {
-          console.warn('Incomplete address data:', { fullAddress, city, province, postalCode });
-        }
-      }, 0); // Small delay to ensure Google Places API has populated the data
-    };
-    
-    autocompleteRef.current.addListener('place_changed', handlePlaceChanged);
-
-    // Force place_changed on input change/blur as backup
-    const forceUpdate = () => {
       const place = autocompleteRef.current?.getPlace();
-      if (!place || !place.address_components) {
-        console.log('Forcing place_changed event');
-        window.google.maps.event.trigger(autocompleteRef.current, 'place_changed');
+      
+      console.log('Place changed event fired:', place);
+      
+      // Only process if we have valid address data
+      if (!place?.address_components || place.address_components.length === 0) {
+        console.log('No valid address components, skipping');
+        return;
       }
+
+      const components: any = {};
+      
+      // Parse address components
+      place.address_components.forEach((component: any) => {
+        const type = component.types[0];
+        components[type] = {
+          long: component.long_name,
+          short: component.short_name
+        };
+      });
+
+      console.log('Parsed components:', components);
+
+      // Build street address
+      const streetNumber = components.street_number?.long || '';
+      const route = components.route?.long || '';
+      const rawAddress = `${streetNumber} ${route}`.trim();
+      const fullAddress = formatAddress(rawAddress);
+      
+      // Get city (prefer sublocality like Scarborough, fallback to locality like Toronto)
+      const rawCity = components.sublocality_level_1?.long || 
+                      components.sublocality?.long || 
+                      components.locality?.long || '';
+      const city = formatCity(rawCity);
+      
+      // Get province code
+      const provinceLong = components.administrative_area_level_1?.long || '';
+      const provinceShort = components.administrative_area_level_1?.short || '';
+      const province = PROVINCE_MAP[provinceLong] || provinceShort || '';
+      
+      // Get postal code
+      const rawPostalCode = components.postal_code?.long || '';
+      const postalCode = rawPostalCode ? formatPostalCode(rawPostalCode) : '';
+
+      console.log('Formatted address data:', { fullAddress, city, province, postalCode });
+
+      // Validate we have minimum required data
+      if (!fullAddress || !city || !province) {
+        console.warn('Incomplete address data, cannot proceed:', { 
+          fullAddress, city, province, postalCode 
+        });
+        return;
+      }
+
+      // Update the input field immediately
+      if (inputRef.current) {
+        inputRef.current.value = fullAddress;
+      }
+      
+      // Notify parent component with all address data
+      onChange(fullAddress);
+      onAddressSelect({
+        address: fullAddress,
+        city,
+        province,
+        postalCode
+      });
+      
+      console.log('✅ Address successfully populated');
     };
     
-    if (inputRef.current) {
-      inputRef.current.addEventListener('change', forceUpdate);
-      inputRef.current.addEventListener('blur', forceUpdate);
-    }
+    // Add the event listener
+    const listener = autocompleteRef.current.addListener('place_changed', handlePlaceChanged);
 
+    // Cleanup
     return () => {
+      if (listener && window.google) {
+        window.google.maps.event.removeListener(listener);
+      }
       if (autocompleteRef.current && window.google) {
         window.google.maps.event.clearInstanceListeners(autocompleteRef.current);
-      }
-      if (inputRef.current) {
-        inputRef.current.removeEventListener('change', forceUpdate);
-        inputRef.current.removeEventListener('blur', forceUpdate);
       }
     };
   }, [isLoaded, onChange, onAddressSelect]);
