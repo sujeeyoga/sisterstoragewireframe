@@ -25,6 +25,31 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
     const hash = product.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
     return (hash % 150) + 50;
   }, [product.id]);
+
+  // Parse open box product details
+  const openBoxDetails = React.useMemo(() => {
+    if (product.category !== 'open-box') return null;
+    
+    const rodMatch = product.name.match(/\((\d+)\s*Rods?\)/i);
+    const rodsCount = rodMatch ? rodMatch[1] : null;
+    
+    const dimensionsMatch = product.shortDescription?.match(/(\d+cm.*?×.*?\d+cm.*?×.*?\d+cm)/i);
+    const dimensions = dimensionsMatch ? dimensionsMatch[1].trim() : null;
+    
+    const capacityMatch = product.shortDescription?.match(/~(\d+)\s*bangles/i);
+    const capacity = capacityMatch ? `~${capacityMatch[1]} bangles` : null;
+    
+    const boxType = product.name.includes('Large') ? 'Large Bangle Box' : 
+                   product.name.includes('Medium') ? 'Medium Bangle Box' : 'Bangle Box';
+    
+    return rodsCount ? {
+      qty: 1,
+      label: boxType,
+      rodsEach: parseInt(rodsCount),
+      dimensions,
+      capacity
+    } : null;
+  }, [product]);
   
   const discountedPrice = discount?.enabled ? applyDiscount(product.price) : product.price;
   const hasDiscount = discount?.enabled && discount.percentage > 0;
@@ -110,21 +135,51 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
         </div>
         
         {/* What's Included */}
-        {(bullets || rodCount || product.originalPrice || product.bundleContents) && (
+        {(bullets || rodCount || product.originalPrice || product.bundleContents || openBoxDetails) && (
           <div className="space-y-2">
             <h3 className="text-sm font-bold text-[hsl(var(--brand-pink))] uppercase tracking-wider">
               What's Included
             </h3>
             <ul className="space-y-2">
-              {product.bundleContents && (
+              {openBoxDetails ? (
+                <li>
+                  <div className="space-y-2">
+                    <div className="flex items-baseline gap-3 flex-wrap">
+                      <span className="inline-flex items-center gap-2">
+                        <span className="text-[hsl(var(--brand-pink))] font-bold text-3xl">
+                          {openBoxDetails.qty}×
+                        </span>
+                        <span className="font-bold text-gray-900 text-base uppercase tracking-wide">
+                          {openBoxDetails.label}
+                        </span>
+                      </span>
+                      <span className="text-gray-600 text-2xl">
+                        with {openBoxDetails.rodsEach} Rods
+                      </span>
+                    </div>
+                    {openBoxDetails.dimensions && (
+                      <p className="text-gray-600 text-sm">
+                        <span className="font-semibold">Dimensions:</span> {openBoxDetails.dimensions}
+                      </p>
+                    )}
+                    {openBoxDetails.capacity && (
+                      <p className="text-gray-600 text-sm">
+                        <span className="font-semibold">Capacity:</span> {openBoxDetails.capacity}
+                      </p>
+                    )}
+                    <p className="text-gray-500 text-xs italic">
+                      Condition: Open Box (may have minor scuffs)
+                    </p>
+                  </div>
+                </li>
+              ) : product.bundleContents ? (
                 <li>
                   <div 
                     className="text-gray-600 text-2xl leading-relaxed font-medium prose prose-sm max-w-none [&_strong]:font-bold [&_strong]:text-gray-900 [&_em]:italic [&_p]:mb-2 [&_p:last-child]:mb-0 [&_br]:block [&_ul]:list-none [&_ul]:space-y-1 [&_li]:text-gray-600"
                     dangerouslySetInnerHTML={{ __html: product.bundleContents }}
                   />
                 </li>
-              )}
-              {rodCount && !product.bundleContents && (
+              ) : rodCount ? (
                 <li className="flex justify-center">
                   <div className="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-4 py-2 rounded-lg">
                     <div className="text-center">
@@ -133,13 +188,13 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
                     </div>
                   </div>
                 </li>
-              )}
+              ) : null}
               {bullets && bullets.map((line, i) => (
                 <li key={i}>
                   <p className="text-gray-600 text-2xl leading-relaxed font-medium">{line}</p>
                 </li>
               ))}
-              {product.features && product.features.slice(0, 3).map((feature, i) => (
+              {!openBoxDetails && product.features && product.features.slice(0, 3).map((feature, i) => (
                 <li key={`feature-${i}`}>
                   <p className="text-gray-600 text-2xl leading-relaxed font-medium">{feature}</p>
                 </li>
