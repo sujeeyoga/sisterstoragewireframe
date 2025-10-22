@@ -238,12 +238,13 @@ const Checkout = () => {
 
     setIsLoadingRates(true);
     try {
+      // Use original subtotal for shipping threshold calculations (before discount)
       const result = await calculateShipping({
         city: formData.city,
         province: formData.province,
         country: formData.country,
         postalCode: formData.postalCode,
-      }, discountedSubtotal);
+      }, subtotal);
 
       if (result.success && result.rates) {
         setShippingRates(result.rates);
