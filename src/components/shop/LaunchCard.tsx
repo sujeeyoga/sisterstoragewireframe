@@ -53,7 +53,7 @@ const LaunchCard = ({ card }: LaunchCardProps) => {
   };
 
   return (
-    <article className="relative overflow-hidden rounded-3xl p-8 md:p-12 bg-[#FFB7C5] text-white shadow-xl">
+    <article className="relative overflow-hidden rounded-3xl p-8 md:p-12 bg-[hsl(var(--brand-pink))] text-white shadow-xl">
       {/* Content */}
       <div className="relative z-10 max-w-4xl mx-auto">
         {/* Collection name */}
@@ -95,7 +95,7 @@ const LaunchCard = ({ card }: LaunchCardProps) => {
             type="submit"
             disabled={isSubmitting}
             size="lg"
-            className="bg-white text-[#FFB7C5] hover:bg-white/90 font-semibold uppercase tracking-wide h-12 px-8 whitespace-nowrap"
+            className="bg-white text-[hsl(var(--brand-pink))] hover:bg-white/90 font-semibold uppercase tracking-wide h-12 px-8 whitespace-nowrap"
           >
             {isSubmitting ? "Joining..." : card.cta_label || "Join Waitlist"}
           </Button>
