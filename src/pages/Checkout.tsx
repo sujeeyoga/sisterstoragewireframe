@@ -20,6 +20,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
 
+import AddressAutocomplete from '@/components/checkout/AddressAutocomplete';
 import Logo from '@/components/ui/Logo';
 import { ArrowLeft, ShoppingBag, CreditCard, Truck, Trash2, Tag, Loader2, Package, Gift, Mail, MapPin, Plus, Minus } from 'lucide-react';
 
@@ -162,6 +163,44 @@ const Checkout = () => {
   const handleProvinceChange = (value: string) => {
     setFormData(prev => ({ ...prev, province: value }));
     setValidationErrors(prev => ({ ...prev, province: '' }));
+  };
+
+  // Handle address selection from autocomplete - instant formatting and shipping calculation
+  const handleAddressSelect = (address: {
+    address: string;
+    city: string;
+    province: string;
+    postalCode: string;
+  }) => {
+    console.log('Google Address Selected:', address);
+    
+    // Format postal code (A1A1A1)
+    const formattedPostalCode = formatPostalCode(address.postalCode);
+    
+    // Ensure province is 2-letter uppercase code
+    const formattedProvince = address.province.toUpperCase().slice(0, 2);
+    
+    // Format city
+    const formattedCity = address.city.trim();
+    
+    console.log('Formatted Address Data:', {
+      address: address.address,
+      city: formattedCity,
+      province: formattedProvince,
+      postalCode: formattedPostalCode
+    });
+    
+    // Update form data - this will trigger shipping calculation via debounced useEffect
+    setFormData(prev => ({
+      ...prev,
+      address: address.address,
+      city: formattedCity,
+      province: formattedProvince,
+      postalCode: formattedPostalCode
+    }));
+    
+    // Clear validation errors
+    setValidationErrors({ address: '', province: '', postalCode: '' });
   };
 
   // Debounce address fields for shipping calculation
@@ -456,25 +495,12 @@ const Checkout = () => {
                       />
                     </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="address" className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4" />
-                      Street Address
-                    </Label>
-                    <Input
-                      id="address"
-                      name="address"
-                      placeholder="123 Main Street"
-                      value={formData.address}
-                      onChange={handleInputChange}
-                      className={validationErrors.address ? 'border-red-500' : ''}
-                      autoComplete="street-address"
-                      required
-                    />
-                    {validationErrors.address && (
-                      <p className="text-sm text-red-500">{validationErrors.address}</p>
-                    )}
-                  </div>
+                  <AddressAutocomplete
+                    value={formData.address}
+                    onChange={(value) => setFormData(prev => ({ ...prev, address: value }))}
+                    onAddressSelect={handleAddressSelect}
+                    error={validationErrors.address}
+                  />
                   
                   <div className="grid grid-cols-3 gap-4">
                     <div>
