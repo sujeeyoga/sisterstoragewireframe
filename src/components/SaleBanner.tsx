@@ -25,7 +25,7 @@ const SaleBanner = ({}: SaleBannerProps) => {
     '--ss-slide-duration': '12s',
     '--ss-marquee-duration': '40s'
   } as React.CSSProperties}>
-      <div className="flex items-center gap-8" data-track>
+      <div className="flex items-center gap-8 animate-marquee" data-track>
         {duplicatedContent.map((item, index) => (
           <div key={index} className="flex items-center whitespace-nowrap text-xs font-medium tracking-wide uppercase">
             {item.icon}
