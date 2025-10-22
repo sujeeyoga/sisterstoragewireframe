@@ -2,12 +2,49 @@ import React from "react";
 
 interface OpenBoxIncludedProps {
   product: {
+    id: string;
     name: string;
     shortDescription?: string;
+    stockQuantity?: number;
   };
 }
 
 const OpenBoxIncluded: React.FC<OpenBoxIncludedProps> = ({ product }) => {
+  // Special handling for collection product (ID: 25814007)
+  if (product.id === "25814007") {
+    return (
+      <div className="space-y-2">
+        <h3 className="text-sm font-bold text-[hsl(var(--brand-pink))] uppercase tracking-wider">
+          What's Included
+        </h3>
+        <ul className="space-y-2">
+          <li>
+            <div className="space-y-2">
+              <div className="flex items-baseline gap-3 flex-wrap">
+                <span className="inline-flex items-center gap-2">
+                  <span className="text-[hsl(var(--brand-pink))] font-bold text-3xl">4×</span>
+                  <span className="font-bold text-gray-900 text-base uppercase tracking-wide">
+                    Large Bangle Box
+                  </span>
+                </span>
+                <span className="text-gray-600 text-2xl">with 4 Rods Each</span>
+              </div>
+              <p className="text-gray-600 text-sm">
+                <span className="font-semibold">Dimensions:</span> 38cm (L) × 25cm (W) × 9cm (H)
+              </p>
+              <p className="text-gray-600 text-sm">
+                <span className="font-semibold">Capacity:</span> ~348 bangles per box
+              </p>
+              <p className="text-gray-500 text-xs italic">
+                Condition: Open Box (may have minor scuffs or scratches)
+              </p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    );
+  }
+
   // Extract rods from product name e.g., "(4 Rods)"
   const rodMatch = product.name.match(/\((\d+)\s*Rods?\)/i);
   const rodsEach = rodMatch ? parseInt(rodMatch[1], 10) : undefined;
@@ -23,7 +60,7 @@ const OpenBoxIncluded: React.FC<OpenBoxIncludedProps> = ({ product }) => {
   const dimensionsMatch = product.shortDescription?.match(/(\d+cm.*?×.*?\d+cm.*?×.*?\d+cm)/i);
   const dimensions = dimensionsMatch ? dimensionsMatch[1].trim() : undefined;
 
-  const capacityMatch = product.shortDescription?.match(/~(\d+)\s*bangles/i);
+  const capacityMatch = product.shortDescription?.match(/~?(\d+)\s*bangles/i);
   const capacity = capacityMatch ? `~${capacityMatch[1]} bangles` : undefined;
 
   return (
