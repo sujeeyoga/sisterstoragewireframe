@@ -282,6 +282,14 @@ export default {
 					'100%': { 
 						opacity: '0' 
 					}
+				},
+				'shimmer': {
+					'0%': {
+						backgroundPosition: '-1000px 0'
+					},
+					'100%': {
+						backgroundPosition: '1000px 0'
+					}
 				}
 			},
 			animation: {
@@ -311,6 +319,8 @@ export default {
 				// Sister Storage announcement bar animations
 				'ss-slide-in-out': 'ss-slide-in-out var(--ss-slide-duration, 12s) ease-in-out infinite',
 				'ss-marquee-left': 'ss-marquee-left var(--ss-marquee-duration, 20s) linear infinite',
+				// Shimmer effect for loading skeletons
+				'shimmer': 'shimmer 2s ease-in-out infinite',
 			},
 			fontFamily: {
 				sans: ['Poppins', 'sans-serif'],
