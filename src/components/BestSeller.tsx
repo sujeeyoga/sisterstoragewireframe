@@ -111,7 +111,7 @@ const BestSeller = () => {
             <Card className={cn(
               "group border-none shadow-lg bg-white relative rounded-3xl overflow-hidden aspect-square",
               "md:hover:shadow-2xl md:hover:-translate-y-2 md:transition-all md:duration-300",
-              "transition-all duration-[600ms] ease-out",
+              "transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)]",
               hasIntersected 
                 ? "opacity-100 scale-100" 
                 : "opacity-0 scale-90"
@@ -173,7 +173,7 @@ const BestSeller = () => {
             <Card className={cn(
               "group border-none shadow-lg bg-white relative rounded-3xl overflow-hidden aspect-square",
               "md:hover:shadow-2xl md:hover:-translate-y-2 md:transition-all md:duration-300",
-              "transition-all duration-[600ms] ease-out delay-100",
+              "transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] delay-150",
               hasIntersected 
                 ? "opacity-100 scale-100" 
                 : "opacity-0 scale-90"
