@@ -18,12 +18,15 @@
     <meta name="twitter:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/8uQERUCGS1TCaXnOFIRH4upfJG73/social-images/social-1760066089943-sister storage logo.jpg">
     
     <link rel="icon" type="image/x-icon" href="https://storage.googleapis.com/gpt-engineer-file-uploads/8uQERUCGS1TCaXnOFIRH4upfJG73/uploads/1759981381477-sis.png">
+    <!-- Preconnect for faster font loading -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- Preload logo for instant display -->
+    <!-- Critical assets - highest priority for instant display -->
     <link rel="preload" href="/src/assets/sister-storage-logo-new.jpg" as="image" fetchpriority="high">
+    <link rel="preload" href="/src/assets/hero-bg-main.jpg" as="image" fetchpriority="high">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" as="style">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <!-- Preconnect to Supabase storage for faster image loading -->
     <link rel="preconnect" href="https://attczdhexkpxpyqyasgz.supabase.co">
