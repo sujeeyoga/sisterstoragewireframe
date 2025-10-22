@@ -5,14 +5,17 @@ import { ShoppingBag, CreditCard } from "lucide-react";
 import ProductFeatures from "./ProductFeatures";
 import QuantitySelector from "./QuantitySelector";
 import BundleContentsList from "./BundleContentsList";
+import OpenBoxIncluded from "./OpenBoxIncluded";
 
 interface ProductInfoProps {
   product: {
     id: string;
     name: string;
     description: string;
+    shortDescription?: string;
     price: number;
     category: string;
+    categories?: string[];
     features?: string[];
     stock?: number;
     bundleContents?: string;
@@ -32,6 +35,11 @@ const ProductInfo = ({ product, quantity, setQuantity, onAddToCart, onBuyNow }: 
   // Extract rod count for individual products
   const rodCount = product.attributes?.rodCount?.[0];
   const showRodCount = rodCount && product.category !== 'bundles';
+  const isOpenBox =
+    product.category === 'open-box' ||
+    product.categories?.includes('open-box') ||
+    product.categories?.includes('open-box-deals') ||
+    /open box/i.test(product.name);
 
   return (
     <div className="space-y-3 max-h-[1080px] max-w-[300px] overflow-y-auto">
@@ -63,6 +71,13 @@ const ProductInfo = ({ product, quantity, setQuantity, onAddToCart, onBuyNow }: 
               <span className="text-3xl font-thin">{rodCount}</span>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* What's Included for Open Box products */}
+      {isOpenBox && (
+        <div className="pb-3 border-b border-gray-200">
+          <OpenBoxIncluded product={product as any} />
         </div>
       )}
       
