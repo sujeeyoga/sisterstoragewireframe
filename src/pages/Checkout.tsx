@@ -19,7 +19,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
-import AddressAutocomplete from '@/components/checkout/AddressAutocomplete';
+
 import Logo from '@/components/ui/Logo';
 import { ArrowLeft, ShoppingBag, CreditCard, Truck, Trash2, Tag, Loader2, Package, Gift, Mail, MapPin, Plus, Minus } from 'lucide-react';
 
@@ -191,43 +191,6 @@ const Checkout = () => {
     }
   }, [debouncedAddress, debouncedCity, debouncedProvince, debouncedPostalCode]);
 
-  // Handle address selection from autocomplete
-  const handleAddressSelect = (address: {
-    address: string;
-    city: string;
-    province: string;
-    postalCode: string;
-  }) => {
-    console.log('Google Address Selected:', address);
-    
-    // Ensure postal code is properly formatted (A1A1A1)
-    const formattedPostalCode = formatPostalCode(address.postalCode);
-    
-    // Ensure province is 2-letter uppercase code
-    const formattedProvince = address.province.toUpperCase().slice(0, 2);
-    
-    // Ensure city is properly formatted
-    const formattedCity = address.city.trim();
-    
-    console.log('Formatted Address Data:', {
-      address: address.address,
-      city: formattedCity,
-      province: formattedProvince,
-      postalCode: formattedPostalCode
-    });
-    
-    // Update form data - the debounced useEffect will trigger shipping calculation
-    setFormData(prev => ({
-      ...prev,
-      address: address.address,
-      city: formattedCity,
-      province: formattedProvince,
-      postalCode: formattedPostalCode
-    }));
-    
-    // Clear any validation errors
-    setValidationErrors({ address: '', province: '', postalCode: '' });
-  };
 
   // Calculate shipping using zone-based system
   const calculateShippingZones = async () => {
@@ -493,22 +456,25 @@ const Checkout = () => {
                       />
                     </div>
                   </div>
-                  <AddressAutocomplete
-                    value={formData.address}
-                    onChange={(value) => handleInputChange({ target: { name: 'address', value } } as any)}
-                    onAddressSelect={handleAddressSelect}
-                    error={validationErrors.address}
-                  />
-                  
-                  {/* Shipping calculation hint */}
-                  {formData.address && (!formData.city || !formData.province || !formData.postalCode) && (
-                    <div className="text-sm text-amber-600 bg-amber-50 border border-amber-200 rounded-md p-3 flex items-start gap-2">
-                      <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                      <span>
-                        Please fill in <strong>City, Province, and Postal Code</strong> below to calculate shipping rates.
-                      </span>
-                    </div>
-                  )}
+                  <div className="space-y-2">
+                    <Label htmlFor="address" className="flex items-center gap-2">
+                      <MapPin className="h-4 w-4" />
+                      Street Address
+                    </Label>
+                    <Input
+                      id="address"
+                      name="address"
+                      placeholder="123 Main Street"
+                      value={formData.address}
+                      onChange={handleInputChange}
+                      className={validationErrors.address ? 'border-red-500' : ''}
+                      autoComplete="street-address"
+                      required
+                    />
+                    {validationErrors.address && (
+                      <p className="text-sm text-red-500">{validationErrors.address}</p>
+                    )}
+                  </div>
                   
                   <div className="grid grid-cols-3 gap-4">
                     <div>
@@ -516,8 +482,10 @@ const Checkout = () => {
                       <Input
                         id="city"
                         name="city"
+                        placeholder="Toronto"
                         value={formData.city}
                         onChange={handleInputChange}
+                        autoComplete="address-level2"
                         required
                       />
                     </div>
@@ -548,7 +516,8 @@ const Checkout = () => {
                         onChange={handleInputChange}
                         onBlur={handlePostalCodeBlur}
                         className={validationErrors.postalCode ? "border-red-500" : ""}
-                        placeholder="A1A1A1"
+                        placeholder="A1A 1A1"
+                        autoComplete="postal-code"
                         required
                       />
                       {validationErrors.postalCode && (
@@ -565,7 +534,8 @@ const Checkout = () => {
                       type="tel"
                       value={formData.phone}
                       onChange={handleInputChange}
-                      placeholder="555-1234"
+                      placeholder="(123) 456-7890"
+                      autoComplete="tel"
                     />
                   </div>
                   
