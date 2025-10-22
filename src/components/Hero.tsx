@@ -27,9 +27,9 @@ const Hero = () => {
     <section ref={parallaxRef} className="relative w-full overflow-hidden md:pt-32" aria-label="Hero section">
       {/* Mobile: Stacked Layout */}
       <div className="md:hidden flex flex-col">
-        <div className="bg-[hsl(var(--brand-pink))] pt-40 pb-16 px-4 h-[75vh] flex items-center">
+        <div className="bg-[hsl(var(--brand-pink))] pt-40 pb-16 px-6 min-h-[75vh] flex items-center">
           <div 
-            className="flex flex-col space-y-3 text-white pt-54"
+            className="flex flex-col space-y-3 text-white w-full max-w-full"
             style={{ transform: `translateY(${-offset * 0.1}px)` }}
           >
             <EditableText
@@ -37,7 +37,7 @@ const Hero = () => {
               field="title"
               value={heroText.title}
               as="h1"
-              className="text-[6rem] font-black leading-[0.9] tracking-tighter"
+              className="text-[3.5rem] sm:text-[4.5rem] font-black leading-[0.9] tracking-tighter break-words"
             />
 
             <EditableText
@@ -45,14 +45,14 @@ const Hero = () => {
               field="subtitle"
               value={heroText.subtitle}
               as="p"
-              className="text-3xl font-bold leading-[1.1] tracking-tight uppercase"
+              className="text-xl sm:text-2xl md:text-3xl font-bold leading-[1.1] tracking-tight uppercase break-words"
             />
 
-            <div className="pt-12">
+            <div className="pt-8 sm:pt-12">
               <Link to="/shop">
                 <Button 
                   size="lg"
-                  className="bg-white text-[hsl(var(--brand-pink))] hover:bg-white/95 hover:scale-105 font-bold text-lg px-6 py-4 w-fit shadow-2xl transition-all duration-300 rounded-full"
+                  className="bg-white text-[hsl(var(--brand-pink))] hover:bg-white/95 hover:scale-105 font-bold text-base sm:text-lg px-6 py-4 w-fit shadow-2xl transition-all duration-300 rounded-full"
                 >
                   <EditableText
                     siteTextId={heroText.id}
@@ -70,13 +70,13 @@ const Hero = () => {
                 field="description"
                 value={heroText.description}
                 as="p"
-                className="text-lg font-light leading-relaxed tracking-wide"
+                className="text-base sm:text-lg font-light leading-relaxed tracking-wide break-words"
               />
             </div>
           </div>
         </div>
 
-        <div className="w-full h-[90vh] overflow-hidden bg-[hsl(var(--brand-pink))]">
+        <div className="w-full min-h-[70vh] max-h-[90vh] overflow-hidden bg-[hsl(var(--brand-pink))]">
           <div className="w-full h-full" style={{ transform: `translateY(${-offset * 0.15}px)` }}>
           <img
             src={heroMainImage}
@@ -107,8 +107,8 @@ const Hero = () => {
         </div>
 
         {/* Pink Content Section */}
-        <div className="relative h-[90vh] flex items-center justify-start pt-0">
-          <div className="bg-[hsl(var(--brand-pink))] flex items-center animate-slide-in-right w-full md:w-[60vw] lg:w-[55vw] overflow-hidden shadow-2xl rounded-r-[3rem]">
+        <div className="relative min-h-[90vh] flex items-center justify-start pt-0">
+          <div className="bg-[hsl(var(--brand-pink))] flex items-center animate-slide-in-right w-full md:w-[60vw] lg:w-[55vw] shadow-2xl rounded-r-[3rem]">
             <div className="grid grid-cols-2 w-full py-4 md:py-6 lg:py-8">
               <div className="col-span-1"></div>
               
