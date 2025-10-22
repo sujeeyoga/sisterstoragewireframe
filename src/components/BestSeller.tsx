@@ -22,19 +22,6 @@ const buyCards = [{
   rating: 5,
   reviews: 89
 }, {
-  id: "bundle-3",
-  name: 'Family Edition',
-  price: 174.00,
-  originalPrice: null,
-  stripePriceId: "price_1SGKRyDkJNZeOpMwrEmPHrtg",
-  image: familySetImg,
-  badge: "BEST SELLER",
-  description: "BIG. BUNDLE. LOVE.",
-  rodCount: 22,
-  bundleContents: "4 Large (4 rods each) + 2 Medium (2 rods each) + 2 Small (1 rod each)",
-  rating: 5,
-  reviews: 167
-}, {
   id: "bundle-2",
   name: 'Sister Staples',
   price: 137.00,
@@ -70,7 +57,7 @@ const BestSeller = () => {
           </p>
         </div>
         
-        <div className="flex flex-col md:flex-row gap-6 md:gap-8 max-w-[280px] md:max-w-[900px] mx-auto mt-16 mb-8 px-4 md:px-0">
+        <div className="flex flex-col md:flex-row gap-6 md:gap-8 max-w-[280px] md:max-w-[600px] mx-auto mt-16 mb-8 px-4 md:px-0 justify-center">
             <Card className="group border-none shadow-lg md:hover:shadow-2xl md:hover:-translate-y-2 transition-shadow md:transition-all duration-300 bg-white relative rounded-3xl overflow-hidden aspect-square">
               <Link to="/shop" className="block h-full active:scale-95 md:active:scale-100 transition-transform">
                 <div className="relative h-full">
@@ -82,7 +69,7 @@ const BestSeller = () => {
                     className={cn("w-full h-full object-cover transition-opacity duration-500 scale-125", loadedImages[buyCards[0].id] ? "opacity-100" : "opacity-0")} 
                     loading="lazy" 
                     decoding="async"
-                    sizes="(min-width: 768px) 33vw, 280px"
+                    sizes="(min-width: 768px) 50vw, 280px"
                     onLoad={() => handleImageLoad(buyCards[0].id)} 
                   />
                   
@@ -91,7 +78,6 @@ const BestSeller = () => {
                   </div>
                   
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-6 pointer-events-none">
-...
                     <div className="pointer-events-auto">
                       <AddToCartBar product={{
                     id: buyCards[0].id,
@@ -114,7 +100,7 @@ const BestSeller = () => {
               </Link>
             </Card>
 
-            <Card className="group border-none shadow-lg md:hover:shadow-2xl md:hover:-translate-y-2 transition-shadow md:transition-all duration-300 bg-white relative rounded-3xl overflow-hidden aspect-[3/4]">
+            <Card className="group border-none shadow-lg md:hover:shadow-2xl md:hover:-translate-y-2 transition-shadow md:transition-all duration-300 bg-white relative rounded-3xl overflow-hidden aspect-square">
               <Link to={`/shop/${buyCards[1].id}`} className="block h-full active:scale-95 md:active:scale-100 transition-transform">
                 <div className="relative h-full">
                   {!loadedImages[buyCards[1].id] && <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse" />}
@@ -126,7 +112,6 @@ const BestSeller = () => {
                   </div>
                   
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-6 pointer-events-none">
-...
                     <div className="pointer-events-auto">
                       <AddToCartBar product={{
                     id: buyCards[1].id,
@@ -142,40 +127,6 @@ const BestSeller = () => {
                     material: '',
                     stock: 100,
                     bundleContents: buyCards[1].bundleContents
-                  }} />
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            </Card>
-
-            <Card className="group border-none shadow-lg md:hover:shadow-2xl md:hover:-translate-y-2 transition-shadow md:transition-all duration-300 bg-white relative rounded-3xl overflow-hidden aspect-square">
-              <Link to={`/shop/${buyCards[2].id}`} className="block h-full active:scale-95 md:active:scale-100 transition-transform">
-                <div className="relative h-full">
-                  {!loadedImages[buyCards[2].id] && <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse" />}
-                  
-                  <img src={buyCards[2].image} alt={`${buyCards[2].name} - Bundle collection`} className={cn("w-full h-full object-cover transition-opacity duration-500 scale-125", loadedImages[buyCards[2].id] ? "opacity-100" : "opacity-0")} loading="lazy" decoding="async" onLoad={() => handleImageLoad(buyCards[2].id)} />
-                  
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 bg-black/60">
-                    <h3 className="text-white text-4xl md:text-5xl font-poppins font-thin drop-shadow-[0_4px_8px_rgba(0,0,0,0.3)] [text-shadow:_-1px_-1px_0_#fff,_1px_-1px_0_#fff,_-1px_1px_0_#fff,_1px_1px_0_#fff]">{buyCards[2].name}</h3>
-                  </div>
-                  
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-6 pointer-events-none">
-                    <div className="pointer-events-auto">
-                      <AddToCartBar product={{
-                    id: buyCards[2].id,
-                    name: buyCards[2].name,
-                    price: buyCards[2].price,
-                    originalPrice: buyCards[2].originalPrice,
-                    stripePriceId: buyCards[2].stripePriceId,
-                    description: buyCards[2].description,
-                    category: 'bundle',
-                    color: '#E90064',
-                    images: [buyCards[2].image],
-                    features: [],
-                    material: '',
-                    stock: 100,
-                    bundleContents: buyCards[2].bundleContents
                   }} />
                     </div>
                   </div>
