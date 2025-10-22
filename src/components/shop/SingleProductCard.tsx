@@ -48,7 +48,8 @@ const SingleProductCard = ({ product, priority = false }: SingleProductCardProps
               src={product.images[0]} 
               alt={product.name}
               className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-              loading={priority ? "eager" : "lazy"}
+              loading="eager"
+              fetchPriority="high"
               decoding="async"
             />
           ) : (

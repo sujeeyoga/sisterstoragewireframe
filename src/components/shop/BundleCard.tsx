@@ -48,7 +48,8 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
             <img 
               src={product.images[0]} 
               alt={product.name}
-              loading="lazy"
+              loading="eager"
+              fetchPriority="high"
               decoding="async"
               className={cn(
                 "w-full aspect-[4/5] object-cover transition-all duration-700 group-hover:scale-105",
