@@ -757,6 +757,12 @@ export const AdminDashboard = () => {
                 Store Settings
               </Link>
             </Button>
+            <Button asChild className="w-full justify-start" variant="outline">
+              <Link to="/admin/launch-cards">
+                <Package className="mr-2 h-4 w-4" />
+                Launch Cards
+              </Link>
+            </Button>
           </CardContent>
         </Card>
       </div>

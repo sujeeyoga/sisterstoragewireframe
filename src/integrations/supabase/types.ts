@@ -80,6 +80,69 @@ export type Database = {
         }
         Relationships: []
       }
+      launch_cards: {
+        Row: {
+          blur_level: number | null
+          collection_name: string
+          created_at: string | null
+          cta_label: string | null
+          description: string | null
+          enabled: boolean | null
+          gradient_c1: string | null
+          gradient_c2: string | null
+          gradient_c3: string | null
+          id: string
+          launch_date: string | null
+          preview_link: string | null
+          priority: number | null
+          shimmer_speed: number | null
+          status: string | null
+          tagline: string | null
+          updated_at: string | null
+          waitlist_link: string | null
+        }
+        Insert: {
+          blur_level?: number | null
+          collection_name: string
+          created_at?: string | null
+          cta_label?: string | null
+          description?: string | null
+          enabled?: boolean | null
+          gradient_c1?: string | null
+          gradient_c2?: string | null
+          gradient_c3?: string | null
+          id?: string
+          launch_date?: string | null
+          preview_link?: string | null
+          priority?: number | null
+          shimmer_speed?: number | null
+          status?: string | null
+          tagline?: string | null
+          updated_at?: string | null
+          waitlist_link?: string | null
+        }
+        Update: {
+          blur_level?: number | null
+          collection_name?: string
+          created_at?: string | null
+          cta_label?: string | null
+          description?: string | null
+          enabled?: boolean | null
+          gradient_c1?: string | null
+          gradient_c2?: string | null
+          gradient_c3?: string | null
+          id?: string
+          launch_date?: string | null
+          preview_link?: string | null
+          priority?: number | null
+          shimmer_speed?: number | null
+          status?: string | null
+          tagline?: string | null
+          updated_at?: string | null
+          waitlist_link?: string | null
+        }
+        Relationships: []
+      }
       orders: {
         Row: {
           created_at: string | null

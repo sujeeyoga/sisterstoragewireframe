@@ -2,6 +2,7 @@ import React from "react";
 import { Product } from "@/types/product";
 import BundleCard from "./BundleCard";
 import SimpleProductCard from "./SimpleProductCard";
+import LaunchCardsSection from "./LaunchCardsSection";
 import { useSiteTexts } from "@/hooks/useSiteTexts";
 
 interface ShopProductSectionsProps {
@@ -116,6 +117,9 @@ const ShopProductSections = ({ products }: ShopProductSectionsProps) => {
           </div>
         </section>
       )}
+      
+      {/* Section 4: Upcoming Collections */}
+      <LaunchCardsSection />
       
       {/* Empty State */}
       {bundles.length === 0 && bangleBoxes.length === 0 && organizers.length === 0 && (
