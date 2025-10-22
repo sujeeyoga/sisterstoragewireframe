@@ -1,6 +1,8 @@
 import PerformanceImage from '@/components/ui/performance-image';
+import { useNavigate } from 'react-router-dom';
 
 const OrganizationGallery = () => {
+  const navigate = useNavigate();
   const galleryImages = [
     {
       src: '/lovable-uploads/e1ae51b5-7916-4137-825e-7f197dff06a3.png',
@@ -32,7 +34,10 @@ const OrganizationGallery = () => {
         {/* Gallery Grid */}
         <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-center max-w-[2304px] mx-auto px-5">
           {/* First Image */}
-          <div className="relative w-full aspect-square rounded-3xl shadow-lg md:hover:shadow-2xl transition-shadow duration-300 group overflow-hidden animate-fade-in">
+          <div 
+            onClick={() => navigate('/shop')}
+            className="relative w-full aspect-square rounded-3xl shadow-lg md:hover:shadow-2xl transition-shadow duration-300 group overflow-hidden animate-fade-in cursor-pointer"
+          >
             <PerformanceImage
               src={galleryImages[0].src}
               alt={galleryImages[0].alt}
@@ -43,7 +48,10 @@ const OrganizationGallery = () => {
           </div>
 
           {/* Second Image */}
-          <div className="relative w-full aspect-[3/4] rounded-3xl shadow-lg md:hover:shadow-2xl transition-shadow duration-300 group overflow-hidden animate-fade-in">
+          <div 
+            onClick={() => navigate('/shop')}
+            className="relative w-full aspect-[3/4] rounded-3xl shadow-lg md:hover:shadow-2xl transition-shadow duration-300 group overflow-hidden animate-fade-in cursor-pointer"
+          >
             <PerformanceImage
               src={galleryImages[1].src}
               alt={galleryImages[1].alt}
@@ -54,7 +62,10 @@ const OrganizationGallery = () => {
           </div>
 
           {/* Third Image */}
-          <div className="relative w-full aspect-square rounded-3xl shadow-lg md:hover:shadow-2xl transition-shadow duration-300 group overflow-hidden animate-fade-in">
+          <div 
+            onClick={() => navigate('/shop')}
+            className="relative w-full aspect-square rounded-3xl shadow-lg md:hover:shadow-2xl transition-shadow duration-300 group overflow-hidden animate-fade-in cursor-pointer"
+          >
             <PerformanceImage
               src={galleryImages[2].src}
               alt={galleryImages[2].alt}
