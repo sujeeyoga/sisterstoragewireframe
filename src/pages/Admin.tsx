@@ -19,6 +19,7 @@ import { StallionDashboard } from '@/components/admin/StallionDashboard';
 import ShippingSettings from '@/components/admin/ShippingSettings';
 import { TextsManager } from '@/components/admin/TextsManager';
 import { QuickOptimizer } from '@/components/admin/QuickOptimizer';
+import { ShippingZonesManager } from '@/components/admin/ShippingZonesManager';
 import Uploads from '@/pages/Uploads';
 
 const Admin = () => {
@@ -48,6 +49,7 @@ const Admin = () => {
         <Route path="customers" element={<CustomersTable />} />
         <Route path="shipping" element={<StallionDashboard />} />
         <Route path="shipping-settings" element={<ShippingSettings />} />
+        <Route path="shipping-zones" element={<ShippingZonesManager />} />
         <Route path="sections" element={<SectionsManager />} />
         <Route path="pages" element={<PagesManager />} />
         <Route path="texts" element={<TextsManager />} />

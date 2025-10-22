@@ -7,6 +7,7 @@ import { useNewsletterSettings } from '@/hooks/useNewsletterSettings';
 import { useAbandonedCart } from '@/hooks/useAbandonedCart';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useShippingSettings } from '@/hooks/useShippingSettings';
+import { useShippingZones } from '@/hooks/useShippingZones';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
@@ -68,11 +69,13 @@ const Checkout = () => {
   const { giftOptions } = useGiftOptions();
   const { newsletter } = useNewsletterSettings();
   const { shippingSettings } = useShippingSettings();
+  const { calculateShipping } = useShippingZones();
   
   const [isProcessing, setIsProcessing] = useState(false);
   const [isLoadingRates, setIsLoadingRates] = useState(false);
   const [shippingRates, setShippingRates] = useState<any[]>([]);
   const [selectedShippingRate, setSelectedShippingRate] = useState<string>('');
+  const [matchedZone, setMatchedZone] = useState<{ id: string; name: string } | null>(null);
   const [formData, setFormData] = useState({
     email: '',
     firstName: '',
@@ -126,39 +129,9 @@ const Checkout = () => {
   const taxableAmount = discountedSubtotal + giftWrappingFee;
   const taxAmount = taxableAmount * taxRate;
   
-  // Get shipping cost from selected rate
-  const selectedRate = shippingRates.find(rate => rate.postage_type === selectedShippingRate);
-  let shippingCost = selectedRate ? parseFloat(selectedRate.total) : 0;
-  
-  // Check if postal code is in GTA (Greater Toronto Area)
-  const isGTAPostalCode = (postalCode: string): boolean => {
-    if (!postalCode) return false;
-    const cleaned = postalCode.replace(/\s/g, '').toUpperCase();
-    // GTA postal codes: M (Toronto), L1-L9 (surrounding areas)
-    return cleaned.startsWith('M') || 
-           /^L[1-9]/.test(cleaned);
-  };
-  
-  // Check if customer is in Toronto
-  const isInToronto = formData.city.toLowerCase().includes('toronto');
-  const isInGTA = isGTAPostalCode(formData.postalCode);
-  
-  // Apply shipping rules from settings
-  const torontoFlatRate = shippingSettings?.toronto_flat_rate.enabled 
-    ? shippingSettings.toronto_flat_rate.rate 
-    : 3.99;
-  const gtaThreshold = shippingSettings?.gta_free_shipping.enabled
-    ? shippingSettings.gta_free_shipping.threshold
-    : 50;
-  
-  const qualifiesForFreeShipping = discountedSubtotal >= gtaThreshold && isInGTA && !isInToronto;
-  
-  // Apply Toronto flat rate or free shipping for GTA orders over threshold
-  if (isInToronto && shippingSettings?.toronto_flat_rate.enabled) {
-    shippingCost = torontoFlatRate;
-  } else if (qualifiesForFreeShipping && shippingSettings?.gta_free_shipping.enabled) {
-    shippingCost = 0;
-  }
+  // Get shipping cost from selected rate (zone-based)
+  const selectedRate = shippingRates.find(rate => rate.id === selectedShippingRate);
+  let shippingCost = selectedRate ? selectedRate.rate_amount : 0;
   
   const total = discountedSubtotal + giftWrappingFee + taxAmount + shippingCost;
 
@@ -214,7 +187,7 @@ const Checkout = () => {
     if (hasCompleteAddress && key !== lastRatesKeyRef.current) {
       lastRatesKeyRef.current = key;
       console.log('Auto-triggering shipping calculation (new address key)');
-      calculateShipping();
+      calculateShippingZones();
     }
   }, [debouncedAddress, debouncedCity, debouncedProvince, debouncedPostalCode]);
 
@@ -256,8 +229,8 @@ const Checkout = () => {
     setValidationErrors({ address: '', province: '', postalCode: '' });
   };
 
-  // Calculate shipping when address is complete
-  const calculateShipping = async () => {
+  // Calculate shipping using zone-based system
+  const calculateShippingZones = async () => {
     // Check if required fields are filled
     if (!formData.address || !formData.city || !formData.province || !formData.postalCode) {
       return;
@@ -265,61 +238,30 @@ const Checkout = () => {
 
     setIsLoadingRates(true);
     try {
-      // Calculate total weight based on cart items (estimate 0.5kg per item)
-      const totalWeight = items.reduce((sum, item) => sum + (item.quantity * 0.5), 0);
+      const result = await calculateShipping({
+        city: formData.city,
+        province: formData.province,
+        country: formData.country,
+        postalCode: formData.postalCode,
+      }, discountedSubtotal);
 
-      const { data, error } = await supabase.functions.invoke('stallion-express', {
-        body: {
-          action: 'get-rates',
-          data: {
-            from_address: {
-              name: 'Sister Storage Inc',
-              address1: '51 Cachia Lane',
-              city: 'Ajax',
-              province_code: 'ON',
-              postal_code: 'L1T0P8',
-              country_code: 'CA',
-            },
-            to_address: {
-              name: `${formData.firstName} ${formData.lastName}`,
-              address1: formData.address,
-              city: formData.city,
-              province_code: formData.province.toUpperCase(),
-              postal_code: formData.postalCode.replace(/\s/g, ''),
-              country_code: formData.country,
-              phone: formData.phone,
-              email: formData.email,
-            },
-            weight: Math.max(totalWeight, 0.5), // Minimum 0.5kg
-            weight_unit: 'kg',
-            length: 30,
-            width: 20,
-            height: 10,
-            size_unit: 'cm',
-            package_contents: 'Jewelry storage accessories',
-            value: subtotal,
-            currency: 'CAD',
-          },
-        },
-      });
-
-      if (error) throw error;
-
-      if (data?.success && data?.data?.rates) {
-        // Sort rates by price (cheapest first)
-        const sortedRates = data.data.rates.sort((a: any, b: any) => 
-          parseFloat(a.total) - parseFloat(b.total)
-        );
-        setShippingRates(sortedRates);
+      if (result.success && result.rates) {
+        setShippingRates(result.rates);
+        setMatchedZone(result.matched_zone);
         
         // Auto-select the cheapest option
-        if (sortedRates.length > 0) {
-          setSelectedShippingRate(sortedRates[0].postage_type);
+        if (result.rates.length > 0) {
+          const cheapest = result.rates.reduce((prev, curr) => 
+            curr.rate_amount < prev.rate_amount ? curr : prev
+          );
+          setSelectedShippingRate(cheapest.id);
         }
         
         toast({
-          title: 'Shipping Rates Loaded',
-          description: `Found ${sortedRates.length} shipping options. Cheapest: $${parseFloat(sortedRates[0].total).toFixed(2)}`,
+          title: result.fallback_used ? 'Using Fallback Rate' : 'Shipping Rates Loaded',
+          description: result.fallback_used 
+            ? 'No specific zone matched. Using default rate.'
+            : `Matched to ${result.matched_zone?.name} zone.`,
         });
       } else {
         throw new Error('No rates available');
@@ -328,7 +270,7 @@ const Checkout = () => {
       console.error('Error calculating shipping:', error);
       toast({
         title: 'Shipping Error',
-        description: 'Unable to calculate shipping rates. Using standard rate.',
+        description: 'Unable to calculate shipping rates. Please try again.',
         variant: 'destructive',
       });
     } finally {
@@ -368,8 +310,8 @@ const Checkout = () => {
       return;
     }
     
-    // Only require shipping selection if not qualified for free shipping or Toronto flat rate
-    if (!qualifiesForFreeShipping && !isInToronto && !selectedShippingRate) {
+    // Require shipping selection
+    if (!selectedShippingRate) {
       toast({
         title: 'Select Shipping Method',
         description: 'Please calculate and select a shipping method',
@@ -402,7 +344,7 @@ const Checkout = () => {
             country: formData.country,
           },
           shippingCost: shippingCost,
-          shippingMethod: selectedRate?.postage_type || 'Standard Shipping',
+          shippingMethod: selectedRate?.method_name || 'Standard Shipping',
           taxAmount: taxAmount,
           taxRate: taxRate,
           province: formData.province,
@@ -628,78 +570,57 @@ const Checkout = () => {
                 </CardContent>
               </Card>
 
-              {/* Free Shipping Message for GTA customers */}
-              {qualifiesForFreeShipping && (
-                <Card className="border-2 border-green-500 bg-green-50">
+              {/* Zone-based Shipping Options */}
+              {matchedZone && (
+                <Card className="border-2 border-primary">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-green-700">
-                      <Truck className="h-5 w-5" />
-                      Free Shipping Applied! 🎉
+                    <CardTitle className="flex items-center gap-2 text-primary">
+                      <MapPin className="h-5 w-5" />
+                      Shipping to: {matchedZone.name}
                     </CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <p className="text-green-800 font-medium">
-                      Your order qualifies for FREE shipping because you're in the Greater Toronto Area and your order is over ${gtaThreshold.toFixed(2)}!
-                    </p>
-                  </CardContent>
                 </Card>
               )}
 
-              {/* Toronto Flat Rate Message */}
-              {isInToronto && !qualifiesForFreeShipping && (
-                <Card className="border-2 border-[hsl(var(--brand-pink))] bg-pink-50">
+              {/* Shipping Options */}
+              {shippingRates.length > 0 && (
+                <Card className="border-2 border-primary">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-[hsl(var(--brand-pink))]">
-                      <Truck className="h-5 w-5" />
-                      Toronto Flat Rate Shipping
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-[hsl(var(--brand-pink))] font-medium">
-                      Great news! All Toronto orders ship for just ${torontoFlatRate.toFixed(2)} flat rate.
-                    </p>
-                  </CardContent>
-                </Card>
-              )}
-
-              {/* Shipping Options - Show only if not qualified for free shipping and not Toronto */}
-              {!qualifiesForFreeShipping && !isInToronto && shippingRates.length > 0 && (
-                <Card className="border-2 border-[hsl(var(--brand-pink))]">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-[hsl(var(--brand-pink))]">
+                    <CardTitle className="flex items-center gap-2 text-primary">
                       <Package className="h-5 w-5" />
                       Available Shipping Options
                     </CardTitle>
-                    <p className="text-sm text-gray-600">
-                      Select your preferred shipping method based on price and delivery time
+                    <p className="text-sm text-muted-foreground">
+                      Select your preferred shipping method
                     </p>
                   </CardHeader>
                   <CardContent>
                     <RadioGroup value={selectedShippingRate} onValueChange={setSelectedShippingRate}>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                      <div className="grid grid-cols-1 gap-3">
                         {shippingRates.map((rate: any) => (
-                          <div key={rate.postage_type} className={`flex items-center space-x-2 border-2 rounded-lg p-4 transition-colors hover:border-[hsl(var(--brand-pink))] ${
-                            selectedShippingRate === rate.postage_type 
-                              ? 'bg-[hsl(var(--brand-pink))]/10 border-[hsl(var(--brand-pink))] shadow-md' 
-                              : 'hover:bg-gray-50'
+                          <div key={rate.id} className={`flex items-center space-x-2 border-2 rounded-lg p-4 transition-colors hover:border-primary ${
+                            selectedShippingRate === rate.id 
+                              ? 'bg-primary/10 border-primary shadow-md' 
+                              : 'hover:bg-accent'
                           }`}>
-                            <RadioGroupItem value={rate.postage_type} id={rate.postage_type} />
-                            <Label htmlFor={rate.postage_type} className="flex-1 cursor-pointer">
+                            <RadioGroupItem value={rate.id} id={rate.id} />
+                            <Label htmlFor={rate.id} className="flex-1 cursor-pointer">
                               <div className="flex justify-between items-center">
                                 <div>
-                                  <p className="font-semibold text-base">{rate.postage_type}</p>
-                                  <p className="text-sm text-gray-600 mt-1">
-                                    <span className="inline-flex items-center gap-1">
-                                      <Truck className="h-3 w-3" />
-                                      Delivery: {rate.delivery_days} business days
-                                    </span>
-                                  </p>
+                                  <p className="font-semibold text-base">{rate.method_name}</p>
+                                  {rate.is_free && (
+                                    <p className="text-sm text-green-600 font-medium mt-1">
+                                      <span className="inline-flex items-center gap-1">
+                                        ✓ Free shipping
+                                      </span>
+                                    </p>
+                                  )}
                                 </div>
                                 <div className="text-right">
-                                  <p className="font-bold text-lg text-[hsl(var(--brand-pink))]">
-                                    ${parseFloat(rate.total).toFixed(2)}
+                                  <p className="font-bold text-lg text-primary">
+                                    {rate.is_free || rate.rate_amount === 0 ? 'FREE' : `$${rate.rate_amount.toFixed(2)}`}
                                   </p>
-                                  <p className="text-xs text-gray-500">CAD</p>
+                                  <p className="text-xs text-muted-foreground">CAD</p>
                                 </div>
                               </div>
                             </Label>
@@ -837,67 +758,6 @@ const Checkout = () => {
                     </div>
                   )}
                   
-                  {/* Free Shipping Progress for GTA (excluding Toronto) */}
-                  {isInGTA && !isInToronto && !qualifiesForFreeShipping && discountedSubtotal > 0 && (
-                    <div className="bg-gradient-to-r from-pink-50 to-purple-50 border border-[hsl(var(--brand-pink))]/20 rounded-lg p-3 my-2">
-                      <div className="flex items-start gap-2">
-                        <Truck className="h-4 w-4 text-[hsl(var(--brand-pink))] mt-0.5 flex-shrink-0" />
-                        <div className="flex-1">
-                          <p className="text-xs font-semibold text-[hsl(var(--brand-pink))] mb-1">
-                            GTA Free Shipping
-                          </p>
-                          <p className="text-xs text-gray-700">
-                            Spend <span className="font-bold text-[hsl(var(--brand-pink))]">
-                              ${(gtaThreshold - discountedSubtotal).toFixed(2)} more
-                            </span> to unlock FREE shipping!
-                          </p>
-                        </div>
-                      </div>
-                      {/* Progress bar */}
-                      <div className="mt-2 w-full bg-gray-200 rounded-full h-2">
-                        <div 
-                          className="bg-gradient-to-r from-[hsl(var(--brand-pink))] to-purple-400 h-2 rounded-full transition-all duration-300"
-                          style={{ width: `${Math.min((discountedSubtotal / gtaThreshold) * 100, 100)}%` }}
-                        />
-                      </div>
-                    </div>
-                  )}
-                  
-                  {/* Toronto Flat Rate Message */}
-                  {isInToronto && (
-                    <div className="bg-gradient-to-r from-pink-50 to-purple-50 border border-[hsl(var(--brand-pink))]/20 rounded-lg p-3 my-2">
-                      <div className="flex items-center gap-2">
-                        <div className="flex-shrink-0 w-6 h-6 bg-[hsl(var(--brand-pink))] rounded-full flex items-center justify-center">
-                          <MapPin className="h-3 w-3 text-white" />
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-xs font-bold text-[hsl(var(--brand-pink))]">
-                            Toronto Flat Rate
-                          </p>
-                          <p className="text-xs text-gray-700">
-                            All Toronto orders ship for just ${torontoFlatRate.toFixed(2)}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  
-                  {/* Non-GTA Message */}
-                  {!isInGTA && formData.postalCode && discountedSubtotal > 0 && (
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 my-2">
-                      <div className="flex items-start gap-2">
-                        <MapPin className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
-                        <div className="flex-1">
-                          <p className="text-xs font-semibold text-blue-600 mb-1">
-                            Outside GTA
-                          </p>
-                          <p className="text-xs text-gray-700">
-                            Free shipping available for GTA orders over ${gtaThreshold.toFixed(2)}. Your location: {formData.postalCode}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
                   
                   <div className="flex justify-between">
                     <span className="text-gray-600">Shipping</span>
@@ -911,28 +771,6 @@ const Checkout = () => {
                       )}
                     </span>
                   </div>
-                  {qualifiesForFreeShipping && (
-                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-500/30 rounded-lg p-3 my-2">
-                      <div className="flex items-center gap-2">
-                        <div className="flex-shrink-0 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                          <span className="text-white text-xs">✓</span>
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-xs font-bold text-green-700">
-                            🎉 FREE Shipping Unlocked!
-                          </p>
-                          <p className="text-xs text-green-600">
-                            GTA orders over ${gtaThreshold.toFixed(2)} ship free
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  {selectedRate && !qualifiesForFreeShipping && (
-                    <p className="text-xs text-gray-500 pl-4">
-                      {selectedRate.postage_type} - {selectedRate.delivery_days} business days
-                    </p>
-                  )}
                   
                   <div className="flex justify-between">
                     <span className="text-gray-600">Tax ({(taxRate * 100).toFixed(2)}%)</span>
