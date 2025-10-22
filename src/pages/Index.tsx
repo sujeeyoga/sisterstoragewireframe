@@ -3,7 +3,6 @@ import BaseLayout from "@/components/layout/BaseLayout";
 import Hero from "@/components/Hero";
 
 // Lazy load all below-the-fold content for better performance
-const OrganizationShowcase = lazy(() => import("@/components/OrganizationShowcase"));
 const CommunityStoriesCarousels = lazy(() => import("@/components/community/CommunityStoriesCarousels"));
 const BestSeller = lazy(() => import("@/components/BestSeller"));
 const OrganizationGallery = lazy(() => import("@/components/OrganizationGallery"));
@@ -21,11 +20,6 @@ const Index = () => {
       <div className="min-h-screen bg-white -mt-28">
         {/* Hero Section - Critical, loads immediately */}
         <Hero />
-        
-        {/* Organization Showcase - Image cards linking to shop */}
-        <Suspense fallback={<div className="h-64" />}>
-          <OrganizationShowcase />
-        </Suspense>
         
         {/* Styled by Our Sisters - Lazy loaded for performance */}
         <Suspense fallback={<div className="h-64" />}>
