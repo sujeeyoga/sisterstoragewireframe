@@ -14,15 +14,26 @@ export const ProtectedRoutes = ({ children }: ProtectedRoutesProps) => {
   const { data: comingSoonSetting, isLoading: isLoadingSetting } = useQuery({
     queryKey: ['store-settings', 'coming-soon'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('store_settings')
-        .select('*')
-        .eq('setting_key', 'coming_soon')
-        .maybeSingle();
+      try {
+        const { data, error } = await supabase
+          .from('store_settings')
+          .select('*')
+          .eq('setting_key', 'coming_soon')
+          .maybeSingle();
 
-      if (error && error.code !== 'PGRST116') throw error; // Ignore "not found" errors
-      return data;
+        // Ignore all errors and return null - show content by default
+        if (error) {
+          console.warn('Failed to load coming soon setting:', error);
+          return null;
+        }
+        return data;
+      } catch (err) {
+        console.warn('Failed to load coming soon setting:', err);
+        return null;
+      }
     },
+    retry: false, // Don't retry failed requests
+    staleTime: 60000, // Cache for 1 minute
   });
 
   useEffect(() => {
