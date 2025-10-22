@@ -156,8 +156,8 @@ Deno.serve(async (req) => {
     if (matchedZone) {
       // Calculate applicable rates
       const applicableRates = matchedZone.rates.map(rate => {
+        // Check if free shipping threshold is met (applies to any rate type)
         const isFree = 
-          rate.rate_type === 'free_threshold' && 
           rate.free_threshold !== null && 
           subtotal >= rate.free_threshold;
         

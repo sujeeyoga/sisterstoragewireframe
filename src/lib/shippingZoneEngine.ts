@@ -152,8 +152,8 @@ export const getApplicableRates = (
   return zone.rates
     .filter(rate => rate.enabled)
     .map(rate => {
+      // Check if free shipping threshold is met (applies to any rate type)
       const isFree = 
-        rate.rate_type === 'free_threshold' && 
         rate.free_threshold !== null && 
         orderSubtotal >= rate.free_threshold;
       
