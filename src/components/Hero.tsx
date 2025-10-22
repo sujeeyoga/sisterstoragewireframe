@@ -90,25 +90,9 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* Desktop: Overlapping Layout */}
-      <div className="hidden md:block relative">
-        {/* Background Image - In its own container with subtle parallax */}
-        <div className="absolute inset-0 z-0">
-          <div 
-            className="absolute right-0 top-1/2 -translate-y-1/2 w-[70%] h-[100%] overflow-hidden"
-            style={{ transform: `translate(0, calc(-50% + ${offset * 0.05}px))` }}
-          >
-            <img
-              src={heroMainImage}
-              alt="Woman showcasing Sister Storage jewelry organization solution"
-              className="w-full h-full object-contain object-right"
-              loading="eager"
-              decoding="async"
-            />
-          </div>
-        </div>
-
-        {/* Pink Content Section - Above background */}
+      {/* Desktop: Sequential Layout */}
+      <div className="hidden md:block">
+        {/* Pink Content Section - First */}
         <div className="relative z-10 min-h-[90vh] flex items-center justify-start pt-0">
           <div className="bg-[hsl(var(--brand-pink))] flex items-center animate-slide-in-right w-full md:w-[60vw] lg:w-[55vw] shadow-2xl rounded-r-[3rem]">
             <div className="grid grid-cols-2 w-full py-4 md:py-6 lg:py-8">
@@ -160,6 +144,22 @@ const Hero = () => {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Parallax Image Container - After content */}
+        <div className="relative w-full min-h-[70vh] overflow-hidden bg-gradient-to-b from-[hsl(var(--brand-pink))] to-white">
+          <div 
+            className="w-full h-full flex items-center justify-center py-12"
+            style={{ transform: `translateY(${offset * 0.05}px)` }}
+          >
+            <img
+              src={heroMainImage}
+              alt="Woman showcasing Sister Storage jewelry organization solution"
+              className="w-full max-w-4xl h-auto object-contain"
+              loading="eager"
+              decoding="async"
+            />
           </div>
         </div>
       </div>
