@@ -10,7 +10,42 @@ interface OpenBoxIncludedProps {
 }
 
 const OpenBoxIncluded: React.FC<OpenBoxIncludedProps> = ({ product }) => {
-  // Special handling for collection product (ID: 25814007)
+  // Special handling for Travel Box (ID: 25814003)
+  if (product.id === "25814003") {
+    return (
+      <div className="space-y-2">
+        <h3 className="text-sm font-bold text-[hsl(var(--brand-pink))] uppercase tracking-wider">
+          What's Included
+        </h3>
+        <ul className="space-y-2">
+          <li>
+            <div className="space-y-2">
+              <div className="flex items-baseline gap-3 flex-wrap">
+                <span className="inline-flex items-center gap-2">
+                  <span className="text-[hsl(var(--brand-pink))] font-bold text-3xl">1×</span>
+                  <span className="font-bold text-gray-900 text-base uppercase tracking-wide">
+                    Travel Box
+                  </span>
+                </span>
+                <span className="text-gray-600 text-2xl">with 1 Rod</span>
+              </div>
+              <p className="text-gray-600 text-sm">
+                <span className="font-semibold">Dimensions:</span> 25cm (L) × 20cm (W) × 6cm (H)
+              </p>
+              <p className="text-gray-600 text-sm">
+                <span className="font-semibold">Capacity:</span> ~87 bangles per box
+              </p>
+              <p className="text-gray-500 text-xs italic">
+                Condition: Open Box (may have minor scuffs or scratches)
+              </p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    );
+  }
+
+  // Special handling for Large Bangle Box (ID: 25814007)
   if (product.id === "25814007") {
     return (
       <div className="space-y-2">
