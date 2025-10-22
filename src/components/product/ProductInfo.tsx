@@ -167,24 +167,6 @@ const ProductInfo = ({ product, quantity, setQuantity, onAddToCart, onBuyNow }: 
             Buy Now
           </Button>
         </div>
-        
-        {/* Trust Badges */}
-        <div className="mt-3 pt-3 border-t border-gray-200">
-          <div className="grid grid-cols-3 gap-2 text-center">
-            <div className="space-y-0.5">
-              <div className="text-base">🚚</div>
-              <p className="text-[10px] text-gray-600 font-medium">Free Shipping</p>
-            </div>
-            <div className="space-y-0.5">
-              <div className="text-base">↩️</div>
-              <p className="text-[10px] text-gray-600 font-medium">30-Day Returns</p>
-            </div>
-            <div className="space-y-0.5">
-              <div className="text-base">🔒</div>
-              <p className="text-[10px] text-gray-600 font-medium">Secure Checkout</p>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );
