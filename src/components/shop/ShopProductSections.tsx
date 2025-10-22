@@ -17,10 +17,11 @@ const ShopProductSections = ({ products }: ShopProductSectionsProps) => {
     [products]
   );
   
-  const bangleBoxes = React.useMemo(() => 
-    products.filter(p => p.category === 'bangle-boxes' || p.category === 'open-box'), 
-    [products]
-  );
+  const bangleBoxes = React.useMemo(() => {
+    const regularBoxes = products.filter(p => p.category === 'bangle-boxes');
+    const openBoxes = products.filter(p => p.category === 'open-box');
+    return [...regularBoxes, ...openBoxes];
+  }, [products]);
   
   const organizers = React.useMemo(() => 
     products.filter(p => p.category === 'organizers'), 
