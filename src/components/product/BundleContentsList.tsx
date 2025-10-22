@@ -13,14 +13,14 @@ interface BundleContentsListProps {
 }
 
 const BundleContentsList = ({ contents, variant = "full", showTotals = false }: BundleContentsListProps) => {
-  // Parse bundle contents string (e.g., "4 Large Boxes, 2 Medium Boxes, 2 Small Boxes")
+  // Parse bundle contents string (e.g., "4 Large Boxes, 2 Medium Boxes, 2 Travel Boxes")
   const parseContents = (contents: string): BundleItem[] => {
     const items: BundleItem[] = [];
     const parts = contents.split(',').map(s => s.trim());
     
     parts.forEach(part => {
       // Extract quantity and size
-      const match = part.match(/(\d+)\s+(Large|Medium|Small)/i);
+      const match = part.match(/(\d+)\s+(Large|Medium|Small|Travel)/i);
       if (match) {
         const quantity = parseInt(match[1]);
         const size = match[2];
@@ -29,6 +29,8 @@ const BundleContentsList = ({ contents, variant = "full", showTotals = false }: 
         let rods = 1;
         if (size.toLowerCase() === 'large') rods = 4;
         else if (size.toLowerCase() === 'medium') rods = 2;
+        else if (size.toLowerCase() === 'travel') rods = 1;
+        else if (size.toLowerCase() === 'small') rods = 1;
         
         items.push({ quantity, size, rods });
       }
