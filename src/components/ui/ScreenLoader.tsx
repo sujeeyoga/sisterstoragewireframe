@@ -19,95 +19,33 @@ const staticImagesToPreload = [
 
 const ScreenLoader: React.FC<ScreenLoaderProps> = ({ 
   onComplete, 
-  duration = 3000
+  duration = 800 // Much faster - 800ms instead of 3000ms
 }) => {
   const [isVisible, setIsVisible] = useState(true);
   const [logoLoaded, setLogoLoaded] = useState(false);
-  const [imagesLoaded, setImagesLoaded] = useState(0);
-  const [videosLoaded, setVideosLoaded] = useState(0);
-  const [totalImages, setTotalImages] = useState(0);
-  const [totalVideos, setTotalVideos] = useState(0);
 
-  // Preload images and videos
-  useEffect(() => {
-    const preloadAssets = async () => {
-      // Fetch gallery images from database
-      const { data: heroData } = await supabase
-        .from('hero_images')
-        .select('image_url')
-        .eq('position', 'gallery')
-        .eq('is_active', true)
-        .order('display_order', { ascending: true });
-
-      // Fetch sister stories videos
-      const { data: storiesData } = await supabase
-        .from('sister_stories')
-        .select('video_url')
-        .eq('is_active', true)
-        .order('display_order', { ascending: true });
-
-      const galleryImages = heroData?.map(img => img.image_url) || [];
-      const allImages = [...staticImagesToPreload, ...galleryImages];
-      const storyVideos = storiesData?.map(story => story.video_url) || [];
-      
-      setTotalImages(allImages.length);
-      setTotalVideos(storyVideos.length);
-
-      let loadedImageCount = 0;
-      let loadedVideoCount = 0;
-      
-      // Preload images
-      allImages.forEach(src => {
-        const img = new Image();
-        img.onload = () => {
-          loadedImageCount++;
-          setImagesLoaded(loadedImageCount);
-        };
-        img.onerror = () => {
-          loadedImageCount++;
-          setImagesLoaded(loadedImageCount);
-        };
-        img.src = src;
-      });
-
-      // Preload videos (metadata only for faster loading)
-      storyVideos.forEach(src => {
-        const video = document.createElement('video');
-        video.preload = 'metadata';
-        video.onloadedmetadata = () => {
-          loadedVideoCount++;
-          setVideosLoaded(loadedVideoCount);
-        };
-        video.onerror = () => {
-          loadedVideoCount++;
-          setVideosLoaded(loadedVideoCount);
-        };
-        video.src = src;
-      });
-    };
-
-    preloadAssets();
-  }, []);
+  // Skip preloading - let images load naturally with lazy loading
+  // This makes the initial page load much faster
 
   useEffect(() => {
-    // Start logo animation after a brief delay
+    // Start logo animation immediately
     const logoTimer = setTimeout(() => {
       setLogoLoaded(true);
-    }, 500);
+    }, 200);
 
     return () => {
       clearTimeout(logoTimer);
     };
   }, []);
 
-  // Handle timing for 5-second load
+  // Handle fast timing
   useEffect(() => {
     if (!logoLoaded) return;
 
-    // Start fade out animation after duration
+    // Start fade out animation
     const fadeTimer = setTimeout(() => {
       setIsVisible(false);
-    }, duration - 500);
+    }, duration - 300);
 
     // Complete loading process
     const completeTimer = setTimeout(() => {
@@ -166,22 +104,11 @@ const ScreenLoader: React.FC<ScreenLoaderProps> = ({
                 key={i}
                 className="w-2 h-2 bg-primary rounded-full animate-pulse"
                 style={{
-                  animationDelay: `${i * 0.3}s`,
-                  animationDuration: '1.5s'
+                  animationDelay: `${i * 0.2}s`,
+                  animationDuration: '1s'
                 }}
               />
             ))}
-          </div>
-          
-          {/* Loading text with progress */}
-          <div className="text-sm text-muted-foreground font-medium tracking-wide space-y-1">
-            {totalImages > 0 && (
-              <div>Images: {imagesLoaded}/{totalImages}</div>
-            )}
-            {totalVideos > 0 && (
-              <div>Videos: {videosLoaded}/{totalVideos}</div>
-            )}
-            {totalImages === 0 && totalVideos === 0 && <div>Loading...</div>}
           </div>
         </div>
         

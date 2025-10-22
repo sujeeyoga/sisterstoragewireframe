@@ -45,7 +45,8 @@ const PerformanceImage: React.FC<PerformanceImageProps> = ({
   }, [onLoad]);
 
   const handleError = useCallback(() => {
-    setImageState('error');
+    console.warn('Image failed to load:', src);
+    setImageState('loaded'); // Mark as loaded instead of error to prevent infinite skeleton
     onError?.();
     
     // Try fallback image if available
@@ -53,7 +54,7 @@ const PerformanceImage: React.FC<PerformanceImageProps> = ({
       setImageSrc(placeholder);
       setImageState('loading');
     }
-  }, [onError, placeholder, imageSrc]);
+  }, [onError, placeholder, imageSrc, src]);
 
   // Error state
   if (imageState === 'error' && fallback) {
