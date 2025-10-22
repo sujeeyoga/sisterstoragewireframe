@@ -284,17 +284,22 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
         ref={inputRef}
         id="address"
         name="address"
-        placeholder="123 Main Street"
+        placeholder="Start typing your address..."
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className={error ? 'border-red-500' : ''}
-        autoComplete="off"
+        autoComplete="new-address"
         required
       />
       {error && <p className="text-sm text-red-500">{error}</p>}
-      <p className="text-xs text-gray-500">
-        Type your full street address or select from suggestions
-      </p>
+      {!isLoaded && (
+        <p className="text-xs text-amber-600">Loading address suggestions...</p>
+      )}
+      {isLoaded && (
+        <p className="text-xs text-gray-500">
+          Select from suggestions or manually enter your address, city, province, and postal code
+        </p>
+      )}
     </div>
   );
 };

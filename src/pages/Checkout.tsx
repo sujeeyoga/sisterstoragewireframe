@@ -491,6 +491,17 @@ const Checkout = () => {
                     onAddressSelect={handleAddressSelect}
                     error={validationErrors.address}
                   />
+                  
+                  {/* Shipping calculation hint */}
+                  {formData.address && (!formData.city || !formData.province || !formData.postalCode) && (
+                    <div className="text-sm text-amber-600 bg-amber-50 border border-amber-200 rounded-md p-3 flex items-start gap-2">
+                      <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                      <span>
+                        Please fill in <strong>City, Province, and Postal Code</strong> below to calculate shipping rates.
+                      </span>
+                    </div>
+                  )}
+                  
                   <div className="grid grid-cols-3 gap-4">
                     <div>
                       <Label htmlFor="city">City</Label>
