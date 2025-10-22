@@ -173,9 +173,27 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
     
     autocompleteRef.current.addListener('place_changed', handlePlaceChanged);
 
+    // Force place_changed on input change/blur as backup
+    const forceUpdate = () => {
+      const place = autocompleteRef.current?.getPlace();
+      if (!place || !place.address_components) {
+        console.log('Forcing place_changed event');
+        window.google.maps.event.trigger(autocompleteRef.current, 'place_changed');
+      }
+    };
+    
+    if (inputRef.current) {
+      inputRef.current.addEventListener('change', forceUpdate);
+      inputRef.current.addEventListener('blur', forceUpdate);
+    }
+
     return () => {
       if (autocompleteRef.current && window.google) {
         window.google.maps.event.clearInstanceListeners(autocompleteRef.current);
+      }
+      if (inputRef.current) {
+        inputRef.current.removeEventListener('change', forceUpdate);
+        inputRef.current.removeEventListener('blur', forceUpdate);
       }
     };
   }, [isLoaded, onChange, onAddressSelect]);
