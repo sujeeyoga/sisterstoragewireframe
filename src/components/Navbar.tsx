@@ -65,16 +65,16 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
         <div className="justify-self-center flex justify-center">
           {/* Full menu ≥1280px */}
           <div className="hidden xl:flex items-center gap-8">
-            <Link to="/" className={`px-6 py-2.5 rounded-full font-medium text-xl transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] focus:ring-offset-2 min-h-[44px] flex items-center ${location.pathname === '/' ? 'text-brand-pink' : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'}`}>HOME</Link>
-            <Link to="/gallery" className={`px-4 py-2 rounded-full font-medium text-xl transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${location.pathname === '/gallery' ? 'text-brand-pink' : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'}`}>GALLERY</Link>
-            <Link to="/shop" className={`px-4 py-2 rounded-full font-medium text-xl transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${location.pathname === '/shop' ? 'text-brand-pink' : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'}`}>SHOP</Link>
+            <Link to="/" className={`px-6 py-2.5 rounded-full font-medium text-xl transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] focus:ring-offset-2 min-h-[44px] flex items-center ${location.pathname === '/' ? 'bg-brand-pink text-white' : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'}`}>HOME</Link>
+            <Link to="/gallery" className={`px-4 py-2 rounded-full font-medium text-xl transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${location.pathname === '/gallery' ? 'bg-brand-pink text-white' : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'}`}>GALLERY</Link>
+            <Link to="/shop" className={`px-4 py-2 rounded-full font-medium text-xl transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${location.pathname === '/shop' ? 'bg-brand-pink text-white' : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'}`}>SHOP</Link>
           </div>
           
           {/* Condensed menu 768-1279px */}
           <div className="hidden lg:flex xl:hidden items-center gap-6">
-            <Link to="/" className={`px-6 py-2.5 rounded-full font-medium text-xl transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] focus:ring-offset-2 min-h-[44px] flex items-center ${location.pathname === '/' ? 'text-brand-pink' : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'}`}>HOME</Link>
-            <Link to="/gallery" className={`px-4 py-2 rounded-full font-medium text-xl transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${location.pathname === '/gallery' ? 'text-brand-pink' : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'}`}>GALLERY</Link>
-            <Link to="/shop" className={`px-4 py-2 rounded-full font-medium text-xl transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${location.pathname === '/shop' ? 'text-brand-pink' : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'}`}>SHOP</Link>
+            <Link to="/" className={`px-6 py-2.5 rounded-full font-medium text-xl transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] focus:ring-offset-2 min-h-[44px] flex items-center ${location.pathname === '/' ? 'bg-brand-pink text-white' : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'}`}>HOME</Link>
+            <Link to="/gallery" className={`px-4 py-2 rounded-full font-medium text-xl transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${location.pathname === '/gallery' ? 'bg-brand-pink text-white' : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'}`}>GALLERY</Link>
+            <Link to="/shop" className={`px-4 py-2 rounded-full font-medium text-xl transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${location.pathname === '/shop' ? 'bg-brand-pink text-white' : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'}`}>SHOP</Link>
           </div>
         </div>
 
