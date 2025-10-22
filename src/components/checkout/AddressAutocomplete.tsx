@@ -105,56 +105,70 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
 
     // Handle place selection (only when user selects from dropdown)
     const handlePlaceChanged = () => {
-      const place = autocompleteRef.current?.getPlace();
-      
-      // Only process if user actually selected a place from dropdown
-      if (!place?.address_components) {
-        return; // Let manual entry work normally
-      }
-
-      const components: any = {};
-      
-      // Parse address components into a simple object
-      place.address_components.forEach((component: any) => {
-        const type = component.types[0];
-        components[type] = {
-          long: component.long_name,
-          short: component.short_name
-        };
-      });
-
-      // Build address from components
-      const streetNumber = components.street_number?.long || '';
-      const route = components.route?.long || '';
-      const rawAddress = `${streetNumber} ${route}`.trim();
-      const fullAddress = formatAddress(rawAddress);
-      
-      // Use sublocality (e.g., Scarborough) if available, otherwise use locality (e.g., Toronto)
-      const rawCity = components.sublocality_level_1?.long || components.sublocality?.long || components.locality?.long || '';
-      const city = formatCity(rawCity);
-      
-      // Get 2-letter province code (try mapping first, then short_name)
-      const provinceLong = components.administrative_area_level_1?.long || '';
-      const provinceShort = components.administrative_area_level_1?.short || '';
-      const province = PROVINCE_MAP[provinceLong] || provinceShort || '';
-      
-      // Format Canadian postal code (A1A1A1)
-      const rawPostalCode = components.postal_code?.long || '';
-      const postalCode = rawPostalCode ? formatPostalCode(rawPostalCode) : '';
-
-      if (fullAddress && city && province) {
-        // Set the formatted value immediately - this updates the input instantly
-        if (inputRef.current) {
-          inputRef.current.value = fullAddress;
+      // Add a small delay to ensure place data is fully loaded
+      setTimeout(() => {
+        const place = autocompleteRef.current?.getPlace();
+        
+        console.log('Place changed event:', place);
+        
+        // Only process if user actually selected a place from dropdown
+        if (!place?.address_components) {
+          console.log('No address components found, skipping');
+          return; // Let manual entry work normally
         }
-        onChange(fullAddress);
-        onAddressSelect({
-          address: fullAddress,
-          city,
-          province,
-          postalCode
+
+        const components: any = {};
+        
+        // Parse address components into a simple object
+        place.address_components.forEach((component: any) => {
+          const type = component.types[0];
+          components[type] = {
+            long: component.long_name,
+            short: component.short_name
+          };
         });
-      }
+
+        // Build address from components
+        const streetNumber = components.street_number?.long || '';
+        const route = components.route?.long || '';
+        const rawAddress = `${streetNumber} ${route}`.trim();
+        const fullAddress = formatAddress(rawAddress);
+        
+        // Use sublocality (e.g., Scarborough) if available, otherwise use locality (e.g., Toronto)
+        const rawCity = components.sublocality_level_1?.long || components.sublocality?.long || components.locality?.long || '';
+        const city = formatCity(rawCity);
+        
+        // Get 2-letter province code (try mapping first, then short_name)
+        const provinceLong = components.administrative_area_level_1?.long || '';
+        const provinceShort = components.administrative_area_level_1?.short || '';
+        const province = PROVINCE_MAP[provinceLong] || provinceShort || '';
+        
+        // Format Canadian postal code (A1A1A1)
+        const rawPostalCode = components.postal_code?.long || '';
+        const postalCode = rawPostalCode ? formatPostalCode(rawPostalCode) : '';
+
+        console.log('Parsed address data:', { fullAddress, city, province, postalCode });
+
+        if (fullAddress && city && province) {
+          // Set the formatted value immediately - this updates the input instantly
+          if (inputRef.current) {
+            inputRef.current.value = fullAddress;
+          }
+          
+          // Call callbacks to update parent component
+          onChange(fullAddress);
+          onAddressSelect({
+            address: fullAddress,
+            city,
+            province,
+            postalCode
+          });
+          
+          console.log('Address data sent to parent');
+        } else {
+          console.warn('Incomplete address data:', { fullAddress, city, province, postalCode });
+        }
+      }, 0); // Small delay to ensure Google Places API has populated the data
     };
     
     autocompleteRef.current.addListener('place_changed', handlePlaceChanged);
