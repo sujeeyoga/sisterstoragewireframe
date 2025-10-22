@@ -27,7 +27,8 @@ const Hero = () => {
     <section ref={parallaxRef} className="relative w-full overflow-hidden md:pt-32" aria-label="Hero section">
       {/* Mobile: Stacked Layout */}
       <div className="md:hidden flex flex-col relative z-10">
-        <div className="bg-[hsl(var(--brand-pink))] pt-40 pb-16 px-6 min-h-[75vh] flex items-center">
+        {/* Hero Content Container */}
+        <div className="w-full bg-[hsl(var(--brand-pink))] pt-40 pb-12 px-6">
           <div 
             className="flex flex-col space-y-3 text-white w-full max-w-full"
             style={{ transform: `translateY(${-offset * 0.1}px)` }}
@@ -76,16 +77,20 @@ const Hero = () => {
           </div>
         </div>
 
-        <div className="w-full min-h-[85vh] max-h-[100vh] overflow-hidden bg-[hsl(var(--brand-pink))]">
-          <div className="w-full h-full" style={{ transform: `translateY(${-offset * 0.15}px)` }}>
-          <img
-            src={heroMainImage}
-            alt="Woman showcasing Sister Storage jewelry organization solution"
-            className="w-full h-full object-cover scale-110"
-            loading="eager"
-            fetchPriority="high"
-            decoding="async"
-          />
+        {/* Hero Image Container */}
+        <div className="w-full min-h-[85vh] max-h-[100vh] overflow-hidden">
+          <div 
+            className="w-full h-full bg-gradient-to-b from-[hsl(var(--brand-pink))] to-white" 
+            style={{ transform: `translateY(${-offset * 0.1}px)` }}
+          >
+            <img
+              src={heroMainImage}
+              alt="Woman showcasing Sister Storage jewelry organization solution"
+              className="w-full h-full object-cover scale-110"
+              loading="eager"
+              fetchPriority="high"
+              decoding="async"
+            />
           </div>
         </div>
       </div>
