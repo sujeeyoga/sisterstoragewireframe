@@ -53,35 +53,35 @@ const LaunchCard = ({ card }: LaunchCardProps) => {
   };
 
   return (
-    <article className="relative overflow-hidden rounded-3xl p-8 md:p-12 bg-[hsl(var(--brand-pink))] text-white shadow-xl">
+    <article className="relative overflow-hidden rounded-3xl p-6 sm:p-8 md:p-12 bg-[hsl(var(--brand-pink))] text-white shadow-xl">
       {/* Content */}
       <div className="relative z-10 max-w-4xl mx-auto">
         {/* Collection name */}
-        <h2 className="text-4xl md:text-5xl font-bold mb-3 uppercase tracking-wide text-center">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 uppercase tracking-wide text-center">
           {card.collection_name}
         </h2>
         
         {/* Tagline */}
         {card.tagline && (
-          <p className="text-xl md:text-2xl font-medium italic mb-4 text-center">
+          <p className="text-lg sm:text-xl md:text-2xl font-medium italic mb-4 text-center">
             {card.tagline}
           </p>
         )}
         
         {/* Description */}
-        <p className="text-lg mb-8 text-center max-w-2xl mx-auto">
+        <p className="text-base sm:text-lg mb-6 sm:mb-8 text-center max-w-2xl mx-auto px-4">
           {card.description}
         </p>
         
         {/* Inline Email Collection Form */}
-        <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-3 max-w-3xl mx-auto">
+        <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-3xl mx-auto px-4">
           <Input
             type="text"
             placeholder="Your Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
             disabled={isSubmitting}
-            className="flex-1 bg-white/90 text-gray-900 placeholder:text-gray-500 border-white/50 h-12 text-base"
+            className="flex-1 bg-white/90 text-gray-900 placeholder:text-gray-500 border-white/50 h-11 sm:h-12 text-sm sm:text-base"
           />
           <Input
             type="email"
@@ -89,13 +89,13 @@ const LaunchCard = ({ card }: LaunchCardProps) => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={isSubmitting}
-            className="flex-1 bg-white/90 text-gray-900 placeholder:text-gray-500 border-white/50 h-12 text-base"
+            className="flex-1 bg-white/90 text-gray-900 placeholder:text-gray-500 border-white/50 h-11 sm:h-12 text-sm sm:text-base"
           />
           <Button
             type="submit"
             disabled={isSubmitting}
             size="lg"
-            className="bg-white text-[hsl(var(--brand-pink))] hover:bg-white/90 font-semibold uppercase tracking-wide h-12 px-8 whitespace-nowrap"
+            className="bg-white text-[hsl(var(--brand-pink))] hover:bg-white/90 font-semibold uppercase tracking-wide h-11 sm:h-12 px-6 sm:px-8 text-sm sm:text-base whitespace-nowrap w-full sm:w-auto"
           >
             {isSubmitting ? "Joining..." : card.cta_label || "Join Waitlist"}
           </Button>
