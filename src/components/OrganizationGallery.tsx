@@ -1,8 +1,11 @@
 import PerformanceImage from '@/components/ui/performance-image';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const OrganizationGallery = () => {
   const navigate = useNavigate();
+  const [loadedImages, setLoadedImages] = useState<Record<number, boolean>>({});
   const galleryImages = [
     {
       src: '/lovable-uploads/e1ae51b5-7916-4137-825e-7f197dff06a3.png',
@@ -38,12 +41,16 @@ const OrganizationGallery = () => {
             onClick={() => navigate('/shop')}
             className="relative w-full aspect-square rounded-3xl shadow-lg md:hover:shadow-2xl transition-shadow duration-300 group overflow-hidden animate-fade-in cursor-pointer"
           >
+            {!loadedImages[0] && (
+              <Skeleton className="absolute inset-0" />
+            )}
             <PerformanceImage
               src={galleryImages[0].src}
               alt={galleryImages[0].alt}
               className="w-full h-full object-cover block md:group-hover:scale-105 transition-transform duration-500 ease-out"
               loading="lazy"
               sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+              onLoad={() => setLoadedImages(prev => ({ ...prev, 0: true }))}
             />
           </div>
 
@@ -52,12 +59,16 @@ const OrganizationGallery = () => {
             onClick={() => navigate('/shop')}
             className="relative w-full aspect-[3/4] rounded-3xl shadow-lg md:hover:shadow-2xl transition-shadow duration-300 group overflow-hidden animate-fade-in cursor-pointer"
           >
+            {!loadedImages[1] && (
+              <Skeleton className="absolute inset-0" />
+            )}
             <PerformanceImage
               src={galleryImages[1].src}
               alt={galleryImages[1].alt}
               className="w-full h-full object-cover block md:group-hover:scale-105 transition-transform duration-500 ease-out"
               loading="lazy"
               sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+              onLoad={() => setLoadedImages(prev => ({ ...prev, 1: true }))}
           />
           </div>
 
@@ -66,12 +77,16 @@ const OrganizationGallery = () => {
             onClick={() => navigate('/shop')}
             className="relative w-full aspect-square rounded-3xl shadow-lg md:hover:shadow-2xl transition-shadow duration-300 group overflow-hidden animate-fade-in cursor-pointer"
           >
+            {!loadedImages[2] && (
+              <Skeleton className="absolute inset-0" />
+            )}
             <PerformanceImage
               src={galleryImages[2].src}
               alt={galleryImages[2].alt}
               className="w-full h-full object-cover block md:group-hover:scale-105 transition-transform duration-500 ease-out"
               loading="lazy"
               sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+              onLoad={() => setLoadedImages(prev => ({ ...prev, 2: true }))}
             />
             {/* Instagram Icon Overlay */}
             <div className="absolute inset-0 flex items-center justify-center bg-black/20 md:group-hover:bg-black/30 transition-colors duration-300">

@@ -1,12 +1,15 @@
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 import { useSiteTexts } from '@/hooks/useSiteTexts';
 import { EditableText } from '@/components/admin/EditableText';
 import { EditableImage } from '@/components/admin/EditableImage';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const PromotionalBanner = () => {
   const { texts, isLoading } = useSiteTexts('promotional_banner');
+  const [imageLoaded, setImageLoaded] = useState(false);
   
   if (isLoading || !texts) return null;
   
@@ -52,10 +55,15 @@ const PromotionalBanner = () => {
 
             {/* Right Image */}
             <div className="relative h-[400px] lg:h-[500px] -mr-8 md:-mr-12 lg:-mr-14">
-              <EditableImage
+              {!imageLoaded && (
+                <Skeleton className="absolute inset-0 rounded-l-2xl" />
+              )}
+              <img
                 src="https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/1760125164235-26m74b.jpg"
                 alt="Sister Storage organized jewelry display"
                 className="w-full h-full object-cover rounded-l-2xl shadow-lg"
+                loading="lazy"
+                onLoad={() => setImageLoaded(true)}
               />
             </div>
           </div>

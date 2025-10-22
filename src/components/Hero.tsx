@@ -1,15 +1,18 @@
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import heroMainImage from '@/assets/hero-bg-main.jpg';
 import { useOptimizedParallax } from '@/hooks/use-optimized-parallax';
 import { useSiteTexts } from '@/hooks/useSiteTexts';
 import { EditableText } from '@/components/admin/EditableText';
 import { EditableImage } from '@/components/admin/EditableImage';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const Hero = () => {
   const { ref: parallaxRef, offset } = useOptimizedParallax({ speed: 0.15 });
   const { texts, isLoading } = useSiteTexts('homepage_hero');
+  const [imageLoaded, setImageLoaded] = useState(false);
   
   // Default fallback text to show immediately while loading
   const defaultText: any = {
@@ -78,7 +81,10 @@ const Hero = () => {
         </div>
 
         {/* Hero Image Container */}
-        <div className="w-full h-[67vh] overflow-hidden bg-[hsl(var(--brand-pink))]">
+        <div className="w-full h-[67vh] overflow-hidden bg-[hsl(var(--brand-pink))] relative">
+          {!imageLoaded && (
+            <Skeleton className="absolute inset-0 bg-white/20" />
+          )}
           <div 
             className="w-full h-full" 
             style={{ transform: `translateY(${-offset * 0.2}px)` }}
@@ -90,6 +96,7 @@ const Hero = () => {
               loading="eager"
               fetchPriority="high"
               decoding="async"
+              onLoad={() => setImageLoaded(true)}
             />
           </div>
         </div>
@@ -154,6 +161,9 @@ const Hero = () => {
 
         {/* Parallax Image Container - After content */}
         <div className="relative w-full min-h-[70vh] overflow-hidden bg-gradient-to-b from-[hsl(var(--brand-pink))] to-white">
+          {!imageLoaded && (
+            <Skeleton className="absolute inset-0 bg-white/20 max-w-4xl mx-auto my-12" />
+          )}
           <div 
             className="w-full h-full flex items-center justify-center py-12"
             style={{ transform: `translateY(${offset * 0.05}px)` }}
@@ -165,6 +175,7 @@ const Hero = () => {
               loading="eager"
               fetchPriority="high"
               decoding="async"
+              onLoad={() => setImageLoaded(true)}
             />
           </div>
         </div>
