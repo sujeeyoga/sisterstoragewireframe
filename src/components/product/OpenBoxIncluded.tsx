@@ -22,12 +22,12 @@ const OpenBoxIncluded: React.FC<OpenBoxIncludedProps> = ({ product }) => {
             <div className="space-y-2">
               <div className="flex items-baseline gap-3 flex-wrap">
                 <span className="inline-flex items-center gap-2">
-                  <span className="text-[hsl(var(--brand-pink))] font-bold text-3xl">4×</span>
+                  <span className="text-[hsl(var(--brand-pink))] font-bold text-3xl">1×</span>
                   <span className="font-bold text-gray-900 text-base uppercase tracking-wide">
                     Large Bangle Box
                   </span>
                 </span>
-                <span className="text-gray-600 text-2xl">with 4 Rods Each</span>
+                <span className="text-gray-600 text-2xl">with 4 Rods</span>
               </div>
               <p className="text-gray-600 text-sm">
                 <span className="font-semibold">Dimensions:</span> 38cm (L) × 25cm (W) × 9cm (H)
