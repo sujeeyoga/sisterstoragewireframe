@@ -136,13 +136,13 @@ const BestSeller = () => {
                   />
                   
                   <div className={cn(
-                    "absolute inset-0 flex items-center justify-center transition-opacity duration-300 bg-black/60",
+                    "absolute inset-0 flex items-center justify-center transition-opacity duration-300",
                     "md:opacity-0 md:group-hover:opacity-100",
                     isMobile 
                       ? (showOverlay[buyCards[0].id] ? "opacity-100" : "opacity-0")
                       : ""
                   )}>
-                    <h3 className="text-white text-4xl md:text-5xl font-poppins font-thin drop-shadow-[0_4px_8px_rgba(0,0,0,0.3)] [text-shadow:_-1px_-1px_0_#fff,_1px_-1px_0_#fff,_-1px_1px_0_#fff,_1px_1px_0_#fff]">{buyCards[0].name}</h3>
+                    <h3 className="text-white text-4xl md:text-5xl font-poppins font-thin drop-shadow-[0_8px_16px_rgba(0,0,0,0.8)]">{buyCards[0].name}</h3>
                   </div>
                   
                   {!isMobile && (
@@ -189,13 +189,13 @@ const BestSeller = () => {
                   <img src={buyCards[1].image} alt={`${buyCards[1].name} - Bundle collection`} className={cn("w-full h-full object-cover transition-opacity duration-500 scale-125", loadedImages[buyCards[1].id] ? "opacity-100" : "opacity-0")} loading="eager" decoding="async" onLoad={() => handleImageLoad(buyCards[1].id)} onError={() => handleImageError(buyCards[1].id)} />
                   
                   <div className={cn(
-                    "absolute inset-0 flex items-center justify-center transition-opacity duration-300 bg-black/60",
+                    "absolute inset-0 flex items-center justify-center transition-opacity duration-300",
                     "md:opacity-0 md:group-hover:opacity-100",
                     isMobile 
                       ? (showOverlay[buyCards[1].id] ? "opacity-100" : "opacity-0")
                       : ""
                   )}>
-                    <h3 className="text-white text-4xl md:text-5xl font-poppins font-thin drop-shadow-[0_4px_8px_rgba(0,0,0,0.3)] [text-shadow:_-1px_-1px_0_#fff,_1px_-1px_0_#fff,_-1px_1px_0_#fff,_1px_1px_0_#fff]">{buyCards[1].name}</h3>
+                    <h3 className="text-white text-4xl md:text-5xl font-poppins font-thin drop-shadow-[0_8px_16px_rgba(0,0,0,0.8)]">{buyCards[1].name}</h3>
                   </div>
                   
                   {!isMobile && (
