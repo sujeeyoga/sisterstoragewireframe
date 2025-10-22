@@ -564,7 +564,9 @@ const Checkout = () => {
                   {shippingRates.length > 0 && (
                     <div className="bg-green-50 border border-green-200 p-3 rounded-lg">
                       <p className="text-sm text-green-800 font-medium">
-                        ✓ Found {shippingRates.length} shipping options - Select your preferred method below
+                        ✓ {shippingRates.some(rate => rate.is_free || rate.rate_amount === 0) 
+                          ? 'Unlocked free shipping!' 
+                          : `Found ${shippingRates.length} shipping options - Select your preferred method below`}
                       </p>
                     </div>
                   )}
