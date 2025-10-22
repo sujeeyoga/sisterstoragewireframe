@@ -609,6 +609,30 @@ export type Database = {
         }
         Relationships: []
       }
+      waitlist_signups: {
+        Row: {
+          collection_name: string
+          created_at: string | null
+          email: string
+          id: string
+          name: string
+        }
+        Insert: {
+          collection_name: string
+          created_at?: string | null
+          email: string
+          id?: string
+          name: string
+        }
+        Update: {
+          collection_name?: string
+          created_at?: string | null
+          email?: string
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
       woocommerce_customers: {
         Row: {
           billing: Json | null
