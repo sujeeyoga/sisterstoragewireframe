@@ -88,7 +88,6 @@ const Hero = () => {
               alt="Woman showcasing Sister Storage jewelry organization solution"
               className="w-full h-full object-cover"
               loading="eager"
-              fetchPriority="high"
               decoding="async"
             />
           </div>
