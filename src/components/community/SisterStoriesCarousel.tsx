@@ -188,7 +188,7 @@ export const SisterStoriesCarousel = () => {
                       playsInline
                       webkit-playsinline="true"
                       x5-playsinline="true"
-                      preload="none"
+                      preload={videoStories.indexOf(story) === 0 ? "auto" : "none"}
                       controlsList="nodownload nofullscreen noremoteplayback"
                       disablePictureInPicture
                       onLoadedData={() => handleVideoLoad(story.id)}
