@@ -10,6 +10,67 @@ interface OpenBoxIncludedProps {
 }
 
 const OpenBoxIncluded: React.FC<OpenBoxIncludedProps> = ({ product }) => {
+  // Special handling for Starter Set (ID: bundle-1)
+  if (product.id === "bundle-1") {
+    return (
+      <div className="space-y-2">
+        <h3 className="text-sm font-bold text-[hsl(var(--brand-pink))] uppercase tracking-wider">
+          What's Included
+        </h3>
+        <ul className="space-y-3">
+          <li>
+            <div className="space-y-1">
+              <div className="flex items-baseline gap-3 flex-wrap">
+                <span className="inline-flex items-center gap-2">
+                  <span className="text-[hsl(var(--brand-pink))] font-bold text-3xl">2×</span>
+                  <span className="font-bold text-gray-900 text-base uppercase tracking-wide">
+                    Large Bangle Box
+                  </span>
+                </span>
+                <span className="text-gray-600 text-2xl">with 4 Rods Each</span>
+              </div>
+              <p className="text-gray-600 text-sm ml-12">
+                38cm (L) × 25cm (W) × 9cm (H) | ~348 bangles each
+              </p>
+            </div>
+          </li>
+          <li>
+            <div className="space-y-1">
+              <div className="flex items-baseline gap-3 flex-wrap">
+                <span className="inline-flex items-center gap-2">
+                  <span className="text-[hsl(var(--brand-pink))] font-bold text-3xl">1×</span>
+                  <span className="font-bold text-gray-900 text-base uppercase tracking-wide">
+                    Medium Bangle Box
+                  </span>
+                </span>
+                <span className="text-gray-600 text-2xl">with 2 Rods</span>
+              </div>
+              <p className="text-gray-600 text-sm ml-12">
+                38cm (L) × 25cm (W) × 5.5cm (H) | ~174 bangles
+              </p>
+            </div>
+          </li>
+          <li>
+            <div className="space-y-1">
+              <div className="flex items-baseline gap-3 flex-wrap">
+                <span className="inline-flex items-center gap-2">
+                  <span className="text-[hsl(var(--brand-pink))] font-bold text-3xl">1×</span>
+                  <span className="font-bold text-gray-900 text-base uppercase tracking-wide">
+                    Travel Box
+                  </span>
+                </span>
+                <span className="text-gray-600 text-2xl">with 1 Rod</span>
+              </div>
+              <p className="text-gray-600 text-sm ml-12">
+                25cm (L) × 20cm (W) × 6cm (H) | ~87 bangles
+              </p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    );
+  }
+
   // Special handling for Travel Box (ID: 25814003)
   if (product.id === "25814003") {
     return (
