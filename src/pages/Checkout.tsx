@@ -524,7 +524,7 @@ const Checkout = () => {
                       </div>
                       
                       {/* Address Fields - Smart Display (Locked vs Editable) */}
-                      <div className="grid grid-cols-3 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         {/* City */}
                         {lockedFields.city ? (
                           <ReadOnlyAddressField

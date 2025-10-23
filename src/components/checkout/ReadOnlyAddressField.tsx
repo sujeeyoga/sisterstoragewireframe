@@ -24,10 +24,11 @@ const ReadOnlyAddressField: React.FC<ReadOnlyAddressFieldProps> = ({ label, valu
             variant="ghost"
             size="sm"
             onClick={onEdit}
-            className="h-7 px-2 text-xs hover:bg-green-100"
+            aria-label="Edit field"
+            className="h-7 px-1 md:px-2 text-xs hover:bg-green-100 flex-shrink-0"
           >
-            <Pencil className="h-3 w-3 mr-1" />
-            Edit
+            <Pencil className="h-3 w-3 md:mr-1" />
+            <span className="hidden md:inline">Edit</span>
           </Button>
         </div>
       </div>
