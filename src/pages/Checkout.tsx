@@ -497,7 +497,11 @@ const Checkout = () => {
                   </div>
                   <AddressAutocomplete
                     value={formData.address}
-                    onChange={(value) => setFormData(prev => ({ ...prev, address: value }))}
+                    onChange={(value) => {
+                      setFormData(prev => ({ ...prev, address: value }));
+                      // Clear validation error when user types
+                      setValidationErrors(prev => ({ ...prev, address: '' }));
+                    }}
                     onAddressSelect={handleAddressSelect}
                     error={validationErrors.address}
                   />

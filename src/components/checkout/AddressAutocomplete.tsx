@@ -261,27 +261,35 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
         <MapPin className="h-4 w-4" />
         Street Address
       </Label>
-      <Input
-        ref={inputRef}
-        id="address"
-        name="address"
-        placeholder={loadError ? "Enter your street address" : "Start typing your address..."}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className={error ? 'border-red-500' : ''}
-        autoComplete="off"
-        required
-      />
-      {error && <p className="text-sm text-red-500">{error}</p>}
+      <div className="relative">
+        <Input
+          ref={inputRef}
+          id="address"
+          name="address"
+          placeholder={loadError ? "Enter your street address" : "Start typing your address..."}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className={error ? 'border-red-500' : ''}
+          autoComplete="off"
+          disabled={false}
+          readOnly={false}
+          required
+        />
+      </div>
+      {error && <p className="text-sm text-red-500 flex items-center gap-1">
+        <span className="text-base">⚠️</span> {error}
+      </p>}
       {loadError && (
-        <p className="text-sm text-amber-600 font-medium">{loadError}</p>
+        <p className="text-sm text-amber-600 font-medium flex items-center gap-1">
+          <span className="text-base">ℹ️</span> {loadError}
+        </p>
       )}
       {!isLoaded && !loadError && (
-        <p className="text-xs text-amber-600">Loading address suggestions...</p>
+        <p className="text-xs text-gray-500">Loading address suggestions...</p>
       )}
       {isLoaded && !loadError && (
         <p className="text-xs text-gray-500">
-          Select from suggestions or manually enter your address, city, province, and postal code
+          Type to search or enter manually
         </p>
       )}
     </div>
