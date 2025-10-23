@@ -135,6 +135,12 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
   }, []);
 
   useEffect(() => {
+    // Don't initialize autocomplete if there's a load error
+    if (loadError) {
+      console.log('⚠️ Skipping autocomplete initialization due to load error');
+      return;
+    }
+    
     if (!isLoaded || !inputRef.current) {
       console.log('⏳ Waiting for Google Maps API to load...', { isLoaded, hasInput: !!inputRef.current });
       return;
@@ -158,6 +164,7 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
       console.log('✅ Autocomplete initialized successfully');
     } catch (error) {
       console.error('❌ Failed to initialize autocomplete:', error);
+      setLoadError('Address suggestions unavailable. Please enter your address manually.');
       return;
     }
 
@@ -246,7 +253,7 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
         window.google.maps.event.clearInstanceListeners(autocompleteRef.current);
       }
     };
-  }, [isLoaded, onChange, onAddressSelect]);
+  }, [isLoaded, loadError, onChange, onAddressSelect]);
 
   return (
     <div className="space-y-2">
@@ -258,11 +265,11 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
         ref={inputRef}
         id="address"
         name="address"
-        placeholder="Start typing your address..."
+        placeholder={loadError ? "Enter your street address" : "Start typing your address..."}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className={error ? 'border-red-500' : ''}
-        autoComplete="new-address"
+        autoComplete="off"
         required
       />
       {error && <p className="text-sm text-red-500">{error}</p>}
