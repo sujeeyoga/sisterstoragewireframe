@@ -110,6 +110,14 @@ const Checkout = () => {
 
   // Track abandoned carts
   const { markAsRecovered } = useAbandonedCart(formData.email || undefined);
+  
+  // Auto-advance to complete stage when manual address is filled
+  useEffect(() => {
+    if (formStage === 'email-address' && formData.address && formData.city && formData.province && formData.postalCode) {
+      console.log('Manual address complete, advancing to complete stage');
+      setFormStage('complete');
+    }
+  }, [formData.address, formData.city, formData.province, formData.postalCode, formStage]);
 
   // Calculate tax based on province
   const getTaxRate = (province: string): number => {
@@ -647,7 +655,7 @@ const Checkout = () => {
                       </div>
                       
                       {/* Manual Calculate Shipping Button */}
-                      {!addressAutoFilled && isManualAddressComplete && shippingRates.length === 0 && !isLoadingRates && formStage === 'complete' && (
+                      {!addressAutoFilled && isManualAddressComplete && shippingRates.length === 0 && !isLoadingRates && (
                         <div className="bg-yellow-50 border-2 border-yellow-300 rounded-lg p-4 animate-fade-in">
                           <div className="flex items-start gap-3 mb-3">
                             <Package className="h-5 w-5 text-yellow-600 flex-shrink-0 mt-0.5" />
@@ -670,36 +678,37 @@ const Checkout = () => {
                     </div>
                   )}
                   
-                  {/* Show shipping status only when form is complete */}
-                  {formStage === 'complete' && (
-                    <>
-                      {/* Auto-calculating shipping indicator */}
-                      {isLoadingRates && (
-                        <div className="flex items-center gap-2 text-sm bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-lg border border-purple-200 animate-fade-in">
-                          <Loader2 className="h-5 w-5 animate-spin text-[hsl(var(--brand-pink))]" />
-                          <div>
-                            <p className="font-semibold text-gray-900">Calculating shipping rates...</p>
-                            <p className="text-xs text-gray-600">Finding the best shipping options for you</p>
-                          </div>
+                  {/* Show shipping status when rates are available */}
+                  <>
+                    {/* Auto-calculating shipping indicator */}
+                    {isLoadingRates && (
+                      <div className="flex items-center gap-2 text-sm bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-lg border border-purple-200 animate-fade-in">
+                        <Loader2 className="h-5 w-5 animate-spin text-[hsl(var(--brand-pink))]" />
+                        <div>
+                          <p className="font-semibold text-gray-900">Calculating shipping rates...</p>
+                          <p className="text-xs text-gray-600">Finding the best shipping options for you</p>
                         </div>
-                      )}
-                      
-                      {shippingRates.length > 0 && (
-                        <div className="bg-green-50 border border-green-200 p-3 rounded-lg animate-fade-in">
-                          <p className="text-sm text-green-800 font-medium">
-                            ✓ {shippingRates.some(rate => rate.is_free || rate.rate_amount === 0) 
-                              ? 'Unlocked free shipping!' 
-                              : `Found ${shippingRates.length} shipping options - Select your preferred method below`}
-                          </p>
-                        </div>
-                      )}
-                    </>
-                  )}
+                      </div>
+                    )}
+                    
+                    {!isLoadingRates && shippingRates.length > 0 && (
+                      <div className="bg-green-50 border-2 border-green-500 p-4 rounded-lg animate-fade-in">
+                        <p className="text-base text-green-900 font-bold flex items-center gap-2">
+                          {shippingRates.some(rate => rate.is_free || rate.rate_amount === 0) 
+                            ? '🎉 Free Shipping Unlocked!' 
+                            : `✓ ${shippingRates.length} Shipping Options Available`}
+                        </p>
+                        {shippingRates.some(rate => rate.is_free || rate.rate_amount === 0) && (
+                          <p className="text-sm text-green-700 mt-1">Your order qualifies for free shipping!</p>
+                        )}
+                      </div>
+                    )}
+                  </>
                 </CardContent>
               </Card>
 
-              {/* Zone-based Shipping Options - Only show when form is complete */}
-              {formStage === 'complete' && matchedZone && (
+              {/* Zone-based Shipping Info */}
+              {matchedZone && shippingRates.length > 0 && (
                 <Card className="border-2 border-primary animate-fade-in">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-primary">
@@ -710,8 +719,8 @@ const Checkout = () => {
                 </Card>
               )}
 
-              {/* Shipping Options - Only show when form is complete */}
-              {formStage === 'complete' && shippingRates.length > 0 && (
+              {/* Shipping Options */}
+              {shippingRates.length > 0 && (
                 <Card className="border-2 border-primary">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-primary">
