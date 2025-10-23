@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
 import { useStoreDiscount } from '@/hooks/useStoreDiscount';
 import { useGiftOptions } from '@/hooks/useGiftOptions';
 import { useNewsletterSettings } from '@/hooks/useNewsletterSettings';
 import { useAbandonedCart } from '@/hooks/useAbandonedCart';
-import { useDebounce } from '@/hooks/useDebounce';
 import { useShippingSettings } from '@/hooks/useShippingSettings';
 import { useShippingZones } from '@/hooks/useShippingZones';
 import { supabase } from '@/integrations/supabase/client';
@@ -21,6 +20,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
 
 import AddressAutocomplete from '@/components/checkout/AddressAutocomplete';
+import ReadOnlyAddressField from '@/components/checkout/ReadOnlyAddressField';
 import Logo from '@/components/ui/Logo';
 import { ArrowLeft, ShoppingBag, CreditCard, Truck, Trash2, Tag, Loader2, Package, Gift, Mail, MapPin, Plus, Minus } from 'lucide-react';
 
@@ -77,6 +77,16 @@ const Checkout = () => {
   const [shippingRates, setShippingRates] = useState<any[]>([]);
   const [selectedShippingRate, setSelectedShippingRate] = useState<string>('');
   const [matchedZone, setMatchedZone] = useState<{ id: string; name: string } | null>(null);
+  
+  // Progressive disclosure and smart field management
+  const [formStage, setFormStage] = useState<'email-address' | 'complete'>('email-address');
+  const [addressAutoFilled, setAddressAutoFilled] = useState(false);
+  const [lockedFields, setLockedFields] = useState({
+    city: false,
+    province: false,
+    postalCode: false,
+  });
+  
   const [formData, setFormData] = useState({
     email: '',
     firstName: '',
@@ -190,7 +200,7 @@ const Checkout = () => {
       postalCode: formattedPostalCode
     });
     
-    // Update form data - this will trigger shipping calculation via debounced useEffect
+    // Update form data
     setFormData(prev => ({
       ...prev,
       address: address.address,
@@ -201,34 +211,31 @@ const Checkout = () => {
     
     // Clear validation errors
     setValidationErrors({ address: '', province: '', postalCode: '' });
+    
+    // Mark fields as auto-filled and locked
+    setAddressAutoFilled(true);
+    setLockedFields({ city: true, province: true, postalCode: true });
+    
+    // Progress to complete stage
+    setFormStage('complete');
+    
+    // Immediately calculate shipping (no debounce)
+    console.log('Triggering immediate shipping calculation after autocomplete');
+    toast({
+      title: 'Address Selected',
+      description: 'Calculating shipping rates...',
+    });
+    
+    // Trigger shipping calculation immediately
+    setTimeout(() => {
+      calculateShippingZones();
+    }, 100);
   };
 
-  // Debounce address fields for shipping calculation
-  const debouncedAddress = useDebounce(formData.address, 300);
-  const debouncedCity = useDebounce(formData.city, 300);
-  const debouncedProvince = useDebounce(formData.province, 300);
-  const debouncedPostalCode = useDebounce(formData.postalCode, 300);
-  const lastRatesKeyRef = useRef<string>('');
-
-  // Auto-calculate shipping when address is complete and has changed
-  useEffect(() => {
-    const hasCompleteAddress = Boolean(
-      debouncedAddress && debouncedCity && debouncedProvince && debouncedPostalCode
-    );
-
-    const key = `${debouncedAddress}|${debouncedCity}|${debouncedProvince}|${debouncedPostalCode}`;
-
-    console.log('Debounced address check:', {
-      hasCompleteAddress,
-      key,
-    });
-
-    if (hasCompleteAddress && key !== lastRatesKeyRef.current) {
-      lastRatesKeyRef.current = key;
-      console.log('Auto-triggering shipping calculation (new address key)');
-      calculateShippingZones();
-    }
-  }, [debouncedAddress, debouncedCity, debouncedProvince, debouncedPostalCode]);
+  // Check if manual address entry is complete for "Calculate Shipping" button
+  const isManualAddressComplete = Boolean(
+    formData.address && formData.city && formData.province && formData.postalCode
+  );
 
 
   // Calculate shipping using zone-based system
@@ -473,128 +480,190 @@ const Checkout = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="firstName">First Name</Label>
-                      <Input
-                        id="firstName"
-                        name="firstName"
-                        value={formData.firstName}
-                        onChange={handleInputChange}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="lastName">Last Name</Label>
-                      <Input
-                        id="lastName"
-                        name="lastName"
-                        value={formData.lastName}
-                        onChange={handleInputChange}
-                        required
-                      />
-                    </div>
-                  </div>
+                  {/* Stage 1: Always show Address Autocomplete */}
                   <AddressAutocomplete
                     value={formData.address}
                     onChange={(value) => {
                       setFormData(prev => ({ ...prev, address: value }));
-                      // Clear validation error when user types
                       setValidationErrors(prev => ({ ...prev, address: '' }));
+                      
+                      // If user types 20+ characters without selecting, enable manual mode
+                      if (value.length >= 20 && formStage === 'email-address') {
+                        setFormStage('complete');
+                      }
                     }}
                     onAddressSelect={handleAddressSelect}
                     error={validationErrors.address}
                   />
                   
-                  <div className="grid grid-cols-3 gap-4">
-                    <div>
-                      <Label htmlFor="city">City</Label>
-                      <Input
-                        id="city"
-                        name="city"
-                        placeholder="Toronto"
-                        value={formData.city}
-                        onChange={handleInputChange}
-                        autoComplete="address-level2"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="province">Province</Label>
-                      <Select value={formData.province} onValueChange={handleProvinceChange}>
-                        <SelectTrigger className={validationErrors.province ? "border-red-500" : ""}>
-                          <SelectValue placeholder="Select province" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {PROVINCES.map((province) => (
-                            <SelectItem key={province.code} value={province.code}>
-                              {province.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      {validationErrors.province && (
-                        <p className="text-sm text-red-500 mt-1">{validationErrors.province}</p>
-                      )}
-                    </div>
-                    <div>
-                      <Label htmlFor="postalCode">Postal Code</Label>
-                      <Input
-                        id="postalCode"
-                        name="postalCode"
-                        value={formData.postalCode}
-                        onChange={handleInputChange}
-                        onBlur={handlePostalCodeBlur}
-                        className={validationErrors.postalCode ? "border-red-500" : ""}
-                        placeholder="A1A 1A1"
-                        autoComplete="postal-code"
-                        required
-                      />
-                      {validationErrors.postalCode && (
-                        <p className="text-sm text-red-500 mt-1">{validationErrors.postalCode}</p>
-                      )}
-                      <p className="text-sm text-muted-foreground mt-1">Format: A1A1A1</p>
-                    </div>
-                  </div>
-                  <div>
-                    <Label htmlFor="phone">Phone (optional)</Label>
-                    <Input
-                      id="phone"
-                      name="phone"
-                      type="tel"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      placeholder="(123) 456-7890"
-                      autoComplete="tel"
-                    />
-                  </div>
-                  
-                  {/* Auto-calculating shipping indicator */}
-                  {isLoadingRates && (
-                    <div className="flex items-center gap-2 text-sm bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-lg border border-purple-200">
-                      <Loader2 className="h-5 w-5 animate-spin text-[hsl(var(--brand-pink))]" />
-                      <div>
-                        <p className="font-semibold text-gray-900">Calculating shipping rates...</p>
-                        <p className="text-xs text-gray-600">Finding the best shipping options for you</p>
+                  {/* Stage 2: Show after address selection or manual entry */}
+                  {formStage === 'complete' && (
+                    <div className="space-y-4 animate-fade-in">
+                      {/* Name Fields */}
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="firstName">First Name</Label>
+                          <Input
+                            id="firstName"
+                            name="firstName"
+                            value={formData.firstName}
+                            onChange={handleInputChange}
+                            required
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="lastName">Last Name</Label>
+                          <Input
+                            id="lastName"
+                            name="lastName"
+                            value={formData.lastName}
+                            onChange={handleInputChange}
+                            required
+                          />
+                        </div>
                       </div>
+                      
+                      {/* Address Fields - Smart Display (Locked vs Editable) */}
+                      <div className="grid grid-cols-3 gap-4">
+                        {/* City */}
+                        {lockedFields.city ? (
+                          <ReadOnlyAddressField
+                            label="City"
+                            value={formData.city}
+                            onEdit={() => setLockedFields(prev => ({ ...prev, city: false }))}
+                          />
+                        ) : (
+                          <div>
+                            <Label htmlFor="city">City</Label>
+                            <Input
+                              id="city"
+                              name="city"
+                              placeholder="Toronto"
+                              value={formData.city}
+                              onChange={handleInputChange}
+                              autoComplete="address-level2"
+                              required
+                            />
+                          </div>
+                        )}
+                        
+                        {/* Province */}
+                        {lockedFields.province ? (
+                          <ReadOnlyAddressField
+                            label="Province"
+                            value={PROVINCES.find(p => p.code === formData.province)?.name || formData.province}
+                            onEdit={() => setLockedFields(prev => ({ ...prev, province: false }))}
+                          />
+                        ) : (
+                          <div>
+                            <Label htmlFor="province">Province</Label>
+                            <Select value={formData.province} onValueChange={handleProvinceChange}>
+                              <SelectTrigger className={validationErrors.province ? "border-red-500" : ""}>
+                                <SelectValue placeholder="Select province" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {PROVINCES.map((province) => (
+                                  <SelectItem key={province.code} value={province.code}>
+                                    {province.name}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            {validationErrors.province && (
+                              <p className="text-sm text-red-500 mt-1">{validationErrors.province}</p>
+                            )}
+                          </div>
+                        )}
+                        
+                        {/* Postal Code */}
+                        {lockedFields.postalCode ? (
+                          <ReadOnlyAddressField
+                            label="Postal Code"
+                            value={formData.postalCode}
+                            onEdit={() => setLockedFields(prev => ({ ...prev, postalCode: false }))}
+                          />
+                        ) : (
+                          <div>
+                            <Label htmlFor="postalCode">Postal Code</Label>
+                            <Input
+                              id="postalCode"
+                              name="postalCode"
+                              value={formData.postalCode}
+                              onChange={handleInputChange}
+                              onBlur={handlePostalCodeBlur}
+                              className={validationErrors.postalCode ? "border-red-500" : ""}
+                              placeholder="A1A 1A1"
+                              autoComplete="postal-code"
+                              required
+                            />
+                            {validationErrors.postalCode && (
+                              <p className="text-sm text-red-500 mt-1">{validationErrors.postalCode}</p>
+                            )}
+                            <p className="text-sm text-muted-foreground mt-1">Format: A1A1A1</p>
+                          </div>
+                        )}
+                      </div>
+                      
+                      {/* Phone */}
+                      <div>
+                        <Label htmlFor="phone">Phone (optional)</Label>
+                        <Input
+                          id="phone"
+                          name="phone"
+                          type="tel"
+                          value={formData.phone}
+                          onChange={handleInputChange}
+                          placeholder="(123) 456-7890"
+                          autoComplete="tel"
+                        />
+                      </div>
+                      
+                      {/* Manual Calculate Shipping Button */}
+                      {!addressAutoFilled && isManualAddressComplete && shippingRates.length === 0 && !isLoadingRates && (
+                        <Button
+                          type="button"
+                          onClick={calculateShippingZones}
+                          className="w-full"
+                          variant="outline"
+                        >
+                          <Package className="h-4 w-4 mr-2" />
+                          Calculate Shipping
+                        </Button>
+                      )}
                     </div>
                   )}
                   
-                  {shippingRates.length > 0 && (
-                    <div className="bg-green-50 border border-green-200 p-3 rounded-lg">
-                      <p className="text-sm text-green-800 font-medium">
-                        ✓ {shippingRates.some(rate => rate.is_free || rate.rate_amount === 0) 
-                          ? 'Unlocked free shipping!' 
-                          : `Found ${shippingRates.length} shipping options - Select your preferred method below`}
-                      </p>
-                    </div>
+                  {/* Show shipping status only when form is complete */}
+                  {formStage === 'complete' && (
+                    <>
+                      {/* Auto-calculating shipping indicator */}
+                      {isLoadingRates && (
+                        <div className="flex items-center gap-2 text-sm bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-lg border border-purple-200 animate-fade-in">
+                          <Loader2 className="h-5 w-5 animate-spin text-[hsl(var(--brand-pink))]" />
+                          <div>
+                            <p className="font-semibold text-gray-900">Calculating shipping rates...</p>
+                            <p className="text-xs text-gray-600">Finding the best shipping options for you</p>
+                          </div>
+                        </div>
+                      )}
+                      
+                      {shippingRates.length > 0 && (
+                        <div className="bg-green-50 border border-green-200 p-3 rounded-lg animate-fade-in">
+                          <p className="text-sm text-green-800 font-medium">
+                            ✓ {shippingRates.some(rate => rate.is_free || rate.rate_amount === 0) 
+                              ? 'Unlocked free shipping!' 
+                              : `Found ${shippingRates.length} shipping options - Select your preferred method below`}
+                          </p>
+                        </div>
+                      )}
+                    </>
                   )}
                 </CardContent>
               </Card>
 
-              {/* Zone-based Shipping Options */}
-              {matchedZone && (
-                <Card className="border-2 border-primary">
+              {/* Zone-based Shipping Options - Only show when form is complete */}
+              {formStage === 'complete' && matchedZone && (
+                <Card className="border-2 border-primary animate-fade-in">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-primary">
                       <MapPin className="h-5 w-5" />
@@ -604,8 +673,8 @@ const Checkout = () => {
                 </Card>
               )}
 
-              {/* Shipping Options */}
-              {shippingRates.length > 0 && (
+              {/* Shipping Options - Only show when form is complete */}
+              {formStage === 'complete' && shippingRates.length > 0 && (
                 <Card className="border-2 border-primary">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-primary">
