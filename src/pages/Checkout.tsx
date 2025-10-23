@@ -692,16 +692,26 @@ const Checkout = () => {
                     )}
                     
                     {!isLoadingRates && shippingRates.length > 0 && (
-                      <div className="bg-green-50 border-2 border-green-500 p-4 rounded-lg animate-fade-in">
-                        <p className="text-base text-green-900 font-bold flex items-center gap-2">
-                          {shippingRates.some(rate => rate.is_free || rate.rate_amount === 0) 
-                            ? '🎉 Free Shipping Unlocked!' 
-                            : `✓ ${shippingRates.length} Shipping Options Available`}
-                        </p>
-                        {shippingRates.some(rate => rate.is_free || rate.rate_amount === 0) && (
-                          <p className="text-sm text-green-700 mt-1">Your order qualifies for free shipping!</p>
+                      <>
+                        {shippingRates.some(rate => rate.is_free || rate.rate_amount === 0) ? (
+                          <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-500 p-5 rounded-lg animate-fade-in shadow-lg">
+                            <div className="flex items-center gap-3 mb-2">
+                              <div className="text-3xl">🎉</div>
+                              <div>
+                                <p className="text-xl text-green-900 font-bold">Free Shipping Unlocked!</p>
+                                <p className="text-sm text-green-700 mt-1">Your order qualifies for free delivery</p>
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="bg-blue-50 border-2 border-blue-400 p-4 rounded-lg animate-fade-in">
+                            <p className="text-base text-blue-900 font-bold flex items-center gap-2">
+                              ✓ {shippingRates.length} Shipping {shippingRates.length === 1 ? 'Option' : 'Options'} Available
+                            </p>
+                            <p className="text-sm text-blue-700 mt-1">Select your preferred method below</p>
+                          </div>
                         )}
-                      </div>
+                      </>
                     )}
                   </>
                 </CardContent>
@@ -896,17 +906,29 @@ const Checkout = () => {
                   )}
                   
                   
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Shipping</span>
-                    <span className="font-medium">
-                      {shippingCost === 0 && selectedShippingRate ? (
-                        <span className="text-green-600 font-semibold">FREE</span>
-                      ) : shippingCost === 0 ? (
-                        <span className="text-gray-400">Calculate shipping</span>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600 font-medium">Shipping</span>
+                    <div className="text-right">
+                      {shippingRates.length === 0 ? (
+                        <span className="text-sm text-gray-400 italic">Calculate shipping first</span>
+                      ) : selectedShippingRate ? (
+                        <>
+                          {shippingCost === 0 ? (
+                            <div className="flex flex-col items-end">
+                              <span className="text-green-600 font-bold text-base">FREE</span>
+                              <span className="text-xs text-gray-500">{selectedRate?.method_name}</span>
+                            </div>
+                          ) : (
+                            <div className="flex flex-col items-end">
+                              <span className="font-semibold text-base">${shippingCost.toFixed(2)}</span>
+                              <span className="text-xs text-gray-500">{selectedRate?.method_name}</span>
+                            </div>
+                          )}
+                        </>
                       ) : (
-                        `$${shippingCost.toFixed(2)}`
+                        <span className="text-sm text-yellow-600 italic">Select a method</span>
                       )}
-                    </span>
+                    </div>
                   </div>
                   
                   <div className="flex justify-between">
