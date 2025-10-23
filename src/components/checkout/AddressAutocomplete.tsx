@@ -82,6 +82,7 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const autocompleteRef = useRef<any>(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
     console.log('🔍 AddressAutocomplete: Checking Google Maps API...');
@@ -107,6 +108,7 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
           clearInterval(checkGoogle);
           if (!window.google) {
             console.error('❌ Google Maps API failed to load after 10 seconds');
+            setLoadError('Address suggestions unavailable. Please enter your address manually.');
           }
         }, 10000);
         return;
@@ -123,6 +125,7 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
       script.onerror = (error) => {
         console.error('❌ Failed to load Google Maps API script:', error);
         console.error('Check if API key is valid and has Places API enabled');
+        setLoadError('Address suggestions unavailable. Please enter your address manually.');
       };
       document.head.appendChild(script);
     } else {
@@ -263,10 +266,13 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
         required
       />
       {error && <p className="text-sm text-red-500">{error}</p>}
-      {!isLoaded && (
+      {loadError && (
+        <p className="text-sm text-amber-600 font-medium">{loadError}</p>
+      )}
+      {!isLoaded && !loadError && (
         <p className="text-xs text-amber-600">Loading address suggestions...</p>
       )}
-      {isLoaded && (
+      {isLoaded && !loadError && (
         <p className="text-xs text-gray-500">
           Select from suggestions or manually enter your address, city, province, and postal code
         </p>
