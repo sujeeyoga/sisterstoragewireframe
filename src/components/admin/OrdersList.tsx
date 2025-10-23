@@ -36,6 +36,7 @@ interface Order {
   stripe_session_id?: string;
   customer_email?: string;
   order_number?: string;
+  archived_at?: string;
 }
 
 export function OrdersList() {
@@ -48,6 +49,7 @@ export function OrdersList() {
   const [selectionMode, setSelectionMode] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(50);
+  const [showArchived, setShowArchived] = useState(false);
   const [filters, setFilters] = useState<OrderFiltersState>({
     dateRange: 'all',
     statuses: [],
@@ -86,7 +88,7 @@ export function OrdersList() {
   }, [queryClient]);
   
   const { data: orders, isLoading, error } = useQuery({
-    queryKey: ['admin-orders', activeStatus, filters, currentPage, search],
+    queryKey: ['admin-orders', activeStatus, filters, currentPage, search, showArchived],
     queryFn: async () => {
       
       // Fetch ALL orders from both sources (we'll paginate client-side after search)
@@ -97,6 +99,15 @@ export function OrdersList() {
       let stripeQuery = supabase
         .from('orders')
         .select('*');
+      
+      // Filter archived/non-archived orders
+      if (showArchived) {
+        wooQuery = wooQuery.not('archived_at', 'is', null);
+        stripeQuery = stripeQuery.not('archived_at', 'is', null);
+      } else {
+        wooQuery = wooQuery.is('archived_at', null);
+        stripeQuery = stripeQuery.is('archived_at', null);
+      }
       
       // Apply status filter
       if (activeStatus !== 'all') {
@@ -227,6 +238,29 @@ export function OrdersList() {
     onError: (error) => {
       console.error('Failed to update order:', error);
       toast.error('Failed to update order status');
+    },
+  });
+  
+  const archiveOrderMutation = useMutation({
+    mutationFn: async ({ orderId, source, unarchive = false }: { orderId: number | string; source?: 'woocommerce' | 'stripe'; unarchive?: boolean }) => {
+      const tableName = source === 'stripe' ? 'orders' : 'woocommerce_orders';
+      const { error } = await supabase
+        .from(tableName)
+        .update({ 
+          archived_at: unarchive ? null : new Date().toISOString(),
+          updated_at: new Date().toISOString() 
+        })
+        .eq('id', orderId);
+      
+      if (error) throw error;
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['admin-orders'] });
+      toast.success(variables.unarchive ? 'Order restored successfully' : 'Order archived successfully');
+    },
+    onError: (error) => {
+      console.error('Failed to archive order:', error);
+      toast.error('Failed to archive order');
     },
   });
   
@@ -399,6 +433,8 @@ export function OrdersList() {
         onSelectAll={handleSelectAll}
         onDeselectAll={handleDeselectAll}
         selectedCount={selectedOrderIds.size}
+        showArchived={showArchived}
+        onToggleArchived={() => setShowArchived(!showArchived)}
       />
       
       <div className="p-4 space-y-4">
@@ -428,13 +464,33 @@ export function OrdersList() {
           </div>
         ) : (
           orders.orders.map((order) => (
-            <OrderCard
+             <OrderCard
               key={order.id}
               order={order}
               onView={() => setSelectedOrder(order)}
               isSelected={selectedOrderIds.has(order.id)}
               onSelect={(checked) => handleSelectOrder(order.id, checked)}
               selectionMode={selectionMode}
+              onStatusUpdate={(status) => {
+                updateStatusMutation.mutate({ 
+                  orderId: order.id, 
+                  status, 
+                  source: order.source 
+                });
+              }}
+              onArchive={() => {
+                archiveOrderMutation.mutate({ 
+                  orderId: order.id, 
+                  source: order.source 
+                });
+              }}
+              onUnarchive={() => {
+                archiveOrderMutation.mutate({ 
+                  orderId: order.id, 
+                  source: order.source,
+                  unarchive: true
+                });
+              }}
             />
           ))
         )}

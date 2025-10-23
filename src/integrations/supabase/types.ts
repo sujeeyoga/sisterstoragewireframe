@@ -145,6 +145,7 @@ export type Database = {
       }
       orders: {
         Row: {
+          archived_at: string | null
           created_at: string | null
           customer_email: string
           customer_name: string | null
@@ -169,6 +170,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          archived_at?: string | null
           created_at?: string | null
           customer_email: string
           customer_name?: string | null
@@ -193,6 +195,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          archived_at?: string | null
           created_at?: string | null
           customer_email?: string
           customer_name?: string | null
@@ -677,6 +680,7 @@ export type Database = {
       }
       woocommerce_orders: {
         Row: {
+          archived_at: string | null
           billing: Json | null
           created_at: string | null
           currency: string | null
@@ -698,6 +702,7 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          archived_at?: string | null
           billing?: Json | null
           created_at?: string | null
           currency?: string | null
@@ -719,6 +724,7 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          archived_at?: string | null
           billing?: Json | null
           created_at?: string | null
           currency?: string | null

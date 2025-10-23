@@ -26,6 +26,8 @@ interface OrdersHeaderProps {
   onSelectAll?: () => void;
   onDeselectAll?: () => void;
   selectedCount?: number;
+  showArchived?: boolean;
+  onToggleArchived?: () => void;
 }
 
 const statusChips = [
@@ -50,6 +52,8 @@ export function OrdersHeader({
   onSelectAll,
   onDeselectAll,
   selectedCount = 0,
+  showArchived = false,
+  onToggleArchived,
 }: OrdersHeaderProps) {
   const [isSyncing, setIsSyncing] = useState(false);
   const [lastSyncTime, setLastSyncTime] = useState<Date | null>(null);
@@ -227,6 +231,18 @@ export function OrdersHeader({
               {chip.label}
             </button>
           ))}
+          {onToggleArchived && (
+            <button
+              onClick={onToggleArchived}
+              className={`px-3 h-8 rounded-full text-sm font-medium whitespace-nowrap transition-all border ml-auto ${
+                showArchived
+                  ? 'bg-zinc-50 text-zinc-700 border-zinc-200' 
+                  : 'bg-background border-border text-muted-foreground hover:bg-muted'
+              }`}
+            >
+              {showArchived ? '📦 Archived' : '📦 Archive'}
+            </button>
+          )}
         </div>
       </div>
     </div>

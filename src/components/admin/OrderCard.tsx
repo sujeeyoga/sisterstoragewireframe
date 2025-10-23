@@ -24,6 +24,7 @@ interface Order {
   payment_method_title?: string;
   fulfillment_status?: string;
   tracking_number?: string;
+  archived_at?: string;
 }
 
 interface OrderCardProps {
@@ -32,6 +33,9 @@ interface OrderCardProps {
   isSelected?: boolean;
   onSelect?: (checked: boolean) => void;
   selectionMode?: boolean;
+  onStatusUpdate?: (status: string) => void;
+  onArchive?: () => void;
+  onUnarchive?: () => void;
 }
 
 const statusConfig = {
@@ -44,7 +48,7 @@ const statusConfig = {
   failed: { label: 'Failed', className: 'bg-rose-50 text-rose-700 border-rose-200' },
 };
 
-export function OrderCard({ order, onView, isSelected, onSelect, selectionMode }: OrderCardProps) {
+export function OrderCard({ order, onView, isSelected, onSelect, selectionMode, onStatusUpdate, onArchive, onUnarchive }: OrderCardProps) {
   const status = statusConfig[order.status as keyof typeof statusConfig] || statusConfig.pending;
   const customerName = `${order.billing.first_name || ''} ${order.billing.last_name || ''}`.trim() || 'Guest';
   const contact = order.billing.phone || order.billing.email || '';
@@ -82,25 +86,84 @@ export function OrderCard({ order, onView, isSelected, onSelect, selectionMode }
   };
   
   const getContextualActions = () => {
+    // If archived, show only unarchive button
+    if (order.archived_at) {
+      return (
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="h-9 bg-blue-50 border-blue-300 text-blue-700 hover:bg-blue-100"
+          onClick={onUnarchive}
+        >
+          Unarchive
+        </Button>
+      );
+    }
+    
     switch (order.status) {
       case 'pending':
       case 'on-hold':
         return (
           <>
-            <Button variant="outline" size="sm" className="h-9">Capture</Button>
-            <Button variant="outline" size="sm" className="h-9 border-rose-300 text-rose-700 hover:bg-rose-50">Cancel</Button>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="h-9"
+              onClick={() => onStatusUpdate?.('processing')}
+            >
+              Process
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="h-9 border-rose-300 text-rose-700 hover:bg-rose-50"
+              onClick={() => onStatusUpdate?.('cancelled')}
+            >
+              Cancel
+            </Button>
           </>
         );
       case 'processing':
         return (
           <>
-            <Button variant="outline" size="sm" className="h-9">Fulfill</Button>
-            <Button variant="outline" size="sm" className="h-9 border-rose-300 text-rose-700 hover:bg-rose-50">Refund</Button>
+            <Button 
+              variant="default" 
+              size="sm" 
+              className="h-9"
+              onClick={() => onStatusUpdate?.('completed')}
+            >
+              Complete
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="h-9 border-rose-300 text-rose-700 hover:bg-rose-50"
+              onClick={() => onStatusUpdate?.('refunded')}
+            >
+              Refund
+            </Button>
           </>
         );
       case 'completed':
         return (
-          <Button variant="outline" size="sm" className="h-9 border-rose-300 text-rose-700 hover:bg-rose-50">Refund</Button>
+          <>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="h-9 bg-green-50 border-green-300 text-green-700 hover:bg-green-100"
+              onClick={onArchive}
+            >
+              Archive
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="h-9 border-rose-300 text-rose-700 hover:bg-rose-50"
+              onClick={() => onStatusUpdate?.('refunded')}
+            >
+              Refund
+            </Button>
+          </>
         );
       default:
         return null;
