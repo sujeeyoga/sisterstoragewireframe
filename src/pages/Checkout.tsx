@@ -110,6 +110,27 @@ const Checkout = () => {
 
   // Track abandoned carts
   const { markAsRecovered } = useAbandonedCart(formData.email || undefined);
+  
+  // Auto-calculate shipping when all address fields are complete
+  useEffect(() => {
+    const allFieldsFilled = Boolean(
+      formData.address && 
+      formData.city && 
+      formData.province && 
+      formData.postalCode &&
+      formStage === 'complete'
+    );
+    
+    // Only auto-calculate if fields are filled and we don't have rates yet
+    if (allFieldsFilled && shippingRates.length === 0 && !isLoadingRates) {
+      console.log('Auto-calculating shipping for complete address');
+      const timer = setTimeout(() => {
+        calculateShippingZones();
+      }, 500); // Small delay to avoid rapid recalculation
+      
+      return () => clearTimeout(timer);
+    }
+  }, [formData.address, formData.city, formData.province, formData.postalCode, formStage, shippingRates.length, isLoadingRates]);
 
   // Calculate tax based on province
   const getTaxRate = (province: string): number => {
