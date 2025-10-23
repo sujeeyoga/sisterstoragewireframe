@@ -32,6 +32,10 @@ const PaymentSuccess = () => {
             Thank you for your purchase. Your order has been confirmed.
           </p>
           
+          <p className="text-sm text-muted-foreground">
+            An email confirmation will be sent to you shortly with your order details.
+          </p>
+          
           {sessionId && (
             <p className="text-sm text-muted-foreground">
               Order ID: {sessionId}
