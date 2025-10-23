@@ -110,27 +110,6 @@ const Checkout = () => {
 
   // Track abandoned carts
   const { markAsRecovered } = useAbandonedCart(formData.email || undefined);
-  
-  // Auto-calculate shipping when all address fields are complete
-  useEffect(() => {
-    const allFieldsFilled = Boolean(
-      formData.address && 
-      formData.city && 
-      formData.province && 
-      formData.postalCode &&
-      formStage === 'complete'
-    );
-    
-    // Only auto-calculate if fields are filled and we don't have rates yet
-    if (allFieldsFilled && shippingRates.length === 0 && !isLoadingRates) {
-      console.log('Auto-calculating shipping for complete address');
-      const timer = setTimeout(() => {
-        calculateShippingZones();
-      }, 500); // Small delay to avoid rapid recalculation
-      
-      return () => clearTimeout(timer);
-    }
-  }, [formData.address, formData.city, formData.province, formData.postalCode, formStage, shippingRates.length, isLoadingRates]);
 
   // Calculate tax based on province
   const getTaxRate = (province: string): number => {
@@ -311,6 +290,26 @@ const Checkout = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate all required contact fields
+    if (!formData.email || !formData.firstName || !formData.lastName) {
+      toast({
+        title: 'Missing Contact Information',
+        description: 'Please fill in your name and email address.',
+        variant: 'destructive',
+      });
+      return;
+    }
+    
+    // Validate all required address fields
+    if (!formData.address || !formData.city || !formData.province || !formData.postalCode) {
+      toast({
+        title: 'Missing Shipping Address',
+        description: 'Please complete your full shipping address.',
+        variant: 'destructive',
+      });
+      return;
+    }
     
     // Validate postal code format
     if (!validatePostalCode(formData.postalCode)) {
@@ -542,6 +541,16 @@ const Checkout = () => {
                   {/* Stage 2: Show after address selection or manual entry */}
                   {formStage === 'complete' && (
                     <div className="space-y-4 animate-fade-in">
+                      {/* Shipping calculation prompt for manual entry */}
+                      {!addressAutoFilled && isManualAddressComplete && shippingRates.length === 0 && !isLoadingRates && (
+                        <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-3 animate-fade-in">
+                          <p className="text-sm text-blue-800 font-medium flex items-center gap-2">
+                            <Package className="h-4 w-4" />
+                            Address complete! Scroll down to calculate shipping.
+                          </p>
+                        </div>
+                      )}
+                      
                       {/* Address Fields - Smart Display (Locked vs Editable) */}
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         {/* City */}
@@ -638,16 +647,25 @@ const Checkout = () => {
                       </div>
                       
                       {/* Manual Calculate Shipping Button */}
-                      {!addressAutoFilled && isManualAddressComplete && shippingRates.length === 0 && !isLoadingRates && (
-                        <Button
-                          type="button"
-                          onClick={calculateShippingZones}
-                          className="w-full"
-                          variant="outline"
-                        >
-                          <Package className="h-4 w-4 mr-2" />
-                          Calculate Shipping
-                        </Button>
+                      {!addressAutoFilled && isManualAddressComplete && shippingRates.length === 0 && !isLoadingRates && formStage === 'complete' && (
+                        <div className="bg-yellow-50 border-2 border-yellow-300 rounded-lg p-4 animate-fade-in">
+                          <div className="flex items-start gap-3 mb-3">
+                            <Package className="h-5 w-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+                            <div>
+                              <p className="font-semibold text-yellow-900 text-sm">Ready to Calculate Shipping</p>
+                              <p className="text-xs text-yellow-700 mt-1">Click below to see available shipping options</p>
+                            </div>
+                          </div>
+                          <Button
+                            type="button"
+                            onClick={calculateShippingZones}
+                            className="w-full"
+                            size="lg"
+                          >
+                            <Package className="h-4 w-4 mr-2" />
+                            Calculate Shipping Rates
+                          </Button>
+                        </div>
                       )}
                     </div>
                   )}
