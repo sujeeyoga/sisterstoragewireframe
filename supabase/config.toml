@@ -29,3 +29,6 @@ verify_jwt = false
 
 [functions.sync-stallion-tracking]
 verify_jwt = true
+
+[functions.calculate-shipping-zones]
+verify_jwt = false
