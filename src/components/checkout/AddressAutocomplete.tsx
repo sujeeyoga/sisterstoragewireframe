@@ -84,28 +84,79 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
+    console.log('🔍 AddressAutocomplete: Checking Google Maps API...');
+    
     // Load Google Places API script
     if (!window.google) {
+      console.log('📥 Loading Google Maps API script...');
+      
+      // Check if script already exists in DOM
+      const existingScript = document.querySelector(`script[src*="maps.googleapis.com"]`);
+      if (existingScript) {
+        console.log('⚠️ Script already exists in DOM, waiting for load...');
+        const checkGoogle = setInterval(() => {
+          if (window.google) {
+            console.log('✅ Google Maps API loaded from existing script');
+            setIsLoaded(true);
+            clearInterval(checkGoogle);
+          }
+        }, 100);
+        
+        // Timeout after 10 seconds
+        setTimeout(() => {
+          clearInterval(checkGoogle);
+          if (!window.google) {
+            console.error('❌ Google Maps API failed to load after 10 seconds');
+          }
+        }, 10000);
+        return;
+      }
+      
       const script = document.createElement('script');
       script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_PLACES_API_KEY}&libraries=places`;
       script.async = true;
       script.defer = true;
-      script.onload = () => setIsLoaded(true);
+      script.onload = () => {
+        console.log('✅ Google Maps API script loaded successfully');
+        setIsLoaded(true);
+      };
+      script.onerror = (error) => {
+        console.error('❌ Failed to load Google Maps API script:', error);
+        console.error('Check if API key is valid and has Places API enabled');
+      };
       document.head.appendChild(script);
     } else {
+      console.log('✅ Google Maps API already available');
       setIsLoaded(true);
     }
   }, []);
 
   useEffect(() => {
-    if (!isLoaded || !inputRef.current || !window.google) return;
+    if (!isLoaded || !inputRef.current) {
+      console.log('⏳ Waiting for Google Maps API to load...', { isLoaded, hasInput: !!inputRef.current });
+      return;
+    }
+    
+    if (!window.google) {
+      console.error('❌ window.google is not defined despite isLoaded=true');
+      return;
+    }
 
-    // Initialize autocomplete with Canada restriction
-    autocompleteRef.current = new window.google.maps.places.Autocomplete(inputRef.current, {
-      componentRestrictions: { country: 'ca' },
-      fields: ['address_components', 'formatted_address'],
-      types: ['address']
-    });
+    console.log('🔧 Initializing Google Places Autocomplete...');
+    
+    try {
+      // Initialize autocomplete with Canada restriction
+      autocompleteRef.current = new window.google.maps.places.Autocomplete(inputRef.current, {
+        componentRestrictions: { country: 'ca' },
+        fields: ['address_components', 'formatted_address'],
+        types: ['address']
+      });
+      
+      console.log('✅ Autocomplete initialized successfully');
+    } catch (error) {
+      console.error('❌ Failed to initialize autocomplete:', error);
+      return;
+    }
 
     // Handle place selection - fires when user clicks a suggestion
     const handlePlaceChanged = () => {
