@@ -19,8 +19,6 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
 
-import AddressAutocomplete from '@/components/checkout/AddressAutocomplete';
-import ReadOnlyAddressField from '@/components/checkout/ReadOnlyAddressField';
 import Logo from '@/components/ui/Logo';
 import { ArrowLeft, ShoppingBag, CreditCard, Truck, Trash2, Tag, Loader2, Package, Gift, Mail, MapPin, Plus, Minus } from 'lucide-react';
 
@@ -78,14 +76,8 @@ const Checkout = () => {
   const [selectedShippingRate, setSelectedShippingRate] = useState<string>('');
   const [matchedZone, setMatchedZone] = useState<{ id: string; name: string } | null>(null);
   
-  // Progressive disclosure and smart field management
-  const [formStage, setFormStage] = useState<'email-address' | 'complete'>('email-address');
-  const [addressAutoFilled, setAddressAutoFilled] = useState(false);
-  const [lockedFields, setLockedFields] = useState({
-    city: false,
-    province: false,
-    postalCode: false,
-  });
+  // Form stage management
+  const [formStage, setFormStage] = useState<'email-address' | 'complete'>('complete');
   
   const [formData, setFormData] = useState({
     email: '',
@@ -181,63 +173,6 @@ const Checkout = () => {
   const handleProvinceChange = (value: string) => {
     setFormData(prev => ({ ...prev, province: value }));
     setValidationErrors(prev => ({ ...prev, province: '' }));
-  };
-
-  // Handle address selection from autocomplete - instant formatting and shipping calculation
-  const handleAddressSelect = (address: {
-    address: string;
-    city: string;
-    province: string;
-    postalCode: string;
-  }) => {
-    console.log('Google Address Selected:', address);
-    
-    // Format postal code (A1A1A1)
-    const formattedPostalCode = formatPostalCode(address.postalCode);
-    
-    // Ensure province is 2-letter uppercase code
-    const formattedProvince = address.province.toUpperCase().slice(0, 2);
-    
-    // Format city
-    const formattedCity = address.city.trim();
-    
-    console.log('Formatted Address Data:', {
-      address: address.address,
-      city: formattedCity,
-      province: formattedProvince,
-      postalCode: formattedPostalCode
-    });
-    
-    // Update form data
-    setFormData(prev => ({
-      ...prev,
-      address: address.address,
-      city: formattedCity,
-      province: formattedProvince,
-      postalCode: formattedPostalCode
-    }));
-    
-    // Clear validation errors
-    setValidationErrors({ address: '', province: '', postalCode: '' });
-    
-    // Mark fields as auto-filled and locked
-    setAddressAutoFilled(true);
-    setLockedFields({ city: true, province: true, postalCode: true });
-    
-    // Progress to complete stage
-    setFormStage('complete');
-    
-    // Immediately calculate shipping (no debounce)
-    console.log('Triggering immediate shipping calculation after autocomplete');
-    toast({
-      title: 'Address Selected',
-      description: 'Calculating shipping rates...',
-    });
-    
-    // Trigger shipping calculation immediately
-    setTimeout(() => {
-      calculateShippingZones();
-    }, 100);
   };
 
   // Check if manual address entry is complete for "Calculate Shipping" button
@@ -530,25 +465,21 @@ const Checkout = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {/* Stage 1: Always show Address Autocomplete */}
-                  <AddressAutocomplete
-                    value={formData.address}
-                    onChange={(value) => {
-                      setFormData(prev => ({ ...prev, address: value }));
-                      setValidationErrors(prev => ({ ...prev, address: '' }));
-                      
-                      // If user types 20+ characters without selecting, enable manual mode
-                      if (value.length >= 20 && formStage === 'email-address') {
-                        setFormStage('complete');
-                      }
-                    }}
-                    onAddressSelect={handleAddressSelect}
-                    error={validationErrors.address}
-                  />
+                  {/* Address Input */}
+                  <div>
+                    <Label htmlFor="address">Street Address</Label>
+                    <Input
+                      id="address"
+                      name="address"
+                      placeholder="123 Main Street"
+                      value={formData.address}
+                      onChange={handleInputChange}
+                      autoComplete="street-address"
+                      required
+                    />
+                  </div>
                   
-                  {/* Stage 2: Show after address selection or manual entry */}
-                  {formStage === 'complete' && (
-                    <div className="space-y-4 animate-fade-in">
+                  <div className="space-y-4">
                       {/* Shipping calculation prompt for manual entry */}
                       {isManualAddressComplete && shippingRates.length === 0 && !isLoadingRates && (
                         <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-3 animate-fade-in">
@@ -559,45 +490,30 @@ const Checkout = () => {
                         </div>
                       )}
                       
-                      {/* Address Fields - Smart Display (Locked vs Editable) */}
+                      {/* Address Fields */}
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         {/* City */}
-                        {lockedFields.city ? (
-                          <ReadOnlyAddressField
-                            label="City"
+                        <div>
+                          <Label htmlFor="city">City</Label>
+                          <Input
+                            id="city"
+                            name="city"
+                            placeholder="Toronto"
                             value={formData.city}
-                            onEdit={() => setLockedFields(prev => ({ ...prev, city: false }))}
+                            onChange={handleInputChange}
+                            autoComplete="address-level2"
+                            required
                           />
-                        ) : (
-                          <div>
-                            <Label htmlFor="city">City</Label>
-                            <Input
-                              id="city"
-                              name="city"
-                              placeholder="Toronto"
-                              value={formData.city}
-                              onChange={handleInputChange}
-                              autoComplete="address-level2"
-                              required
-                            />
-                          </div>
-                        )}
+                        </div>
                         
                         {/* Province */}
-                        {lockedFields.province ? (
-                          <ReadOnlyAddressField
-                            label="Province"
-                            value={PROVINCES.find(p => p.code === formData.province)?.name || formData.province}
-                            onEdit={() => setLockedFields(prev => ({ ...prev, province: false }))}
-                          />
-                        ) : (
-                          <div>
-                            <Label htmlFor="province">Province</Label>
-                            <Select value={formData.province} onValueChange={handleProvinceChange}>
-                              <SelectTrigger className={validationErrors.province ? "border-red-500" : ""}>
-                                <SelectValue placeholder="Select province" />
-                              </SelectTrigger>
-                              <SelectContent>
+                        <div>
+                          <Label htmlFor="province">Province</Label>
+                          <Select value={formData.province} onValueChange={handleProvinceChange}>
+                            <SelectTrigger className={validationErrors.province ? "border-red-500" : ""}>
+                              <SelectValue placeholder="Select province" />
+                            </SelectTrigger>
+                            <SelectContent>
                                 {PROVINCES.map((province) => (
                                   <SelectItem key={province.code} value={province.code}>
                                     {province.name}
@@ -608,36 +524,27 @@ const Checkout = () => {
                             {validationErrors.province && (
                               <p className="text-sm text-red-500 mt-1">{validationErrors.province}</p>
                             )}
-                          </div>
-                        )}
+                        </div>
                         
                         {/* Postal Code */}
-                        {lockedFields.postalCode ? (
-                          <ReadOnlyAddressField
-                            label="Postal Code"
+                        <div>
+                          <Label htmlFor="postalCode">Postal Code</Label>
+                          <Input
+                            id="postalCode"
+                            name="postalCode"
                             value={formData.postalCode}
-                            onEdit={() => setLockedFields(prev => ({ ...prev, postalCode: false }))}
+                            onChange={handleInputChange}
+                            onBlur={handlePostalCodeBlur}
+                            className={validationErrors.postalCode ? "border-red-500" : ""}
+                            placeholder="A1A 1A1"
+                            autoComplete="postal-code"
+                            required
                           />
-                        ) : (
-                          <div>
-                            <Label htmlFor="postalCode">Postal Code</Label>
-                            <Input
-                              id="postalCode"
-                              name="postalCode"
-                              value={formData.postalCode}
-                              onChange={handleInputChange}
-                              onBlur={handlePostalCodeBlur}
-                              className={validationErrors.postalCode ? "border-red-500" : ""}
-                              placeholder="A1A 1A1"
-                              autoComplete="postal-code"
-                              required
-                            />
-                            {validationErrors.postalCode && (
-                              <p className="text-sm text-red-500 mt-1">{validationErrors.postalCode}</p>
-                            )}
-                            <p className="text-sm text-muted-foreground mt-1">Format: A1A1A1</p>
-                          </div>
-                        )}
+                          {validationErrors.postalCode && (
+                            <p className="text-sm text-red-500 mt-1">{validationErrors.postalCode}</p>
+                          )}
+                          <p className="text-sm text-muted-foreground mt-1">Format: A1A1A1</p>
+                        </div>
                       </div>
                       
                       {/* Phone */}
@@ -676,7 +583,6 @@ const Checkout = () => {
                         </div>
                       )}
                     </div>
-                  )}
                   
                   {/* Show shipping status when rates are available */}
                   <>
