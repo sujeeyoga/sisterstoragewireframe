@@ -550,11 +550,11 @@ const Checkout = () => {
                   {formStage === 'complete' && (
                     <div className="space-y-4 animate-fade-in">
                       {/* Shipping calculation prompt for manual entry */}
-                      {!addressAutoFilled && isManualAddressComplete && shippingRates.length === 0 && !isLoadingRates && (
+                      {isManualAddressComplete && shippingRates.length === 0 && !isLoadingRates && (
                         <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-3 animate-fade-in">
                           <p className="text-sm text-blue-800 font-medium flex items-center gap-2">
                             <Package className="h-4 w-4" />
-                            Address complete! Scroll down to calculate shipping.
+                            Address complete! Click below to calculate shipping.
                           </p>
                         </div>
                       )}
@@ -654,8 +654,8 @@ const Checkout = () => {
                         />
                       </div>
                       
-                      {/* Manual Calculate Shipping Button */}
-                      {!addressAutoFilled && isManualAddressComplete && shippingRates.length === 0 && !isLoadingRates && (
+                      {/* Calculate Shipping Button */}
+                      {isManualAddressComplete && shippingRates.length === 0 && !isLoadingRates && (
                         <div className="bg-yellow-50 border-2 border-yellow-300 rounded-lg p-4 animate-fade-in">
                           <div className="flex items-start gap-3 mb-3">
                             <Package className="h-5 w-5 text-yellow-600 flex-shrink-0 mt-0.5" />
