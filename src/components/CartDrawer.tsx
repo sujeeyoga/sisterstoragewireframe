@@ -13,8 +13,8 @@ const CartDrawer = () => {
   const drawerContentRef = React.useRef<HTMLDivElement>(null);
   const drawerRef = React.useRef<HTMLDivElement>(null);
   
-  // Hide floating button when cart is open or on checkout page
-  const shouldHideFloatingButton = isOpen || location.pathname === '/checkout';
+  // Hide floating button when cart is open or on checkout page or admin pages
+  const shouldHideFloatingButton = isOpen || location.pathname === '/checkout' || location.pathname.startsWith('/admin');
 
   // Scroll viewport to show drawer when it opens
   useEffect(() => {
