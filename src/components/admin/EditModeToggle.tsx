@@ -1,11 +1,14 @@
 import { useAdminEditMode } from '@/contexts/AdminEditModeContext';
 import { Button } from '@/components/ui/button';
 import { Pencil, Check } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 
 export function EditModeToggle() {
   const { isEditMode, isAdmin, toggleEditMode } = useAdminEditMode();
+  const location = useLocation();
 
-  if (!isAdmin) return null;
+  // Hide on admin pages
+  if (!isAdmin || location.pathname.startsWith('/admin')) return null;
 
   return (
     <Button
