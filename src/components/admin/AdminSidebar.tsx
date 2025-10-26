@@ -71,8 +71,8 @@ export function AdminSidebar() {
     isActive ? 'bg-pink-50 text-pink-700 font-medium' : 'text-muted-foreground hover:bg-muted/50';
 
   return (
-    <Sidebar className={`bg-background ${isCollapsed ? 'w-14' : 'w-60'}`} collapsible="icon">
-      <div className="p-4 border-b">
+    <Sidebar className={`bg-white border-r border-border ${isCollapsed ? 'w-14' : 'w-60'}`} collapsible="icon">
+      <div className="p-4 border-b bg-white">
         {!isCollapsed && (
           <h2 className="text-2xl font-bold">Admin Panel</h2>
         )}
