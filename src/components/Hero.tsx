@@ -114,9 +114,6 @@ const Hero = () => {
           className="absolute inset-0 z-0 animate-fade-in"
           style={{ animationDelay: '1.1s', opacity: '0', animationFillMode: 'forwards' }}
         >
-          {!imageLoaded && (
-            <Skeleton className="absolute inset-0 bg-white/20" />
-          )}
           <div 
             className="w-full h-full"
             style={{ transform: `translateY(${offset * 0.05}px)` }}
