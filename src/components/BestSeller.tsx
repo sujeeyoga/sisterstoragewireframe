@@ -94,22 +94,22 @@ const BestSeller = () => {
     }
   }, [hasIntersected, isMobile]);
   return <section ref={ref} className="pt-[60px] md:pt-[120px] pb-8 md:pb-12 bg-[hsl(var(--brand-pink))]">
-      <div className="max-w-[2304px] md:max-w-[1356px] mx-auto px-2">
-        <div className="flex flex-col md:flex-row gap-12 md:gap-16 items-center">
+      <div className="max-w-[2304px] md:max-w-[1356px] mx-auto px-4 md:px-6 lg:px-8">
+        <div className="flex flex-col md:flex-row gap-12 md:gap-16 items-center md:items-start">
           {/* Text Content - Left Side */}
-          <div className="text-center md:text-left flex-shrink-0 md:w-auto">
-            <h2 className="text-4xl md:text-6xl lg:text-7xl font-black text-white mb-8 leading-[0.95] tracking-wide">
+          <div className="text-center md:text-left flex-shrink-0 md:w-[45%] lg:w-[40%]">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-white mb-6 md:mb-8 leading-[0.95] tracking-wide">
               <span className="font-script font-bold italic text-[2em]">Best</span> SELLERS
             </h2>
-            <p className="text-white text-lg md:text-xl leading-relaxed font-light max-w-md">
+            <p className="text-white text-lg md:text-xl leading-relaxed font-light">
               Everyone's go-to organizers — and for good reason.
             </p>
           </div>
         
         {/* Images Container - Right Side */}
-        <div className="flex flex-col md:flex-row gap-6 md:gap-8 px-5 md:px-0 justify-center md:justify-start">
+        <div className="flex flex-col md:flex-row gap-6 md:gap-8 w-full md:flex-1 justify-center md:justify-start items-center md:items-start">
             <Card className={cn(
-              "group border-none shadow-lg bg-white relative rounded-3xl overflow-hidden aspect-square w-full md:w-[400px]",
+              "group border-none shadow-lg bg-white relative rounded-3xl overflow-hidden aspect-square w-full sm:w-[350px] md:w-[300px] lg:w-[350px]",
               "md:hover:shadow-2xl md:hover:-translate-y-2 md:transition-all md:duration-300",
               "transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)]",
               isMobile && hasIntersected
@@ -173,7 +173,7 @@ const BestSeller = () => {
             </Card>
 
             <Card className={cn(
-              "group border-none shadow-lg bg-white relative rounded-3xl overflow-hidden aspect-square w-full md:w-[400px]",
+              "group border-none shadow-lg bg-white relative rounded-3xl overflow-hidden aspect-square w-full sm:w-[350px] md:w-[300px] lg:w-[350px]",
               "md:hover:shadow-2xl md:hover:-translate-y-2 md:transition-all md:duration-300",
               "transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] delay-150",
               isMobile && hasIntersected
@@ -227,13 +227,6 @@ const BestSeller = () => {
               </Link>
             </Card>
         </div>
-        </div>
-        
-        <div className="text-center mt-16 md:mt-20">
-          <Button variant="outline" className="px-10 py-6 text-lg border-2 border-white text-white hover:bg-white hover:text-[hsl(var(--brand-pink))] hover:scale-105 font-bold transition-all duration-300 shadow-lg" asChild>
-            
-          </Button>
-          
         </div>
       </div>
     </section>;
