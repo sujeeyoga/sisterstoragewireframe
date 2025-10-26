@@ -61,10 +61,10 @@ const App = () => {
             <CartProvider>
               <Toaster />
               <Sonner />
-              <EditModeToggle />
               
               <BrowserRouter>
-              <CartDrawer />
+                <EditModeToggle />
+                <CartDrawer />
             <Routes>
               {/* Public routes - always accessible */}
               <Route path="/admin-setup" element={<AdminSetup />} />
