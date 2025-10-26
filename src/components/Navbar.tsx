@@ -49,32 +49,35 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
 
   return (
     <>
-      <div className={`w-full grid grid-cols-[1fr_auto_1fr] items-center transition-all duration-300 ${
-        isSticky ? 'py-2 px-4' : 'py-3 px-4'
-      }`}>
+      <div 
+        className={`w-full grid grid-cols-[1fr_auto_1fr] items-center transition-all duration-300 animate-fade-in ${
+          isSticky ? 'py-1.5 px-3' : 'py-2 px-3'
+        }`}
+        style={{ animationDelay: '1.1s', opacity: 0, animationFillMode: 'forwards' }}
+      >
         {/* Left: Logo */}
         <div className="justify-self-start shrink-0">
           <EnhancedLogo 
-            size="4xl"
+            size="3xl"
             scrolled={isSticky}
-            className="animate-fade-in transition-all duration-300"
+            className="transition-all duration-300"
             loading="eager"
           />
         </div>
 
         <div className="justify-self-center flex justify-center">
           {/* Full menu ≥1280px */}
-          <div className="hidden xl:flex items-center gap-8">
-            <Link to="/" className={`px-6 py-2.5 rounded-full font-medium text-xl transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] focus:ring-offset-2 min-h-[44px] flex items-center ${location.pathname === '/' ? 'bg-brand-pink text-white' : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'}`}>HOME</Link>
-            <Link to="/gallery" className={`px-4 py-2 rounded-full font-medium text-xl transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${location.pathname === '/gallery' ? 'bg-brand-pink text-white' : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'}`}>GALLERY</Link>
-            <Link to="/shop" className={`px-4 py-2 rounded-full font-medium text-xl transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${location.pathname === '/shop' ? 'bg-brand-pink text-white' : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'}`}>SHOP</Link>
+          <div className="hidden xl:flex items-center gap-6">
+            <Link to="/" className={`px-4 py-2 rounded-full font-medium text-base transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] focus:ring-offset-2 min-h-[40px] flex items-center ${location.pathname === '/' ? 'bg-brand-pink text-white' : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'}`}>HOME</Link>
+            <Link to="/gallery" className={`px-3 py-2 rounded-full font-medium text-base transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${location.pathname === '/gallery' ? 'bg-brand-pink text-white' : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'}`}>GALLERY</Link>
+            <Link to="/shop" className={`px-3 py-2 rounded-full font-medium text-base transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${location.pathname === '/shop' ? 'bg-brand-pink text-white' : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'}`}>SHOP</Link>
           </div>
           
           {/* Condensed menu 768-1279px */}
-          <div className="hidden lg:flex xl:hidden items-center gap-6">
-            <Link to="/" className={`px-6 py-2.5 rounded-full font-medium text-xl transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] focus:ring-offset-2 min-h-[44px] flex items-center ${location.pathname === '/' ? 'bg-brand-pink text-white' : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'}`}>HOME</Link>
-            <Link to="/gallery" className={`px-4 py-2 rounded-full font-medium text-xl transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${location.pathname === '/gallery' ? 'bg-brand-pink text-white' : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'}`}>GALLERY</Link>
-            <Link to="/shop" className={`px-4 py-2 rounded-full font-medium text-xl transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${location.pathname === '/shop' ? 'bg-brand-pink text-white' : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'}`}>SHOP</Link>
+          <div className="hidden lg:flex xl:hidden items-center gap-4">
+            <Link to="/" className={`px-4 py-2 rounded-full font-medium text-base transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] focus:ring-offset-2 min-h-[40px] flex items-center ${location.pathname === '/' ? 'bg-brand-pink text-white' : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'}`}>HOME</Link>
+            <Link to="/gallery" className={`px-3 py-2 rounded-full font-medium text-base transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${location.pathname === '/gallery' ? 'bg-brand-pink text-white' : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'}`}>GALLERY</Link>
+            <Link to="/shop" className={`px-3 py-2 rounded-full font-medium text-base transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${location.pathname === '/shop' ? 'bg-brand-pink text-white' : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'}`}>SHOP</Link>
           </div>
         </div>
 
@@ -86,10 +89,10 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
                 setCartOpen(true);
                 setMobileMenuOpen(false);
               }}
-              className="p-2 text-black hover:bg-black/10 rounded transition-colors relative focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] min-h-[44px] min-w-[44px] flex items-center justify-center"
+              className="p-2 text-black hover:bg-black/10 rounded transition-colors relative focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] min-h-[40px] min-w-[40px] flex items-center justify-center"
               aria-label="Open cart"
             >
-              <ShoppingBag className="h-6 w-6" />
+              <ShoppingBag className="h-5 w-5" />
               {totalItems > 0 && (
                 <span 
                   className="absolute -top-1 -right-1 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center font-semibold bg-[hsl(var(--brand-pink))]"
@@ -100,16 +103,16 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
             </button>
           )}
           <button 
-            className="lg:hidden p-3 text-black focus:outline-none hover:bg-[hsl(var(--brand-pink)/0.1)] rounded-full transition-all duration-300 min-h-[44px] min-w-[44px] flex items-center justify-center focus:ring-2 focus:ring-[hsl(var(--brand-pink))] transform hover:scale-110"
+            className="lg:hidden p-2.5 text-black focus:outline-none hover:bg-[hsl(var(--brand-pink)/0.1)] rounded-full transition-all duration-300 min-h-[40px] min-w-[40px] flex items-center justify-center focus:ring-2 focus:ring-[hsl(var(--brand-pink))] transform hover:scale-110"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle menu"
             aria-expanded={mobileMenuOpen}
           >
             <div className="relative">
               {mobileMenuOpen ? (
-                <X className="h-6 w-6 text-[hsl(var(--brand-pink))] rotate-0 transition-all duration-300" />
+                <X className="h-5 w-5 text-[hsl(var(--brand-pink))] rotate-0 transition-all duration-300" />
               ) : (
-                <Menu className="h-6 w-6 text-[hsl(var(--brand-pink))] transition-all duration-300" />
+                <Menu className="h-5 w-5 text-[hsl(var(--brand-pink))] transition-all duration-300" />
               )}
             </div>
           </button>
