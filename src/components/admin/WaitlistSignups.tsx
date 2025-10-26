@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Download, Mail, Users, Search, Calendar, Filter } from "lucide-react";
+import { Download, Mail, Users, Search } from "lucide-react";
 import { format } from "date-fns";
 import {
   Table,
@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
@@ -108,20 +108,14 @@ const WaitlistSignups = () => {
 
   if (isLoading) {
     return (
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <Skeleton className="h-9 w-64 mb-2" />
-            <Skeleton className="h-5 w-40" />
-          </div>
-          <Skeleton className="h-10 w-32" />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="space-y-4 p-4 sm:p-6">
+        <Skeleton className="h-8 w-48" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {[1, 2, 3].map(i => (
-            <Skeleton key={i} className="h-32 rounded-lg" />
+            <Skeleton key={i} className="h-24" />
           ))}
         </div>
-        <Skeleton className="h-96 rounded-lg" />
+        <Skeleton className="h-96" />
       </div>
     );
   }
@@ -129,161 +123,124 @@ const WaitlistSignups = () => {
   const totalSignups = signups?.length || 0;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 p-4 sm:p-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex items-center justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Waitlist Signups</h1>
-          <p className="text-muted-foreground mt-1 flex items-center gap-2">
-            <Users className="h-4 w-4" />
-            {totalSignups} total {totalSignups === 1 ? 'signup' : 'signups'}
+          <h1 className="text-2xl sm:text-3xl font-bold">Waitlist</h1>
+          <p className="text-sm text-muted-foreground flex items-center gap-1.5">
+            <Users className="h-3.5 w-3.5" />
+            {totalSignups} {totalSignups === 1 ? 'signup' : 'signups'}
           </p>
         </div>
         <Button 
           onClick={exportToCSV} 
           disabled={!filteredSignups || filteredSignups.length === 0}
-          variant="default"
+          size="sm"
+          className="sm:size-default"
         >
-          <Download className="mr-2 h-4 w-4" />
-          Export CSV
+          <Download className="h-4 w-4 sm:mr-2" />
+          <span className="hidden sm:inline">Export</span>
         </Button>
       </div>
 
-      {/* Collection Stats Cards */}
+      {/* Collection Stats */}
       {collectionStats && collectionStats.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {collectionStats.map(stat => (
             <Card key={stat.name} className="hover:shadow-md transition-shadow">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-base font-medium">{stat.name}</CardTitle>
-                  <Mail className="h-5 w-5 text-[hsl(var(--brand-pink))]" />
+              <CardContent className="pt-4 pb-4">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-sm font-medium truncate pr-2">{stat.name}</p>
+                  <Mail className="h-4 w-4 text-[hsl(var(--brand-pink))] flex-shrink-0" />
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-baseline gap-2">
-                  <p className="text-3xl font-bold">{stat.count}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {stat.count === 1 ? 'signup' : 'signups'}
-                  </p>
-                </div>
+                <p className="text-2xl font-bold">{stat.count}</p>
               </CardContent>
             </Card>
           ))}
         </div>
-      ) : (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <Mail className="h-12 w-12 text-muted-foreground mb-4" />
-            <p className="text-muted-foreground">No collections have signups yet</p>
-          </CardContent>
-        </Card>
-      )}
+      ) : null}
 
       {/* Filters */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg flex items-center gap-2">
-            <Filter className="h-5 w-5" />
-            Filters
-          </CardTitle>
-          <CardDescription>
-            Filter and search through {filteredSignups?.length || 0} signups
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="w-full sm:w-[250px]">
-              <Select value={selectedCollection} onValueChange={setSelectedCollection}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Filter by collection" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">
-                    <div className="flex items-center gap-2">
-                      <Mail className="h-4 w-4" />
-                      All Collections
-                    </div>
-                  </SelectItem>
-                  {collections?.map(name => (
-                    <SelectItem key={name} value={name}>{name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+      <div className="flex flex-col sm:flex-row gap-3">
+        <Select value={selectedCollection} onValueChange={setSelectedCollection}>
+          <SelectTrigger className="w-full sm:w-[200px]">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Collections</SelectItem>
+            {collections?.map(name => (
+              <SelectItem key={name} value={name}>{name}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search by name or email..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9"
-              />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+        <div className="flex-1 relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-9"
+          />
+        </div>
+      </div>
 
       {/* Table */}
-      <Card>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Collection</TableHead>
-              <TableHead className="text-right">
-                <div className="flex items-center justify-end gap-2">
-                  <Calendar className="h-4 w-4" />
-                  Signup Date
-                </div>
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredSignups && filteredSignups.length > 0 ? (
-              filteredSignups.map((signup) => (
-                <TableRow key={signup.id} className="hover:bg-muted/50">
-                  <TableCell className="font-medium">
-                    <div className="flex items-center gap-2">
-                      <div className="h-8 w-8 rounded-full bg-[hsl(var(--brand-pink))]/10 flex items-center justify-center">
-                        <Users className="h-4 w-4 text-[hsl(var(--brand-pink))]" />
+      <Card className="overflow-hidden">
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[40%]">Contact</TableHead>
+                <TableHead className="hidden sm:table-cell">Collection</TableHead>
+                <TableHead className="text-right">Date</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredSignups && filteredSignups.length > 0 ? (
+                filteredSignups.map((signup) => (
+                  <TableRow key={signup.id} className="hover:bg-muted/50">
+                    <TableCell>
+                      <div className="space-y-1">
+                        <p className="font-medium text-sm">{signup.name}</p>
+                        <p className="text-xs text-muted-foreground truncate">
+                          {signup.email}
+                        </p>
+                        <Badge variant="secondary" className="sm:hidden mt-1">
+                          {signup.collection_name}
+                        </Badge>
                       </div>
-                      {signup.name}
+                    </TableCell>
+                    <TableCell className="hidden sm:table-cell">
+                      <Badge variant="secondary">{signup.collection_name}</Badge>
+                    </TableCell>
+                    <TableCell className="text-right text-xs text-muted-foreground whitespace-nowrap">
+                      <div className="hidden sm:block">
+                        {format(new Date(signup.created_at), 'MMM d, yyyy h:mm a')}
+                      </div>
+                      <div className="sm:hidden">
+                        {format(new Date(signup.created_at), 'MMM d, yyyy')}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={3} className="text-center py-12">
+                    <div className="flex flex-col items-center gap-2">
+                      <Search className="h-10 w-10 text-muted-foreground" />
+                      <p className="text-sm text-muted-foreground font-medium">No signups found</p>
+                      {(searchQuery || selectedCollection !== "all") && (
+                        <p className="text-xs text-muted-foreground">Try adjusting your filters</p>
+                      )}
                     </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Mail className="h-4 w-4 text-muted-foreground" />
-                      {signup.email}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="secondary">{signup.collection_name}</Badge>
-                  </TableCell>
-                  <TableCell className="text-right text-muted-foreground">
-                    {format(new Date(signup.created_at), 'MMM d, yyyy h:mm a')}
                   </TableCell>
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={4} className="text-center py-12">
-                  <div className="flex flex-col items-center gap-2">
-                    <Search className="h-12 w-12 text-muted-foreground" />
-                    <p className="text-muted-foreground font-medium">No signups found</p>
-                    <p className="text-sm text-muted-foreground">
-                      {searchQuery || selectedCollection !== "all" 
-                        ? "Try adjusting your filters" 
-                        : "Waiting for signups to come in"}
-                    </p>
-                  </div>
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </Card>
     </div>
   );
