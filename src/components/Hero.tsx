@@ -27,7 +27,7 @@ const Hero = () => {
   const heroText: any = (Array.isArray(texts) && texts.length > 0 ? texts[0] : texts) || defaultText;
 
   return (
-    <section ref={parallaxRef} className="relative w-full overflow-hidden md:pt-32" aria-label="Hero section">
+    <section ref={parallaxRef} className="relative w-full overflow-hidden md:pt-8" aria-label="Hero section">
       {/* Mobile: Stacked Layout */}
       <div className="md:hidden flex flex-col relative z-10">
         {/* Hero Content Container */}
@@ -104,7 +104,7 @@ const Hero = () => {
       {/* Desktop: Sequential Layout */}
       <div className="hidden md:block">
         {/* Pink Content Section - First */}
-        <div className="relative z-10 min-h-[90vh] flex items-center justify-start pt-0">
+        <div className="relative z-10 min-h-[60vh] flex items-center justify-start pt-0">
           <div className="bg-[hsl(var(--brand-pink))] flex items-center animate-slide-in-right w-full md:w-[60vw] lg:w-[55vw] shadow-2xl rounded-r-[3rem]">
             <div className="grid grid-cols-2 w-full py-4 md:py-6 lg:py-8">
               <div className="col-span-1"></div>
