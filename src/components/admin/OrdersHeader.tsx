@@ -28,6 +28,7 @@ interface OrdersHeaderProps {
   selectedCount?: number;
   showArchived?: boolean;
   onToggleArchived?: () => void;
+  statusCounts?: Record<string, number>;
 }
 
 const statusChips = [
@@ -54,6 +55,7 @@ export function OrdersHeader({
   selectedCount = 0,
   showArchived = false,
   onToggleArchived,
+  statusCounts,
 }: OrdersHeaderProps) {
   const [isSyncing, setIsSyncing] = useState(false);
   const [lastSyncTime, setLastSyncTime] = useState<Date | null>(null);
@@ -218,19 +220,22 @@ export function OrdersHeader({
         
         {/* Status Chips */}
         <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2">
-          {statusChips.map((chip) => (
-            <button
-              key={chip.value}
-              onClick={() => onStatusChange(chip.value)}
-              className={`px-3 h-8 rounded-full text-sm font-medium whitespace-nowrap transition-all border ${
-                activeStatus === chip.value 
-                  ? chip.color 
-                  : 'bg-background border-border text-muted-foreground hover:bg-muted'
-              }`}
-            >
-              {chip.label}
-            </button>
-          ))}
+          {statusChips.map((chip) => {
+            const count = statusCounts?.[chip.value] ?? 0;
+            return (
+              <button
+                key={chip.value}
+                onClick={() => onStatusChange(chip.value)}
+                className={`px-3 h-8 rounded-full text-sm font-medium whitespace-nowrap transition-all border ${
+                  activeStatus === chip.value 
+                    ? chip.color 
+                    : 'bg-background border-border text-muted-foreground hover:bg-muted'
+                }`}
+              >
+                {chip.label} {count > 0 && `(${count})`}
+              </button>
+            );
+          })}
           {onToggleArchived && (
             <button
               onClick={onToggleArchived}

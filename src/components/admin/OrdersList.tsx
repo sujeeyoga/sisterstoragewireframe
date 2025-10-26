@@ -58,6 +58,58 @@ export function OrdersList() {
   
   const queryClient = useQueryClient();
   
+  // Fetch status counts
+  const { data: statusCounts } = useQuery({
+    queryKey: ['order-status-counts', showArchived],
+    queryFn: async () => {
+      let wooQuery = supabase
+        .from('woocommerce_orders')
+        .select('status');
+      
+      let stripeQuery = supabase
+        .from('orders')
+        .select('status');
+      
+      // Filter archived/non-archived orders
+      if (showArchived) {
+        wooQuery = wooQuery.not('archived_at', 'is', null);
+        stripeQuery = stripeQuery.not('archived_at', 'is', null);
+      } else {
+        wooQuery = wooQuery.is('archived_at', null);
+        stripeQuery = stripeQuery.is('archived_at', null);
+      }
+      
+      const [wooResult, stripeResult] = await Promise.all([
+        wooQuery,
+        stripeQuery
+      ]);
+      
+      const allOrders = [
+        ...(wooResult.data || []),
+        ...(stripeResult.data || [])
+      ];
+      
+      // Count by status
+      const counts: Record<string, number> = {
+        all: allOrders.length,
+        pending: 0,
+        processing: 0,
+        completed: 0,
+        refunded: 0,
+        cancelled: 0,
+      };
+      
+      allOrders.forEach(order => {
+        if (counts[order.status] !== undefined) {
+          counts[order.status]++;
+        }
+      });
+      
+      return counts;
+    },
+    refetchInterval: 30000, // Refetch every 30 seconds
+  });
+  
   // Real-time subscription for new orders
   useEffect(() => {
     const channel = supabase
@@ -367,19 +419,20 @@ export function OrdersList() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
-        <OrdersHeader
-          search={search}
-          onSearchChange={handleSearchChange}
-          activeStatus={activeStatus}
-          onStatusChange={handleStatusChange}
-          onFilterClick={() => setFiltersOpen(true)}
-          filterCount={filterCount}
-          selectionMode={selectionMode}
-          onToggleSelection={toggleSelectionMode}
-          onSelectAll={handleSelectAll}
-          onDeselectAll={handleDeselectAll}
-          selectedCount={selectedOrderIds.size}
-        />
+      <OrdersHeader
+        search={search}
+        onSearchChange={handleSearchChange}
+        activeStatus={activeStatus}
+        onStatusChange={handleStatusChange}
+        onFilterClick={() => setFiltersOpen(true)}
+        filterCount={filterCount}
+        selectionMode={selectionMode}
+        onToggleSelection={toggleSelectionMode}
+        onSelectAll={handleSelectAll}
+        onDeselectAll={handleDeselectAll}
+        selectedCount={selectedOrderIds.size}
+        statusCounts={statusCounts}
+      />
         <div className="p-4 space-y-4">
           {[1, 2, 3, 4, 5].map((i) => (
             <Skeleton key={i} className="h-48 rounded-2xl" />
@@ -401,6 +454,7 @@ export function OrdersList() {
           filterCount={filterCount}
           selectionMode={selectionMode}
           onToggleSelection={toggleSelectionMode}
+          statusCounts={statusCounts}
         />
         <div className="p-8 text-center space-y-4">
           <Package className="h-16 w-16 mx-auto text-muted-foreground/50" />
@@ -421,21 +475,22 @@ export function OrdersList() {
   
   return (
     <div className="min-h-screen bg-background pb-20">
-      <OrdersHeader
-        search={search}
-        onSearchChange={handleSearchChange}
-        activeStatus={activeStatus}
-        onStatusChange={handleStatusChange}
-        onFilterClick={() => setFiltersOpen(true)}
-        filterCount={filterCount}
-        selectionMode={selectionMode}
-        onToggleSelection={toggleSelectionMode}
-        onSelectAll={handleSelectAll}
-        onDeselectAll={handleDeselectAll}
-        selectedCount={selectedOrderIds.size}
-        showArchived={showArchived}
-        onToggleArchived={() => setShowArchived(!showArchived)}
-      />
+        <OrdersHeader
+          search={search}
+          onSearchChange={handleSearchChange}
+          activeStatus={activeStatus}
+          onStatusChange={handleStatusChange}
+          onFilterClick={() => setFiltersOpen(true)}
+          filterCount={filterCount}
+          selectionMode={selectionMode}
+          onToggleSelection={toggleSelectionMode}
+          onSelectAll={handleSelectAll}
+          onDeselectAll={handleDeselectAll}
+          selectedCount={selectedOrderIds.size}
+          showArchived={showArchived}
+          onToggleArchived={() => setShowArchived(!showArchived)}
+          statusCounts={statusCounts}
+        />
       
       <div className="p-4 space-y-4">
         {!orders?.orders || orders.orders.length === 0 ? (
