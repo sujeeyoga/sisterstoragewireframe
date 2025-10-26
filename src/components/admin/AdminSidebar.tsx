@@ -1,4 +1,4 @@
-import { LayoutDashboard, Package, Layout, RefreshCw, Settings, Users, ShoppingCart, Image, FolderOpen, FileText, Sparkles, Truck, Video, Film, LogOut, DollarSign, Type, PackageCheck } from 'lucide-react';
+import { LayoutDashboard, Package, Layout, RefreshCw, Settings, Users, ShoppingCart, Image, FolderOpen, FileText, Sparkles, Truck, Video, Film, LogOut, DollarSign, Type, PackageCheck, Mail } from 'lucide-react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -22,6 +22,7 @@ const menuItems = [
   { title: 'Customers', url: '/admin/customers', icon: Users, end: false },
   { title: 'Hero Images', url: '/admin/hero-images', icon: Image, end: false },
   { title: 'Images', url: '/admin/images', icon: Image, end: false },
+  { title: 'Launch Cards', url: '/admin/launch-cards', icon: Sparkles, end: false },
   { title: 'Optimize Images', url: '/admin/optimize-images', icon: Sparkles, end: false },
   { title: 'Orders', url: '/admin/orders', icon: ShoppingCart, end: false },
   { title: 'Pages', url: '/admin/pages', icon: FileText, end: false },
@@ -34,6 +35,7 @@ const menuItems = [
   { title: 'Site Content', url: '/admin/texts', icon: Type, end: false },
   { title: 'Uploads', url: '/admin/uploads', icon: FolderOpen, end: false },
   { title: 'Videos', url: '/admin/videos', icon: Video, end: false },
+  { title: 'Waitlist Signups', url: '/admin/waitlist-signups', icon: Mail, end: false },
   { title: 'WooCommerce Sync', url: '/admin/sync', icon: RefreshCw, end: false },
 ];
 

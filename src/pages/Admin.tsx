@@ -21,6 +21,7 @@ import { TextsManager } from '@/components/admin/TextsManager';
 import { QuickOptimizer } from '@/components/admin/QuickOptimizer';
 import { ShippingZonesManager } from '@/components/admin/ShippingZonesManager';
 import LaunchCardsManager from '@/components/admin/LaunchCardsManager';
+import WaitlistSignups from '@/components/admin/WaitlistSignups';
 import Uploads from '@/pages/Uploads';
 
 const Admin = () => {
@@ -62,9 +63,10 @@ const Admin = () => {
         <Route path="settings" element={<StoreSettings />} />
         <Route path="images" element={<ImageUploader />} />
         <Route path="videos" element={<VideoUploader />} />
-        <Route path="sister-stories" element={<SisterStoriesManager />} />
-        <Route path="launch-cards" element={<LaunchCardsManager />} />
-        <Route path="uploads" element={<Uploads />} />
+          <Route path="sister-stories" element={<SisterStoriesManager />} />
+          <Route path="launch-cards" element={<LaunchCardsManager />} />
+          <Route path="waitlist-signups" element={<WaitlistSignups />} />
+          <Route path="uploads" element={<Uploads />} />
         <Route path="*" element={<Navigate to="/admin" replace />} />
       </Routes>
     </AdminLayout>
