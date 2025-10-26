@@ -144,22 +144,18 @@ const WaitlistSignups = () => {
         </Button>
       </div>
 
-      {/* Collection Stats */}
-      {collectionStats && collectionStats.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {collectionStats.map(stat => (
-            <Card key={stat.name} className="hover:shadow-md transition-shadow">
-              <CardContent className="pt-4 pb-4">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm font-medium truncate pr-2">{stat.name}</p>
-                  <Mail className="h-4 w-4 text-[hsl(var(--brand-pink))] flex-shrink-0" />
-                </div>
-                <p className="text-2xl font-bold">{stat.count}</p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      ) : null}
+      {/* Summary Card */}
+      <Card className="hover:shadow-md transition-shadow">
+        <CardContent className="pt-6 pb-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-muted-foreground mb-1">Total Signups</p>
+              <p className="text-3xl font-bold">{totalSignups}</p>
+            </div>
+            <Mail className="h-10 w-10 text-[hsl(var(--brand-pink))]" />
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3">
