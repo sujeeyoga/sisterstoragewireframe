@@ -41,7 +41,7 @@ const Hero = () => {
               field="title"
               value={heroText.title}
               as="h1"
-              className="text-[3.5rem] sm:text-[4.5rem] font-black leading-[0.9] tracking-tighter break-words"
+              className="text-[3.5rem] sm:text-[4.5rem] font-black leading-[1.1] tracking-tighter break-words"
             />
 
             <EditableText
