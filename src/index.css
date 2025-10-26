@@ -55,6 +55,14 @@
     --chart-4: 329 100% 95%;
     --chart-5: 0 0% 80%;
 
+    /* Sidebar colors */
+    --sidebar: 0 0% 100%;
+    --sidebar-foreground: 0 0% 10%;
+    --sidebar-border: 0 0% 89.8%;
+    --sidebar-accent: 329 100% 95%;
+    --sidebar-accent-foreground: 329 92% 20%;
+    --sidebar-ring: 329 92% 49%;
+
     --radius: 0.5rem;
   }
 
@@ -83,6 +91,14 @@
     --chart-3: 0 0% 80%;
     --chart-4: 329 100% 30%;
     --chart-5: 0 0% 50%;
+
+    /* Sidebar colors for dark mode */
+    --sidebar: 0 0% 10%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-border: 0 0% 20%;
+    --sidebar-accent: 329 100% 20%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-ring: 329 92% 49%;
   }
 }
 
