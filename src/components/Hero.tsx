@@ -159,7 +159,7 @@ const Hero = () => {
         </div>
 
         {/* Parallax Image Container - After content */}
-        <div className="relative w-full min-h-[70vh] overflow-hidden bg-gradient-to-b from-[hsl(var(--brand-pink))] to-white">
+        <div className="relative w-full min-h-[70vh] overflow-hidden bg-[hsl(var(--brand-pink))]">
           {!imageLoaded && (
             <Skeleton className="absolute inset-0 bg-white/20 max-w-4xl mx-auto my-12" />
           )}
