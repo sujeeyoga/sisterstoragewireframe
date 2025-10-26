@@ -93,24 +93,25 @@ const BestSeller = () => {
       }, 600);
     }
   }, [hasIntersected, isMobile]);
-  return <section ref={ref} className="pt-[60px] md:pt-[120px] pb-8 md:pb-12 bg-[hsl(var(--brand-pink))]">
-      <div className="max-w-[2304px] md:max-w-[1356px] mx-auto px-4 md:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row gap-12 md:gap-16 items-center md:items-start">
+  return <section ref={ref} className="pt-[60px] md:pt-[80px] lg:pt-[120px] pb-12 md:pb-16 lg:pb-20 bg-[hsl(var(--brand-pink))]">
+      <div className="max-w-[1400px] mx-auto px-4 md:px-8 lg:px-12">
+        <div className="flex flex-col lg:flex-row gap-8 md:gap-12 lg:gap-16 items-center lg:items-center">
           {/* Text Content - Left Side */}
-          <div className="text-center md:text-left flex-shrink-0 md:w-[35%] lg:w-[30%] md:pl-4 md:flex md:flex-col md:justify-center">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-white mb-4 md:mb-6 leading-tight tracking-wide">
-              <span className="font-script font-bold italic text-[3.6em]">Best</span> SELLERS
+          <div className="text-center lg:text-left flex-shrink-0 w-full lg:w-[35%] max-w-md lg:max-w-none">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-white mb-4 md:mb-6 leading-[1.1] tracking-wide">
+              <span className="font-script font-bold italic text-[2.5em] inline-block">Best</span>{' '}
+              <span className="inline-block">SELLERS</span>
             </h2>
-            <p className="text-white text-base md:text-lg leading-relaxed font-light">
+            <p className="text-white text-base md:text-lg leading-relaxed font-light max-w-sm mx-auto lg:mx-0">
               Everyone's go-to organizers — and for good reason.
             </p>
           </div>
         
         {/* Images Container - Right Side */}
-        <div className="flex flex-col gap-6 md:gap-8 w-full md:flex-1 justify-center items-center">
+        <div className="flex flex-col gap-6 md:gap-8 w-full lg:flex-1 items-center lg:items-start max-w-md md:max-w-lg lg:max-w-none mx-auto lg:mx-0">
             <Card className={cn(
-              "group border-none shadow-lg bg-white relative rounded-3xl overflow-hidden aspect-square w-full sm:w-[350px] md:w-[300px] lg:w-[350px]",
-              "md:hover:shadow-2xl md:hover:-translate-y-2 md:transition-all md:duration-300",
+              "group border-none shadow-lg bg-white relative rounded-3xl overflow-hidden aspect-square w-full max-w-[350px] md:max-w-[400px] lg:max-w-[380px]",
+              "hover:shadow-2xl hover:-translate-y-2 transition-all duration-300",
               "transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)]",
               isMobile && hasIntersected
                 ? "opacity-100 scale-100" 
@@ -173,8 +174,8 @@ const BestSeller = () => {
             </Card>
 
             <Card className={cn(
-              "group border-none shadow-lg bg-white relative rounded-3xl overflow-hidden aspect-square w-full sm:w-[350px] md:w-[300px] lg:w-[350px]",
-              "md:hover:shadow-2xl md:hover:-translate-y-2 md:transition-all md:duration-300",
+              "group border-none shadow-lg bg-white relative rounded-3xl overflow-hidden aspect-square w-full max-w-[350px] md:max-w-[400px] lg:max-w-[380px]",
+              "hover:shadow-2xl hover:-translate-y-2 transition-all duration-300",
               "transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] delay-150",
               isMobile && hasIntersected
                 ? "opacity-100 scale-100" 
