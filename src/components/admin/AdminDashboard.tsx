@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { DollarSign, ShoppingCart, Package, Truck, Clock, CheckCircle2, TrendingUp, AlertCircle, Users, Calendar } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { format, subDays } from 'date-fns';
@@ -14,15 +14,18 @@ import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
+import { OrderDrawer } from './OrderDrawer';
 
 type DateRangePreset = '7d' | '30d' | '90d' | 'custom';
 
 export const AdminDashboard = () => {
   const { visitorCount } = useVisitorPresence();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [dateRange, setDateRange] = useState<DateRangePreset>('30d');
   const [customStartDate, setCustomStartDate] = useState<Date>();
   const [customEndDate, setCustomEndDate] = useState<Date>();
+  const [selectedOrder, setSelectedOrder] = useState<any>(null);
 
   const getDateRangeStart = () => {
     if (dateRange === 'custom' && customStartDate) {
@@ -305,6 +308,7 @@ export const AdminDashboard = () => {
   };
 
   return (
+    <>
     <div className="container mx-auto p-4 md:p-6 lg:p-8 space-y-6 md:space-y-8 max-w-[1600px]">
       {/* Coming Soon Toggle */}
       <Card className="border-primary/20 bg-primary/5">
@@ -703,7 +707,45 @@ export const AdminDashboard = () => {
             ) : (
               <div className="space-y-3">
                 {recentOrders?.map((order) => (
-                  <div key={`${order.source}-${order.id}`} className="flex items-center justify-between p-3 rounded-lg border hover:bg-accent transition-colors">
+                  <div 
+                    key={`${order.source}-${order.id}`} 
+                    className="flex items-center justify-between p-3 rounded-lg border hover:bg-accent transition-colors cursor-pointer"
+                    onClick={async () => {
+                      // Fetch full order data before opening drawer
+                      if (order.source === 'stripe') {
+                        const { data, error } = await supabase
+                          .from('orders')
+                          .select('*')
+                          .eq('id', order.id)
+                          .single();
+                        
+                        if (error) {
+                          toast.error('Failed to load order details');
+                          return;
+                        }
+                        
+                        setSelectedOrder({
+                          ...data,
+                          order_number: data.order_number,
+                          customer_name: data.customer_name || 'Guest',
+                          source: 'stripe'
+                        });
+                      } else {
+                        const { data, error } = await supabase
+                          .from('woocommerce_orders')
+                          .select('*')
+                          .eq('id', order.id)
+                          .single();
+                        
+                        if (error) {
+                          toast.error('Failed to load order details');
+                          return;
+                        }
+                        
+                        setSelectedOrder(data);
+                      }
+                    }}
+                  >
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
                         <p className="text-sm font-medium">#{order.order_number}</p>
@@ -796,5 +838,20 @@ export const AdminDashboard = () => {
         </CardContent>
       </Card>
     </div>
+
+    {/* Order Details Drawer */}
+    {selectedOrder && (
+      <OrderDrawer
+        order={selectedOrder}
+        open={!!selectedOrder}
+        onClose={() => setSelectedOrder(null)}
+        onStatusUpdate={(newStatus) => {
+          queryClient.invalidateQueries({ queryKey: ['admin-recent-orders'] });
+          queryClient.invalidateQueries({ queryKey: ['admin-dashboard-stats'] });
+          setSelectedOrder(null);
+        }}
+      />
+    )}
+    </>
   );
 };
