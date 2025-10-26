@@ -15,7 +15,7 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
       <div className="min-h-screen flex w-full">
         <AdminSidebar />
         <div className="flex-1 flex flex-col">
-          <header className="h-14 border-b bg-background flex items-center px-4 sticky top-0 z-10 gap-3">
+          <header className="h-14 border-b bg-background flex items-center px-4 fixed top-0 left-0 right-0 z-50 gap-3 md:sticky md:z-10">
             <SidebarTrigger className="mr-1">
               <Menu className="h-5 w-5" />
             </SidebarTrigger>
@@ -24,7 +24,7 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
               <h1 className="text-lg font-semibold hover:text-primary transition-colors cursor-pointer">Admin Dashboard</h1>
             </Link>
           </header>
-          <main className="flex-1 overflow-auto">
+          <main className="flex-1 overflow-auto pt-14 md:pt-0">
             {children}
           </main>
         </div>
