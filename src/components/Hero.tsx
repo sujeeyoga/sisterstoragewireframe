@@ -103,10 +103,10 @@ const Hero = () => {
 
       {/* Desktop: Overlay Layout */}
       <div className="hidden md:block relative min-h-screen overflow-hidden">
-        {/* Background Layer: Hero Image (slides from right with delay) */}
+        {/* Background Layer: Hero Image (fades in with delay) */}
         <div 
-          className="absolute inset-0 z-0 animate-slide-in-right"
-          style={{ animationDelay: '1.1s' }}
+          className="absolute inset-0 z-0 animate-fade-in"
+          style={{ animationDelay: '1.1s', opacity: '0', animationFillMode: 'forwards' }}
         >
           {!imageLoaded && (
             <Skeleton className="absolute inset-0 bg-white/20" />
