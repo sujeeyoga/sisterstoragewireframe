@@ -171,10 +171,10 @@ export function OrderCard({ order, onView, isSelected, onSelect, selectionMode, 
   };
   
   return (
-    <article className="bg-card rounded-2xl border shadow-sm p-4 space-y-2">
+    <article className="bg-card rounded-2xl border shadow-sm p-4 space-y-2 cursor-pointer hover:shadow-md transition-shadow" onClick={onView}>
       <div className="flex items-start gap-3">
         {selectionMode && (
-          <div className="pt-1">
+          <div className="pt-1" onClick={(e) => e.stopPropagation()}>
             <Checkbox 
               checked={isSelected} 
               onCheckedChange={onSelect}
@@ -225,7 +225,7 @@ export function OrderCard({ order, onView, isSelected, onSelect, selectionMode, 
           
           <hr className="border-border" />
           
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex gap-2 flex-wrap" onClick={(e) => e.stopPropagation()}>
             <Button variant="default" size="sm" className="h-9" onClick={onView}>
               View
             </Button>
