@@ -31,7 +31,7 @@ const Hero = () => {
       {/* Mobile: Stacked Layout */}
       <div className="md:hidden flex flex-col relative z-10">
         {/* Hero Content Container */}
-        <div className="w-full bg-[hsl(var(--brand-pink))] pt-40 pb-12 px-6">
+        <div className="w-full bg-[hsl(var(--brand-pink))] pt-48 pb-12 px-6">
           <div 
             className="flex flex-col space-y-3 text-white w-full max-w-full"
             style={{ transform: `translateY(${-offset * 0.1}px)` }}
