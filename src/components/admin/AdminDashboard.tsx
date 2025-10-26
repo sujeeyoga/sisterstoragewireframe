@@ -735,6 +735,7 @@ export const AdminDashboard = () => {
                           shipping: data.shipping_address || {},
                           line_items: data.items || [],
                           currency: 'CAD',
+                          payment_method_title: 'Stripe',
                           source: 'stripe'
                         });
                       } else {
