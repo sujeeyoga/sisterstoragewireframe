@@ -106,7 +106,7 @@ const Hero = () => {
         {/* Background Layer: Hero Image (slides from right with delay) */}
         <div 
           className="absolute inset-0 z-0 animate-slide-in-right"
-          style={{ animationDelay: '1.1s', opacity: 0, animationFillMode: 'forwards' }}
+          style={{ animationDelay: '1.1s' }}
         >
           {!imageLoaded && (
             <Skeleton className="absolute inset-0 bg-white/20" />
