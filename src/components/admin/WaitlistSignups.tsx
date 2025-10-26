@@ -192,8 +192,7 @@ const WaitlistSignups = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[40%]">Contact</TableHead>
-                <TableHead className="hidden sm:table-cell">Collection</TableHead>
+                <TableHead>Contact</TableHead>
                 <TableHead className="text-right">Date</TableHead>
               </TableRow>
             </TableHeader>
@@ -207,13 +206,7 @@ const WaitlistSignups = () => {
                         <p className="text-xs text-muted-foreground truncate">
                           {signup.email}
                         </p>
-                        <Badge variant="secondary" className="sm:hidden mt-1">
-                          {signup.collection_name}
-                        </Badge>
                       </div>
-                    </TableCell>
-                    <TableCell className="hidden sm:table-cell">
-                      <Badge variant="secondary">{signup.collection_name}</Badge>
                     </TableCell>
                     <TableCell className="text-right text-xs text-muted-foreground whitespace-nowrap">
                       <div className="hidden sm:block">
@@ -227,7 +220,7 @@ const WaitlistSignups = () => {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={3} className="text-center py-12">
+                  <TableCell colSpan={2} className="text-center py-12">
                     <div className="flex flex-col items-center gap-2">
                       <Search className="h-10 w-10 text-muted-foreground" />
                       <p className="text-sm text-muted-foreground font-medium">No signups found</p>
