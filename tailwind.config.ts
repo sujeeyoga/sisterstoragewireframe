@@ -339,6 +339,7 @@ export default {
 				sans: ['Poppins', 'sans-serif'],
 				display: ['Poppins', 'sans-serif'],
 				poppins: ['Poppins', 'sans-serif'],
+				script: ['Dancing Script', 'cursive'],
 			}
 		}
 	},
