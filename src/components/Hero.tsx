@@ -140,7 +140,7 @@ const Hero = () => {
                     field="title"
                     value={heroText.title}
                     as="h1"
-                    className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black leading-[0.9] tracking-tighter"
+                    className="text-3xl md:text-3xl lg:text-4xl xl:text-5xl font-black leading-[0.9] tracking-tighter"
                   />
 
                   <EditableText
@@ -148,14 +148,14 @@ const Hero = () => {
                     field="subtitle"
                     value={heroText.subtitle}
                     as="p"
-                    className="text-sm md:text-base lg:text-xl xl:text-2xl font-bold leading-tight tracking-tight uppercase"
+                    className="text-xs md:text-sm lg:text-base xl:text-lg font-bold leading-tight tracking-tight uppercase"
                   />
 
                   <div className="pt-1">
                     <Link to="/shop">
                       <Button 
                         size="sm"
-                        className="bg-white text-[hsl(var(--brand-pink))] hover:bg-white/90 hover:scale-105 font-bold text-xs md:text-sm px-5 py-3 w-fit shadow-2xl transition-all duration-300 rounded-full"
+                        className="bg-white text-[hsl(var(--brand-pink))] hover:bg-white/90 hover:scale-105 font-bold text-[10px] md:text-xs px-4 py-2 w-fit shadow-2xl transition-all duration-300 rounded-full"
                       >
                         <EditableText
                           siteTextId={heroText.id}
@@ -173,7 +173,7 @@ const Hero = () => {
                       field="description"
                       value={heroText.description}
                       as="p"
-                      className="text-xs md:text-sm lg:text-base font-light leading-relaxed tracking-wide"
+                      className="text-[10px] md:text-xs lg:text-sm font-light leading-relaxed tracking-wide"
                     />
                   </div>
                 </div>
