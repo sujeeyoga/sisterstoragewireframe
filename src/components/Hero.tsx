@@ -133,7 +133,7 @@ const Hero = () => {
         {/* Foreground Layer: Pink Content Section (slides from left) */}
         <div className="relative z-10 min-h-screen flex items-center justify-start pt-0">
           <div className="bg-[hsl(var(--brand-pink))] flex items-center animate-slide-in-left w-full md:w-[60vw] lg:w-[55vw] shadow-2xl rounded-r-[3rem]" style={{ animationDelay: '0.3s' }}>
-            <div className="w-full py-12 md:py-16 pl-3 pr-3 md:pr-6 lg:pr-8">
+            <div className="w-full py-12 md:py-16 pl-6 md:pl-8 lg:pl-12 pr-3 md:pr-6 lg:pr-8">
               <div className="flex flex-col gap-2 lg:gap-3 text-white">
                   <EditableText
                     siteTextId={heroText.id}
