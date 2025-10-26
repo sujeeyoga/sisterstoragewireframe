@@ -110,7 +110,7 @@ const BestSeller = () => {
         {/* Images Container - Right Side */}
         <div className="flex flex-col gap-6 md:gap-8 w-full lg:flex-1 items-center lg:items-start max-w-md md:max-w-lg lg:max-w-none mx-auto lg:mx-0">
             <Card className={cn(
-              "group border-none shadow-lg bg-white relative rounded-3xl overflow-hidden w-full max-w-[350px] md:max-w-[400px] h-[437px] md:h-[500px]",
+              "group border-none shadow-lg bg-white relative rounded-3xl overflow-hidden w-full max-w-[280px] md:max-w-[320px] h-[350px] md:h-[400px]",
               "hover:shadow-2xl hover:-translate-y-2 transition-all duration-300",
               "transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)]",
               isMobile && hasIntersected
@@ -174,7 +174,7 @@ const BestSeller = () => {
             </Card>
 
             <Card className={cn(
-              "group border-none shadow-lg bg-white relative rounded-3xl overflow-hidden w-full max-w-[350px] md:max-w-[400px] h-[437px] md:h-[500px]",
+              "group border-none shadow-lg bg-white relative rounded-3xl overflow-hidden w-full max-w-[280px] md:max-w-[320px] h-[350px] md:h-[400px]",
               "hover:shadow-2xl hover:-translate-y-2 transition-all duration-300",
               "transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] delay-150",
               isMobile && hasIntersected
