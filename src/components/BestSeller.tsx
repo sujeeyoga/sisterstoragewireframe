@@ -97,11 +97,11 @@ const BestSeller = () => {
       <div className="max-w-[2304px] md:max-w-[1356px] mx-auto px-4 md:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row gap-12 md:gap-16 items-center md:items-start">
           {/* Text Content - Left Side */}
-          <div className="text-center md:text-left flex-shrink-0 md:w-[45%] lg:w-[40%]">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-white mb-6 md:mb-8 leading-[0.95] tracking-wide">
-              <span className="font-script font-bold italic text-[2em]">Best</span> SELLERS
+          <div className="text-center md:text-left flex-shrink-0 md:w-[35%] lg:w-[30%] md:pl-4">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-white mb-4 md:mb-6 leading-tight tracking-wide">
+              <span className="font-script font-bold italic text-[1.8em]">Best</span> SELLERS
             </h2>
-            <p className="text-white text-lg md:text-xl leading-relaxed font-light">
+            <p className="text-white text-base md:text-lg leading-relaxed font-light">
               Everyone's go-to organizers — and for good reason.
             </p>
           </div>
