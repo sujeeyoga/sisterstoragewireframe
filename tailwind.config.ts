@@ -275,6 +275,14 @@ export default {
 						transform: 'translateX(0)' 
 					}
 				},
+				'slide-in-right': {
+					'0%': { 
+						transform: 'translateX(100%)' 
+					},
+					'100%': { 
+						transform: 'translateX(0)' 
+					}
+				},
 				'fade-out-smooth': {
 					'0%': { 
 						opacity: '1' 
@@ -312,7 +320,8 @@ export default {
 				'scroll-fade-in': 'scroll-fade-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
 				'scroll-fade-out': 'scroll-fade-out 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards',
 				// New hero animations
-				'slide-in-left': 'slide-in-left 2s ease-out forwards',
+				'slide-in-left': 'slide-in-left 0.8s ease-out forwards',
+				'slide-in-right': 'slide-in-right 0.8s ease-out forwards',
 				'fade-out-smooth': 'fade-out-smooth 1s ease-out forwards',
 				// Screen loader animations
 				'loader-fade-out': 'fade-out-smooth 0.5s ease-out forwards',

@@ -101,11 +101,35 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* Desktop: Sequential Layout */}
-      <div className="hidden md:block">
-        {/* Pink Content Section - First */}
-        <div className="relative z-10 min-h-[60vh] flex items-center justify-start pt-0">
-          <div className="bg-[hsl(var(--brand-pink))] flex items-center animate-slide-in-right w-full md:w-[60vw] lg:w-[55vw] shadow-2xl rounded-r-[3rem]">
+      {/* Desktop: Overlay Layout */}
+      <div className="hidden md:block relative min-h-screen overflow-hidden">
+        {/* Background Layer: Hero Image (slides from right with delay) */}
+        <div 
+          className="absolute inset-0 z-0 animate-slide-in-right"
+          style={{ animationDelay: '1.1s', opacity: 0, animationFillMode: 'forwards' }}
+        >
+          {!imageLoaded && (
+            <Skeleton className="absolute inset-0 bg-white/20" />
+          )}
+          <div 
+            className="w-full h-full"
+            style={{ transform: `translateY(${offset * 0.05}px)` }}
+          >
+            <img
+              src={heroMainImage}
+              alt="Woman showcasing Sister Storage jewelry organization solution"
+              className="w-full h-full object-cover"
+              loading="eager"
+              decoding="async"
+              fetchPriority="high"
+              onLoad={() => setImageLoaded(true)}
+            />
+          </div>
+        </div>
+
+        {/* Foreground Layer: Pink Content Section (slides from left) */}
+        <div className="relative z-10 min-h-screen flex items-center justify-start pt-0">
+          <div className="bg-[hsl(var(--brand-pink))] flex items-center animate-slide-in-left w-full md:w-[60vw] lg:w-[55vw] shadow-2xl rounded-r-[3rem]">
             <div className="grid grid-cols-2 w-full py-4 md:py-6 lg:py-8">
               <div className="col-span-1"></div>
               
@@ -155,26 +179,6 @@ const Hero = () => {
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* Parallax Image Container - After content */}
-        <div className="relative w-full min-h-[70vh] overflow-hidden bg-[hsl(var(--brand-pink))]">
-          {!imageLoaded && (
-            <Skeleton className="absolute inset-0 bg-white/20 max-w-4xl mx-auto my-12" />
-          )}
-          <div 
-            className="w-full h-full flex items-center justify-center py-12"
-            style={{ transform: `translateY(${offset * 0.05}px)` }}
-          >
-            <img
-              src={heroMainImage}
-              alt="Woman showcasing Sister Storage jewelry organization solution"
-              className="w-full max-w-4xl h-auto object-contain"
-              loading="eager"
-              decoding="async"
-              onLoad={() => setImageLoaded(true)}
-            />
           </div>
         </div>
       </div>
