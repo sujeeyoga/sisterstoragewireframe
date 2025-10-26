@@ -96,9 +96,6 @@ const BestSeller = () => {
   return <section ref={ref} className="pt-[60px] md:pt-[120px] pb-8 md:pb-12 bg-[hsl(var(--brand-pink))]">
       <div className="max-w-[2304px] md:max-w-[1356px] mx-auto px-2">
         <div className="text-center max-w-3xl mx-auto mb-16 md:mb-20">
-          <span className="inline-block px-6 py-2.5 bg-white text-[hsl(var(--brand-pink))] text-sm font-bold rounded-full mb-6 shadow-lg">
-            Shop Now
-          </span>
           <h2 className="text-4xl md:text-6xl lg:text-7xl font-black text-white mb-8 leading-[0.95] tracking-wide">
             BEST SELLERS
           </h2>
