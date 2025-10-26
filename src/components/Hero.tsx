@@ -103,6 +103,12 @@ const Hero = () => {
 
       {/* Desktop: Overlay Layout */}
       <div className="hidden md:block relative min-h-screen overflow-hidden">
+        {/* Pink Loading Background Layer (slides from left, fastest) */}
+        <div 
+          className="absolute inset-0 z-0 bg-[hsl(var(--brand-pink))] animate-slide-in-left"
+          style={{ animationDelay: '0.1s', animationDuration: '0.8s' }}
+        />
+        
         {/* Background Layer: Hero Image (fades in with delay) */}
         <div 
           className="absolute inset-0 z-0 animate-fade-in"
