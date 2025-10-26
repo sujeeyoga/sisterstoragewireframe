@@ -3,7 +3,7 @@ import { SisterStoriesCarousel } from './SisterStoriesCarousel';
 
 const CommunityStoriesCarousels = () => {
   return (
-    <section className="mt-0 py-12 md:py-16 bg-[hsl(var(--brand-gray))] overflow-x-hidden relative z-10">
+    <section className="mt-0 md:-mt-16 lg:-mt-24 py-12 md:py-16 bg-[hsl(var(--brand-gray))] overflow-x-hidden relative z-10">
       {/* Header */}
       <div className="container-custom text-center mb-12">
         <h2 className="text-3xl md:text-4xl lg:text-6xl font-black mb-6 text-foreground tracking-wide">
