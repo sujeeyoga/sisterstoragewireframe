@@ -724,10 +724,17 @@ export const AdminDashboard = () => {
                           return;
                         }
                         
+                        // Map Stripe order to OrderDrawer format
                         setSelectedOrder({
                           ...data,
                           order_number: data.order_number,
                           customer_name: data.customer_name || 'Guest',
+                          customer_email: data.customer_email || '',
+                          date_created: data.created_at,
+                          billing: data.shipping_address || {},
+                          shipping: data.shipping_address || {},
+                          line_items: data.items || [],
+                          currency: 'CAD',
                           source: 'stripe'
                         });
                       } else {
@@ -742,7 +749,10 @@ export const AdminDashboard = () => {
                           return;
                         }
                         
-                        setSelectedOrder(data);
+                        setSelectedOrder({
+                          ...data,
+                          source: 'woocommerce'
+                        });
                       }
                     }}
                   >
