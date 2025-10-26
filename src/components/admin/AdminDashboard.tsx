@@ -305,7 +305,7 @@ export const AdminDashboard = () => {
   };
 
   return (
-    <div className="p-8 space-y-8">
+    <div className="container mx-auto p-4 md:p-6 lg:p-8 space-y-6 md:space-y-8 max-w-[1600px]">
       {/* Coming Soon Toggle */}
       <Card className="border-primary/20 bg-primary/5">
         <CardContent className="flex items-center justify-between py-4">
