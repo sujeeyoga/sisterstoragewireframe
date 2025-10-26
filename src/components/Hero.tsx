@@ -94,7 +94,6 @@ const Hero = () => {
               alt="Woman showcasing Sister Storage jewelry organization solution"
               className="w-full h-full object-cover"
               loading="eager"
-              fetchPriority="high"
               decoding="async"
               onLoad={() => setImageLoaded(true)}
             />
@@ -173,7 +172,6 @@ const Hero = () => {
               alt="Woman showcasing Sister Storage jewelry organization solution"
               className="w-full max-w-4xl h-auto object-contain"
               loading="eager"
-              fetchPriority="high"
               decoding="async"
               onLoad={() => setImageLoaded(true)}
             />
