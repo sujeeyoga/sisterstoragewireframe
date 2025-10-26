@@ -33,8 +33,8 @@ interface OrdersHeaderProps {
 const statusChips = [
   { value: 'all', label: 'All', color: 'bg-background border' },
   { value: 'pending', label: 'Pending', color: 'bg-amber-50 text-amber-700 border-amber-200' },
-  { value: 'processing', label: 'Paid', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
-  { value: 'completed', label: 'Fulfilled', color: 'bg-sky-50 text-sky-700 border-sky-200' },
+  { value: 'processing', label: 'Processing', color: 'bg-blue-50 text-blue-700 border-blue-200' },
+  { value: 'completed', label: 'Fulfilled', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
   { value: 'refunded', label: 'Refunded', color: 'bg-zinc-100 text-zinc-700 border-zinc-300' },
   { value: 'cancelled', label: 'Cancelled', color: 'bg-rose-50 text-rose-700 border-rose-200' },
 ];
