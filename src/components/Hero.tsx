@@ -133,11 +133,8 @@ const Hero = () => {
         {/* Foreground Layer: Pink Content Section (slides from left) */}
         <div className="relative z-10 min-h-screen flex items-center justify-start pt-0">
           <div className="bg-[hsl(var(--brand-pink))] flex items-center animate-slide-in-left w-full md:w-[60vw] lg:w-[55vw] shadow-2xl rounded-r-[3rem]" style={{ animationDelay: '0.3s' }}>
-            <div className="grid grid-cols-2 w-full py-4 md:py-6 lg:py-8">
-              <div className="col-span-1"></div>
-              
-              <div className="col-span-1 pr-2 md:pr-3 lg:pr-4 pt-8 md:pt-12 lg:pt-16">
-                <div className="flex flex-col gap-2 lg:gap-3 text-white">
+            <div className="w-full py-12 md:py-16 pl-3 pr-3 md:pr-6 lg:pr-8">
+              <div className="flex flex-col gap-2 lg:gap-3 text-white">
                   <EditableText
                     siteTextId={heroText.id}
                     field="title"
@@ -178,7 +175,6 @@ const Hero = () => {
                       as="p"
                       className="text-[10px] md:text-xs lg:text-sm font-light leading-relaxed tracking-wide"
                     />
-                  </div>
                 </div>
               </div>
             </div>
