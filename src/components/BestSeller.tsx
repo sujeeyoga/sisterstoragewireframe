@@ -95,16 +95,19 @@ const BestSeller = () => {
   }, [hasIntersected, isMobile]);
   return <section ref={ref} className="pt-[60px] md:pt-[120px] pb-8 md:pb-12 bg-[hsl(var(--brand-pink))]">
       <div className="max-w-[2304px] md:max-w-[1356px] mx-auto px-2">
-        <div className="text-center max-w-3xl mx-auto mb-16 md:mb-20">
-          <h2 className="text-4xl md:text-6xl lg:text-7xl font-black text-white mb-8 leading-[0.95] tracking-wide">
-            <span className="font-script font-bold italic text-[2em]">Best</span> SELLERS
-          </h2>
-          <p className="text-white text-lg md:text-xl leading-relaxed font-light">
-            Everyone's go-to organizers — and for good reason.
-          </p>
-        </div>
+        <div className="flex flex-col md:flex-row gap-12 md:gap-16 items-center">
+          {/* Text Content - Left Side */}
+          <div className="text-center md:text-left flex-shrink-0 md:w-auto">
+            <h2 className="text-4xl md:text-6xl lg:text-7xl font-black text-white mb-8 leading-[0.95] tracking-wide">
+              <span className="font-script font-bold italic text-[2em]">Best</span> SELLERS
+            </h2>
+            <p className="text-white text-lg md:text-xl leading-relaxed font-light max-w-md">
+              Everyone's go-to organizers — and for good reason.
+            </p>
+          </div>
         
-        <div className="flex flex-col md:flex-row gap-6 md:gap-8 max-w-[2304px] md:max-w-[1356px] mx-auto mt-16 mb-8 px-5 justify-center">
+        {/* Images Container - Right Side */}
+        <div className="flex flex-col md:flex-row gap-6 md:gap-8 mx-auto px-5 md:px-0 justify-center md:justify-start flex-1">
             <Card className={cn(
               "group border-none shadow-lg bg-white relative rounded-3xl overflow-hidden aspect-square w-full md:w-[400px]",
               "md:hover:shadow-2xl md:hover:-translate-y-2 md:transition-all md:duration-300",
@@ -223,6 +226,7 @@ const BestSeller = () => {
                 </div>
               </Link>
             </Card>
+        </div>
         </div>
         
         <div className="text-center mt-16 md:mt-20">
