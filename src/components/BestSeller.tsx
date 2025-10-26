@@ -107,7 +107,7 @@ const BestSeller = () => {
           </div>
         
         {/* Images Container - Right Side */}
-        <div className="flex flex-col md:flex-row gap-6 md:gap-8 w-full md:flex-1 justify-center md:justify-start items-center md:items-start">
+        <div className="flex flex-col gap-6 md:gap-8 w-full md:flex-1 justify-center items-center">
             <Card className={cn(
               "group border-none shadow-lg bg-white relative rounded-3xl overflow-hidden aspect-square w-full sm:w-[350px] md:w-[300px] lg:w-[350px]",
               "md:hover:shadow-2xl md:hover:-translate-y-2 md:transition-all md:duration-300",
