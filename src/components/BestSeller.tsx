@@ -112,9 +112,11 @@ const BestSeller = () => {
               "group border-none shadow-lg bg-white relative rounded-3xl overflow-hidden aspect-square",
               "md:hover:shadow-2xl md:hover:-translate-y-2 md:transition-all md:duration-300",
               "transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)]",
-              hasIntersected 
+              isMobile && hasIntersected 
                 ? "opacity-100 scale-100" 
-                : "opacity-0 scale-90"
+                : isMobile 
+                ? "opacity-0 scale-90"
+                : "opacity-100 scale-100"
             )}>
               <Link 
                 to="/shop" 
@@ -174,9 +176,11 @@ const BestSeller = () => {
               "group border-none shadow-lg bg-white relative rounded-3xl overflow-hidden aspect-square",
               "md:hover:shadow-2xl md:hover:-translate-y-2 md:transition-all md:duration-300",
               "transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] delay-150",
-              hasIntersected 
+              isMobile && hasIntersected 
                 ? "opacity-100 scale-100" 
-                : "opacity-0 scale-90"
+                : isMobile 
+                ? "opacity-0 scale-90"
+                : "opacity-100 scale-100"
             )}>
               <Link 
                 to={`/shop/${buyCards[1].id}`} 

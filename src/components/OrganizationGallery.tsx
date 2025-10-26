@@ -25,7 +25,7 @@ const OrganizationGallery = () => {
     <section className="py-16 md:py-24 lg:py-32 bg-white overflow-hidden">
       <div className="container-custom">
         {/* Header */}
-        <div className="text-center mb-16 md:mb-20 animate-fade-in">
+        <div className="text-center mb-16 md:mb-20 md:opacity-100 animate-fade-in">
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-foreground mb-4 tracking-tight leading-tight">
             ORGANIZATION MADE <span className="text-[hsl(var(--brand-pink))]">BEAUTIFUL</span>
           </h2>
@@ -39,7 +39,7 @@ const OrganizationGallery = () => {
           {/* First Image */}
           <div 
             onClick={() => navigate('/shop')}
-            className="relative w-full aspect-square rounded-3xl shadow-lg md:hover:shadow-2xl transition-shadow duration-300 group overflow-hidden animate-fade-in cursor-pointer"
+            className="relative w-full aspect-square rounded-3xl shadow-lg md:hover:shadow-2xl transition-shadow duration-300 group overflow-hidden md:opacity-100 animate-fade-in cursor-pointer"
           >
             {!loadedImages[0] && (
               <Skeleton className="absolute inset-0" />
@@ -57,7 +57,7 @@ const OrganizationGallery = () => {
           {/* Second Image */}
           <div 
             onClick={() => navigate('/shop')}
-            className="relative w-full aspect-[3/4] rounded-3xl shadow-lg md:hover:shadow-2xl transition-shadow duration-300 group overflow-hidden animate-fade-in cursor-pointer"
+            className="relative w-full aspect-[3/4] rounded-3xl shadow-lg md:hover:shadow-2xl transition-shadow duration-300 group overflow-hidden md:opacity-100 animate-fade-in cursor-pointer"
           >
             {!loadedImages[1] && (
               <Skeleton className="absolute inset-0" />
@@ -75,7 +75,7 @@ const OrganizationGallery = () => {
           {/* Third Image */}
           <div 
             onClick={() => navigate('/shop')}
-            className="relative w-full aspect-square rounded-3xl shadow-lg md:hover:shadow-2xl transition-shadow duration-300 group overflow-hidden animate-fade-in cursor-pointer"
+            className="relative w-full aspect-square rounded-3xl shadow-lg md:hover:shadow-2xl transition-shadow duration-300 group overflow-hidden md:opacity-100 animate-fade-in cursor-pointer"
           >
             {!loadedImages[2] && (
               <Skeleton className="absolute inset-0" />
