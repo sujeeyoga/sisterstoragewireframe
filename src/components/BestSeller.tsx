@@ -109,10 +109,10 @@ const BestSeller = () => {
         
         <div className="flex flex-col md:flex-row gap-6 md:gap-8 max-w-[2304px] md:max-w-[1356px] mx-auto mt-16 mb-8 px-5 justify-center">
             <Card className={cn(
-              "group border-none shadow-lg bg-white relative rounded-3xl overflow-hidden aspect-square",
+              "group border-none shadow-lg bg-white relative rounded-3xl overflow-hidden aspect-square w-full md:w-[400px]",
               "md:hover:shadow-2xl md:hover:-translate-y-2 md:transition-all md:duration-300",
               "transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)]",
-              isMobile && hasIntersected 
+              isMobile && hasIntersected
                 ? "opacity-100 scale-100" 
                 : isMobile 
                 ? "opacity-0 scale-90"
@@ -173,10 +173,10 @@ const BestSeller = () => {
             </Card>
 
             <Card className={cn(
-              "group border-none shadow-lg bg-white relative rounded-3xl overflow-hidden aspect-square",
+              "group border-none shadow-lg bg-white relative rounded-3xl overflow-hidden aspect-square w-full md:w-[400px]",
               "md:hover:shadow-2xl md:hover:-translate-y-2 md:transition-all md:duration-300",
               "transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] delay-150",
-              isMobile && hasIntersected 
+              isMobile && hasIntersected
                 ? "opacity-100 scale-100" 
                 : isMobile 
                 ? "opacity-0 scale-90"
