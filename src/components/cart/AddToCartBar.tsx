@@ -104,25 +104,25 @@ const AddToCartBar: React.FC<AddToCartBarProps> = ({ product, className }) => {
     <div
       className={cn(
         // keep this below the drawer/backdrop (which is z-[100000])
-        "flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 relative z-0",
+        "flex flex-row items-center gap-2 md:gap-3 relative z-0",
         className
       )}
     >
       <Button
         variant="outline"
-        className="flex-1 font-bold text-sm py-3 shadow-md hover:shadow-lg transition-all duration-300"
+        className="flex-1 font-bold text-xs sm:text-sm py-2.5 sm:py-3 shadow-md hover:shadow-lg transition-all duration-300 whitespace-nowrap"
         onClick={handleAddToCart}
         type="button"
         disabled={isAdding}
       >
-        <ShoppingBag className="h-4 w-4 mr-2" />
+        <ShoppingBag className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
         {isAdding ? "Adding…" : "Add to Cart"}
       </Button>
 
       <Button
         variant="buy"
         size="buy"
-        className="flex-1 font-bold text-sm py-3 shadow-lg hover:shadow-xl transition-all duration-300"
+        className="flex-1 font-bold text-xs sm:text-sm py-2.5 sm:py-3 shadow-lg hover:shadow-xl transition-all duration-300 whitespace-nowrap"
         onClick={handleBuyNow}
         type="button"
       >
