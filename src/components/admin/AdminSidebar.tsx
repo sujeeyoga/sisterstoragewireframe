@@ -17,26 +17,71 @@ import {
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
 
-const menuItems = [
-  { title: 'Dashboard', url: '/admin', icon: LayoutDashboard, end: true },
-  { title: 'Customers', url: '/admin/customers', icon: Users, end: false },
-  { title: 'Hero Images', url: '/admin/hero-images', icon: Image, end: false },
-  { title: 'Images', url: '/admin/images', icon: Image, end: false },
-  { title: 'Launch Cards', url: '/admin/launch-cards', icon: Sparkles, end: false },
-  { title: 'Optimize Images', url: '/admin/optimize-images', icon: Sparkles, end: false },
-  { title: 'Orders', url: '/admin/orders', icon: ShoppingCart, end: false },
-  { title: 'Pages', url: '/admin/pages', icon: FileText, end: false },
-  { title: 'Products', url: '/admin/products', icon: Package, end: false },
-  { title: 'Sections', url: '/admin/sections', icon: Layout, end: false },
-  { title: 'Settings', url: '/admin/settings', icon: Settings, end: false },
-  { title: 'Stallion Shipping', url: '/admin/shipping', icon: PackageCheck, end: false },
-  { title: 'Shipping Settings', url: '/admin/shipping-settings', icon: DollarSign, end: false },
-  { title: 'Sister Stories', url: '/admin/sister-stories', icon: Film, end: false },
-  { title: 'Site Content', url: '/admin/texts', icon: Type, end: false },
-  { title: 'Uploads', url: '/admin/uploads', icon: FolderOpen, end: false },
-  { title: 'Videos', url: '/admin/videos', icon: Video, end: false },
-  { title: 'Waitlist Signups', url: '/admin/waitlist-signups', icon: Mail, end: false },
-  { title: 'WooCommerce Sync', url: '/admin/sync', icon: RefreshCw, end: false },
+const menuGroups = [
+  {
+    label: 'Overview',
+    items: [
+      { title: 'Dashboard', url: '/admin', icon: LayoutDashboard, end: true },
+    ]
+  },
+  {
+    label: 'Content',
+    items: [
+      { title: 'Pages', url: '/admin/pages', icon: FileText, end: false },
+      { title: 'Site Content', url: '/admin/texts', icon: Type, end: false },
+      { title: 'Sections', url: '/admin/sections', icon: Layout, end: false },
+    ]
+  },
+  {
+    label: 'Products',
+    items: [
+      { title: 'Products', url: '/admin/products', icon: Package, end: false },
+      { title: 'Launch Cards', url: '/admin/launch-cards', icon: Sparkles, end: false },
+    ]
+  },
+  {
+    label: 'Orders & Customers',
+    items: [
+      { title: 'Orders', url: '/admin/orders', icon: ShoppingCart, end: false },
+      { title: 'Customers', url: '/admin/customers', icon: Users, end: false },
+      { title: 'Waitlist Signups', url: '/admin/waitlist-signups', icon: Mail, end: false },
+    ]
+  },
+  {
+    label: 'Media',
+    items: [
+      { title: 'Hero Images', url: '/admin/hero-images', icon: Image, end: false },
+      { title: 'Images', url: '/admin/images', icon: Image, end: false },
+      { title: 'Optimize Images', url: '/admin/optimize-images', icon: Sparkles, end: false },
+      { title: 'Videos', url: '/admin/videos', icon: Video, end: false },
+      { title: 'Uploads', url: '/admin/uploads', icon: FolderOpen, end: false },
+    ]
+  },
+  {
+    label: 'Community',
+    items: [
+      { title: 'Sister Stories', url: '/admin/sister-stories', icon: Film, end: false },
+    ]
+  },
+  {
+    label: 'Shipping',
+    items: [
+      { title: 'Stallion Shipping', url: '/admin/shipping', icon: PackageCheck, end: false },
+      { title: 'Shipping Settings', url: '/admin/shipping-settings', icon: DollarSign, end: false },
+    ]
+  },
+  {
+    label: 'Integrations',
+    items: [
+      { title: 'WooCommerce Sync', url: '/admin/sync', icon: RefreshCw, end: false },
+    ]
+  },
+  {
+    label: 'Settings',
+    items: [
+      { title: 'Settings', url: '/admin/settings', icon: Settings, end: false },
+    ]
+  },
 ];
 
 export function AdminSidebar() {
@@ -81,28 +126,30 @@ export function AdminSidebar() {
       </div>
 
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-sm">Admin Panel</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {menuItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink 
-                      to={item.url} 
-                      end={item.end} 
-                      className={getNavCls}
-                      onClick={handleNavClick}
-                    >
-                      <item.icon className="h-4 w-4" />
-                      {!isCollapsed && <span className="text-sm">{item.title}</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {menuGroups.map((group) => (
+          <SidebarGroup key={group.label}>
+            {!isCollapsed && <SidebarGroupLabel className="text-xs text-muted-foreground">{group.label}</SidebarGroupLabel>}
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {group.items.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild>
+                      <NavLink 
+                        to={item.url} 
+                        end={item.end} 
+                        className={getNavCls}
+                        onClick={handleNavClick}
+                      >
+                        <item.icon className="h-4 w-4" />
+                        {!isCollapsed && <span className="text-sm">{item.title}</span>}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ))}
       </SidebarContent>
 
       <SidebarFooter className="border-t p-4">
