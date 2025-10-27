@@ -162,6 +162,7 @@ export type Database = {
           shipping_notification_sent_at: string | null
           stallion_shipment_id: string | null
           status: string
+          stripe_payment_intent_id: string | null
           stripe_session_id: string
           subtotal: number
           tax: number | null
@@ -187,6 +188,7 @@ export type Database = {
           shipping_notification_sent_at?: string | null
           stallion_shipment_id?: string | null
           status?: string
+          stripe_payment_intent_id?: string | null
           stripe_session_id: string
           subtotal: number
           tax?: number | null
@@ -212,6 +214,7 @@ export type Database = {
           shipping_notification_sent_at?: string | null
           stallion_shipment_id?: string | null
           status?: string
+          stripe_payment_intent_id?: string | null
           stripe_session_id?: string
           subtotal?: number
           tax?: number | null
@@ -220,6 +223,50 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      refunds: {
+        Row: {
+          amount: number
+          created_at: string | null
+          id: string
+          notes: string | null
+          order_id: string
+          processed_by: string | null
+          reason: string | null
+          stripe_refund_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          order_id: string
+          processed_by?: string | null
+          reason?: string | null
+          stripe_refund_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          order_id?: string
+          processed_by?: string | null
+          reason?: string | null
+          stripe_refund_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "refunds_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       shipping_fallback_settings: {
         Row: {

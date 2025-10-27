@@ -16,10 +16,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { format } from 'date-fns';
-import { Package, DollarSign, User, MapPin, CreditCard, Truck, ExternalLink, AlertTriangle } from 'lucide-react';
+import { Package, DollarSign, User, MapPin, CreditCard, Truck, ExternalLink, AlertTriangle, RefreshCw } from 'lucide-react';
 import { StallionFulfillmentDialog } from './StallionFulfillmentDialog';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 interface OrderDrawerProps {
   order: {
@@ -39,6 +52,8 @@ interface OrderDrawerProps {
     shipping_label_url?: string;
     customer_name?: string;
     customer_email?: string;
+    stripe_payment_intent_id?: string;
+    refund_amount?: number;
   };
   open: boolean;
   onClose: () => void;
@@ -48,9 +63,44 @@ interface OrderDrawerProps {
 export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawerProps) {
   const [newStatus, setNewStatus] = useState(order.status);
   const [fulfillmentDialogOpen, setFulfillmentDialogOpen] = useState(false);
+  const [refundDialogOpen, setRefundDialogOpen] = useState(false);
+  const [refundAmount, setRefundAmount] = useState<string>(order.total.toString());
+  const [refundReason, setRefundReason] = useState('requested_by_customer');
+  const [refundNotes, setRefundNotes] = useState('');
+  const [isRefunding, setIsRefunding] = useState(false);
 
   const handleStatusUpdate = () => {
     onStatusUpdate(newStatus);
+  };
+  
+  const handleRefund = async () => {
+    setIsRefunding(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('create-refund', {
+        body: {
+          orderId: order.id,
+          amount: parseFloat(refundAmount),
+          reason: refundReason,
+          notes: refundNotes,
+        },
+      });
+
+      if (error) throw error;
+
+      if (data.success) {
+        toast.success(`Refund of $${parseFloat(refundAmount).toFixed(2)} processed successfully`);
+        setRefundDialogOpen(false);
+        onStatusUpdate('refunded');
+        onClose();
+      } else {
+        throw new Error(data.error || 'Refund failed');
+      }
+    } catch (error: any) {
+      console.error('Refund error:', error);
+      toast.error(error.message || 'Failed to process refund');
+    } finally {
+      setIsRefunding(false);
+    }
   };
   
   const validateTrackingNumber = (trackingNum: string): boolean => {
@@ -436,6 +486,56 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
 
           <Separator />
 
+          {/* Refund Management */}
+          {order.status === 'refunded' ? (
+            <div className="space-y-3">
+              <h3 className="font-semibold flex items-center gap-2">
+                <RefreshCw className="h-4 w-4" />
+                Refund Information
+              </h3>
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-red-900">Order Refunded</span>
+                  <Badge variant="outline" className="bg-red-100 text-red-700 border-red-300">
+                    ${(order.refund_amount || order.total).toFixed(2)}
+                  </Badge>
+                </div>
+                <p className="text-xs text-red-700 mt-2">
+                  This order has been refunded to the customer's original payment method.
+                </p>
+              </div>
+            </div>
+          ) : order.stripe_payment_intent_id ? (
+            <div className="space-y-3">
+              <h3 className="font-semibold flex items-center gap-2">
+                <RefreshCw className="h-4 w-4" />
+                Refund Management
+              </h3>
+              <Button 
+                onClick={() => setRefundDialogOpen(true)}
+                variant="destructive"
+                className="w-full"
+              >
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Process Stripe Refund
+              </Button>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              <h3 className="font-semibold flex items-center gap-2">
+                <RefreshCw className="h-4 w-4" />
+                Refund Management
+              </h3>
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                <p className="text-xs text-amber-900">
+                  This order cannot be refunded automatically. Please process the refund manually in the Stripe Dashboard.
+                </p>
+              </div>
+            </div>
+          )}
+
+          <Separator />
+
           {/* Order Total */}
           <div className="space-y-3">
             <h3 className="font-semibold flex items-center gap-2">
@@ -504,6 +604,81 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
             onClose();
           }}
         />
+
+        <AlertDialog open={refundDialogOpen} onOpenChange={setRefundDialogOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Process Stripe Refund</AlertDialogTitle>
+              <AlertDialogDescription>
+                Issue a refund to the customer's original payment method. This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="refundAmount">Refund Amount (CAD)</Label>
+                <Input
+                  id="refundAmount"
+                  type="number"
+                  step="0.01"
+                  min="0.01"
+                  max={order.total}
+                  value={refundAmount}
+                  onChange={(e) => setRefundAmount(e.target.value)}
+                  placeholder={order.total.toString()}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Order total: ${order.total.toFixed(2)} CAD
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="refundReason">Reason</Label>
+                <Select value={refundReason} onValueChange={setRefundReason}>
+                  <SelectTrigger id="refundReason">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="requested_by_customer">Requested by Customer</SelectItem>
+                    <SelectItem value="duplicate">Duplicate Order</SelectItem>
+                    <SelectItem value="fraudulent">Fraudulent</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="refundNotes">Notes (Optional)</Label>
+                <Input
+                  id="refundNotes"
+                  value={refundNotes}
+                  onChange={(e) => setRefundNotes(e.target.value)}
+                  placeholder="Internal notes about this refund"
+                />
+              </div>
+            </div>
+
+            <AlertDialogFooter>
+              <AlertDialogCancel disabled={isRefunding}>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleRefund();
+                }}
+                disabled={isRefunding || !refundAmount || parseFloat(refundAmount) <= 0}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                {isRefunding ? (
+                  <>
+                    <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  <>Refund ${parseFloat(refundAmount || '0').toFixed(2)}</>
+                )}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </SheetContent>
     </Sheet>
   );

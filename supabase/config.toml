@@ -38,3 +38,6 @@ verify_jwt = false
 
 [functions.fix-order-shipping]
 verify_jwt = false
+
+[functions.create-refund]
+verify_jwt = true

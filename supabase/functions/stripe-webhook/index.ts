@@ -175,6 +175,7 @@ serve(async (req) => {
         .from('orders')
         .insert({
           stripe_session_id: session.id,
+          stripe_payment_intent_id: session.payment_intent as string,
           customer_email: customerEmail,
           customer_name: emailData.customerName,
           order_number: emailData.orderNumber,
