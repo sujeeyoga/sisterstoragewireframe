@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -7,8 +7,18 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
-import { Shield, Users, Key, Database, Mail, Truck, Plus } from 'lucide-react';
+import { Shield, Users, Key, Database, Mail, Truck, Plus, X } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Dialog,
@@ -38,6 +48,17 @@ export function AdminSettings() {
   const [addAdminOpen, setAddAdminOpen] = useState(false);
   const [newAdminEmail, setNewAdminEmail] = useState('');
   const [emailError, setEmailError] = useState('');
+  const [deleteAdminId, setDeleteAdminId] = useState<string | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+
+  // Get current user ID
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) {
+        setCurrentUserId(data.user.id);
+      }
+    });
+  }, []);
 
   // Fetch admin users with emails
   const { data: adminUsers, isLoading } = useQuery({
@@ -86,6 +107,40 @@ export function AdminSettings() {
         description: error.message || "Failed to send invitation",
         variant: "destructive",
       });
+    }
+  });
+
+  // Delete admin mutation
+  const deleteAdminMutation = useMutation({
+    mutationFn: async (userId: string) => {
+      const { data, error } = await supabase.rpc('remove_admin_role', {
+        target_user_id: userId
+      });
+
+      if (error) throw error;
+      
+      // Type guard for the response
+      if (data && typeof data === 'object' && 'error' in data) {
+        throw new Error(data.error as string);
+      }
+      
+      return data;
+    },
+    onSuccess: () => {
+      toast({
+        title: "Admin Removed",
+        description: "Admin role has been removed successfully",
+      });
+      queryClient.invalidateQueries({ queryKey: ['admin-users'] });
+      setDeleteAdminId(null);
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to remove admin",
+        variant: "destructive",
+      });
+      setDeleteAdminId(null);
     }
   });
 
@@ -218,7 +273,19 @@ export function AdminSettings() {
                               </span>
                             </div>
                           </div>
-                          <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">Admin</span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">Admin</span>
+                            {admin.user_id !== currentUserId && (
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                                onClick={() => setDeleteAdminId(admin.user_id)}
+                              >
+                                <X className="h-4 w-4" />
+                              </Button>
+                            )}
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -227,6 +294,27 @@ export function AdminSettings() {
                   )}
                 </div>
               </div>
+
+              {/* Delete Admin Confirmation Dialog */}
+              <AlertDialog open={!!deleteAdminId} onOpenChange={(open) => !open && setDeleteAdminId(null)}>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Remove Admin Access</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Are you sure you want to remove admin access for this user? They will no longer be able to access admin features.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={() => deleteAdminId && deleteAdminMutation.mutate(deleteAdminId)}
+                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    >
+                      Remove Admin
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
 
               <Separator />
 

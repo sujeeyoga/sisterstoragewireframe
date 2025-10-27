@@ -863,6 +863,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      remove_admin_role: {
+        Args: { delete_user?: boolean; target_user_id: string }
+        Returns: Json
+      }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
