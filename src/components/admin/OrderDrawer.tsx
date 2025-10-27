@@ -247,6 +247,24 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
                 );
               })}
             </div>
+            
+            {/* Shipping Information */}
+            <div className="mt-4 bg-primary/5 border border-primary/20 rounded-lg p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Truck className="h-4 w-4 text-primary" />
+                  <span className="font-medium text-sm">Shipping Cost</span>
+                </div>
+                <span className="text-lg font-bold text-primary">
+                  ${(Number((order as any).shipping || 0)).toFixed(2)}
+                </span>
+              </div>
+              {(order as any).shipping === 0 && (
+                <p className="text-xs text-muted-foreground mt-2">
+                  Free shipping or included in item price
+                </p>
+              )}
+            </div>
           </div>
 
           <Separator />
