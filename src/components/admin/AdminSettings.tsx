@@ -21,7 +21,7 @@ export function AdminSettings() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('user_roles')
-        .select('*, auth.users(email)')
+        .select('*')
         .eq('role', 'admin');
       
       if (error) throw error;
