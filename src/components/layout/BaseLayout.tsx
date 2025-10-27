@@ -37,10 +37,17 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
   const { position } = useScrollDirection(10);
   const isMobile = useIsMobile();
   const navRef = useRef<HTMLDivElement | null>(null);
+  const [isLoading, setIsLoading] = React.useState(true);
   
   // Track visitor presence (only track for non-admin pages)
   const shouldTrack = !location.pathname.startsWith('/admin');
   useVisitorPresence(shouldTrack);
+
+  // Set loading to false after component mounts
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 500);
+    return () => clearTimeout(timer);
+  }, []);
 
   // ===== UTILITY FUNCTIONS =====
   const getBackgroundClasses = () => {
@@ -166,7 +173,9 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
         ref={navRef} 
         className="fixed top-10 left-0 right-0 z-50 py-3"
       >
-        <div className="w-[min(1100px,calc(100%-40px))] mx-auto rounded-[25px] bg-white shadow-lg px-4 py-2">
+        <div className={`w-[min(1100px,calc(100%-40px))] mx-auto rounded-[25px] shadow-lg px-4 py-2 transition-colors duration-300 ${
+          isLoading ? 'bg-[hsl(var(--brand-pink)/0.2)]' : 'bg-white'
+        }`}>
           <Navbar position={position} />
         </div>
       </nav>
