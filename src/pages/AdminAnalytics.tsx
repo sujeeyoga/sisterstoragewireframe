@@ -7,6 +7,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { subDays, startOfDay, endOfDay } from 'date-fns';
 import { useAbandonedCartAnalytics } from '@/hooks/useAbandonedCartAnalytics';
 import { useOrderAnalytics } from '@/hooks/useOrderAnalytics';
+import { useOrderTimeSeriesAnalytics } from '@/hooks/useOrderTimeSeriesAnalytics';
+import { useAbandonedCartTimeSeriesAnalytics } from '@/hooks/useAbandonedCartTimeSeriesAnalytics';
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Area, AreaChart, ComposedChart } from 'recharts';
 
 const AdminAnalytics = () => {
   const navigate = useNavigate();
@@ -20,6 +23,8 @@ const AdminAnalytics = () => {
 
   const { data: abandonedCartData, isLoading: isLoadingAbandoned } = useAbandonedCartAnalytics(dateRangeValues);
   const { data: orderData, isLoading: isLoadingOrders } = useOrderAnalytics(dateRangeValues);
+  const { data: orderTimeSeries } = useOrderTimeSeriesAnalytics(dateRangeValues);
+  const { data: abandonedCartTimeSeries } = useAbandonedCartTimeSeriesAnalytics(dateRangeValues);
 
   const reportCards = [
     {
@@ -195,24 +200,156 @@ const AdminAnalytics = () => {
         </div>
       </div>
 
-      {/* Placeholder for Charts */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Visual Analytics</CardTitle>
-          <CardDescription>
-            Revenue trends, order volumes, and performance metrics
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="h-[300px] flex items-center justify-center text-muted-foreground">
-            <div className="text-center">
-              <TrendingUp className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p>Advanced analytics charts coming soon</p>
-              <p className="text-sm">Revenue, orders, and product performance visualization</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Visual Analytics */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        {/* Revenue & Orders Chart */}
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle>Revenue & Orders Trend</CardTitle>
+            <CardDescription>
+              Daily revenue and order volume over time
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {orderTimeSeries && orderTimeSeries.length > 0 ? (
+              <ResponsiveContainer width="100%" height={350}>
+                <ComposedChart data={orderTimeSeries}>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                  <XAxis 
+                    dataKey="date" 
+                    className="text-xs"
+                    tickFormatter={(value) => new Date(value).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                  />
+                  <YAxis yAxisId="left" className="text-xs" />
+                  <YAxis yAxisId="right" orientation="right" className="text-xs" />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'hsl(var(--background))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '8px'
+                    }}
+                    formatter={(value: number, name: string) => {
+                      if (name === 'revenue') return [`$${value.toFixed(2)}`, 'Revenue'];
+                      if (name === 'orders') return [value, 'Orders'];
+                      return [value, name];
+                    }}
+                  />
+                  <Legend />
+                  <Area 
+                    yAxisId="left"
+                    type="monotone" 
+                    dataKey="revenue" 
+                    fill="hsl(var(--primary))" 
+                    stroke="hsl(var(--primary))" 
+                    fillOpacity={0.2}
+                    name="Revenue ($)"
+                  />
+                  <Line 
+                    yAxisId="right"
+                    type="monotone" 
+                    dataKey="orders" 
+                    stroke="hsl(var(--secondary))" 
+                    strokeWidth={2}
+                    name="Orders"
+                    dot={{ fill: 'hsl(var(--secondary))' }}
+                  />
+                </ComposedChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="h-[350px] flex items-center justify-center text-muted-foreground">
+                <div className="text-center">
+                  <TrendingUp className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>No order data available for this period</p>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Abandoned Cart Recovery Chart */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Abandoned Cart Recovery</CardTitle>
+            <CardDescription>
+              Daily abandoned vs recovered carts
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {abandonedCartTimeSeries && abandonedCartTimeSeries.length > 0 ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={abandonedCartTimeSeries}>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                  <XAxis 
+                    dataKey="date" 
+                    className="text-xs"
+                    tickFormatter={(value) => new Date(value).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                  />
+                  <YAxis className="text-xs" />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'hsl(var(--background))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '8px'
+                    }}
+                  />
+                  <Legend />
+                  <Bar dataKey="abandoned" fill="hsl(var(--destructive))" name="Abandoned" />
+                  <Bar dataKey="recovered" fill="hsl(var(--primary))" name="Recovered" />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="h-[300px] flex items-center justify-center text-muted-foreground">
+                <p>No abandoned cart data</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Recovery Rate Trend */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Recovery Rate Trend</CardTitle>
+            <CardDescription>
+              Percentage of recovered carts over time
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {abandonedCartTimeSeries && abandonedCartTimeSeries.length > 0 ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <AreaChart data={abandonedCartTimeSeries}>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                  <XAxis 
+                    dataKey="date" 
+                    className="text-xs"
+                    tickFormatter={(value) => new Date(value).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                  />
+                  <YAxis className="text-xs" unit="%" />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'hsl(var(--background))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '8px'
+                    }}
+                    formatter={(value: number) => [`${value}%`, 'Recovery Rate']}
+                  />
+                  <Area 
+                    type="monotone" 
+                    dataKey="recoveryRate" 
+                    stroke="hsl(var(--primary))" 
+                    fill="hsl(var(--primary))"
+                    fillOpacity={0.3}
+                    name="Recovery Rate"
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="h-[300px] flex items-center justify-center text-muted-foreground">
+                <p>No recovery data</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };
