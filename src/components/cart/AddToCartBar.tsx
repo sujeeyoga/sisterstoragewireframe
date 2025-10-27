@@ -110,19 +110,19 @@ const AddToCartBar: React.FC<AddToCartBarProps> = ({ product, className }) => {
     >
       <Button
         variant="outline"
-        className="flex-1 min-w-[120px] font-bold text-sm py-3 shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden"
+        className="flex-1 min-w-[120px] font-bold text-xs py-3 shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden"
         onClick={handleAddToCart}
         type="button"
         disabled={isAdding}
       >
-        <ShoppingBag className="h-4 w-4 mr-2 flex-shrink-0" />
+        <ShoppingBag className="h-3.5 w-3.5 mr-2 flex-shrink-0" />
         <span className="truncate">{isAdding ? "Adding…" : "Add to Cart"}</span>
       </Button>
 
       <Button
         variant="buy"
         size="buy"
-        className="flex-1 min-w-[100px] font-bold text-sm py-3 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden"
+        className="flex-1 min-w-[100px] font-bold text-xs py-3 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden"
         onClick={handleBuyNow}
         type="button"
       >
