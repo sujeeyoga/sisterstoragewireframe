@@ -358,5 +358,6 @@ export function BulkShippingRefundTool() {
         )}
       </CardContent>
     </Card>
+    </div>
   );
 }
