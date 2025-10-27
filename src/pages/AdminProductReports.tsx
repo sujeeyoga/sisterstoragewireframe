@@ -20,26 +20,50 @@ const AdminProductReports = () => {
     return { start: subDays(end, days), end };
   }, [dateRange]);
 
-  // Fetch product performance data
-  const { data: productPerformance } = useQuery({
+  // Fetch product performance data from both WooCommerce and Stripe orders
+  const { data: productPerformance, isLoading: isLoadingProducts } = useQuery({
     queryKey: ['product-performance', dateRangeValues],
     queryFn: async () => {
+      // Fetch WooCommerce orders
       const { data: wooOrders } = await supabase
         .from('woocommerce_orders')
         .select('line_items')
         .gte('date_created', dateRangeValues.start.toISOString())
         .lte('date_created', dateRangeValues.end.toISOString());
 
+      // Fetch Stripe orders
+      const { data: stripeOrders } = await supabase
+        .from('orders')
+        .select('items')
+        .gte('created_at', dateRangeValues.start.toISOString())
+        .lte('created_at', dateRangeValues.end.toISOString());
+
       const productMap = new Map<string, { name: string; quantity: number; revenue: number; orders: number }>();
 
+      // Process WooCommerce orders
       wooOrders?.forEach(order => {
         const items = order.line_items as any[];
         items?.forEach(item => {
           const existing = productMap.get(item.name) || { name: item.name, quantity: 0, revenue: 0, orders: 0 };
           productMap.set(item.name, {
             name: item.name,
-            quantity: existing.quantity + item.quantity,
-            revenue: existing.revenue + (item.total || 0),
+            quantity: existing.quantity + (item.quantity || 1),
+            revenue: existing.revenue + Number(item.total || 0),
+            orders: existing.orders + 1
+          });
+        });
+      });
+
+      // Process Stripe orders
+      stripeOrders?.forEach(order => {
+        const items = order.items as any[];
+        items?.forEach(item => {
+          const productName = item.name || item.title || 'Unknown Product';
+          const existing = productMap.get(productName) || { name: productName, quantity: 0, revenue: 0, orders: 0 };
+          productMap.set(productName, {
+            name: productName,
+            quantity: existing.quantity + (item.quantity || 1),
+            revenue: existing.revenue + Number(item.price || 0) * (item.quantity || 1),
             orders: existing.orders + 1
           });
         });
@@ -117,13 +141,15 @@ const AdminProductReports = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">In Stock</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">Items Sold</CardTitle>
+            <Package className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{inventoryData?.inStock.length || 0}</div>
+            <div className="text-2xl font-bold">
+              {isLoadingProducts ? '...' : (productPerformance?.reduce((sum, p) => sum + p.quantity, 0) || 0)}
+            </div>
             <p className="text-xs text-muted-foreground">
-              Available products
+              Total units sold
             </p>
           </CardContent>
         </Card>
@@ -168,7 +194,11 @@ const AdminProductReports = () => {
             <CardDescription>Products by units sold</CardDescription>
           </CardHeader>
           <CardContent>
-            {topProducts.length > 0 ? (
+            {isLoadingProducts ? (
+              <div className="h-[350px] flex items-center justify-center text-muted-foreground">
+                Loading product data...
+              </div>
+            ) : topProducts.length > 0 ? (
               <ResponsiveContainer width="100%" height={350}>
                 <BarChart data={topProducts} layout="vertical">
                   <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
@@ -186,14 +216,24 @@ const AdminProductReports = () => {
                       border: '1px solid hsl(var(--border))',
                       borderRadius: '8px'
                     }}
+                    formatter={(value: number, name: string) => {
+                      if (name === 'Units Sold') return [value, name];
+                      return [value, name];
+                    }}
                   />
                   <Legend />
                   <Bar dataKey="quantity" fill="hsl(var(--primary))" name="Units Sold" />
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <div className="h-[350px] flex items-center justify-center text-muted-foreground">
-                No data available
+              <div className="h-[350px] flex items-center justify-center">
+                <div className="text-center">
+                  <Package className="h-12 w-12 mx-auto mb-4 opacity-50 text-muted-foreground" />
+                  <p className="text-muted-foreground">No sales data available</p>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Product sales will appear here once orders are placed
+                  </p>
+                </div>
               </div>
             )}
           </CardContent>
