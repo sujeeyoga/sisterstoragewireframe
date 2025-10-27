@@ -10,6 +10,7 @@ import { AdminSync } from '@/components/admin/AdminSync';
 import { CustomersTable } from '@/components/admin/CustomersTable';
 import { OrdersList } from '@/components/admin/OrdersList';
 import { StoreSettings } from '@/components/admin/StoreSettings';
+import { AdminSettings } from '@/components/admin/AdminSettings';
 import { ImageUploader } from '@/components/admin/ImageUploader';
 import { VideoUploader } from '@/components/admin/VideoUploader';
 import { SisterStoriesManager } from '@/components/admin/SisterStoriesManager';
@@ -64,7 +65,7 @@ const Admin = () => {
         <Route path="quick-optimize" element={<QuickOptimizer />} />
         <Route path="migrate-images" element={<ImageMigrationTool />} />
         <Route path="sync" element={<AdminSync />} />
-        <Route path="admin-settings" element={<StoreSettings />} />
+        <Route path="admin-settings" element={<AdminSettings />} />
         <Route path="store-settings" element={<StoreSettings />} />
         <Route path="images" element={<ImageUploader />} />
         <Route path="videos" element={<VideoUploader />} />
