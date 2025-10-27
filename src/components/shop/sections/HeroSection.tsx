@@ -69,10 +69,10 @@ const HeroSection: React.FC<HeroSectionProps> = ({ product }) => {
         {/* Text Content - Right Side */}
         <div className="flex items-center justify-center px-12 py-20 bg-background">
           <div className="max-w-xl">
-            <h1 className="text-6xl xl:text-7xl font-black uppercase tracking-tight text-foreground mb-6 animate-fade-in" style={{ animationDelay: '0.2s', animationFillMode: 'backwards' }}>
+            <h1 className="text-6xl xl:text-7xl font-black uppercase tracking-tight text-[hsl(var(--brand-pink))] mb-6 animate-fade-in" style={{ animationDelay: '0.2s', animationFillMode: 'backwards' }}>
               Shop
             </h1>
-            <p className="text-xl text-muted-foreground leading-relaxed animate-fade-in" style={{ animationDelay: '0.4s', animationFillMode: 'backwards' }}>
+            <p className="text-xl text-[hsl(var(--brand-pink))] leading-relaxed animate-fade-in" style={{ animationDelay: '0.4s', animationFillMode: 'backwards' }}>
               Discover our curated collection of beautiful storage solutions
             </p>
           </div>
