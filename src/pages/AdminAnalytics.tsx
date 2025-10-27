@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ShoppingCart, TrendingUp, Package, Users, Calendar } from 'lucide-react';
@@ -12,14 +12,14 @@ const AdminAnalytics = () => {
   const navigate = useNavigate();
   const [dateRange, setDateRange] = useState<'7d' | '30d' | '90d'>('30d');
   
-  const getDateRange = () => {
+  const dateRangeValues = useMemo(() => {
     const end = new Date();
     const start = subDays(end, dateRange === '7d' ? 7 : dateRange === '30d' ? 30 : 90);
     return { start, end };
-  };
+  }, [dateRange]);
 
-  const { data: abandonedCartData, isLoading: isLoadingAbandoned } = useAbandonedCartAnalytics(getDateRange());
-  const { data: orderData, isLoading: isLoadingOrders } = useOrderAnalytics(getDateRange());
+  const { data: abandonedCartData, isLoading: isLoadingAbandoned } = useAbandonedCartAnalytics(dateRangeValues);
+  const { data: orderData, isLoading: isLoadingOrders } = useOrderAnalytics(dateRangeValues);
 
   const reportCards = [
     {
