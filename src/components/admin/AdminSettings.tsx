@@ -31,7 +31,12 @@ import {
 import { z } from 'zod';
 
 const addAdminSchema = z.object({
-  email: z.string().email({ message: "Invalid email address" }).trim().toLowerCase(),
+  email: z.string()
+    .trim()
+    .min(1, { message: "Email is required" })
+    .max(255, { message: "Email must be less than 255 characters" })
+    .email({ message: "Invalid email address" })
+    .toLowerCase(),
 });
 
 interface AddAdminResponse {
@@ -229,7 +234,18 @@ export function AdminSettings() {
                                 setNewAdminEmail(e.target.value);
                                 setEmailError('');
                               }}
+                              onBlur={(e) => {
+                                // Real-time validation on blur
+                                const value = e.target.value.trim();
+                                if (value) {
+                                  const validation = addAdminSchema.safeParse({ email: value });
+                                  if (!validation.success) {
+                                    setEmailError(validation.error.errors[0].message);
+                                  }
+                                }
+                              }}
                               className={emailError ? 'border-destructive' : ''}
+                              maxLength={255}
                             />
                             {emailError && (
                               <p className="text-sm text-destructive">{emailError}</p>
@@ -248,7 +264,7 @@ export function AdminSettings() {
                             </Button>
                             <Button
                               onClick={handleAddAdmin}
-                              disabled={addAdminMutation.isPending || !newAdminEmail}
+                              disabled={addAdminMutation.isPending || !newAdminEmail.trim() || !!emailError}
                             >
                               {addAdminMutation.isPending ? 'Sending...' : 'Send Invitation'}
                             </Button>
