@@ -52,64 +52,103 @@ serve(async (req) => {
       throw new Error("Email is required");
     }
 
-    // Generate temporary password
-    const tempPassword = generateTemporaryPassword();
-    console.log("Generated temporary password for:", email);
+    // Check if user already exists
+    const { data: existingUsers } = await supabaseAdmin.auth.admin.listUsers();
+    const existingUser = existingUsers?.users?.find(u => u.email?.toLowerCase() === email.toLowerCase());
 
-    // Create the user with temporary password
-    const { data: userData, error: userError } = await supabaseAdmin.auth.admin.createUser({
-      email,
-      password: tempPassword,
-      email_confirm: true,
-      user_metadata: {
-        requires_password_reset: true,
-        account_created_by: 'admin_invitation',
-        invited_at: new Date().toISOString()
+    let userId: string;
+    let tempPassword: string | null = null;
+    let isNewUser = false;
+
+    if (existingUser) {
+      console.log("User already exists:", existingUser.id);
+      userId = existingUser.id;
+
+      // Check if they're already an admin
+      const { data: existingRole } = await supabaseAdmin
+        .from("user_roles")
+        .select("*")
+        .eq("user_id", userId)
+        .eq("role", "admin")
+        .maybeSingle();
+
+      if (existingRole) {
+        throw new Error("This user is already an admin");
       }
-    });
 
-    if (userError) throw userError;
-    if (!userData.user) throw new Error("User creation failed");
+      // User exists but isn't an admin - add admin role
+      const { error: roleError } = await supabaseAdmin
+        .from("user_roles")
+        .insert({
+          user_id: userId,
+          role: "admin"
+        });
 
-    console.log("User created:", userData.user.id);
+      if (roleError) throw roleError;
+      console.log("Admin role added to existing user:", userId);
+    } else {
+      // User doesn't exist - create new user
+      isNewUser = true;
+      tempPassword = generateTemporaryPassword();
+      console.log("Creating new user for:", email);
 
-    // Assign admin role
-    const { error: roleError } = await supabaseAdmin
-      .from("user_roles")
-      .insert({
-        user_id: userData.user.id,
-        role: "admin"
+      const { data: userData, error: userError } = await supabaseAdmin.auth.admin.createUser({
+        email,
+        password: tempPassword,
+        email_confirm: true,
+        user_metadata: {
+          requires_password_reset: true,
+          account_created_by: 'admin_invitation',
+          invited_at: new Date().toISOString()
+        }
       });
 
-    if (roleError) throw roleError;
+      if (userError) throw userError;
+      if (!userData.user) throw new Error("User creation failed");
 
-    console.log("Admin role assigned to user:", userData.user.id);
+      userId = userData.user.id;
+      console.log("User created:", userId);
 
-    // Send welcome email with temporary password
-    const { error: emailError } = await supabaseAdmin.functions.invoke('send-email', {
-      body: {
-        type: 'admin_welcome',
-        to: email,
-        data: {
-          email,
-          temporaryPassword: tempPassword,
-          loginUrl: `${Deno.env.get("SUPABASE_URL")?.replace('.supabase.co', '')}/admin`
+      // Assign admin role
+      const { error: roleError } = await supabaseAdmin
+        .from("user_roles")
+        .insert({
+          user_id: userId,
+          role: "admin"
+        });
+
+      if (roleError) throw roleError;
+      console.log("Admin role assigned to new user:", userId);
+    }
+
+    // Send welcome email only if it's a new user with temporary password
+    if (isNewUser && tempPassword) {
+      const { error: emailError } = await supabaseAdmin.functions.invoke('send-email', {
+        body: {
+          type: 'admin_welcome',
+          to: email,
+          data: {
+            email,
+            temporaryPassword: tempPassword,
+            loginUrl: `${Deno.env.get("SUPABASE_URL")?.replace('.supabase.co', '')}/admin`
+          }
         }
-      }
-    });
+      });
 
-    if (emailError) {
-      console.error("Error sending welcome email:", emailError);
-      // Don't fail the request if email fails
-    } else {
-      console.log("Welcome email sent to:", email);
+      if (emailError) {
+        console.error("Error sending welcome email:", emailError);
+        // Don't fail the request if email fails
+      } else {
+        console.log("Welcome email sent to:", email);
+      }
     }
 
     return new Response(
       JSON.stringify({ 
         success: true, 
-        userId: userData.user.id,
-        email: userData.user.email 
+        userId: userId,
+        email: email,
+        message: isNewUser ? 'Admin invited successfully' : 'Admin role restored successfully'
       }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -123,9 +162,9 @@ serve(async (req) => {
     let statusCode = 500;
     let errorMessage = error.message;
     
-    if (error.message?.includes("already been registered")) {
+    if (error.message?.includes("already an admin")) {
       statusCode = 409; // Conflict
-      errorMessage = "This email is already registered as an admin";
+      errorMessage = "This user is already an admin";
     } else if (error.message?.includes("Email is required")) {
       statusCode = 400; // Bad request
     }
