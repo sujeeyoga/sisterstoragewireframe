@@ -25,55 +25,19 @@ const menuGroups = [
     ]
   },
   {
+    label: 'Store',
+    items: [
+      { title: 'Orders', url: '/admin/orders', icon: ShoppingCart, end: false },
+      { title: 'Products', url: '/admin/products', icon: Package, end: false },
+      { title: 'Customers', url: '/admin/customers', icon: Users, end: false },
+    ]
+  },
+  {
     label: 'Content',
     items: [
       { title: 'Pages', url: '/admin/pages', icon: FileText, end: false },
-      { title: 'Site Content', url: '/admin/texts', icon: Type, end: false },
       { title: 'Sections', url: '/admin/sections', icon: Layout, end: false },
-    ]
-  },
-  {
-    label: 'Products',
-    items: [
-      { title: 'Products', url: '/admin/products', icon: Package, end: false },
-      { title: 'Launch Cards', url: '/admin/launch-cards', icon: Sparkles, end: false },
-    ]
-  },
-  {
-    label: 'Orders & Customers',
-    items: [
-      { title: 'Orders', url: '/admin/orders', icon: ShoppingCart, end: false },
-      { title: 'Customers', url: '/admin/customers', icon: Users, end: false },
-      { title: 'Waitlist Signups', url: '/admin/waitlist-signups', icon: Mail, end: false },
-    ]
-  },
-  {
-    label: 'Media',
-    items: [
-      { title: 'Hero Images', url: '/admin/hero-images', icon: Image, end: false },
-      { title: 'Images', url: '/admin/images', icon: Image, end: false },
-      { title: 'Optimize Images', url: '/admin/optimize-images', icon: Sparkles, end: false },
-      { title: 'Videos', url: '/admin/videos', icon: Video, end: false },
-      { title: 'Uploads', url: '/admin/uploads', icon: FolderOpen, end: false },
-    ]
-  },
-  {
-    label: 'Community',
-    items: [
-      { title: 'Sister Stories', url: '/admin/sister-stories', icon: Film, end: false },
-    ]
-  },
-  {
-    label: 'Shipping',
-    items: [
-      { title: 'Stallion Shipping', url: '/admin/shipping', icon: PackageCheck, end: false },
-      { title: 'Shipping Settings', url: '/admin/shipping-settings', icon: DollarSign, end: false },
-    ]
-  },
-  {
-    label: 'Integrations',
-    items: [
-      { title: 'WooCommerce Sync', url: '/admin/sync', icon: RefreshCw, end: false },
+      { title: 'Site Content', url: '/admin/texts', icon: Type, end: false },
     ]
   },
   {
