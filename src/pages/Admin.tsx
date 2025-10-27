@@ -64,7 +64,8 @@ const Admin = () => {
         <Route path="quick-optimize" element={<QuickOptimizer />} />
         <Route path="migrate-images" element={<ImageMigrationTool />} />
         <Route path="sync" element={<AdminSync />} />
-        <Route path="settings" element={<StoreSettings />} />
+        <Route path="admin-settings" element={<StoreSettings />} />
+        <Route path="store-settings" element={<StoreSettings />} />
         <Route path="images" element={<ImageUploader />} />
         <Route path="videos" element={<VideoUploader />} />
           <Route path="sister-stories" element={<SisterStoriesManager />} />

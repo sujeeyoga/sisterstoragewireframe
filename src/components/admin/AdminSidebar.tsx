@@ -44,7 +44,8 @@ const menuGroups = [
   {
     label: 'Settings',
     items: [
-      { title: 'Settings', url: '/admin/settings', icon: Settings, end: false },
+      { title: 'Admin Settings', url: '/admin/admin-settings', icon: Settings, end: false },
+      { title: 'Store Settings', url: '/admin/store-settings', icon: Package, end: false },
     ]
   },
 ];
