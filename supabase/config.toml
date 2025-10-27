@@ -41,3 +41,6 @@ verify_jwt = false
 
 [functions.create-refund]
 verify_jwt = true
+
+[functions.create-bulk-refund]
+verify_jwt = true

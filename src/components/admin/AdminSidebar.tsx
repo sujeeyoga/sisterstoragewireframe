@@ -32,6 +32,7 @@ const menuGroups = [
       { title: 'Orders', url: '/admin/orders', icon: ShoppingCart, end: false },
       { title: 'Products', url: '/admin/products', icon: Package, end: false },
       { title: 'Customers', url: '/admin/customers', icon: Users, end: false },
+      { title: 'Bulk Shipping Refund', url: '/admin/bulk-shipping-refund', icon: DollarSign, end: false },
     ]
   },
   {

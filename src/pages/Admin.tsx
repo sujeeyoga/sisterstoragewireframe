@@ -30,6 +30,7 @@ import { ShippingZonesManager } from '@/components/admin/ShippingZonesManager';
 import LaunchCardsManager from '@/components/admin/LaunchCardsManager';
 import WaitlistSignups from '@/components/admin/WaitlistSignups';
 import Uploads from '@/pages/Uploads';
+import { BulkShippingRefundTool } from '@/components/admin/BulkShippingRefundTool';
 
 const Admin = () => {
   // TODO: Re-enable admin role check when ready
@@ -65,6 +66,7 @@ const Admin = () => {
         <Route path="shipping" element={<StallionDashboard />} />
         <Route path="shipping-settings" element={<ShippingSettings />} />
         <Route path="shipping-zones" element={<ShippingZonesManager />} />
+        <Route path="bulk-shipping-refund" element={<BulkShippingRefundTool />} />
         <Route path="sections" element={<SectionsManager />} />
         <Route path="pages" element={<PagesManager />} />
         <Route path="texts" element={<TextsManager />} />
