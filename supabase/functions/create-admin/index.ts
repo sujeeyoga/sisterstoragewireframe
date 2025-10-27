@@ -118,11 +118,26 @@ serve(async (req) => {
     );
   } catch (error) {
     console.error("Error creating admin:", error);
+    
+    // Handle specific error cases
+    let statusCode = 500;
+    let errorMessage = error.message;
+    
+    if (error.message?.includes("already been registered")) {
+      statusCode = 409; // Conflict
+      errorMessage = "This email is already registered as an admin";
+    } else if (error.message?.includes("Email is required")) {
+      statusCode = 400; // Bad request
+    }
+    
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        success: false,
+        error: errorMessage 
+      }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 500,
+        status: statusCode,
       }
     );
   }
