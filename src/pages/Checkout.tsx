@@ -91,7 +91,11 @@ const Checkout = () => {
     phone: '',
   });
   const [validationErrors, setValidationErrors] = useState({
+    email: '',
+    firstName: '',
+    lastName: '',
     address: '',
+    city: '',
     province: '',
     postalCode: '',
   });
@@ -151,7 +155,7 @@ const Checkout = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
     
     // Clear validation errors when user types
-    if (name === 'address' || name === 'province' || name === 'postalCode') {
+    if (name in validationErrors) {
       setValidationErrors(prev => ({ ...prev, [name]: '' }));
     }
   };
@@ -235,20 +239,52 @@ const Checkout = () => {
     e.preventDefault();
     
     // Validate all required contact fields
-    if (!formData.email || !formData.firstName || !formData.lastName) {
-      toast({
-        title: 'Missing Contact Information',
-        description: 'Please fill in your name and email address.',
-        variant: 'destructive',
-      });
-      return;
+    const errors: typeof validationErrors = {
+      email: '',
+      firstName: '',
+      lastName: '',
+      address: '',
+      city: '',
+      province: '',
+      postalCode: '',
+    };
+    
+    let hasErrors = false;
+    
+    if (!formData.email) {
+      errors.email = 'Email is required';
+      hasErrors = true;
+    }
+    if (!formData.firstName) {
+      errors.firstName = 'First name is required';
+      hasErrors = true;
+    }
+    if (!formData.lastName) {
+      errors.lastName = 'Last name is required';
+      hasErrors = true;
+    }
+    if (!formData.address) {
+      errors.address = 'Street address is required';
+      hasErrors = true;
+    }
+    if (!formData.city) {
+      errors.city = 'City is required';
+      hasErrors = true;
+    }
+    if (!formData.province) {
+      errors.province = 'Province is required';
+      hasErrors = true;
+    }
+    if (!formData.postalCode) {
+      errors.postalCode = 'Postal code is required';
+      hasErrors = true;
     }
     
-    // Validate all required address fields
-    if (!formData.address || !formData.city || !formData.province || !formData.postalCode) {
+    if (hasErrors) {
+      setValidationErrors(errors);
       toast({
-        title: 'Missing Shipping Address',
-        description: 'Please complete your full shipping address.',
+        title: 'Missing Information',
+        description: 'Please fill in all required fields.',
         variant: 'destructive',
       });
       return;
@@ -427,8 +463,12 @@ const Checkout = () => {
                         name="firstName"
                         value={formData.firstName}
                         onChange={handleInputChange}
+                        className={validationErrors.firstName ? "border-red-500" : ""}
                         required
                       />
+                      {validationErrors.firstName && (
+                        <p className="text-sm text-red-500 mt-1">{validationErrors.firstName}</p>
+                      )}
                     </div>
                     <div>
                       <Label htmlFor="lastName">Last Name</Label>
@@ -437,8 +477,12 @@ const Checkout = () => {
                         name="lastName"
                         value={formData.lastName}
                         onChange={handleInputChange}
+                        className={validationErrors.lastName ? "border-red-500" : ""}
                         required
                       />
+                      {validationErrors.lastName && (
+                        <p className="text-sm text-red-500 mt-1">{validationErrors.lastName}</p>
+                      )}
                     </div>
                   </div>
                   <div>
@@ -450,8 +494,12 @@ const Checkout = () => {
                       placeholder="you@example.com"
                       value={formData.email}
                       onChange={handleInputChange}
+                      className={validationErrors.email ? "border-red-500" : ""}
                       required
                     />
+                    {validationErrors.email && (
+                      <p className="text-sm text-red-500 mt-1">{validationErrors.email}</p>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -474,9 +522,13 @@ const Checkout = () => {
                       placeholder="123 Main Street"
                       value={formData.address}
                       onChange={handleInputChange}
+                      className={validationErrors.address ? "border-red-500" : ""}
                       autoComplete="street-address"
                       required
                     />
+                    {validationErrors.address && (
+                      <p className="text-sm text-red-500 mt-1">{validationErrors.address}</p>
+                    )}
                   </div>
                   
                   <div className="space-y-4">
@@ -501,9 +553,13 @@ const Checkout = () => {
                             placeholder="Toronto"
                             value={formData.city}
                             onChange={handleInputChange}
+                            className={validationErrors.city ? "border-red-500" : ""}
                             autoComplete="address-level2"
                             required
                           />
+                          {validationErrors.city && (
+                            <p className="text-sm text-red-500 mt-1">{validationErrors.city}</p>
+                          )}
                         </div>
                         
                         {/* Province */}
