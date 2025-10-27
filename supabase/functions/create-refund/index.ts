@@ -78,14 +78,24 @@ serve(async (req) => {
 
     // Determine refund amount
     const refundAmount = amount || order.total;
+    
+    // Calculate total refunded so far
+    const previouslyRefunded = order.refund_amount || 0;
+    const remainingRefundable = order.total - previouslyRefunded;
 
-    if (refundAmount > order.total) {
-      throw new Error('Refund amount cannot exceed order total');
+    if (refundAmount > remainingRefundable) {
+      throw new Error(`Refund amount ($${refundAmount.toFixed(2)}) exceeds remaining refundable amount ($${remainingRefundable.toFixed(2)}). Already refunded: $${previouslyRefunded.toFixed(2)}`);
+    }
+    
+    if (refundAmount <= 0) {
+      throw new Error('Refund amount must be greater than 0');
     }
 
     console.log('Creating Stripe refund:', {
       payment_intent: order.stripe_payment_intent_id,
       amount: Math.round(refundAmount * 100),
+      previouslyRefunded,
+      remainingRefundable,
     });
 
     // Create refund in Stripe
@@ -97,12 +107,25 @@ serve(async (req) => {
 
     console.log('Stripe refund created:', refund.id);
 
+    // Calculate new total refunded amount
+    const newTotalRefunded = (order.refund_amount || 0) + refundAmount;
+    
+    // Determine if this is a full or partial refund
+    const isFullRefund = newTotalRefunded >= order.total;
+    const newStatus = isFullRefund ? 'refunded' : order.status;
+
+    console.log('Updating order:', {
+      newStatus,
+      newTotalRefunded,
+      isFullRefund,
+    });
+
     // Update order status
     const { error: updateError } = await supabaseAdmin
       .from('orders')
       .update({
-        status: 'refunded',
-        refund_amount: refundAmount,
+        status: newStatus,
+        refund_amount: newTotalRefunded,
         updated_at: new Date().toISOString(),
       })
       .eq('id', orderId);

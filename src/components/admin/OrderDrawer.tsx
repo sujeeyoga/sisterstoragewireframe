@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Sheet,
   SheetContent,
@@ -69,6 +69,14 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
   const [refundNotes, setRefundNotes] = useState('');
   const [isRefunding, setIsRefunding] = useState(false);
 
+  // Reset refund form when order changes
+  useEffect(() => {
+    setRefundAmount(order.total.toString());
+    setRefundReason('requested_by_customer');
+    setRefundNotes('');
+    setNewStatus(order.status);
+  }, [order.id, order.total, order.status]);
+
   const handleStatusUpdate = () => {
     onStatusUpdate(newStatus);
   };
@@ -88,9 +96,16 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
       if (error) throw error;
 
       if (data.success) {
-        toast.success(`Refund of $${parseFloat(refundAmount).toFixed(2)} processed successfully`);
+        const isFullRefund = parseFloat(refundAmount) >= order.total;
+        toast.success(
+          isFullRefund 
+            ? `Full refund of $${parseFloat(refundAmount).toFixed(2)} processed successfully`
+            : `Partial refund of $${parseFloat(refundAmount).toFixed(2)} processed successfully`
+        );
         setRefundDialogOpen(false);
-        onStatusUpdate('refunded');
+        if (isFullRefund) {
+          onStatusUpdate('refunded');
+        }
         onClose();
       } else {
         throw new Error(data.error || 'Refund failed');
@@ -495,15 +510,46 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
               </h3>
               <div className="bg-red-50 border border-red-200 rounded-lg p-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-red-900">Order Refunded</span>
+                  <span className="text-sm font-medium text-red-900">Order Fully Refunded</span>
                   <Badge variant="outline" className="bg-red-100 text-red-700 border-red-300">
                     ${(order.refund_amount || order.total).toFixed(2)}
                   </Badge>
                 </div>
                 <p className="text-xs text-red-700 mt-2">
-                  This order has been refunded to the customer's original payment method.
+                  This order has been fully refunded to the customer's original payment method.
                 </p>
               </div>
+            </div>
+          ) : order.refund_amount && order.refund_amount > 0 ? (
+            <div className="space-y-3">
+              <h3 className="font-semibold flex items-center gap-2">
+                <RefreshCw className="h-4 w-4" />
+                Partial Refund
+              </h3>
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-amber-900">Partial Refund Processed</span>
+                  <Badge variant="outline" className="bg-amber-100 text-amber-700 border-amber-300">
+                    ${order.refund_amount.toFixed(2)}
+                  </Badge>
+                </div>
+                <p className="text-xs text-amber-700">
+                  Original total: ${order.total.toFixed(2)} | Remaining: ${(order.total - order.refund_amount).toFixed(2)}
+                </p>
+              </div>
+              {order.stripe_payment_intent_id && (
+                <Button 
+                  onClick={() => {
+                    setRefundAmount((order.total - order.refund_amount).toString());
+                    setRefundDialogOpen(true);
+                  }}
+                  variant="destructive"
+                  className="w-full"
+                >
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Refund Remaining Amount
+                </Button>
+              )}
             </div>
           ) : order.stripe_payment_intent_id ? (
             <div className="space-y-3">
@@ -622,14 +668,20 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
                   type="number"
                   step="0.01"
                   min="0.01"
-                  max={order.total}
+                  max={order.total - (order.refund_amount || 0)}
                   value={refundAmount}
                   onChange={(e) => setRefundAmount(e.target.value)}
                   placeholder={order.total.toString()}
                 />
-                <p className="text-xs text-muted-foreground">
-                  Order total: ${order.total.toFixed(2)} CAD
-                </p>
+                <div className="text-xs text-muted-foreground space-y-1">
+                  <p>Order total: ${order.total.toFixed(2)} CAD</p>
+                  {order.refund_amount && order.refund_amount > 0 && (
+                    <>
+                      <p className="text-amber-600">Already refunded: ${order.refund_amount.toFixed(2)} CAD</p>
+                      <p className="font-medium">Maximum refundable: ${(order.total - order.refund_amount).toFixed(2)} CAD</p>
+                    </>
+                  )}
+                </div>
               </div>
 
               <div className="space-y-2">
