@@ -862,7 +862,7 @@ const Checkout = () => {
                     <span className="text-gray-600 font-medium">Shipping</span>
                     <div className="text-right">
                       {shippingRates.length === 0 ? (
-                        <span className="text-sm text-gray-400 italic">Calculate shipping first</span>
+                        <span className="text-sm text-gray-400 italic">Input address to Calculate</span>
                       ) : selectedShippingRate ? (
                         <>
                           {shippingCost === 0 ? (
