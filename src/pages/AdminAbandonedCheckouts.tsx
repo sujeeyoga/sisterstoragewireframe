@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -53,15 +53,15 @@ const AdminAbandonedCheckouts = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isSendingReminder, setIsSendingReminder] = useState(false);
 
-  const getDateRange = () => {
+  const dateRangeValues = useMemo(() => {
     const end = new Date();
     const start = subDays(end, dateRange === '7d' ? 7 : dateRange === '30d' ? 30 : 90);
     return { start, end };
-  };
+  }, [dateRange]);
 
-  const { data: analytics, isLoading: isLoadingAnalytics } = useAbandonedCartAnalytics(getDateRange());
+  const { data: analytics, isLoading: isLoadingAnalytics } = useAbandonedCartAnalytics(dateRangeValues);
   const { data: carts, isLoading: isLoadingCarts } = useAbandonedCartsList({
-    dateRange: getDateRange(),
+    dateRange: dateRangeValues,
     recoveryStatus,
     reminderSent,
   });
