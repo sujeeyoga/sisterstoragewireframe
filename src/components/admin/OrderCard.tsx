@@ -1,7 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Package, Truck, MapPin } from 'lucide-react';
+import { Package, Truck, MapPin, Archive, ArchiveRestore } from 'lucide-react';
 import { getRelativeTime } from '@/lib/dateHelpers';
 
 interface Order {
@@ -95,6 +95,7 @@ export function OrderCard({ order, onView, isSelected, onSelect, selectionMode, 
           className="h-9 bg-blue-50 border-blue-300 text-blue-700 hover:bg-blue-100"
           onClick={onUnarchive}
         >
+          <ArchiveRestore className="h-4 w-4 mr-1.5" />
           Unarchive
         </Button>
       );
@@ -153,6 +154,7 @@ export function OrderCard({ order, onView, isSelected, onSelect, selectionMode, 
               className="h-9 bg-green-50 border-green-300 text-green-700 hover:bg-green-100"
               onClick={onArchive}
             >
+              <Archive className="h-4 w-4 mr-1.5" />
               Archive
             </Button>
             <Button 
