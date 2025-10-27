@@ -85,7 +85,8 @@ export function AdminSettings() {
 
       if (error) throw error;
       
-      if (data?.error) {
+      // Check if the response indicates failure
+      if (data && !data.success && data.error) {
         throw new Error(data.error);
       }
 
