@@ -13,11 +13,35 @@ import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, L
 
 const AdminAnalytics = () => {
   const navigate = useNavigate();
-  const [dateRange, setDateRange] = useState<'7d' | '30d' | '90d'>('30d');
+  const [dateRange, setDateRange] = useState<'7d' | '30d' | '90d' | '6m' | '12m' | '24m'>('30d');
   
   const dateRangeValues = useMemo(() => {
     const end = new Date();
-    const start = subDays(end, dateRange === '7d' ? 7 : dateRange === '30d' ? 30 : 90);
+    let start: Date;
+    
+    switch (dateRange) {
+      case '7d':
+        start = subDays(end, 7);
+        break;
+      case '30d':
+        start = subDays(end, 30);
+        break;
+      case '90d':
+        start = subDays(end, 90);
+        break;
+      case '6m':
+        start = subDays(end, 180);
+        break;
+      case '12m':
+        start = subDays(end, 365);
+        break;
+      case '24m':
+        start = subDays(end, 730);
+        break;
+      default:
+        start = subDays(end, 30);
+    }
+    
     return { start, end };
   }, [dateRange]);
 
@@ -100,6 +124,9 @@ const AdminAnalytics = () => {
                 <SelectItem value="7d">Last 7 days</SelectItem>
                 <SelectItem value="30d">Last 30 days</SelectItem>
                 <SelectItem value="90d">Last 90 days</SelectItem>
+                <SelectItem value="6m">Last 6 months</SelectItem>
+                <SelectItem value="12m">Last 12 months</SelectItem>
+                <SelectItem value="24m">Last 24 months</SelectItem>
               </SelectContent>
             </Select>
           </div>
