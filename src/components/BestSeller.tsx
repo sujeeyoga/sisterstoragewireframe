@@ -99,7 +99,7 @@ const BestSeller = () => {
           {/* Text Content - Left Side */}
           <div className="text-center lg:text-left flex-shrink-0 w-full lg:w-[35%] max-w-md lg:max-w-none">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-white mb-4 md:mb-6 leading-[1.1] tracking-wide">
-              <span className="font-script font-bold italic text-[2.5em] inline-block">Best</span>{' '}
+              <span className="inline-block">Best</span>{' '}
               <span className="inline-block">SELLERS</span>
             </h2>
             <p className="text-white text-base md:text-lg leading-relaxed font-light max-w-sm mx-auto lg:mx-0">
