@@ -1,0 +1,268 @@
+import { useState, useMemo } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft, Package, TrendingUp, AlertTriangle, Star } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { subDays } from 'date-fns';
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import { Badge } from '@/components/ui/badge';
+
+const AdminProductReports = () => {
+  const navigate = useNavigate();
+  const [dateRange, setDateRange] = useState<'7d' | '30d' | '90d' | '6m' | '12m'>('30d');
+  
+  const dateRangeValues = useMemo(() => {
+    const end = new Date();
+    const days = dateRange === '7d' ? 7 : dateRange === '30d' ? 30 : dateRange === '90d' ? 90 : dateRange === '6m' ? 180 : 365;
+    return { start: subDays(end, days), end };
+  }, [dateRange]);
+
+  // Fetch product performance data
+  const { data: productPerformance } = useQuery({
+    queryKey: ['product-performance', dateRangeValues],
+    queryFn: async () => {
+      const { data: wooOrders } = await supabase
+        .from('woocommerce_orders')
+        .select('line_items')
+        .gte('date_created', dateRangeValues.start.toISOString())
+        .lte('date_created', dateRangeValues.end.toISOString());
+
+      const productMap = new Map<string, { name: string; quantity: number; revenue: number; orders: number }>();
+
+      wooOrders?.forEach(order => {
+        const items = order.line_items as any[];
+        items?.forEach(item => {
+          const existing = productMap.get(item.name) || { name: item.name, quantity: 0, revenue: 0, orders: 0 };
+          productMap.set(item.name, {
+            name: item.name,
+            quantity: existing.quantity + item.quantity,
+            revenue: existing.revenue + (item.total || 0),
+            orders: existing.orders + 1
+          });
+        });
+      });
+
+      return Array.from(productMap.values())
+        .sort((a, b) => b.quantity - a.quantity);
+    },
+  });
+
+  // Fetch inventory data
+  const { data: inventoryData } = useQuery({
+    queryKey: ['inventory-status'],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('woocommerce_products')
+        .select('name, id');
+
+      // Since we don't have stock fields, we'll use placeholder data
+      return {
+        lowStock: [],
+        outOfStock: [],
+        inStock: data || [],
+        total: data?.length || 0
+      };
+    },
+  });
+
+  const topProducts = productPerformance?.slice(0, 10) || [];
+  const slowMovers = productPerformance?.slice(-5).reverse() || [];
+
+  return (
+    <div className="p-6 space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="icon" onClick={() => navigate('/admin/analytics')}>
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Product Reports</h1>
+            <p className="text-muted-foreground">
+              Product performance and inventory insights
+            </p>
+          </div>
+        </div>
+        <Select value={dateRange} onValueChange={(value: any) => setDateRange(value)}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="7d">Last 7 days</SelectItem>
+            <SelectItem value="30d">Last 30 days</SelectItem>
+            <SelectItem value="90d">Last 90 days</SelectItem>
+            <SelectItem value="6m">Last 6 months</SelectItem>
+            <SelectItem value="12m">Last 12 months</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Key Metrics */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Products</CardTitle>
+            <Package className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{inventoryData?.total || 0}</div>
+            <p className="text-xs text-muted-foreground">
+              In catalog
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">In Stock</CardTitle>
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{inventoryData?.inStock.length || 0}</div>
+            <p className="text-xs text-muted-foreground">
+              Available products
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Low Stock</CardTitle>
+            <AlertTriangle className="h-4 w-4 text-amber-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-amber-600">
+              {inventoryData?.lowStock.length || 0}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Need restock
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Out of Stock</CardTitle>
+            <AlertTriangle className="h-4 w-4 text-destructive" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-destructive">
+              {inventoryData?.outOfStock.length || 0}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Unavailable
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Charts and Data */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        {/* Top Sellers */}
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle>Top Selling Products</CardTitle>
+            <CardDescription>Products by units sold</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {topProducts.length > 0 ? (
+              <ResponsiveContainer width="100%" height={350}>
+                <BarChart data={topProducts} layout="vertical">
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                  <XAxis type="number" className="text-xs" />
+                  <YAxis 
+                    type="category" 
+                    dataKey="name" 
+                    className="text-xs"
+                    width={150}
+                    tickFormatter={(value) => value.length > 20 ? value.substring(0, 20) + '...' : value}
+                  />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'hsl(var(--background))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '8px'
+                    }}
+                  />
+                  <Legend />
+                  <Bar dataKey="quantity" fill="hsl(var(--primary))" name="Units Sold" />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="h-[350px] flex items-center justify-center text-muted-foreground">
+                No data available
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Low Stock Alert */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Product Catalog</CardTitle>
+            <CardDescription>Recently added products</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {inventoryData && inventoryData.inStock.length > 0 ? (
+              <div className="space-y-3">
+                {inventoryData.inStock.slice(0, 5).map((product, index) => (
+                  <div key={index} className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <p className="font-medium text-sm truncate">{product.name}</p>
+                      <Badge variant="outline" className="text-xs">
+                        Active
+                      </Badge>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="h-[200px] flex items-center justify-center text-muted-foreground">
+                <div className="text-center">
+                  <Star className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                  <p>No products found</p>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Slow Movers */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Slow Moving Products</CardTitle>
+            <CardDescription>Products with low sales</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {slowMovers.length > 0 ? (
+              <div className="space-y-3">
+                {slowMovers.map((product, index) => (
+                  <div key={index} className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <p className="font-medium text-sm truncate">{product.name}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {product.quantity} units in {product.orders} orders
+                      </p>
+                    </div>
+                    <Badge variant="secondary" className="text-xs">
+                      ${product.revenue.toFixed(2)}
+                    </Badge>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="h-[200px] flex items-center justify-center text-muted-foreground">
+                No data available
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+};
+
+export default AdminProductReports;

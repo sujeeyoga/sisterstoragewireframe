@@ -4,6 +4,9 @@ import { AdminDashboard } from '@/components/admin/AdminDashboard';
 import AdminAnalytics from '@/pages/AdminAnalytics';
 import AdminVisitorAnalytics from '@/pages/AdminVisitorAnalytics';
 import AdminAbandonedCheckouts from '@/pages/AdminAbandonedCheckouts';
+import AdminSalesReports from '@/pages/AdminSalesReports';
+import AdminProductReports from '@/pages/AdminProductReports';
+import AdminCustomerReports from '@/pages/AdminCustomerReports';
 import { ProductsTable } from '@/components/admin/ProductsTable';
 import { ProductForm } from '@/components/admin/ProductForm';
 import { SectionsManager } from '@/components/admin/SectionsManager';
@@ -52,6 +55,9 @@ const Admin = () => {
         <Route path="analytics" element={<AdminAnalytics />} />
         <Route path="analytics/visitors" element={<AdminVisitorAnalytics />} />
         <Route path="analytics/abandoned-checkouts" element={<AdminAbandonedCheckouts />} />
+        <Route path="analytics/sales" element={<AdminSalesReports />} />
+        <Route path="analytics/products" element={<AdminProductReports />} />
+        <Route path="analytics/customers" element={<AdminCustomerReports />} />
         <Route path="orders" element={<OrdersList />} />
         <Route path="products" element={<ProductsTable />} />
         <Route path="products/:id" element={<ProductForm />} />

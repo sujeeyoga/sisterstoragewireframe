@@ -93,31 +93,30 @@ const AdminAnalytics = () => {
       title: 'Sales Reports',
       description: 'Detailed revenue and sales analytics',
       icon: TrendingUp,
-      stats: 'Coming soon',
-      link: '#',
+      stats: isLoadingOrders 
+        ? 'Loading...' 
+        : `$${(orderData?.totalRevenue || 0).toFixed(2)} revenue`,
+      link: '/admin/analytics/sales',
       color: 'text-green-500',
       bgColor: 'bg-green-50',
-      disabled: true,
     },
     {
       title: 'Product Reports',
       description: 'Product performance and inventory insights',
       icon: Package,
-      stats: 'Coming soon',
-      link: '#',
+      stats: 'View detailed insights',
+      link: '/admin/analytics/products',
       color: 'text-blue-500',
       bgColor: 'bg-blue-50',
-      disabled: true,
     },
     {
       title: 'Customer Reports',
       description: 'Customer behavior and lifetime value',
       icon: Users,
-      stats: 'Coming soon',
-      link: '#',
+      stats: 'Analyze customer data',
+      link: '/admin/analytics/customers',
       color: 'text-purple-500',
       bgColor: 'bg-purple-50',
-      disabled: true,
     },
   ];
 
@@ -218,12 +217,8 @@ const AdminAnalytics = () => {
           {reportCards.map((report) => (
             <Card
               key={report.title}
-              className={`transition-all ${
-                report.disabled
-                  ? 'opacity-50 cursor-not-allowed'
-                  : 'hover:shadow-md cursor-pointer'
-              }`}
-              onClick={() => !report.disabled && navigate(report.link)}
+              className="hover:shadow-md cursor-pointer transition-all"
+              onClick={() => navigate(report.link)}
             >
               <CardHeader>
                 <div className={`w-12 h-12 rounded-lg ${report.bgColor} flex items-center justify-center mb-4`}>
@@ -234,11 +229,9 @@ const AdminAnalytics = () => {
               </CardHeader>
               <CardContent>
                 <p className="text-sm font-medium text-muted-foreground">{report.stats}</p>
-                {!report.disabled && (
-                  <Button variant="link" className="px-0 mt-2">
-                    View Report →
-                  </Button>
-                )}
+                <Button variant="link" className="px-0 mt-2">
+                  View Report →
+                </Button>
               </CardContent>
             </Card>
           ))}
