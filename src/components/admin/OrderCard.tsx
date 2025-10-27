@@ -41,7 +41,7 @@ interface OrderCardProps {
 const statusConfig = {
   pending: { label: 'Pending', className: 'bg-amber-50 text-amber-700 border-amber-200' },
   'on-hold': { label: 'On Hold', className: 'bg-amber-50 text-amber-700 border-amber-200' },
-  processing: { label: 'Paid', className: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+  processing: { label: 'Pending', className: 'bg-amber-50 text-amber-700 border-amber-200' },
   completed: { label: 'Fulfilled', className: 'bg-sky-50 text-sky-700 border-sky-200' },
   refunded: { label: 'Refunded', className: 'bg-zinc-100 text-zinc-700 border-zinc-300' },
   cancelled: { label: 'Cancelled', className: 'bg-rose-50 text-rose-700 border-rose-200' },
