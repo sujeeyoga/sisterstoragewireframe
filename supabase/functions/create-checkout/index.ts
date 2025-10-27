@@ -131,18 +131,52 @@ serve(async (req) => {
       });
     }
 
-    // Add shipping as a line item
-    if (shippingCost && shippingCost > 0) {
+    // Validate free shipping eligibility before adding shipping cost
+    // GTA free shipping threshold is $50 for Toronto, Etobicoke, Scarborough, North York, Markham, Whitby, etc.
+    const FREE_SHIPPING_THRESHOLD = 50;
+    const gtaCities = ['toronto', 'etobicoke', 'scarborough', 'north york', 'markham', 'whitby', 'vaughan', 'richmond hill', 'pickering', 'ajax', 'oshawa', 'mississauga', 'brampton'];
+    
+    const customerCity = shippingAddress?.city?.toLowerCase().trim() || '';
+    const customerProvince = shippingAddress?.state?.toUpperCase() || shippingAddress?.province?.toUpperCase() || '';
+    const isGTA = gtaCities.some(city => customerCity.includes(city)) || customerProvince === 'ON';
+    
+    // Calculate product subtotal (excluding gift wrapping)
+    const productSubtotal = items.reduce((sum: number, item: any) => {
+      const discountedPrice = discountPercentage > 0 
+        ? item.price * (1 - discountPercentage / 100)
+        : item.price;
+      return sum + (discountedPrice * item.quantity);
+    }, 0);
+    
+    const qualifiesForFreeShipping = isGTA && productSubtotal >= FREE_SHIPPING_THRESHOLD;
+    
+    console.log('Free shipping check:', {
+      isGTA,
+      productSubtotal,
+      threshold: FREE_SHIPPING_THRESHOLD,
+      qualifiesForFreeShipping,
+      originalShippingCost: shippingCost,
+      city: customerCity,
+      province: customerProvince
+    });
+    
+    // Override shipping cost to 0 if qualifies for free shipping
+    const finalShippingCost = qualifiesForFreeShipping ? 0 : shippingCost;
+    
+    // Add shipping as a line item only if there's a cost
+    if (finalShippingCost && finalShippingCost > 0) {
       lineItems.push({
         price_data: {
           currency: 'cad',
           product_data: {
             name: shippingMethod || 'Shipping',
           },
-          unit_amount: Math.round(shippingCost * 100),
+          unit_amount: Math.round(finalShippingCost * 100),
         },
         quantity: 1,
       });
+    } else if (qualifiesForFreeShipping) {
+      console.log('✅ FREE SHIPPING APPLIED - Order qualifies!');
     }
 
     // Add tax as a line item
