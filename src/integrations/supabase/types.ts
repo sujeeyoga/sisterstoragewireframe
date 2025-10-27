@@ -22,7 +22,7 @@ export type Database = {
           id: string
           recovered_at: string | null
           reminder_sent_at: string | null
-          session_id: string | null
+          session_id: string
           subtotal: number
         }
         Insert: {
@@ -32,7 +32,7 @@ export type Database = {
           id?: string
           recovered_at?: string | null
           reminder_sent_at?: string | null
-          session_id?: string | null
+          session_id: string
           subtotal: number
         }
         Update: {
@@ -42,7 +42,7 @@ export type Database = {
           id?: string
           recovered_at?: string | null
           reminder_sent_at?: string | null
-          session_id?: string | null
+          session_id?: string
           subtotal?: number
         }
         Relationships: []
