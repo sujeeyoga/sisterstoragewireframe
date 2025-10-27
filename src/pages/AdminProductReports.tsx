@@ -222,6 +222,7 @@ const AdminProductReports = () => {
                     }}
                   />
                   <Legend />
+                  <Bar dataKey="revenue" fill="hsl(var(--primary) / 0.3)" name="Revenue ($)" />
                   <Bar dataKey="quantity" fill="hsl(var(--primary))" name="Units Sold" />
                 </BarChart>
               </ResponsiveContainer>
