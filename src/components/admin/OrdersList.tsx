@@ -213,7 +213,10 @@ export function OrdersList() {
       const stripeOrders = (stripeResult.data || []).map(order => ({
         id: order.id,
         status: order.status,
-        total: Number(order.total),
+        total: Number(order.total ?? 0),
+        subtotal: Number(order.subtotal ?? 0),
+        shipping_cost: Number(order.shipping ?? 0),
+        tax: Number(order.tax ?? 0),
         currency: 'CAD',
         date_created: order.created_at,
         billing: order.shipping_address ? {
@@ -221,6 +224,7 @@ export function OrdersList() {
           last_name: order.customer_name?.split(' ').slice(1).join(' ') || '',
           email: order.customer_email
         } : {},
+        shipping_address: order.shipping_address || {},
         shipping: order.shipping_address || {},
         line_items: order.items || [],
         source: 'stripe' as const,

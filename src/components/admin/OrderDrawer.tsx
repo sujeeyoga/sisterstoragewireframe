@@ -257,8 +257,8 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
                 return isNaN(num) ? 0 : num;
               };
 
-              // Calculate shipping cost once and detect label
-              let shippingCost = safeParseNumber((order as any).shipping) || safeParseNumber((order as any).shipping_cost);
+              // Calculate shipping cost - prefer shipping_cost first (Stripe numeric field)
+              let shippingCost = safeParseNumber((order as any).shipping_cost) || safeParseNumber((order as any).shipping);
               let shippingLabel: string | null = null;
 
               // WooCommerce-style shipping lines
@@ -424,15 +424,25 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
             <div className="space-y-2 text-sm bg-muted/30 rounded-lg p-4">
               {/* Calculate subtotal from line items */}
               {(() => {
-                const itemsSubtotal = order.line_items?.reduce((sum: number, item: any) => {
-                  const itemTotal = item.total || (item.price * item.quantity) || 0;
-                  const total = typeof itemTotal === 'number' ? itemTotal : parseFloat(String(itemTotal || '0'));
-                  return sum + total;
-                }, 0) || 0;
+                // Safe number parsing helper
+                const safeParseNumber = (val: any): number => {
+                  if (val == null || val === '') return 0;
+                  const num = typeof val === 'number' ? val : parseFloat(String(val));
+                  return isNaN(num) ? 0 : num;
+                };
                 
-                const shipping = (order as any).shipping_cost || (order as any).shipping || 0;
-                const tax = (order as any).tax || (order as any).tax_amount || 0;
-                const total = Number(order.total);
+                // Prefer numeric subtotal field if present (Stripe), otherwise calculate from items
+                const itemsSubtotal = safeParseNumber((order as any).subtotal) || 
+                  (order.line_items?.reduce((sum: number, item: any) => {
+                    const itemPrice = safeParseNumber(item?.price);
+                    const qty = safeParseNumber(item?.quantity) || 1;
+                    const itemTotal = safeParseNumber(item?.total) || (itemPrice * qty);
+                    return sum + itemTotal;
+                  }, 0) || 0);
+                
+                const shipping = safeParseNumber((order as any).shipping_cost) || safeParseNumber((order as any).shipping_total) || safeParseNumber((order as any).shipping);
+                const tax = safeParseNumber((order as any).tax) || safeParseNumber((order as any).tax_amount);
+                const total = safeParseNumber(order.total);
                 
                 return (
                   <>
@@ -443,13 +453,13 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
                     {shipping > 0 && (
                       <div className="flex justify-between text-muted-foreground">
                         <span>Shipping:</span>
-                        <span>${Number(shipping).toFixed(2)}</span>
+                        <span>${shipping.toFixed(2)}</span>
                       </div>
                     )}
                     {tax > 0 && (
                       <div className="flex justify-between text-muted-foreground">
                         <span>Tax:</span>
-                        <span>${Number(tax).toFixed(2)}</span>
+                        <span>${tax.toFixed(2)}</span>
                       </div>
                     )}
                     <Separator className="my-2" />
