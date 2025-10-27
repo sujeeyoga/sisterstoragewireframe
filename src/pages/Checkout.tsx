@@ -582,7 +582,7 @@ const Checkout = () => {
                             onChange={handleInputChange}
                             onBlur={handlePostalCodeBlur}
                             className={validationErrors.postalCode ? "border-red-500" : ""}
-                            placeholder="A1A 1A1"
+                            placeholder="A1A1A1"
                             autoComplete="postal-code"
                             required
                           />
