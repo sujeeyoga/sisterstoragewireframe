@@ -69,10 +69,7 @@ const ProductDetail = () => {
     .slice(0, 4);
   
   const discountedPrice = discount?.enabled ? applyDiscount(product.price) : product.price;
-
-  const showLowStockBadge = lowStock?.showBadge && isLowStock(product.stockQuantity);
-  const showPreorderBadge = preorders?.enabled && isOutOfStock(product.stockQuantity);
-  const canAddToCart = !isOutOfStock(product.stockQuantity) || preorders?.enabled;
+  const canAddToCart = true; // Always allow adding to cart
 
   const handleAddToCart = () => {
     if (!canAddToCart) {
@@ -120,24 +117,6 @@ const ProductDetail = () => {
       <div className="pb-10">
         <div className="container-custom">
           <Breadcrumbs productName={product.name} primaryCategorySlug={primaryCategorySlug} />
-          
-          {/* Inventory Badges */}
-          {(showLowStockBadge || showPreorderBadge) && (
-            <div className="flex gap-2 mb-4">
-              {showLowStockBadge && (
-                <Badge variant="destructive" className="flex items-center gap-1">
-                  <AlertTriangle className="h-3 w-3" />
-                  Only {product.stockQuantity} left in stock!
-                </Badge>
-              )}
-              {showPreorderBadge && (
-                <Badge variant="secondary" className="flex items-center gap-1">
-                  <Package className="h-3 w-3" />
-                  {preorders?.badgeText || 'Pre-Order'} - Ships when available
-                </Badge>
-              )}
-            </div>
-          )}
 
           {/* Product Details */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
