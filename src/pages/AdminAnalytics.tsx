@@ -4,7 +4,10 @@ import { Button } from '@/components/ui/button';
 import { ShoppingCart, TrendingUp, Package, Users, Calendar, Globe } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { subDays, startOfDay, endOfDay } from 'date-fns';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar as CalendarComponent } from '@/components/ui/calendar';
+import { subDays, startOfDay, endOfDay, format } from 'date-fns';
+import { cn } from '@/lib/utils';
 import { useAbandonedCartAnalytics } from '@/hooks/useAbandonedCartAnalytics';
 import { useOrderAnalytics } from '@/hooks/useOrderAnalytics';
 import { useOrderTimeSeriesAnalytics } from '@/hooks/useOrderTimeSeriesAnalytics';
@@ -14,6 +17,11 @@ import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, L
 const AdminAnalytics = () => {
   const navigate = useNavigate();
   const [dateRange, setDateRange] = useState<'7d' | '30d' | '90d' | '6m' | '12m' | '24m'>('30d');
+  const [customDateRange, setCustomDateRange] = useState<{
+    from: Date | undefined;
+    to: Date | undefined;
+  }>({ from: undefined, to: undefined });
+  const [useCustomRange, setUseCustomRange] = useState(false);
   
   const dateRangeValues = useMemo(() => {
     const end = new Date();
@@ -45,9 +53,19 @@ const AdminAnalytics = () => {
     return { start, end };
   }, [dateRange]);
 
+  const revenueChartDateRange = useMemo(() => {
+    if (useCustomRange && customDateRange.from && customDateRange.to) {
+      return {
+        start: startOfDay(customDateRange.from),
+        end: endOfDay(customDateRange.to)
+      };
+    }
+    return dateRangeValues;
+  }, [useCustomRange, customDateRange, dateRangeValues]);
+
   const { data: abandonedCartData, isLoading: isLoadingAbandoned } = useAbandonedCartAnalytics(dateRangeValues);
   const { data: orderData, isLoading: isLoadingOrders } = useOrderAnalytics(dateRangeValues);
-  const { data: orderTimeSeries } = useOrderTimeSeriesAnalytics(dateRangeValues);
+  const { data: orderTimeSeries } = useOrderTimeSeriesAnalytics(revenueChartDateRange);
   const { data: abandonedCartTimeSeries } = useAbandonedCartTimeSeriesAnalytics(dateRangeValues);
 
   const reportCards = [
@@ -232,10 +250,88 @@ const AdminAnalytics = () => {
         {/* Revenue & Orders Chart */}
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle>Revenue & Orders Trend</CardTitle>
-            <CardDescription>
-              Daily revenue and order volume over time
-            </CardDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  Revenue & Orders Trend
+                  {useCustomRange && (
+                    <span className="text-xs text-muted-foreground font-normal">
+                      (Custom Range)
+                    </span>
+                  )}
+                </CardTitle>
+                <CardDescription>
+                  Daily revenue and order volume over time
+                </CardDescription>
+              </div>
+              
+              {/* Custom Date Range Picker */}
+              <div className="flex items-center gap-2">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className={cn(
+                        "justify-start text-left font-normal",
+                        !customDateRange.from && "text-muted-foreground"
+                      )}
+                    >
+                      <Calendar className="mr-2 h-4 w-4" />
+                      {customDateRange.from ? (
+                        customDateRange.to ? (
+                          <>
+                            {format(customDateRange.from, "MMM d, yyyy")} -{" "}
+                            {format(customDateRange.to, "MMM d, yyyy")}
+                          </>
+                        ) : (
+                          format(customDateRange.from, "MMM d, yyyy")
+                        )
+                      ) : (
+                        <span>Pick dates</span>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="end">
+                    <CalendarComponent
+                      initialFocus
+                      mode="range"
+                      defaultMonth={customDateRange.from}
+                      selected={{
+                        from: customDateRange.from,
+                        to: customDateRange.to
+                      }}
+                      onSelect={(range) => {
+                        setCustomDateRange({
+                          from: range?.from,
+                          to: range?.to
+                        });
+                        if (range?.from && range?.to) {
+                          setUseCustomRange(true);
+                        }
+                      }}
+                      numberOfMonths={2}
+                      disabled={(date) => date > new Date()}
+                      className="pointer-events-auto"
+                    />
+                  </PopoverContent>
+                </Popover>
+                
+                {/* Clear Custom Range Button */}
+                {useCustomRange && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setUseCustomRange(false);
+                      setCustomDateRange({ from: undefined, to: undefined });
+                    }}
+                  >
+                    Clear
+                  </Button>
+                )}
+              </div>
+            </div>
           </CardHeader>
           <CardContent>
             {orderTimeSeries && orderTimeSeries.length > 0 ? (
