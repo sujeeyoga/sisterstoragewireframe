@@ -9,7 +9,6 @@ import {
   Section,
   Text,
   Hr,
-  Code,
 } from "npm:@react-email/components@0.0.22";
 import * as React from "npm:react@18.3.1";
 
@@ -41,10 +40,10 @@ export const AdminWelcomeEmail = ({
 
         <Section style={credentialsBox}>
           <Text style={label}>Email:</Text>
-          <Code style={code}>{email}</Code>
+          <Text style={code}>{email}</Text>
           
           <Text style={{ ...label, marginTop: '16px' }}>Temporary Password:</Text>
-          <Code style={code}>{temporaryPassword}</Code>
+          <Text style={code}>{temporaryPassword}</Text>
         </Section>
 
         <Section style={warningBox}>
