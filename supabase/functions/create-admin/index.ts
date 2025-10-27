@@ -86,6 +86,25 @@ serve(async (req) => {
 
       if (roleError) throw roleError;
       console.log("Admin role added to existing user:", userId);
+
+      // Send promotion email to existing user
+      const { error: emailError } = await supabaseAdmin.functions.invoke('send-email', {
+        body: {
+          type: 'admin_promotion',
+          to: email,
+          data: {
+            email,
+            loginUrl: `${Deno.env.get("SUPABASE_URL")?.replace('.supabase.co', '')}/admin`
+          }
+        }
+      });
+
+      if (emailError) {
+        console.error("Error sending promotion email:", emailError);
+        // Don't fail the request if email fails
+      } else {
+        console.log("Promotion email sent to:", email);
+      }
     } else {
       // User doesn't exist - create new user
       isNewUser = true;
