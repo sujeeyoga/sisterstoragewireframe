@@ -7,27 +7,97 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
-import { Shield, Users, Key, Database, Mail, Truck } from 'lucide-react';
+import { Shield, Users, Key, Database, Mail, Truck, Plus } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { z } from 'zod';
+
+const addAdminSchema = z.object({
+  email: z.string().email({ message: "Invalid email address" }).trim().toLowerCase(),
+});
+
+interface AddAdminResponse {
+  success: boolean;
+  message?: string;
+  error?: string;
+  user_id?: string;
+}
 
 export function AdminSettings() {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState('users');
+  const [addAdminOpen, setAddAdminOpen] = useState(false);
+  const [newAdminEmail, setNewAdminEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
 
-  // Fetch admin users
+  // Fetch admin users with emails
   const { data: adminUsers, isLoading } = useQuery({
     queryKey: ['admin-users'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('user_roles')
-        .select('*')
-        .eq('role', 'admin');
-      
+      const { data, error } = await supabase.rpc('get_admin_users');
       if (error) throw error;
-      return data;
+      return data as Array<{
+        id: string;
+        user_id: string;
+        role: string;
+        email: string;
+        created_at: string;
+      }>;
     }
   });
+
+  // Add admin mutation
+  const addAdminMutation = useMutation({
+    mutationFn: async (email: string) => {
+      const { data, error } = await supabase.rpc('add_admin_by_email', {
+        user_email: email
+      });
+      if (error) throw error;
+      return data as unknown as AddAdminResponse;
+    },
+    onSuccess: (data) => {
+      if (data.success) {
+        toast({
+          title: "Admin Added",
+          description: data.message,
+        });
+        queryClient.invalidateQueries({ queryKey: ['admin-users'] });
+        setAddAdminOpen(false);
+        setNewAdminEmail('');
+        setEmailError('');
+      } else {
+        setEmailError(data.error || 'Failed to add admin');
+      }
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to add admin",
+        variant: "destructive",
+      });
+    }
+  });
+
+  const handleAddAdmin = () => {
+    setEmailError('');
+    const validation = addAdminSchema.safeParse({ email: newAdminEmail });
+    
+    if (!validation.success) {
+      setEmailError(validation.error.errors[0].message);
+      return;
+    }
+
+    addAdminMutation.mutate(validation.data.email);
+  };
 
   return (
     <div className="container mx-auto py-6 space-y-6">
@@ -73,20 +143,80 @@ export function AdminSettings() {
             <CardContent className="space-y-4">
               <div className="rounded-lg border">
                 <div className="p-4">
-                  <h4 className="font-semibold mb-4">Current Admins</h4>
+                  <div className="flex items-center justify-between mb-4">
+                    <h4 className="font-semibold">Current Admins</h4>
+                    <Dialog open={addAdminOpen} onOpenChange={setAddAdminOpen}>
+                      <DialogTrigger asChild>
+                        <Button size="sm" className="gap-2">
+                          <Plus className="h-4 w-4" />
+                          Add Admin
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Add Admin User</DialogTitle>
+                          <DialogDescription>
+                            Enter the email address of the user you want to make an admin. The user must already have an account.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="space-y-4 pt-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="admin-email">Email Address</Label>
+                            <Input
+                              id="admin-email"
+                              type="email"
+                              placeholder="user@example.com"
+                              value={newAdminEmail}
+                              onChange={(e) => {
+                                setNewAdminEmail(e.target.value);
+                                setEmailError('');
+                              }}
+                              className={emailError ? 'border-destructive' : ''}
+                            />
+                            {emailError && (
+                              <p className="text-sm text-destructive">{emailError}</p>
+                            )}
+                          </div>
+                          <div className="flex justify-end gap-2">
+                            <Button
+                              variant="outline"
+                              onClick={() => {
+                                setAddAdminOpen(false);
+                                setNewAdminEmail('');
+                                setEmailError('');
+                              }}
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              onClick={handleAddAdmin}
+                              disabled={addAdminMutation.isPending || !newAdminEmail}
+                            >
+                              {addAdminMutation.isPending ? 'Adding...' : 'Add Admin'}
+                            </Button>
+                          </div>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
                   {isLoading ? (
                     <p className="text-sm text-muted-foreground">Loading...</p>
                   ) : adminUsers && adminUsers.length > 0 ? (
                     <div className="space-y-2">
-                      {adminUsers.map((admin: any) => (
+                      {adminUsers.map((admin) => (
                         <div key={admin.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-md">
                           <div className="flex items-center gap-3">
                             <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                              <Users className="h-4 w-4 text-primary" />
+                              <Mail className="h-4 w-4 text-primary" />
                             </div>
-                            <span className="text-sm font-medium">{admin.user_id}</span>
+                            <div className="flex flex-col">
+                              <span className="text-sm font-medium">{admin.email}</span>
+                              <span className="text-xs text-muted-foreground">
+                                Added {new Date(admin.created_at).toLocaleDateString()}
+                              </span>
+                            </div>
                           </div>
-                          <span className="text-xs text-muted-foreground">Admin</span>
+                          <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">Admin</span>
                         </div>
                       ))}
                     </div>
