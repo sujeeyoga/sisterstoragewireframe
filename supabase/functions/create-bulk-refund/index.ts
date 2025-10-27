@@ -12,6 +12,7 @@ interface BulkRefundRequest {
   amount: number;
   reason?: string;
   notes?: string;
+  refundType?: 'stripe' | 'manual';
 }
 
 serve(async (req) => {
@@ -67,7 +68,7 @@ serve(async (req) => {
     
     for (const refundRequest of refunds) {
       try {
-        const { orderId, amount, reason, notes } = refundRequest;
+        const { orderId, amount, reason, notes, refundType = 'stripe' } = refundRequest;
 
         // Fetch order details
         const { data: order, error: orderError } = await supabaseAdmin
@@ -85,11 +86,11 @@ serve(async (req) => {
           continue;
         }
 
-        if (!order.stripe_payment_intent_id) {
+        if (refundType === 'stripe' && !order.stripe_payment_intent_id) {
           results.push({
             orderId,
             success: false,
-            error: 'Order does not have a Stripe payment intent ID'
+            error: 'Order does not have a Stripe payment intent ID. Use refundType: "manual" instead.'
           });
           continue;
         }
@@ -126,19 +127,28 @@ serve(async (req) => {
           continue;
         }
 
-        console.log(`Processing refund for order ${orderId}:`, {
-          payment_intent: order.stripe_payment_intent_id,
-          amount: Math.round(refundAmount * 100),
-        });
+        let stripeRefundId: string;
 
-        // Create refund in Stripe
-        const refund = await stripe.refunds.create({
-          payment_intent: order.stripe_payment_intent_id,
-          amount: Math.round(refundAmount * 100),
-          reason: reason || 'requested_by_customer',
-        });
+        if (refundType === 'manual') {
+          // Generate manual refund ID for tracking
+          stripeRefundId = `MANUAL-${Date.now()}-${orderId.slice(0, 8)}`;
+          console.log(`Recording manual refund for order ${orderId}: ${stripeRefundId}`);
+        } else {
+          console.log(`Processing refund for order ${orderId}:`, {
+            payment_intent: order.stripe_payment_intent_id,
+            amount: Math.round(refundAmount * 100),
+          });
 
-        console.log(`Stripe refund created for ${orderId}:`, refund.id);
+          // Create refund in Stripe
+          const refund = await stripe.refunds.create({
+            payment_intent: order.stripe_payment_intent_id,
+            amount: Math.round(refundAmount * 100),
+            reason: reason || 'requested_by_customer',
+          });
+
+          stripeRefundId = refund.id;
+          console.log(`Stripe refund created for ${orderId}:`, refund.id);
+        }
 
         // Calculate new total refunded amount
         const newTotalRefunded = (order.refund_amount || 0) + refundAmount;
@@ -171,11 +181,12 @@ serve(async (req) => {
           .from('refunds')
           .insert({
             order_id: orderId,
-            stripe_refund_id: refund.id,
+            stripe_refund_id: stripeRefundId,
             amount: refundAmount,
             reason: reason || 'requested_by_customer',
-            notes: notes || null,
+            notes: notes || `Bulk ${refundType} refund processed`,
             processed_by: user.id,
+            refund_type: refundType,
           });
 
         if (refundError) {
@@ -186,8 +197,9 @@ serve(async (req) => {
           orderId,
           order_number: order.order_number,
           success: true,
-          refund_id: refund.id,
-          amount: refundAmount
+          refund_id: stripeRefundId,
+          amount: refundAmount,
+          type: refundType
         });
 
       } catch (error) {

@@ -233,6 +233,7 @@ export type Database = {
           order_id: string
           processed_by: string | null
           reason: string | null
+          refund_type: Database["public"]["Enums"]["refund_type"]
           stripe_refund_id: string
           updated_at: string | null
         }
@@ -244,6 +245,7 @@ export type Database = {
           order_id: string
           processed_by?: string | null
           reason?: string | null
+          refund_type?: Database["public"]["Enums"]["refund_type"]
           stripe_refund_id: string
           updated_at?: string | null
         }
@@ -255,6 +257,7 @@ export type Database = {
           order_id?: string
           processed_by?: string | null
           reason?: string | null
+          refund_type?: Database["public"]["Enums"]["refund_type"]
           stripe_refund_id?: string
           updated_at?: string | null
         }
@@ -978,6 +981,7 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
+      refund_type: "stripe" | "manual"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1106,6 +1110,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "moderator", "user"],
+      refund_type: ["stripe", "manual"],
     },
   },
 } as const

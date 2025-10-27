@@ -18,6 +18,9 @@ import {
 } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,7 +32,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { format } from 'date-fns';
-import { Package, DollarSign, User, MapPin, CreditCard, Truck, ExternalLink, AlertTriangle, RefreshCw } from 'lucide-react';
+import { Package, DollarSign, User, MapPin, CreditCard, Truck, ExternalLink, AlertTriangle, RefreshCw, AlertCircle } from 'lucide-react';
 import { StallionFulfillmentDialog } from './StallionFulfillmentDialog';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
@@ -68,20 +71,29 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
   const [refundReason, setRefundReason] = useState('requested_by_customer');
   const [refundNotes, setRefundNotes] = useState('');
   const [isRefunding, setIsRefunding] = useState(false);
+  const [refundType, setRefundType] = useState<'stripe' | 'manual'>('stripe');
+  const [manualRefundConfirmed, setManualRefundConfirmed] = useState(false);
 
   // Reset refund form when order changes
   useEffect(() => {
     setRefundAmount(order.total.toString());
     setRefundReason('requested_by_customer');
     setRefundNotes('');
+    setRefundType(order.stripe_payment_intent_id ? 'stripe' : 'manual');
+    setManualRefundConfirmed(false);
     setNewStatus(order.status);
-  }, [order.id, order.total, order.status]);
+  }, [order.id, order.total, order.status, order.stripe_payment_intent_id]);
 
   const handleStatusUpdate = () => {
     onStatusUpdate(newStatus);
   };
   
   const handleRefund = async () => {
+    if (refundType === 'manual' && !manualRefundConfirmed) {
+      toast.error('Please confirm that you have processed this refund manually in Stripe Dashboard');
+      return;
+    }
+
     setIsRefunding(true);
     try {
       const { data, error } = await supabase.functions.invoke('create-refund', {
@@ -90,19 +102,22 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
           amount: parseFloat(refundAmount),
           reason: refundReason,
           notes: refundNotes,
+          refundType,
         },
       });
 
       if (error) throw error;
 
       if (data.success) {
-        const isFullRefund = parseFloat(refundAmount) >= order.total;
-        toast.success(
-          isFullRefund 
-            ? `Full refund of $${parseFloat(refundAmount).toFixed(2)} processed successfully`
-            : `Partial refund of $${parseFloat(refundAmount).toFixed(2)} processed successfully`
-        );
+        const message = refundType === 'manual'
+          ? data.message
+          : `Refund of $${parseFloat(refundAmount).toFixed(2)} processed successfully`;
+        
+        toast.success(message);
         setRefundDialogOpen(false);
+        setManualRefundConfirmed(false);
+        
+        const isFullRefund = parseFloat(refundAmount) >= order.total;
         if (isFullRefund) {
           onStatusUpdate('refunded');
         }
@@ -149,496 +164,206 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
     <Sheet open={open} onOpenChange={onClose}>
       <SheetContent className="w-full sm:max-w-2xl overflow-y-auto">
         <SheetHeader>
-          <SheetTitle>Order #{order.id}</SheetTitle>
+          <SheetTitle>Order Details</SheetTitle>
           <SheetDescription>
-            Placed on {format(new Date(order.date_created), 'MMMM dd, yyyy HH:mm')}
+            View and manage order details.
           </SheetDescription>
         </SheetHeader>
 
-        <div className="space-y-6 mt-6">
-          {/* Status Update */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <h3 className="font-semibold flex items-center gap-2">
-                <Package className="h-4 w-4" />
-                Order Status
-              </h3>
-              {getStatusBadge(order.status)}
-            </div>
-            
-            <div className="flex gap-2">
-              <Select value={newStatus} onValueChange={setNewStatus}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="processing">Processing</SelectItem>
-                  <SelectItem value="on-hold">On Hold</SelectItem>
-                  <SelectItem value="completed">Completed</SelectItem>
-                  <SelectItem value="cancelled">Cancelled</SelectItem>
-                  <SelectItem value="refunded">Refunded</SelectItem>
-                  <SelectItem value="failed">Failed</SelectItem>
-                </SelectContent>
-              </Select>
-              <Button 
-                onClick={handleStatusUpdate}
-                disabled={newStatus === order.status}
-              >
-                Update
-              </Button>
-            </div>
+        <div className="space-y-4 py-4">
+          <div className="flex items-center space-x-2">
+            <Package className="h-4 w-4" />
+            <h3 className="text-lg font-semibold">Order Status</h3>
           </div>
-
+          <div className="flex items-center justify-between">
+            <Select value={newStatus} onValueChange={setNewStatus}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="pending">Pending</SelectItem>
+                <SelectItem value="processing">Processing</SelectItem>
+                <SelectItem value="on-hold">On Hold</SelectItem>
+                <SelectItem value="completed">Completed</SelectItem>
+                <SelectItem value="cancelled">Cancelled</SelectItem>
+                <SelectItem value="refunded">Refunded</SelectItem>
+                <SelectItem value="failed">Failed</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button size="sm" onClick={handleStatusUpdate}>
+              Update Status
+            </Button>
+          </div>
           <Separator />
 
-          {/* Customer Info */}
-          <div className="space-y-3">
-            <h3 className="font-semibold flex items-center gap-2">
-              <User className="h-4 w-4" />
-              Customer
-            </h3>
-            <div className="text-sm space-y-1">
-              <p className="font-medium">
-                {order.billing?.first_name} {order.billing?.last_name}
-              </p>
-              <p className="text-muted-foreground">{order.billing?.email}</p>
-              <p className="text-muted-foreground">{order.billing?.phone}</p>
+          <div className="flex items-center space-x-2">
+            <User className="h-4 w-4" />
+            <h3 className="text-lg font-semibold">Customer Information</h3>
+          </div>
+          <div className="grid gap-2">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>Name</Label>
+                <Input type="text" value={order.customer_name || order.billing?.first_name + ' ' + order.billing?.last_name || 'N/A'} readOnly />
+              </div>
+              <div>
+                <Label>Email</Label>
+                <Input type="email" value={order.customer_email || order.billing?.email || 'N/A'} readOnly />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>Billing Address</Label>
+                <Textarea value={
+                  order.billing?.address_1 + '\n' +
+                  order.billing?.address_2 + '\n' +
+                  order.billing?.city + ', ' + order.billing?.state + ' ' + order.billing?.postcode + '\n' +
+                  order.billing?.country
+                  || 'N/A'} readOnly className="resize-none" />
+              </div>
+              <div>
+                <Label>Shipping Address</Label>
+                <Textarea value={
+                  order.shipping?.address_1 + '\n' +
+                  order.shipping?.address_2 + '\n' +
+                  order.shipping?.city + ', ' + order.shipping?.state + ' ' + order.shipping?.postcode + '\n' +
+                  order.shipping?.country
+                  || order.shipping_address?.address_1 + '\n' +
+                  order.shipping_address?.address_2 + '\n' +
+                  order.shipping_address?.city + ', ' + order.shipping_address?.state + ' ' + order.shipping_address?.postcode + '\n' +
+                  order.shipping_address?.country
+                  || 'N/A'} readOnly className="resize-none" />
+              </div>
             </div>
           </div>
-
           <Separator />
 
-          {/* Billing Address */}
-          <div className="space-y-3">
-            <h3 className="font-semibold flex items-center gap-2">
-              <MapPin className="h-4 w-4" />
-              Billing Address
-            </h3>
-            <div className="text-sm text-muted-foreground space-y-1">
-              <p>{order.billing?.address_1}</p>
-              {order.billing?.address_2 && <p>{order.billing.address_2}</p>}
-              <p>
-                {order.billing?.city}, {order.billing?.state} {order.billing?.postcode}
-              </p>
-              <p>{order.billing?.country}</p>
+          <div className="flex items-center space-x-2">
+            <DollarSign className="h-4 w-4" />
+            <h3 className="text-lg font-semibold">Order Details</h3>
+          </div>
+          <div className="grid gap-2">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>Order Number</Label>
+                <Input type="text" value={order.id} readOnly />
+              </div>
+              <div>
+                <Label>Order Date</Label>
+                <Input type="text" value={format(new Date(order.date_created), 'MMMM d, yyyy h:mm a')} readOnly />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>Payment Method</Label>
+                <Input type="text" value={order.payment_method_title || 'N/A'} readOnly />
+              </div>
+              <div>
+                <Label>Total</Label>
+                <Input type="text" value={`${order.total} ${order.currency || 'CAD'}`} readOnly />
+              </div>
+            </div>
+
+            <div>
+              <Label>Items</Label>
+              <div className="border rounded-md p-2">
+                {order.line_items?.map((item: any) => (
+                  <div key={item.id} className="py-2 border-b last:border-b-0">
+                    <div className="font-semibold">{item.name}</div>
+                    <div className="text-sm text-muted-foreground">
+                      {item.quantity} x {item.price} = {(item.quantity * item.price).toFixed(2)}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
+          <Separator />
 
-          {/* Shipping Address */}
-          {(order.shipping || order.shipping_address) && (
-            <>
-              <Separator />
-              <div className="space-y-3">
-                <h3 className="font-semibold flex items-center gap-2">
-                  <MapPin className="h-4 w-4" />
-                  Shipping Address
-                </h3>
-                <div className="text-sm text-muted-foreground space-y-1 bg-muted/30 rounded-lg p-3">
-                  {(() => {
-                    // Handle both WooCommerce (shipping) and Stripe (shipping_address) formats
-                    const addr = order.shipping_address || order.shipping || {};
-                    const name = addr.name || `${addr.first_name || ''} ${addr.last_name || ''}`.trim();
-                    const street1 = addr.address || addr.address_1 || addr.line1 || '';
-                    const street2 = addr.address_2 || addr.line2 || '';
-                    const city = addr.city || '';
-                    const state = addr.state || addr.province || '';
-                    const postal = addr.postcode || addr.postal_code || '';
-                    const country = addr.country || '';
-                    
-                    return (
-                      <>
-                        {name && <p className="font-medium text-foreground">{name}</p>}
-                        {street1 && <p className="break-words">{street1}</p>}
-                        {street2 && <p className="break-words">{street2}</p>}
-                        {(city || state || postal) && (
-                          <p>
-                            {city}{city && (state || postal) ? ', ' : ''}
-                            {state} {postal}
-                          </p>
-                        )}
-                        {country && <p>{country}</p>}
-                      </>
-                    );
-                  })()}
+          <div className="flex items-center space-x-2">
+            <Truck className="h-4 w-4" />
+            <h3 className="text-lg font-semibold">Fulfillment</h3>
+          </div>
+          <div className="grid gap-2">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>Fulfillment Status</Label>
+                <div>{getStatusBadge(order.fulfillment_status || 'pending')}</div>
+              </div>
+              <div>
+                <Label>Tracking Number</Label>
+                <div className="flex items-center space-x-2">
+                  <Input type="text" value={order.tracking_number || ''} readOnly />
+                  {order.tracking_number && validateTrackingNumber(order.tracking_number) ? (
+                    <a
+                      href={`https://www.google.com/search?q=track+${order.tracking_number}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-500 hover:underline"
+                    >
+                      <ExternalLink className="h-4 w-4" />
+                    </a>
+                  ) : (
+                    <AlertTriangle className="h-4 w-4 text-red-500" />
+                  )}
                 </div>
               </div>
-            </>
-          )}
-
-          <Separator />
-
-          {/* Payment Method */}
-          <div className="space-y-3">
-            <h3 className="font-semibold flex items-center gap-2">
-              <CreditCard className="h-4 w-4" />
-              Payment Method
-            </h3>
-            <p className="text-sm text-muted-foreground">
-              {order.payment_method_title || 'Not specified'}
-            </p>
-          </div>
-
-          <Separator />
-
-          {/* Order Items */}
-          <div className="space-y-3">
-            <h3 className="font-semibold flex items-center gap-2">
-              <Package className="h-4 w-4" />
-              Items ({order.line_items?.length || 0})
-            </h3>
-            <div className="space-y-2 bg-muted/30 rounded-lg p-4">
-              {order.line_items?.map((item: any, index: number) => {
-                const itemPrice = item.price || 0;
-                const itemTotal = item.total || (itemPrice * item.quantity);
-                const total = typeof itemTotal === 'number' ? itemTotal : parseFloat(String(itemTotal || '0'));
-                const unitPrice = typeof itemPrice === 'number' ? itemPrice : parseFloat(String(itemPrice || '0'));
-                
-                return (
-                  <div key={index} className="flex justify-between items-start py-2 border-b border-border/50 last:border-0">
-                    <div className="flex-1 space-y-1">
-                      <p className="font-medium text-sm">{item.name}</p>
-                      <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                        <span>Qty: {item.quantity}</span>
-                        {unitPrice > 0 && (
-                          <span>@ ${unitPrice.toFixed(2)} each</span>
-                        )}
-                      </div>
-                    </div>
-                    <p className="font-semibold text-sm ml-4">
-                      ${total.toFixed(2)}
-                    </p>
-                  </div>
-                );
-              })}
             </div>
-            
-            {/* Shipping Information */}
-            {(() => {
-              // Safe number parsing helper
-              const safeParseNumber = (val: any): number => {
-                if (val == null || val === '') return 0;
-                const num = typeof val === 'number' ? val : parseFloat(String(val));
-                return isNaN(num) ? 0 : num;
-              };
 
-              // Calculate shipping cost - prefer shipping_cost first (Stripe numeric field)
-              let shippingCost = safeParseNumber((order as any).shipping_cost) || safeParseNumber((order as any).shipping);
-              let shippingLabel: string | null = null;
-              
-              // Calculate subtotal for free shipping threshold check
-              const orderSubtotal = safeParseNumber((order as any).subtotal) || 
-                (order.line_items?.reduce((sum: number, item: any) => {
-                  const itemPrice = safeParseNumber(item?.price);
-                  const qty = safeParseNumber(item?.quantity) || 1;
-                  const itemTotal = safeParseNumber(item?.total) || (itemPrice * qty);
-                  return sum + itemTotal;
-                }, 0) || 0);
-              
-              // Check if order should qualify for free shipping (GTA threshold is $50)
-              const freeShippingThreshold = 50;
-              const shouldBeFree = orderSubtotal >= freeShippingThreshold && shippingCost > 0;
-
-              // WooCommerce-style shipping lines
-              const wooLines = (order as any).shipping_lines;
-              if (Array.isArray(wooLines) && wooLines.length > 0) {
-                const linesTotal = wooLines.reduce((sum: number, l: any) => {
-                  return sum + safeParseNumber(l?.total);
-                }, 0);
-                if (linesTotal > 0) {
-                  shippingCost = linesTotal;
-                  shippingLabel = wooLines[0]?.method_title || wooLines[0]?.name || null;
-                }
-              }
-
-              // Some payloads use shipping_total
-              if (shippingCost === 0) {
-                const total = safeParseNumber((order as any).shipping_total);
-                if (total > 0) shippingCost = total;
-              }
-              
-              // If still 0, extract from items array (Stripe sessions, some Woo orders)
-              if (shippingCost === 0 && Array.isArray(order.line_items)) {
-                const shippingItems = order.line_items.filter((item: any) => {
-                  const name = String(item?.name || '').toLowerCase();
-                  return name.includes('shipping') || 
-                         name.includes('delivery') || 
-                         name.includes('intelcom') ||
-                         name.includes('whiz') ||
-                         name.includes('toronto') ||
-                         name.includes('gta') ||
-                         name.includes('canada wide') ||
-                         name.includes('standard');
-                });
-                
-                if (shippingItems.length > 0) {
-                  shippingLabel = String(shippingItems[0]?.name || '');
-                  shippingCost = shippingItems.reduce((sum: number, item: any) => {
-                    const itemTotal = safeParseNumber(item?.total) || (safeParseNumber(item?.price) * (item?.quantity || 1));
-                    return sum + itemTotal;
-                  }, 0);
-                }
-              }
-              
-              // Final fallback to prevent NaN
-              const displayCost = isNaN(shippingCost) ? 0 : shippingCost;
-              
-              return (
-                <div className={`mt-4 border rounded-lg p-4 ${shouldBeFree ? 'bg-amber-50 border-amber-300' : 'bg-primary/5 border-primary/20'}`}>
-                  {shouldBeFree && (
-                    <div className="flex items-center gap-2 mb-3 p-2 bg-amber-100 border border-amber-400 rounded text-amber-900">
-                      <AlertTriangle className="h-4 w-4 flex-shrink-0" />
-                      <p className="text-xs font-medium">
-                        ⚠️ Customer was charged ${displayCost.toFixed(2)} shipping but order subtotal (${orderSubtotal.toFixed(2)}) qualifies for FREE shipping over ${freeShippingThreshold}
-                      </p>
-                    </div>
-                  )}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Truck className="h-4 w-4 text-primary" />
-                      <span className="font-medium text-sm">{shippingLabel || 'Shipping Cost'}</span>
-                    </div>
-                    <span className="text-lg font-bold text-primary">
-                      ${displayCost.toFixed(2)}
-                    </span>
-                  </div>
-                  {displayCost === 0 && (
-                    <p className="text-xs text-muted-foreground mt-2">
-                      Free shipping or included in item price
-                    </p>
-                  )}
-                </div>
-              );
-            })()}
-          </div>
-
-          <Separator />
-
-          {/* Stallion Express Fulfillment */}
-          <div className="space-y-3">
-            <h3 className="font-semibold flex items-center gap-2">
-              <Truck className="h-4 w-4" />
-              Fulfillment
-            </h3>
-            
-            {order.fulfillment_status === 'fulfilled' ? (
-              <div className="space-y-3">
-                <div className="bg-green-50 border border-green-200 rounded-lg p-4 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-green-900">Order Fulfilled</span>
-                    <Badge variant="outline" className="bg-green-100 text-green-700 border-green-300">
-                      Shipped
-                    </Badge>
-                  </div>
-                  {order.tracking_number && (
-                    <div className="text-sm">
-                      <span className="font-medium text-green-700">Tracking:</span> {order.tracking_number}
-                      {!validateTrackingNumber(order.tracking_number) && (
-                        <div className="flex items-center gap-1 text-amber-600 mt-1">
-                          <AlertTriangle className="h-3 w-3" />
-                          <span className="text-xs">Invalid tracking number format</span>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-                
-                <div className="flex gap-2">
-                  {order.shipping_label_url && (
-                    <Button variant="outline" size="sm" className="flex-1" asChild>
-                      <a href={order.shipping_label_url} target="_blank" rel="noopener noreferrer">
-                        <ExternalLink className="h-4 w-4 mr-2" />
-                        View Label
-                      </a>
-                    </Button>
-                  )}
-                  {order.tracking_number && (
-                    <Button variant="outline" size="sm" className="flex-1" asChild>
-                      <a 
-                        href={`https://www.stallionexpress.ca/tracking?tracking_number=${order.tracking_number}`} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                      >
-                        <Truck className="h-4 w-4 mr-2" />
-                        Track Package
-                      </a>
-                    </Button>
-                  )}
-                </div>
+            {order.stallion_shipment_id ? (
+              <div className="space-y-1">
+                <Label>Stallion Shipment ID</Label>
+                <Input type="text" value={order.stallion_shipment_id} readOnly />
+                {order.shipping_label_url ? (
+                  <a
+                    href={order.shipping_label_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 hover:underline text-sm"
+                  >
+                    View Shipping Label
+                  </a>
+                ) : (
+                  <Alert className="my-2">
+                    <AlertDescription>
+                      No shipping label URL found for this shipment.
+                    </AlertDescription>
+                  </Alert>
+                )}
               </div>
             ) : (
-              <div className="space-y-3">
-                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-                  <p className="text-sm text-amber-900">
-                    {order.fulfillment_status === 'processing' 
-                      ? 'Fulfillment in progress'
-                      : 'Order awaiting fulfillment'}
-                  </p>
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <Button 
-                    onClick={() => setFulfillmentDialogOpen(true)}
-                    variant="default"
-                    disabled={!order.shipping_address && !order.shipping}
-                  >
-                    <Truck className="h-4 w-4 mr-2" />
-                    Ship Now
-                  </Button>
-                  <Button 
-                    onClick={() => {
-                      onStatusUpdate('completed');
-                      onClose();
-                    }}
-                    variant="outline"
-                  >
-                    <Package className="h-4 w-4 mr-2" />
-                    Mark Complete
-                  </Button>
-                </div>
-              </div>
+              <Alert className="my-2">
+                <AlertDescription>
+                  This order has not been fulfilled through Stallion.
+                </AlertDescription>
+              </Alert>
             )}
+
+            <Button onClick={() => setFulfillmentDialogOpen(true)} size="sm">
+              Manage Fulfillment
+            </Button>
           </div>
-
-          <Separator />
-
-          {/* Refund Management */}
-          {order.status === 'refunded' ? (
+        </div>
+        
+        <div className="space-y-6 pb-6">
+          {/* Refund Management Section */}
+          {order.status !== 'refunded' && (
             <div className="space-y-3">
-              <h3 className="font-semibold flex items-center gap-2">
-                <RefreshCw className="h-4 w-4" />
-                Refund Information
-              </h3>
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-red-900">Order Fully Refunded</span>
-                  <Badge variant="outline" className="bg-red-100 text-red-700 border-red-300">
-                    ${(order.refund_amount || order.total).toFixed(2)}
-                  </Badge>
-                </div>
-                <p className="text-xs text-red-700 mt-2">
-                  This order has been fully refunded to the customer's original payment method.
-                </p>
-              </div>
-            </div>
-          ) : order.refund_amount && order.refund_amount > 0 ? (
-            <div className="space-y-3">
-              <h3 className="font-semibold flex items-center gap-2">
-                <RefreshCw className="h-4 w-4" />
-                Partial Refund
-              </h3>
-              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-amber-900">Partial Refund Processed</span>
-                  <Badge variant="outline" className="bg-amber-100 text-amber-700 border-amber-300">
-                    ${order.refund_amount.toFixed(2)}
-                  </Badge>
-                </div>
-                <p className="text-xs text-amber-700">
-                  Original total: ${order.total.toFixed(2)} | Remaining: ${(order.total - order.refund_amount).toFixed(2)}
-                </p>
-              </div>
-              {order.stripe_payment_intent_id && (
-                <Button 
-                  onClick={() => {
-                    setRefundAmount((order.total - order.refund_amount).toString());
-                    setRefundDialogOpen(true);
-                  }}
-                  variant="destructive"
-                  className="w-full"
-                >
-                  <RefreshCw className="h-4 w-4 mr-2" />
-                  Refund Remaining Amount
-                </Button>
-              )}
-            </div>
-          ) : order.stripe_payment_intent_id ? (
-            <div className="space-y-3">
-              <h3 className="font-semibold flex items-center gap-2">
-                <RefreshCw className="h-4 w-4" />
-                Refund Management
-              </h3>
               <Button 
-                onClick={() => setRefundDialogOpen(true)}
+                onClick={() => {
+                  setRefundType(order.stripe_payment_intent_id ? 'stripe' : 'manual');
+                  setRefundDialogOpen(true);
+                }}
                 variant="destructive"
                 className="w-full"
               >
                 <RefreshCw className="h-4 w-4 mr-2" />
-                Process Stripe Refund
+                {order.stripe_payment_intent_id ? 'Process Stripe Refund' : 'Record Manual Refund'}
               </Button>
             </div>
-          ) : (
-            <div className="space-y-3">
-              <h3 className="font-semibold flex items-center gap-2">
-                <RefreshCw className="h-4 w-4" />
-                Refund Management
-              </h3>
-              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-                <p className="text-xs text-amber-900">
-                  This order cannot be refunded automatically. Please process the refund manually in the Stripe Dashboard.
-                </p>
-              </div>
-            </div>
           )}
-
-          <Separator />
-
-          {/* Order Total */}
-          <div className="space-y-3">
-            <h3 className="font-semibold flex items-center gap-2">
-              <DollarSign className="h-4 w-4" />
-              Order Total
-            </h3>
-            <div className="space-y-2 text-sm bg-muted/30 rounded-lg p-4">
-              {/* Calculate subtotal from line items */}
-              {(() => {
-                // Safe number parsing helper
-                const safeParseNumber = (val: any): number => {
-                  if (val == null || val === '') return 0;
-                  const num = typeof val === 'number' ? val : parseFloat(String(val));
-                  return isNaN(num) ? 0 : num;
-                };
-                
-                // Prefer numeric subtotal field if present (Stripe), otherwise calculate from items
-                const itemsSubtotal = safeParseNumber((order as any).subtotal) || 
-                  (order.line_items?.reduce((sum: number, item: any) => {
-                    const itemPrice = safeParseNumber(item?.price);
-                    const qty = safeParseNumber(item?.quantity) || 1;
-                    const itemTotal = safeParseNumber(item?.total) || (itemPrice * qty);
-                    return sum + itemTotal;
-                  }, 0) || 0);
-                
-                const shipping = safeParseNumber((order as any).shipping_cost) || safeParseNumber((order as any).shipping_total) || safeParseNumber((order as any).shipping);
-                const tax = safeParseNumber((order as any).tax) || safeParseNumber((order as any).tax_amount);
-                const total = safeParseNumber(order.total);
-                
-                return (
-                  <>
-                    <div className="flex justify-between text-muted-foreground">
-                      <span>Subtotal:</span>
-                      <span>${itemsSubtotal.toFixed(2)}</span>
-                    </div>
-                    {shipping > 0 && (
-                      <div className="flex justify-between text-muted-foreground">
-                        <span>Shipping:</span>
-                        <span>${shipping.toFixed(2)}</span>
-                      </div>
-                    )}
-                    {tax > 0 && (
-                      <div className="flex justify-between text-muted-foreground">
-                        <span>Tax:</span>
-                        <span>${tax.toFixed(2)}</span>
-                      </div>
-                    )}
-                    <Separator className="my-2" />
-                    <div className="flex justify-between font-bold text-base pt-1">
-                      <span>Total:</span>
-                      <span>{order.currency || 'CAD'} ${total.toFixed(2)}</span>
-                    </div>
-                  </>
-                );
-              })()}
-            </div>
-          </div>
         </div>
 
         <StallionFulfillmentDialog
@@ -652,13 +377,31 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
         />
 
         <AlertDialog open={refundDialogOpen} onOpenChange={setRefundDialogOpen}>
-          <AlertDialogContent>
+          <AlertDialogContent className="max-w-2xl">
             <AlertDialogHeader>
-              <AlertDialogTitle>Process Stripe Refund</AlertDialogTitle>
+              <AlertDialogTitle>
+                {refundType === 'manual' ? 'Record Manual Refund' : 'Process Stripe Refund'}
+              </AlertDialogTitle>
               <AlertDialogDescription>
-                Issue a refund to the customer's original payment method. This action cannot be undone.
+                {refundType === 'manual'
+                  ? 'Record a refund that you will process manually in Stripe Dashboard.'
+                  : 'Issue a refund to the customer\'s original payment method. This action cannot be undone.'}
               </AlertDialogDescription>
             </AlertDialogHeader>
+
+            {refundType === 'manual' && (
+              <Alert className="border-amber-500 bg-amber-50 dark:bg-amber-950">
+                <AlertCircle className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                <AlertDescription className="text-amber-800 dark:text-amber-200">
+                  <strong>Manual Refund Process:</strong>
+                  <ol className="mt-2 ml-4 list-decimal space-y-1 text-sm">
+                    <li>Open the <a href="https://dashboard.stripe.com/payments" target="_blank" rel="noopener noreferrer" className="underline font-medium">Stripe Dashboard</a></li>
+                    <li>Process the refund manually for order {order.id}</li>
+                    <li>Return here and confirm below to record it in the system</li>
+                  </ol>
+                </AlertDescription>
+              </Alert>
+            )}
             
             <div className="space-y-4 py-4">
               <div className="space-y-2">
@@ -700,13 +443,26 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
 
               <div className="space-y-2">
                 <Label htmlFor="refundNotes">Notes (Optional)</Label>
-                <Input
+                <Textarea
                   id="refundNotes"
                   value={refundNotes}
                   onChange={(e) => setRefundNotes(e.target.value)}
                   placeholder="Internal notes about this refund"
                 />
               </div>
+
+              {refundType === 'manual' && (
+                <div className="flex items-start space-x-2 rounded-md border border-amber-500 bg-amber-50 dark:bg-amber-950 p-4">
+                  <Checkbox
+                    id="manual-confirmation"
+                    checked={manualRefundConfirmed}
+                    onCheckedChange={(checked) => setManualRefundConfirmed(checked as boolean)}
+                  />
+                  <Label htmlFor="manual-confirmation" className="font-normal cursor-pointer text-amber-800 dark:text-amber-200">
+                    I confirm that I have processed this refund manually in the Stripe Dashboard
+                  </Label>
+                </div>
+              )}
             </div>
 
             <AlertDialogFooter>
@@ -716,7 +472,7 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
                   e.preventDefault();
                   handleRefund();
                 }}
-                disabled={isRefunding || !refundAmount || parseFloat(refundAmount) <= 0}
+                disabled={isRefunding || !refundAmount || parseFloat(refundAmount) <= 0 || (refundType === 'manual' && !manualRefundConfirmed)}
                 className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               >
                 {isRefunding ? (
@@ -725,7 +481,7 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
                     Processing...
                   </>
                 ) : (
-                  <>Refund ${parseFloat(refundAmount || '0').toFixed(2)}</>
+                  <>{refundType === 'manual' ? 'Record Refund' : `Refund $${parseFloat(refundAmount || '0').toFixed(2)}`}</>
                 )}
               </AlertDialogAction>
             </AlertDialogFooter>

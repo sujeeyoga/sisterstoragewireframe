@@ -44,7 +44,7 @@ serve(async (req) => {
       throw new Error('User is not an admin');
     }
 
-    const { orderId, amount, reason, notes } = await req.json();
+    const { orderId, amount, reason, notes, refundType = 'stripe' } = await req.json();
 
     if (!orderId) {
       throw new Error('Order ID is required');
@@ -63,18 +63,13 @@ serve(async (req) => {
       throw new Error('Order not found');
     }
 
-    if (!order.stripe_payment_intent_id) {
-      throw new Error('Order does not have a Stripe payment intent ID. Please process refund manually in Stripe Dashboard.');
+    if (refundType === 'stripe' && !order.stripe_payment_intent_id) {
+      throw new Error('Order does not have a Stripe payment intent ID. Use refundType: "manual" instead.');
     }
 
     if (order.status === 'refunded') {
       throw new Error('Order has already been refunded');
     }
-
-    // Initialize Stripe
-    const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY') || '', {
-      apiVersion: '2025-08-27.basil',
-    });
 
     // Determine refund amount
     const refundAmount = amount || order.total;
@@ -91,21 +86,35 @@ serve(async (req) => {
       throw new Error('Refund amount must be greater than 0');
     }
 
-    console.log('Creating Stripe refund:', {
-      payment_intent: order.stripe_payment_intent_id,
-      amount: Math.round(refundAmount * 100),
-      previouslyRefunded,
-      remainingRefundable,
-    });
+    let stripeRefundId: string;
 
-    // Create refund in Stripe
-    const refund = await stripe.refunds.create({
-      payment_intent: order.stripe_payment_intent_id,
-      amount: Math.round(refundAmount * 100), // Convert to cents
-      reason: reason || 'requested_by_customer',
-    });
+    if (refundType === 'manual') {
+      // Generate manual refund ID for tracking
+      stripeRefundId = `MANUAL-${Date.now()}-${orderId.toString().slice(0, 8)}`;
+      console.log(`Recording manual refund for order ${orderId}: ${stripeRefundId}`);
+    } else {
+      // Initialize Stripe
+      const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY') || '', {
+        apiVersion: '2025-08-27.basil',
+      });
 
-    console.log('Stripe refund created:', refund.id);
+      console.log('Creating Stripe refund:', {
+        payment_intent: order.stripe_payment_intent_id,
+        amount: Math.round(refundAmount * 100),
+        previouslyRefunded,
+        remainingRefundable,
+      });
+
+      // Create refund in Stripe
+      const refund = await stripe.refunds.create({
+        payment_intent: order.stripe_payment_intent_id,
+        amount: Math.round(refundAmount * 100), // Convert to cents
+        reason: reason || 'requested_by_customer',
+      });
+
+      stripeRefundId = refund.id;
+      console.log('Stripe refund created:', refund.id);
+    }
 
     // Calculate new total refunded amount
     const newTotalRefunded = (order.refund_amount || 0) + refundAmount;
@@ -140,11 +149,12 @@ serve(async (req) => {
       .from('refunds')
       .insert({
         order_id: orderId,
-        stripe_refund_id: refund.id,
+        stripe_refund_id: stripeRefundId,
         amount: refundAmount,
         reason: reason || 'requested_by_customer',
         notes: notes || null,
         processed_by: user.id,
+        refund_type: refundType,
       });
 
     if (refundError) {
@@ -156,9 +166,12 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({
         success: true,
-        refund_id: refund.id,
+        refund_id: stripeRefundId,
         amount: refundAmount,
-        message: 'Refund processed successfully',
+        message: refundType === 'manual' 
+          ? 'Manual refund recorded. Please process the actual refund in Stripe Dashboard.'
+          : 'Refund processed successfully',
+        type: refundType,
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

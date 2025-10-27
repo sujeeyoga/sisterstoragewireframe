@@ -5,8 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, DollarSign, MapPin } from "lucide-react";
+import { Loader2, DollarSign, MapPin, AlertCircle } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -31,6 +33,8 @@ interface OverchargedOrder {
 
 export function BulkShippingRefundTool() {
   const [selectedOrders, setSelectedOrders] = useState<Set<string>>(new Set());
+  const [refundType, setRefundType] = useState<'stripe' | 'manual'>('manual');
+  const [manualRefundConfirmed, setManualRefundConfirmed] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -73,7 +77,8 @@ export function BulkShippingRefundTool() {
           orderId,
           amount: order?.shipping || 15,
           reason: 'requested_by_customer',
-          notes: 'GTA free shipping over $50 - shipping charge refund'
+          notes: 'GTA free shipping over $50 - shipping charge refund',
+          refundType
         };
       });
 
@@ -91,11 +96,16 @@ export function BulkShippingRefundTool() {
       return response.data;
     },
     onSuccess: (data) => {
+      const message = refundType === 'manual'
+        ? `Recorded ${data.successful} manual refunds. Please process them in Stripe Dashboard.`
+        : `Successfully processed ${data.successful} refunds via Stripe API.`;
+      
       toast({
         title: "Bulk Refund Complete",
-        description: `Successfully refunded ${data.successful} orders. ${data.failed} failed.`,
+        description: `${message} ${data.failed > 0 ? `${data.failed} failed.` : ''}`,
       });
       setSelectedOrders(new Set());
+      setManualRefundConfirmed(false);
       queryClient.invalidateQueries({ queryKey: ['overcharged-shipping-orders'] });
       queryClient.invalidateQueries({ queryKey: ['orders'] });
     },
@@ -136,6 +146,15 @@ export function BulkShippingRefundTool() {
       return;
     }
 
+    if (refundType === 'manual' && !manualRefundConfirmed) {
+      toast({
+        title: "Confirmation Required",
+        description: "Please confirm that you will process these refunds manually in Stripe Dashboard.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     bulkRefundMutation.mutate(Array.from(selectedOrders));
   };
 
@@ -154,23 +173,81 @@ export function BulkShippingRefundTool() {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <DollarSign className="h-5 w-5" />
-          Bulk Shipping Refund Tool
-        </CardTitle>
-        <CardDescription>
-          GTA orders over $50 that were incorrectly charged shipping
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        {!overchargedOrders || overchargedOrders.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground">
-            <MapPin className="h-12 w-12 mx-auto mb-2 opacity-50" />
-            <p>No overcharged orders found</p>
+    <div className="space-y-6">
+      {/* Refund Type Selector */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Refund Processing Method</CardTitle>
+          <CardDescription>
+            Choose how to process these refunds
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-3">
+            <label className="flex items-center space-x-3 cursor-pointer">
+              <input
+                type="radio"
+                name="refundType"
+                value="manual"
+                checked={refundType === 'manual'}
+                onChange={(e) => setRefundType(e.target.value as 'manual')}
+                className="h-4 w-4"
+              />
+              <div>
+                <div className="font-medium">Manual (Record Only)</div>
+                <div className="text-sm text-muted-foreground">
+                  Records refunds in the system. You must process them manually in Stripe Dashboard.
+                </div>
+              </div>
+            </label>
+            
+            <label className="flex items-center space-x-3 cursor-pointer">
+              <input
+                type="radio"
+                name="refundType"
+                value="stripe"
+                checked={refundType === 'stripe'}
+                onChange={(e) => setRefundType(e.target.value as 'stripe')}
+                className="h-4 w-4"
+              />
+              <div>
+                <div className="font-medium">Automatic (Stripe API)</div>
+                <div className="text-sm text-muted-foreground">
+                  Processes refunds automatically through Stripe API.
+                </div>
+              </div>
+            </label>
           </div>
-        ) : (
+
+          {refundType === 'manual' && (
+            <Alert className="border-amber-500 bg-amber-50 dark:bg-amber-950">
+              <AlertCircle className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+              <AlertDescription className="text-amber-800 dark:text-amber-200 text-sm">
+                <strong>Manual Refund Process:</strong> Select orders and process them in <a href="https://dashboard.stripe.com/payments" target="_blank" rel="noopener noreferrer" className="underline">Stripe Dashboard</a>
+              </AlertDescription>
+            </Alert>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Orders List */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <DollarSign className="h-5 w-5" />
+            Bulk Shipping Refund Tool
+          </CardTitle>
+          <CardDescription>
+            GTA orders over $50 that were incorrectly charged shipping
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {!overchargedOrders || overchargedOrders.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">
+              <MapPin className="h-12 w-12 mx-auto mb-2 opacity-50" />
+              <p>No overcharged orders found</p>
+            </div>
+          ) : (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
@@ -196,16 +273,29 @@ export function BulkShippingRefundTool() {
                 </Button>
                 <Button
                   onClick={handleBulkRefund}
-                  disabled={selectedOrders.size === 0 || bulkRefundMutation.isPending}
+                  disabled={selectedOrders.size === 0 || bulkRefundMutation.isPending || (refundType === 'manual' && !manualRefundConfirmed)}
                   size="sm"
                 >
                   {bulkRefundMutation.isPending && (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   )}
-                  Process Refunds ({selectedOrders.size})
+                  {refundType === 'manual' ? 'Record' : 'Process'} Refunds ({selectedOrders.size})
                 </Button>
               </div>
             </div>
+
+            {refundType === 'manual' && selectedOrders.size > 0 && (
+              <div className="flex items-start space-x-2 rounded-md border border-amber-500 bg-amber-50 dark:bg-amber-950 p-4">
+                <Checkbox
+                  id="bulk-manual-confirmation"
+                  checked={manualRefundConfirmed}
+                  onCheckedChange={(checked) => setManualRefundConfirmed(checked as boolean)}
+                />
+                <Label htmlFor="bulk-manual-confirmation" className="font-normal cursor-pointer text-sm text-amber-800 dark:text-amber-200">
+                  I confirm that I will process these {selectedOrders.size} refund{selectedOrders.size !== 1 ? 's' : ''} manually in the Stripe Dashboard
+                </Label>
+              </div>
+            )}
 
             <div className="border rounded-lg">
               <Table>
