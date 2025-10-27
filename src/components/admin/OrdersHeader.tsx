@@ -33,7 +33,6 @@ interface OrdersHeaderProps {
 
 const statusChips = [
   { value: 'all', label: 'All', color: 'bg-background border' },
-  { value: 'pending', label: 'Pending', color: 'bg-amber-50 text-amber-700 border-amber-200' },
   { value: 'processing', label: 'Pending', color: 'bg-amber-50 text-amber-700 border-amber-200' },
   { value: 'completed', label: 'Fulfilled', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
   { value: 'refunded', label: 'Refunded', color: 'bg-zinc-100 text-zinc-700 border-zinc-300' },
