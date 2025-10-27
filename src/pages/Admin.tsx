@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { AdminDashboard } from '@/components/admin/AdminDashboard';
 import AdminAnalytics from '@/pages/AdminAnalytics';
+import AdminVisitorAnalytics from '@/pages/AdminVisitorAnalytics';
 import AdminAbandonedCheckouts from '@/pages/AdminAbandonedCheckouts';
 import { ProductsTable } from '@/components/admin/ProductsTable';
 import { ProductForm } from '@/components/admin/ProductForm';
@@ -49,6 +50,7 @@ const Admin = () => {
       <Routes>
         <Route index element={<AdminDashboard />} />
         <Route path="analytics" element={<AdminAnalytics />} />
+        <Route path="analytics/visitors" element={<AdminVisitorAnalytics />} />
         <Route path="analytics/abandoned-checkouts" element={<AdminAbandonedCheckouts />} />
         <Route path="orders" element={<OrdersList />} />
         <Route path="products" element={<ProductsTable />} />

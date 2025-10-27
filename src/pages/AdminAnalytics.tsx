@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, TrendingUp, Package, Users, Calendar } from 'lucide-react';
+import { ShoppingCart, TrendingUp, Package, Users, Calendar, Globe } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { subDays, startOfDay, endOfDay } from 'date-fns';
@@ -22,6 +22,15 @@ const AdminAnalytics = () => {
   const { data: orderData, isLoading: isLoadingOrders } = useOrderAnalytics(dateRangeValues);
 
   const reportCards = [
+    {
+      title: 'Visitor Analytics',
+      description: 'Track site visitors by time and location',
+      icon: Globe,
+      stats: 'Real-time visitor tracking',
+      link: '/admin/analytics/visitors',
+      color: 'text-blue-500',
+      bgColor: 'bg-blue-50',
+    },
     {
       title: 'Abandoned Checkouts',
       description: 'Track and recover abandoned shopping carts',

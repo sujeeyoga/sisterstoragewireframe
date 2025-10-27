@@ -612,6 +612,66 @@ export type Database = {
         }
         Relationships: []
       }
+      visitor_analytics: {
+        Row: {
+          city: string | null
+          country: string | null
+          country_name: string | null
+          created_at: string | null
+          duration_seconds: number | null
+          id: string
+          ip_hash: string | null
+          page_path: string
+          referrer: string | null
+          region: string | null
+          session_end: string | null
+          session_id: string
+          session_start: string
+          updated_at: string | null
+          user_agent: string | null
+          visited_at: string
+          visitor_id: string
+        }
+        Insert: {
+          city?: string | null
+          country?: string | null
+          country_name?: string | null
+          created_at?: string | null
+          duration_seconds?: number | null
+          id?: string
+          ip_hash?: string | null
+          page_path: string
+          referrer?: string | null
+          region?: string | null
+          session_end?: string | null
+          session_id: string
+          session_start?: string
+          updated_at?: string | null
+          user_agent?: string | null
+          visited_at?: string
+          visitor_id: string
+        }
+        Update: {
+          city?: string | null
+          country?: string | null
+          country_name?: string | null
+          created_at?: string | null
+          duration_seconds?: number | null
+          id?: string
+          ip_hash?: string | null
+          page_path?: string
+          referrer?: string | null
+          region?: string | null
+          session_end?: string | null
+          session_id?: string
+          session_start?: string
+          updated_at?: string | null
+          user_agent?: string | null
+          visited_at?: string
+          visitor_id?: string
+        }
+        Relationships: []
+      }
       waitlist_signups: {
         Row: {
           collection_name: string
@@ -846,6 +906,7 @@ export type Database = {
     }
     Functions: {
       add_admin_by_email: { Args: { user_email: string }; Returns: Json }
+      delete_old_visitor_analytics: { Args: never; Returns: undefined }
       get_admin_users: {
         Args: never
         Returns: {
