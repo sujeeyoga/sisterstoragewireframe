@@ -65,7 +65,7 @@ const EnhancedLogo: React.FC<LogoProps> = ({
         {!imageLoaded && (
           <div 
             className={cn(
-              "absolute inset-0 bg-muted animate-pulse rounded",
+              "absolute inset-0 bg-[hsl(var(--brand-pink)/0.2)] animate-pulse rounded",
               sizeClasses[size]
             )}
             style={{ width: '120px' }}
