@@ -184,8 +184,6 @@ export function OrderCard({ order, onView, isSelected, onSelect, selectionMode, 
         )}
         <div className="flex-1 space-y-2">
           <div className="text-[13px] text-muted-foreground flex items-center gap-2 flex-wrap">
-            <span className="font-medium text-foreground">{order.id}</span>
-            <span>·</span>
             <Badge variant="outline" className={`${status.className} border`}>
               {status.label}
             </Badge>
