@@ -445,7 +445,7 @@ const Checkout = () => {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Checkout Form */}
           <div className="lg:col-span-2 space-y-6">
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className="space-y-6">
               {/* Contact Information */}
               <Card>
                 <CardHeader>
