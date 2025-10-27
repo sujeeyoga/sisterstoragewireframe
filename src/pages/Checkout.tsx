@@ -532,16 +532,6 @@ const Checkout = () => {
                   </div>
                   
                   <div className="space-y-4">
-                      {/* Shipping calculation prompt for manual entry */}
-                      {isManualAddressComplete && shippingRates.length === 0 && !isLoadingRates && (
-                        <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-3 animate-fade-in">
-                          <p className="text-sm text-blue-800 font-medium flex items-center gap-2">
-                            <Package className="h-4 w-4" />
-                            Address complete! Click below to calculate shipping.
-                          </p>
-                        </div>
-                      )}
-                      
                       {/* Address Fields */}
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         {/* City */}
