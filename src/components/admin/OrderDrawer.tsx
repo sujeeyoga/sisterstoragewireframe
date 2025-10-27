@@ -260,6 +260,19 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
               // Calculate shipping cost - prefer shipping_cost first (Stripe numeric field)
               let shippingCost = safeParseNumber((order as any).shipping_cost) || safeParseNumber((order as any).shipping);
               let shippingLabel: string | null = null;
+              
+              // Calculate subtotal for free shipping threshold check
+              const orderSubtotal = safeParseNumber((order as any).subtotal) || 
+                (order.line_items?.reduce((sum: number, item: any) => {
+                  const itemPrice = safeParseNumber(item?.price);
+                  const qty = safeParseNumber(item?.quantity) || 1;
+                  const itemTotal = safeParseNumber(item?.total) || (itemPrice * qty);
+                  return sum + itemTotal;
+                }, 0) || 0);
+              
+              // Check if order should qualify for free shipping (GTA threshold is $50)
+              const freeShippingThreshold = 50;
+              const shouldBeFree = orderSubtotal >= freeShippingThreshold && shippingCost > 0;
 
               // WooCommerce-style shipping lines
               const wooLines = (order as any).shipping_lines;
@@ -306,7 +319,15 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
               const displayCost = isNaN(shippingCost) ? 0 : shippingCost;
               
               return (
-                <div className="mt-4 bg-primary/5 border border-primary/20 rounded-lg p-4">
+                <div className={`mt-4 border rounded-lg p-4 ${shouldBeFree ? 'bg-amber-50 border-amber-300' : 'bg-primary/5 border-primary/20'}`}>
+                  {shouldBeFree && (
+                    <div className="flex items-center gap-2 mb-3 p-2 bg-amber-100 border border-amber-400 rounded text-amber-900">
+                      <AlertTriangle className="h-4 w-4 flex-shrink-0" />
+                      <p className="text-xs font-medium">
+                        ⚠️ Customer was charged ${displayCost.toFixed(2)} shipping but order subtotal (${orderSubtotal.toFixed(2)}) qualifies for FREE shipping over ${freeShippingThreshold}
+                      </p>
+                    </div>
+                  )}
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Truck className="h-4 w-4 text-primary" />
