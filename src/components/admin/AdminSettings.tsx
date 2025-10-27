@@ -58,30 +58,32 @@ export function AdminSettings() {
   // Add admin mutation
   const addAdminMutation = useMutation({
     mutationFn: async (email: string) => {
-      const { data, error } = await supabase.rpc('add_admin_by_email', {
-        user_email: email
+      const { data, error } = await supabase.functions.invoke('create-admin', {
+        body: { email }
       });
+
       if (error) throw error;
-      return data as unknown as AddAdminResponse;
-    },
-    onSuccess: (data) => {
-      if (data.success) {
-        toast({
-          title: "Admin Added",
-          description: data.message,
-        });
-        queryClient.invalidateQueries({ queryKey: ['admin-users'] });
-        setAddAdminOpen(false);
-        setNewAdminEmail('');
-        setEmailError('');
-      } else {
-        setEmailError(data.error || 'Failed to add admin');
+      
+      if (data?.error) {
+        throw new Error(data.error);
       }
+
+      return data;
+    },
+    onSuccess: () => {
+      toast({
+        title: "Invitation Sent",
+        description: "Admin invitation email has been sent with temporary credentials",
+      });
+      queryClient.invalidateQueries({ queryKey: ['admin-users'] });
+      setAddAdminOpen(false);
+      setNewAdminEmail('');
+      setEmailError('');
     },
     onError: (error: any) => {
       toast({
         title: "Error",
-        description: error.message || "Failed to add admin",
+        description: error.message || "Failed to send invitation",
         variant: "destructive",
       });
     }
@@ -154,9 +156,9 @@ export function AdminSettings() {
                       </DialogTrigger>
                       <DialogContent>
                         <DialogHeader>
-                          <DialogTitle>Add Admin User</DialogTitle>
+                          <DialogTitle>Invite New Admin</DialogTitle>
                           <DialogDescription>
-                            Enter the email address of the user you want to make an admin. The user must already have an account.
+                            Enter an email address to send an admin invitation with temporary login credentials.
                           </DialogDescription>
                         </DialogHeader>
                         <div className="space-y-4 pt-4">
@@ -192,7 +194,7 @@ export function AdminSettings() {
                               onClick={handleAddAdmin}
                               disabled={addAdminMutation.isPending || !newAdminEmail}
                             >
-                              {addAdminMutation.isPending ? 'Adding...' : 'Add Admin'}
+                              {addAdminMutation.isPending ? 'Sending...' : 'Send Invitation'}
                             </Button>
                           </div>
                         </div>

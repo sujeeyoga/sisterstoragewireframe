@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import ComingSoon from "@/pages/ComingSoon";
 import { useQuery } from "@tanstack/react-query";
@@ -9,6 +10,8 @@ interface ProtectedRoutesProps {
 
 export const ProtectedRoutes = ({ children }: ProtectedRoutesProps) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   // Check if Coming Soon is enabled
   const { data: comingSoonSetting, isLoading: isLoadingSetting } = useQuery({
@@ -37,18 +40,37 @@ export const ProtectedRoutes = ({ children }: ProtectedRoutesProps) => {
   });
 
   useEffect(() => {
-    // Check current session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    // Check current session and password reset requirement
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
       setIsAuthenticated(!!session);
-    });
+
+      if (session?.user) {
+        const requiresReset = session.user.user_metadata?.requires_password_reset;
+        if (requiresReset && location.pathname !== '/password-reset') {
+          navigate('/password-reset');
+        }
+      }
+    };
+
+    checkAuth();
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       setIsAuthenticated(!!session);
+
+      if (session?.user) {
+        const requiresReset = session.user.user_metadata?.requires_password_reset;
+        if (requiresReset && location.pathname !== '/password-reset') {
+          setTimeout(() => {
+            navigate('/password-reset');
+          }, 0);
+        }
+      }
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [navigate, location.pathname]);
 
   // Loading state - show content immediately, auth check happens in background
   if (isAuthenticated === null || isLoadingSetting) {

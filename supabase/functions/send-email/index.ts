@@ -4,6 +4,7 @@ import React from "npm:react@18.3.1";
 import { renderAsync } from "npm:@react-email/components@0.0.22";
 import { OrderConfirmationEmail } from "./_templates/order-confirmation.tsx";
 import { ShippingNotificationEmail } from "./_templates/shipping-notification.tsx";
+import { AdminWelcomeEmail } from "./_templates/admin-welcome.tsx";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -13,9 +14,9 @@ const corsHeaders = {
 };
 
 interface EmailRequest {
-  type: "order_confirmation" | "shipping_notification";
+  type: "order_confirmation" | "shipping_notification" | "admin_welcome";
   to: string;
-  data: OrderConfirmationData | ShippingNotificationData;
+  data: OrderConfirmationData | ShippingNotificationData | AdminWelcomeData;
 }
 
 interface OrderConfirmationData {
@@ -61,6 +62,12 @@ interface ShippingNotificationData {
   };
 }
 
+interface AdminWelcomeData {
+  email: string;
+  temporaryPassword: string;
+  loginUrl: string;
+}
+
 const handler = async (req: Request): Promise<Response> => {
   // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
@@ -90,6 +97,14 @@ const handler = async (req: Request): Promise<Response> => {
           React.createElement(ShippingNotificationEmail, shippingData)
         );
         subject = `Your Order Has Shipped - Order #${shippingData.orderNumber}`;
+        break;
+
+      case "admin_welcome":
+        const adminData = data as AdminWelcomeData;
+        html = await renderAsync(
+          React.createElement(AdminWelcomeEmail, adminData)
+        );
+        subject = `Welcome to Sister Storage Admin Panel`;
         break;
 
       default:

@@ -6,6 +6,29 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+function generateTemporaryPassword(length = 14): string {
+  const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+  const numbers = '0123456789';
+  const symbols = '!@#$%^&*';
+  const allChars = uppercase + lowercase + numbers + symbols;
+  
+  let password = '';
+  // Ensure at least one of each type
+  password += uppercase[Math.floor(Math.random() * uppercase.length)];
+  password += lowercase[Math.floor(Math.random() * lowercase.length)];
+  password += numbers[Math.floor(Math.random() * numbers.length)];
+  password += symbols[Math.floor(Math.random() * symbols.length)];
+  
+  // Fill the rest randomly
+  for (let i = password.length; i < length; i++) {
+    password += allChars[Math.floor(Math.random() * allChars.length)];
+  }
+  
+  // Shuffle the password
+  return password.split('').sort(() => Math.random() - 0.5).join('');
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -23,17 +46,26 @@ serve(async (req) => {
       }
     );
 
-    const { email, password } = await req.json();
+    const { email } = await req.json();
 
-    if (!email || !password) {
-      throw new Error("Email and password are required");
+    if (!email) {
+      throw new Error("Email is required");
     }
 
-    // Create the user
+    // Generate temporary password
+    const tempPassword = generateTemporaryPassword();
+    console.log("Generated temporary password for:", email);
+
+    // Create the user with temporary password
     const { data: userData, error: userError } = await supabaseAdmin.auth.admin.createUser({
       email,
-      password,
-      email_confirm: true
+      password: tempPassword,
+      email_confirm: true,
+      user_metadata: {
+        requires_password_reset: true,
+        account_created_by: 'admin_invitation',
+        invited_at: new Date().toISOString()
+      }
     });
 
     if (userError) throw userError;
@@ -52,6 +84,26 @@ serve(async (req) => {
     if (roleError) throw roleError;
 
     console.log("Admin role assigned to user:", userData.user.id);
+
+    // Send welcome email with temporary password
+    const { error: emailError } = await supabaseAdmin.functions.invoke('send-email', {
+      body: {
+        type: 'admin_welcome',
+        to: email,
+        data: {
+          email,
+          temporaryPassword: tempPassword,
+          loginUrl: `${Deno.env.get("SUPABASE_URL")?.replace('.supabase.co', '')}/admin`
+        }
+      }
+    });
+
+    if (emailError) {
+      console.error("Error sending welcome email:", emailError);
+      // Don't fail the request if email fails
+    } else {
+      console.log("Welcome email sent to:", email);
+    }
 
     return new Response(
       JSON.stringify({ 
