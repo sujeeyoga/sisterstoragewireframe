@@ -116,7 +116,7 @@ const AddToCartBar: React.FC<AddToCartBarProps> = ({ product, className }) => {
         disabled={isAdding}
       >
         <ShoppingBag className="h-3.5 w-3.5 mr-2 flex-shrink-0" />
-        <span className="truncate">{isAdding ? "Adding…" : "Add to Cart"}</span>
+        <span className="truncate">{isAdding ? "Adding…" : "+ Cart"}</span>
       </Button>
 
       <Button
