@@ -7,9 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Settings, Percent, Gift, Mail, Star, Package, AlertTriangle, MapPin } from "lucide-react";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ChevronDown } from "lucide-react";
+import { Settings, Percent, Gift, Mail, Star, Package, AlertTriangle, MapPin, Store, Sparkles } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState } from "react";
 
 interface StoreSetting {
@@ -55,9 +54,8 @@ export function StoreSettings() {
     (discountSettings?.setting_value as any)?.name || "Store-Wide Sale"
   );
 
-  // Collapsible sections state
-  const [customerExpOpen, setCustomerExpOpen] = useState(true);
-  const [inventoryOpen, setInventoryOpen] = useState(true);
+  // Active tab state
+  const [activeTab, setActiveTab] = useState("general");
 
   // Gift Messages Settings
   const { data: giftSettings } = useQuery({
@@ -405,228 +403,260 @@ export function StoreSettings() {
   }));
 
   return (
-    <div className="p-8 space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Store Settings</h1>
-        <p className="text-muted-foreground mt-1">Manage global store configurations</p>
+    <div className="p-6 max-w-7xl mx-auto">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold tracking-tight">Store Settings</h1>
+        <p className="text-muted-foreground mt-2">Manage your store configuration and features</p>
       </div>
 
-      {/* Fulfillment Address */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <MapPin className="h-5 w-5" />
-            Fulfillment Address
-          </CardTitle>
-          <CardDescription>Configure your warehouse/shipping address for Stallion Express fulfillment</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="fulfillmentName">Contact Name *</Label>
-              <Input
-                id="fulfillmentName"
-                value={fulfillmentName}
-                onChange={(e) => setFulfillmentName(e.target.value)}
-                placeholder="John Doe"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="fulfillmentCompany">Company Name</Label>
-              <Input
-                id="fulfillmentCompany"
-                value={fulfillmentCompany}
-                onChange={(e) => setFulfillmentCompany(e.target.value)}
-                placeholder="Sister Storage"
-              />
-            </div>
-          </div>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-flex">
+          <TabsTrigger value="general" className="gap-2">
+            <Store className="h-4 w-4" />
+            <span className="hidden sm:inline">General</span>
+          </TabsTrigger>
+          <TabsTrigger value="promotions" className="gap-2">
+            <Sparkles className="h-4 w-4" />
+            <span className="hidden sm:inline">Promotions</span>
+          </TabsTrigger>
+          <TabsTrigger value="customer" className="gap-2">
+            <Gift className="h-4 w-4" />
+            <span className="hidden sm:inline">Customer</span>
+          </TabsTrigger>
+          <TabsTrigger value="inventory" className="gap-2">
+            <Package className="h-4 w-4" />
+            <span className="hidden sm:inline">Inventory</span>
+          </TabsTrigger>
+        </TabsList>
 
-          <div className="space-y-2">
-            <Label htmlFor="fulfillmentStreet1">Street Address *</Label>
-            <Input
-              id="fulfillmentStreet1"
-              value={fulfillmentStreet1}
-              onChange={(e) => setFulfillmentStreet1(e.target.value)}
-              placeholder="123 Main St"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="fulfillmentStreet2">Street Address Line 2</Label>
-            <Input
-              id="fulfillmentStreet2"
-              value={fulfillmentStreet2}
-              onChange={(e) => setFulfillmentStreet2(e.target.value)}
-              placeholder="Suite 100"
-            />
-          </div>
-
-          <div className="grid grid-cols-3 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="fulfillmentCity">City *</Label>
-              <Input
-                id="fulfillmentCity"
-                value={fulfillmentCity}
-                onChange={(e) => setFulfillmentCity(e.target.value)}
-                placeholder="Toronto"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="fulfillmentProvince">Province *</Label>
-              <Input
-                id="fulfillmentProvince"
-                value={fulfillmentProvince}
-                onChange={(e) => setFulfillmentProvince(e.target.value)}
-                placeholder="ON"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="fulfillmentPostalCode">Postal Code *</Label>
-              <Input
-                id="fulfillmentPostalCode"
-                value={fulfillmentPostalCode}
-                onChange={(e) => setFulfillmentPostalCode(e.target.value)}
-                placeholder="M5V 3A8"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="fulfillmentPhone">Phone *</Label>
-              <Input
-                id="fulfillmentPhone"
-                type="tel"
-                value={fulfillmentPhone}
-                onChange={(e) => setFulfillmentPhone(e.target.value)}
-                placeholder="(416) 555-0123"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="fulfillmentEmail">Email *</Label>
-              <Input
-                id="fulfillmentEmail"
-                type="email"
-                value={fulfillmentEmail}
-                onChange={(e) => setFulfillmentEmail(e.target.value)}
-                placeholder="fulfillment@sisterstrage.com"
-              />
-            </div>
-          </div>
-
-          <Button onClick={() => updateFulfillmentAddressMutation.mutate()}>
-            Save Fulfillment Address
-          </Button>
-        </CardContent>
-      </Card>
-
-      {/* Coming Soon Page */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Settings className="h-5 w-5" />
-            Coming Soon Page
-          </CardTitle>
-          <CardDescription>Enable coming soon page for visitors</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <Label>Show Coming Soon Page</Label>
-              <p className="text-sm text-muted-foreground">Visitors must login to access the site</p>
-            </div>
-            <Switch
-              checked={comingSoonSettings?.enabled || false}
-              onCheckedChange={(checked) => toggleComingSoonMutation.mutate(checked)}
-            />
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Store-Wide Discount */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Percent className="h-5 w-5" />
-            Store-Wide Discount
-          </CardTitle>
-          <CardDescription>Apply a percentage discount to all products</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <Label>Enable Store-Wide Discount</Label>
-              <p className="text-sm text-muted-foreground">Discount applied at checkout</p>
-            </div>
-            <Switch
-              checked={discountSettings?.enabled || false}
-              onCheckedChange={(checked) => toggleDiscountMutation.mutate(checked)}
-            />
-          </div>
-
-          {discountSettings?.enabled && (
-            <div className="space-y-4 pt-4 border-t">
-              <div className="space-y-2">
-                <Label htmlFor="discountPercentage">Discount Percentage</Label>
-                <Input
-                  id="discountPercentage"
-                  type="number"
-                  value={discountPercentage}
-                  onChange={(e) => setDiscountPercentage(e.target.value)}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="discountName">Promotion Name</Label>
-                <Input
-                  id="discountName"
-                  value={discountName}
-                  onChange={(e) => setDiscountName(e.target.value)}
-                />
-              </div>
-              <Button onClick={() => updateDiscountMutation.mutate()}>Save Settings</Button>
-
-              {discountSettings?.enabled && (
-                <div className="bg-primary/10 border border-primary/20 rounded-lg p-4">
-                  <p className="font-medium">Active: {discountName} - {discountPercentage}% off</p>
-                </div>
-              )}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Customer Experience Settings */}
-      <Card>
-        <Collapsible open={customerExpOpen} onOpenChange={setCustomerExpOpen}>
-          <CardHeader className="cursor-pointer" onClick={() => setCustomerExpOpen(!customerExpOpen)}>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Gift className="h-5 w-5" />
-                <CardTitle>Customer Experience</CardTitle>
-              </div>
-              <ChevronDown className={`h-5 w-5 transition-transform ${customerExpOpen ? 'rotate-180' : ''}`} />
-            </div>
-            <CardDescription>Manage gift options, newsletter, and reviews</CardDescription>
-          </CardHeader>
-
-          <CollapsibleContent>
-            <CardContent className="space-y-6">
-              {/* Gift Messages & Wrapping */}
-              <div className="space-y-4 pb-6 border-b">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label className="text-base font-semibold">Gift Messages & Wrapping</Label>
-                    <p className="text-sm text-muted-foreground">Allow customers to add gift messages</p>
-                  </div>
-                  <Switch
-                    checked={giftSettings?.enabled || false}
-                    onCheckedChange={(checked) => toggleGiftMutation.mutate(checked)}
+        {/* GENERAL TAB */}
+        <TabsContent value="general" className="space-y-6">
+          {/* Fulfillment Address */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-xl">
+                <MapPin className="h-5 w-5" />
+                Fulfillment Address
+              </CardTitle>
+              <CardDescription>Configure your warehouse/shipping address for Stallion Express fulfillment</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="fulfillmentName">Contact Name *</Label>
+                  <Input
+                    id="fulfillmentName"
+                    value={fulfillmentName}
+                    onChange={(e) => setFulfillmentName(e.target.value)}
+                    placeholder="John Doe"
                   />
                 </div>
+                <div className="space-y-2">
+                  <Label htmlFor="fulfillmentCompany">Company Name</Label>
+                  <Input
+                    id="fulfillmentCompany"
+                    value={fulfillmentCompany}
+                    onChange={(e) => setFulfillmentCompany(e.target.value)}
+                    placeholder="Sister Storage"
+                  />
+                </div>
+              </div>
 
-                {giftSettings?.enabled && (
-                  <div className="space-y-4 ml-6 mt-4">
+              <div className="space-y-2">
+                <Label htmlFor="fulfillmentStreet1">Street Address *</Label>
+                <Input
+                  id="fulfillmentStreet1"
+                  value={fulfillmentStreet1}
+                  onChange={(e) => setFulfillmentStreet1(e.target.value)}
+                  placeholder="123 Main St"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="fulfillmentStreet2">Street Address Line 2</Label>
+                <Input
+                  id="fulfillmentStreet2"
+                  value={fulfillmentStreet2}
+                  onChange={(e) => setFulfillmentStreet2(e.target.value)}
+                  placeholder="Suite 100"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="fulfillmentCity">City *</Label>
+                  <Input
+                    id="fulfillmentCity"
+                    value={fulfillmentCity}
+                    onChange={(e) => setFulfillmentCity(e.target.value)}
+                    placeholder="Toronto"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="fulfillmentProvince">Province *</Label>
+                  <Input
+                    id="fulfillmentProvince"
+                    value={fulfillmentProvince}
+                    onChange={(e) => setFulfillmentProvince(e.target.value)}
+                    placeholder="ON"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="fulfillmentPostalCode">Postal Code *</Label>
+                  <Input
+                    id="fulfillmentPostalCode"
+                    value={fulfillmentPostalCode}
+                    onChange={(e) => setFulfillmentPostalCode(e.target.value)}
+                    placeholder="M5V 3A8"
+                  />
+                </div>
+              </div>
+
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="fulfillmentPhone">Phone *</Label>
+                  <Input
+                    id="fulfillmentPhone"
+                    type="tel"
+                    value={fulfillmentPhone}
+                    onChange={(e) => setFulfillmentPhone(e.target.value)}
+                    placeholder="(416) 555-0123"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="fulfillmentEmail">Email *</Label>
+                  <Input
+                    id="fulfillmentEmail"
+                    type="email"
+                    value={fulfillmentEmail}
+                    onChange={(e) => setFulfillmentEmail(e.target.value)}
+                    placeholder="shipping@example.com"
+                  />
+                </div>
+              </div>
+
+              <Button
+                onClick={() => updateFulfillmentAddressMutation.mutate()}
+                disabled={updateFulfillmentAddressMutation.isPending}
+                className="w-full sm:w-auto"
+              >
+                Save Fulfillment Address
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Coming Soon Page */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-xl">
+                <Settings className="h-5 w-5" />
+                Coming Soon Page
+              </CardTitle>
+              <CardDescription>Enable coming soon page for visitors</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between p-4 rounded-lg border bg-muted/50">
+                <div className="space-y-1">
+                  <Label className="text-base font-medium">Show Coming Soon Page</Label>
+                  <p className="text-sm text-muted-foreground">Visitors must login to access the site</p>
+                </div>
+                <Switch
+                  checked={comingSoonSettings?.enabled || false}
+                  onCheckedChange={(checked) => toggleComingSoonMutation.mutate(checked)}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* PROMOTIONS TAB */}
+        <TabsContent value="promotions" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-xl">
+                <Percent className="h-5 w-5" />
+                Store-Wide Discount
+              </CardTitle>
+              <CardDescription>Apply a percentage discount to all products</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="flex items-center justify-between p-4 rounded-lg border bg-muted/50">
+                <div className="space-y-1">
+                  <Label className="text-base font-medium">Enable Store-Wide Discount</Label>
+                  <p className="text-sm text-muted-foreground">Discount applied at checkout</p>
+                </div>
+                <Switch
+                  checked={discountSettings?.enabled || false}
+                  onCheckedChange={(checked) => toggleDiscountMutation.mutate(checked)}
+                />
+              </div>
+
+              {discountSettings?.enabled && (
+                <div className="space-y-4 p-4 border rounded-lg">
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="discountPercentage">Discount Percentage</Label>
+                      <Input
+                        id="discountPercentage"
+                        type="number"
+                        value={discountPercentage}
+                        onChange={(e) => setDiscountPercentage(e.target.value)}
+                        placeholder="10"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="discountName">Promotion Name</Label>
+                      <Input
+                        id="discountName"
+                        value={discountName}
+                        onChange={(e) => setDiscountName(e.target.value)}
+                        placeholder="Holiday Sale"
+                      />
+                    </div>
+                  </div>
+                  
+                  <Button onClick={() => updateDiscountMutation.mutate()} className="w-full sm:w-auto">
+                    Save Settings
+                  </Button>
+
+                  <div className="bg-primary/10 border border-primary/20 rounded-lg p-4 mt-4">
+                    <p className="font-medium flex items-center gap-2">
+                      <Sparkles className="h-4 w-4" />
+                      Active: {discountName} - {discountPercentage}% off
+                    </p>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* CUSTOMER TAB */}
+        <TabsContent value="customer" className="space-y-6">
+          {/* Gift Messages & Wrapping */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-xl">
+                <Gift className="h-5 w-5" />
+                Gift Messages & Wrapping
+              </CardTitle>
+              <CardDescription>Allow customers to add gift messages and wrapping</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="flex items-center justify-between p-4 rounded-lg border bg-muted/50">
+                <div className="space-y-1">
+                  <Label className="text-base font-medium">Enable Gift Options</Label>
+                  <p className="text-sm text-muted-foreground">Show gift options at checkout</p>
+                </div>
+                <Switch
+                  checked={giftSettings?.enabled || false}
+                  onCheckedChange={(checked) => toggleGiftMutation.mutate(checked)}
+                />
+              </div>
+
+              {giftSettings?.enabled && (
+                <div className="space-y-4 p-4 border rounded-lg">
+                  <div className="grid sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="giftCharLimit">Character Limit</Label>
                       <Input
@@ -637,7 +667,6 @@ export function StoreSettings() {
                         placeholder="250"
                       />
                     </div>
-
                     <div className="space-y-2">
                       <Label htmlFor="giftWrappingPrice">Gift Wrapping Price ($)</Label>
                       <Input
@@ -649,170 +678,178 @@ export function StoreSettings() {
                         placeholder="5.00"
                       />
                     </div>
-
-                    <Button onClick={() => updateGiftMutation.mutate()}>
-                      Save Gift Settings
-                    </Button>
                   </div>
-                )}
-              </div>
-
-              {/* Newsletter Opt-in */}
-              <div className="space-y-4 pb-6 border-b">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label className="text-base font-semibold">Newsletter Opt-in</Label>
-                    <p className="text-sm text-muted-foreground">Show newsletter checkbox at checkout</p>
-                  </div>
-                  <Switch
-                    checked={newsletterSettings?.enabled || false}
-                    onCheckedChange={(checked) => toggleNewsletterMutation.mutate(checked)}
-                  />
-                </div>
-
-                {newsletterSettings?.enabled && (
-                  <div className="space-y-4 ml-6 mt-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="newsletterIncentive">Incentive Text</Label>
-                      <Input
-                        id="newsletterIncentive"
-                        value={newsletterIncentive}
-                        onChange={(e) => setNewsletterIncentive(e.target.value)}
-                        placeholder="Get 10% off your next order!"
-                      />
-                    </div>
-
-                    <Button onClick={() => updateNewsletterMutation.mutate()}>
-                      Save Newsletter Settings
-                    </Button>
-                  </div>
-                )}
-              </div>
-
-              {/* Product Reviews */}
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label className="text-base font-semibold">Product Reviews</Label>
-                    <p className="text-sm text-muted-foreground">Enable product review system</p>
-                  </div>
-                  <Switch
-                    checked={reviewSettings?.enabled || false}
-                    onCheckedChange={(checked) => toggleReviewsMutation.mutate(checked)}
-                  />
-                </div>
-
-                {reviewSettings?.enabled && (
-                  <div className="space-y-4 ml-6 mt-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="reviewAutoRequestDays">Auto-request Review After (days)</Label>
-                      <Input
-                        id="reviewAutoRequestDays"
-                        type="number"
-                        value={reviewAutoRequestDays}
-                        onChange={(e) => setReviewAutoRequestDays(e.target.value)}
-                        placeholder="7"
-                      />
-                    </div>
-
-                    <Button onClick={() => updateReviewsMutation.mutate()}>
-                      Save Review Settings
-                    </Button>
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </CollapsibleContent>
-        </Collapsible>
-      </Card>
-
-      {/* Inventory & Operations Settings */}
-      <Card>
-        <Collapsible open={inventoryOpen} onOpenChange={setInventoryOpen}>
-          <CardHeader className="cursor-pointer" onClick={() => setInventoryOpen(!inventoryOpen)}>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Package className="h-5 w-5" />
-                <CardTitle>Inventory & Operations</CardTitle>
-              </div>
-              <ChevronDown className={`h-5 w-5 transition-transform ${inventoryOpen ? 'rotate-180' : ''}`} />
-            </div>
-            <CardDescription>Manage stock alerts and pre-orders</CardDescription>
-          </CardHeader>
-
-          <CollapsibleContent>
-            <CardContent className="space-y-6">
-              {/* Low Stock Alerts */}
-              <div className="space-y-4 pb-6 border-b">
-                <div className="space-y-0.5">
-                  <Label className="text-base font-semibold">Low Stock Alerts</Label>
-                  <p className="text-sm text-muted-foreground">Configure low stock threshold and notifications</p>
-                </div>
-
-                <div className="space-y-4 ml-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="lowStockThreshold">Low Stock Threshold</Label>
-                    <Input
-                      id="lowStockThreshold"
-                      type="number"
-                      value={lowStockThreshold}
-                      onChange={(e) => setLowStockThreshold(e.target.value)}
-                      placeholder="5"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="lowStockEmail">Admin Email for Notifications</Label>
-                    <Input
-                      id="lowStockEmail"
-                      type="email"
-                      value={lowStockEmail}
-                      onChange={(e) => setLowStockEmail(e.target.value)}
-                      placeholder="admin@example.com"
-                    />
-                  </div>
-
-                  <Button onClick={() => updateLowStockMutation.mutate()}>
-                    Save Low Stock Settings
+                  <Button onClick={() => updateGiftMutation.mutate()} className="w-full sm:w-auto">
+                    Save Gift Settings
                   </Button>
                 </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Newsletter Opt-in */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-xl">
+                <Mail className="h-5 w-5" />
+                Newsletter Opt-in
+              </CardTitle>
+              <CardDescription>Show newsletter checkbox at checkout</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="flex items-center justify-between p-4 rounded-lg border bg-muted/50">
+                <div className="space-y-1">
+                  <Label className="text-base font-medium">Enable Newsletter</Label>
+                  <p className="text-sm text-muted-foreground">Allow customers to subscribe</p>
+                </div>
+                <Switch
+                  checked={newsletterSettings?.enabled || false}
+                  onCheckedChange={(checked) => toggleNewsletterMutation.mutate(checked)}
+                />
               </div>
 
-              {/* Pre-orders */}
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label className="text-base font-semibold">Pre-orders</Label>
-                    <p className="text-sm text-muted-foreground">Allow ordering out-of-stock items</p>
+              {newsletterSettings?.enabled && (
+                <div className="space-y-4 p-4 border rounded-lg">
+                  <div className="space-y-2">
+                    <Label htmlFor="newsletterIncentive">Incentive Text</Label>
+                    <Input
+                      id="newsletterIncentive"
+                      value={newsletterIncentive}
+                      onChange={(e) => setNewsletterIncentive(e.target.value)}
+                      placeholder="Get 10% off your next order!"
+                    />
                   </div>
-                  <Switch
-                    checked={preorderSettings?.enabled || false}
-                    onCheckedChange={(checked) => togglePreordersMutation.mutate(checked)}
+                  <Button onClick={() => updateNewsletterMutation.mutate()} className="w-full sm:w-auto">
+                    Save Newsletter Settings
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Product Reviews */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-xl">
+                <Star className="h-5 w-5" />
+                Product Reviews
+              </CardTitle>
+              <CardDescription>Enable product review system</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="flex items-center justify-between p-4 rounded-lg border bg-muted/50">
+                <div className="space-y-1">
+                  <Label className="text-base font-medium">Enable Reviews</Label>
+                  <p className="text-sm text-muted-foreground">Allow customer reviews on products</p>
+                </div>
+                <Switch
+                  checked={reviewSettings?.enabled || false}
+                  onCheckedChange={(checked) => toggleReviewsMutation.mutate(checked)}
+                />
+              </div>
+
+              {reviewSettings?.enabled && (
+                <div className="space-y-4 p-4 border rounded-lg">
+                  <div className="space-y-2">
+                    <Label htmlFor="reviewAutoRequestDays">Auto-request Review After (days)</Label>
+                    <Input
+                      id="reviewAutoRequestDays"
+                      type="number"
+                      value={reviewAutoRequestDays}
+                      onChange={(e) => setReviewAutoRequestDays(e.target.value)}
+                      placeholder="7"
+                    />
+                  </div>
+                  <Button onClick={() => updateReviewsMutation.mutate()} className="w-full sm:w-auto">
+                    Save Review Settings
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* INVENTORY TAB */}
+        <TabsContent value="inventory" className="space-y-6">
+          {/* Low Stock Alerts */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-xl">
+                <AlertTriangle className="h-5 w-5" />
+                Low Stock Alerts
+              </CardTitle>
+              <CardDescription>Configure low stock threshold and notifications</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="lowStockThreshold">Low Stock Threshold</Label>
+                  <Input
+                    id="lowStockThreshold"
+                    type="number"
+                    value={lowStockThreshold}
+                    onChange={(e) => setLowStockThreshold(e.target.value)}
+                    placeholder="5"
                   />
                 </div>
-
-                {preorderSettings?.enabled && (
-                  <div className="space-y-4 ml-6 mt-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="preorderBadgeText">Pre-order Badge Text</Label>
-                      <Input
-                        id="preorderBadgeText"
-                        value={preorderBadgeText}
-                        onChange={(e) => setPreorderBadgeText(e.target.value)}
-                        placeholder="Pre-Order"
-                      />
-                    </div>
-
-                    <Button onClick={() => updatePreorderMutation.mutate()}>
-                      Save Pre-order Settings
-                    </Button>
-                  </div>
-                )}
+                <div className="space-y-2">
+                  <Label htmlFor="lowStockEmail">Admin Email for Notifications</Label>
+                  <Input
+                    id="lowStockEmail"
+                    type="email"
+                    value={lowStockEmail}
+                    onChange={(e) => setLowStockEmail(e.target.value)}
+                    placeholder="admin@example.com"
+                  />
+                </div>
               </div>
+              <Button onClick={() => updateLowStockMutation.mutate()} className="w-full sm:w-auto">
+                Save Low Stock Settings
+              </Button>
             </CardContent>
-          </CollapsibleContent>
-        </Collapsible>
-      </Card>
+          </Card>
+
+          {/* Pre-orders */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-xl">
+                <Package className="h-5 w-5" />
+                Pre-orders
+              </CardTitle>
+              <CardDescription>Allow ordering out-of-stock items</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="flex items-center justify-between p-4 rounded-lg border bg-muted/50">
+                <div className="space-y-1">
+                  <Label className="text-base font-medium">Enable Pre-orders</Label>
+                  <p className="text-sm text-muted-foreground">Allow pre-orders for out-of-stock items</p>
+                </div>
+                <Switch
+                  checked={preorderSettings?.enabled || false}
+                  onCheckedChange={(checked) => togglePreordersMutation.mutate(checked)}
+                />
+              </div>
+
+              {preorderSettings?.enabled && (
+                <div className="space-y-4 p-4 border rounded-lg">
+                  <div className="space-y-2">
+                    <Label htmlFor="preorderBadgeText">Pre-order Badge Text</Label>
+                    <Input
+                      id="preorderBadgeText"
+                      value={preorderBadgeText}
+                      onChange={(e) => setPreorderBadgeText(e.target.value)}
+                      placeholder="Pre-Order"
+                    />
+                  </div>
+                  <Button onClick={() => updatePreorderMutation.mutate()} className="w-full sm:w-auto">
+                    Save Pre-order Settings
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
