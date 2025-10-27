@@ -250,32 +250,39 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
             
             {/* Shipping Information */}
             {(() => {
+              // Safe number parsing helper
+              const safeParseNumber = (val: any): number => {
+                if (val == null || val === '') return 0;
+                const num = typeof val === 'number' ? val : parseFloat(String(val));
+                return isNaN(num) ? 0 : num;
+              };
+
               // Calculate shipping cost once and detect label
-              let shippingCost = Number((order as any).shipping || (order as any).shipping_cost || 0);
+              let shippingCost = safeParseNumber((order as any).shipping) || safeParseNumber((order as any).shipping_cost);
               let shippingLabel: string | null = null;
 
               // WooCommerce-style shipping lines
               const wooLines = (order as any).shipping_lines;
               if (Array.isArray(wooLines) && wooLines.length > 0) {
-                shippingCost = wooLines.reduce((sum: number, l: any) => {
-                  const t = typeof l.total === 'number' ? l.total : parseFloat(String(l.total || '0'));
-                  return sum + (isNaN(t) ? 0 : t);
-                }, shippingCost);
-                shippingLabel = wooLines[0]?.method_title || wooLines[0]?.name || shippingLabel;
+                const linesTotal = wooLines.reduce((sum: number, l: any) => {
+                  return sum + safeParseNumber(l?.total);
+                }, 0);
+                if (linesTotal > 0) {
+                  shippingCost = linesTotal;
+                  shippingLabel = wooLines[0]?.method_title || wooLines[0]?.name || null;
+                }
               }
 
               // Some payloads use shipping_total
-              if (shippingCost === 0 && (order as any).shipping_total != null) {
-                const t = typeof (order as any).shipping_total === 'number'
-                  ? (order as any).shipping_total
-                  : parseFloat(String((order as any).shipping_total));
-                if (!isNaN(t)) shippingCost = t;
+              if (shippingCost === 0) {
+                const total = safeParseNumber((order as any).shipping_total);
+                if (total > 0) shippingCost = total;
               }
               
               // If still 0, extract from items array (Stripe sessions, some Woo orders)
-              if (shippingCost === 0 && order.line_items) {
+              if (shippingCost === 0 && Array.isArray(order.line_items)) {
                 const shippingItems = order.line_items.filter((item: any) => {
-                  const name = (item.name || '').toLowerCase();
+                  const name = String(item?.name || '').toLowerCase();
                   return name.includes('shipping') || 
                          name.includes('delivery') || 
                          name.includes('intelcom') ||
@@ -285,15 +292,18 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
                          name.includes('canada wide') ||
                          name.includes('standard');
                 });
+                
                 if (shippingItems.length > 0) {
-                  shippingLabel = shippingItems[0]?.name || shippingLabel;
+                  shippingLabel = String(shippingItems[0]?.name || '');
+                  shippingCost = shippingItems.reduce((sum: number, item: any) => {
+                    const itemTotal = safeParseNumber(item?.total) || (safeParseNumber(item?.price) * (item?.quantity || 1));
+                    return sum + itemTotal;
+                  }, 0);
                 }
-                shippingCost = shippingItems.reduce((sum: number, item: any) => {
-                  const itemTotal = item.total || (item.price * item.quantity) || 0;
-                  const total = typeof itemTotal === 'number' ? itemTotal : parseFloat(String(itemTotal || '0'));
-                  return sum + (isNaN(total) ? 0 : total);
-                }, 0);
               }
+              
+              // Final fallback to prevent NaN
+              const displayCost = isNaN(shippingCost) ? 0 : shippingCost;
               
               return (
                 <div className="mt-4 bg-primary/5 border border-primary/20 rounded-lg p-4">
@@ -303,10 +313,10 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
                       <span className="font-medium text-sm">{shippingLabel || 'Shipping Cost'}</span>
                     </div>
                     <span className="text-lg font-bold text-primary">
-                      ${shippingCost.toFixed(2)}
+                      ${displayCost.toFixed(2)}
                     </span>
                   </div>
-                  {shippingCost === 0 && (
+                  {displayCost === 0 && (
                     <p className="text-xs text-muted-foreground mt-2">
                       Free shipping or included in item price
                     </p>
