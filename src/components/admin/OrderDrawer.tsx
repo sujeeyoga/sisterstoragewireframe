@@ -256,14 +256,52 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
                   <span className="font-medium text-sm">Shipping Cost</span>
                 </div>
                 <span className="text-lg font-bold text-primary">
-                  ${(Number((order as any).shipping || 0)).toFixed(2)}
+                  ${(() => {
+                    let shippingCost = Number((order as any).shipping || 0);
+                    
+                    // If shipping is 0, try to extract from items array
+                    if (shippingCost === 0 && order.line_items) {
+                      const shippingItems = order.line_items.filter((item: any) => {
+                        const name = (item.name || '').toLowerCase();
+                        return name.includes('shipping') || 
+                               name.includes('delivery') || 
+                               name.includes('intelcom') ||
+                               name.includes('whiz') ||
+                               name.includes('toronto') ||
+                               name.includes('gta') ||
+                               name.includes('standard');
+                      });
+                      
+                      shippingCost = shippingItems.reduce((sum: number, item: any) => {
+                        const itemTotal = item.total || (item.price * item.quantity) || 0;
+                        const total = typeof itemTotal === 'number' ? itemTotal : parseFloat(String(itemTotal || '0'));
+                        return sum + total;
+                      }, 0);
+                    }
+                    
+                    return shippingCost.toFixed(2);
+                  })()}
                 </span>
               </div>
-              {(order as any).shipping === 0 && (
-                <p className="text-xs text-muted-foreground mt-2">
-                  Free shipping or included in item price
-                </p>
-              )}
+              {(() => {
+                let shippingCost = Number((order as any).shipping || 0);
+                if (shippingCost === 0 && order.line_items) {
+                  const shippingItems = order.line_items.filter((item: any) => {
+                    const name = (item.name || '').toLowerCase();
+                    return name.includes('shipping') || name.includes('delivery') || name.includes('intelcom') || name.includes('whiz');
+                  });
+                  shippingCost = shippingItems.reduce((sum: number, item: any) => {
+                    const total = item.total || (item.price * item.quantity) || 0;
+                    return sum + (typeof total === 'number' ? total : parseFloat(String(total)));
+                  }, 0);
+                }
+                
+                return shippingCost === 0 && (
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Free shipping or included in item price
+                  </p>
+                );
+              })()}
             </div>
           </div>
 
