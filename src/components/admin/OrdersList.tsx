@@ -492,7 +492,7 @@ export function OrdersList() {
           statusCounts={statusCounts}
         />
       
-      <div className="p-4 space-y-4">
+      <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
         {!orders?.orders || orders.orders.length === 0 ? (
           <div className="py-12 text-center space-y-4">
             <Package className="h-16 w-16 mx-auto text-muted-foreground/50" />
