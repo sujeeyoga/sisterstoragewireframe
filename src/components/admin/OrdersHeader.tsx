@@ -228,7 +228,7 @@ export function OrdersHeader({
                 onClick={() => onStatusChange(chip.value)}
                 className={`px-3 h-8 rounded-full text-sm font-medium whitespace-nowrap transition-all border ${
                   activeStatus === chip.value 
-                    ? chip.color 
+                    ? 'bg-pink-50 text-pink-700 border-pink-200' 
                     : 'bg-background border-border text-muted-foreground hover:bg-muted'
                 }`}
               >
@@ -241,7 +241,7 @@ export function OrdersHeader({
               onClick={onToggleArchived}
               className={`px-3 h-8 rounded-full text-sm font-medium whitespace-nowrap transition-all border ml-auto ${
                 showArchived
-                  ? 'bg-zinc-50 text-zinc-700 border-zinc-200' 
+                  ? 'bg-pink-50 text-pink-700 border-pink-200' 
                   : 'bg-background border-border text-muted-foreground hover:bg-muted'
               }`}
             >
