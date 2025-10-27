@@ -29,6 +29,7 @@ interface OverchargedOrder {
   shipping_address: any;
   created_at: string;
   status: string;
+  stripe_payment_intent_id: string | null;
 }
 
 export function BulkShippingRefundTool() {
@@ -56,7 +57,7 @@ export function BulkShippingRefundTool() {
       const gtaCities = [
         'toronto', 'mississauga', 'brampton', 'markham', 'vaughan',
         'richmond hill', 'oakville', 'burlington', 'pickering', 'ajax',
-        'whitby', 'oshawa', 'newmarket', 'aurora', 'milton'
+        'whitby', 'oshawa', 'newmarket', 'aurora', 'milton', 'scarborough'
       ];
 
       const filtered = (data || []).filter(order => {
@@ -67,6 +68,16 @@ export function BulkShippingRefundTool() {
 
       return filtered as OverchargedOrder[];
     },
+  });
+
+  // Filter orders based on refund type capability
+  const filteredOrders = overchargedOrders?.filter(order => {
+    if (refundType === 'stripe') {
+      // Only show orders with payment intent IDs for Stripe API mode
+      return order.stripe_payment_intent_id != null;
+    }
+    // Show all orders for manual mode
+    return true;
   });
 
   const bulkRefundMutation = useMutation({
@@ -129,10 +140,10 @@ export function BulkShippingRefundTool() {
   };
 
   const toggleAll = () => {
-    if (selectedOrders.size === overchargedOrders?.length) {
+    if (selectedOrders.size === filteredOrders?.length) {
       setSelectedOrders(new Set());
     } else {
-      setSelectedOrders(new Set(overchargedOrders?.map(o => o.id) || []));
+      setSelectedOrders(new Set(filteredOrders?.map(o => o.id) || []));
     }
   };
 
@@ -158,9 +169,12 @@ export function BulkShippingRefundTool() {
     bulkRefundMutation.mutate(Array.from(selectedOrders));
   };
 
-  const totalRefundAmount = overchargedOrders
+  const totalRefundAmount = filteredOrders
     ?.filter(order => selectedOrders.has(order.id))
     .reduce((sum, order) => sum + order.shipping, 0) || 0;
+
+  const ordersWithPaymentIntent = overchargedOrders?.filter(o => o.stripe_payment_intent_id != null).length || 0;
+  const ordersWithoutPaymentIntent = overchargedOrders?.filter(o => o.stripe_payment_intent_id == null).length || 0;
 
   if (isLoading) {
     return (
@@ -219,14 +233,20 @@ export function BulkShippingRefundTool() {
             </label>
           </div>
 
-          {refundType === 'manual' && (
-            <Alert className="border-amber-500 bg-amber-50 dark:bg-amber-950">
-              <AlertCircle className="h-4 w-4 text-amber-600 dark:text-amber-400" />
-              <AlertDescription className="text-amber-800 dark:text-amber-200 text-sm">
-                <strong>Manual Refund Process:</strong> Select orders and process them in <a href="https://dashboard.stripe.com/payments" target="_blank" rel="noopener noreferrer" className="underline">Stripe Dashboard</a>
-              </AlertDescription>
-            </Alert>
-          )}
+          <Alert className={refundType === 'manual' ? "border-amber-500 bg-amber-50 dark:bg-amber-950" : "border-blue-500 bg-blue-50 dark:bg-blue-950"}>
+            <AlertCircle className={refundType === 'manual' ? "h-4 w-4 text-amber-600 dark:text-amber-400" : "h-4 w-4 text-blue-600 dark:text-blue-400"} />
+            <AlertDescription className={refundType === 'manual' ? "text-amber-800 dark:text-amber-200 text-sm" : "text-blue-800 dark:text-blue-200 text-sm"}>
+              {refundType === 'manual' ? (
+                <>
+                  <strong>Manual Refund Process:</strong> Select orders and process them in <a href="https://dashboard.stripe.com/payments" target="_blank" rel="noopener noreferrer" className="underline">Stripe Dashboard</a>
+                </>
+              ) : (
+                <>
+                  <strong>Automatic Refund:</strong> {ordersWithPaymentIntent} order(s) can be refunded via Stripe API. {ordersWithoutPaymentIntent > 0 && `${ordersWithoutPaymentIntent} order(s) without payment intents are hidden (switch to Manual mode to see them).`}
+                </>
+              )}
+            </AlertDescription>
+          </Alert>
         </CardContent>
       </Card>
 
@@ -242,17 +262,21 @@ export function BulkShippingRefundTool() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {!overchargedOrders || overchargedOrders.length === 0 ? (
+          {!filteredOrders || filteredOrders.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
               <MapPin className="h-12 w-12 mx-auto mb-2 opacity-50" />
-              <p>No overcharged orders found</p>
+              <p>
+                {refundType === 'stripe' 
+                  ? 'No orders with Stripe payment intents found. Switch to Manual mode to see orders without payment intents.'
+                  : 'No overcharged orders found'}
+              </p>
             </div>
           ) : (
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <Badge variant="outline">
-                  {overchargedOrders.length} Orders Found
+                  {filteredOrders.length} Orders {refundType === 'stripe' ? 'with Payment Intent' : 'Available'}
                 </Badge>
                 <Badge variant="secondary">
                   {selectedOrders.size} Selected
@@ -269,7 +293,7 @@ export function BulkShippingRefundTool() {
                   size="sm"
                   onClick={toggleAll}
                 >
-                  {selectedOrders.size === overchargedOrders.length ? 'Deselect All' : 'Select All'}
+                  {selectedOrders.size === filteredOrders.length ? 'Deselect All' : 'Select All'}
                 </Button>
                 <Button
                   onClick={handleBulkRefund}
@@ -303,7 +327,7 @@ export function BulkShippingRefundTool() {
                   <TableRow>
                     <TableHead className="w-12">
                       <Checkbox
-                        checked={selectedOrders.size === overchargedOrders.length}
+                        checked={selectedOrders.size === filteredOrders.length && filteredOrders.length > 0}
                         onCheckedChange={toggleAll}
                       />
                     </TableHead>
@@ -317,7 +341,7 @@ export function BulkShippingRefundTool() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {overchargedOrders.map((order) => (
+                  {filteredOrders.map((order) => (
                     <TableRow key={order.id}>
                       <TableCell>
                         <Checkbox
