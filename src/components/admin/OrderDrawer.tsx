@@ -250,10 +250,29 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
             
             {/* Shipping Information */}
             {(() => {
-              // Calculate shipping cost once
+              // Calculate shipping cost once and detect label
               let shippingCost = Number((order as any).shipping || (order as any).shipping_cost || 0);
+              let shippingLabel: string | null = null;
+
+              // WooCommerce-style shipping lines
+              const wooLines = (order as any).shipping_lines;
+              if (Array.isArray(wooLines) && wooLines.length > 0) {
+                shippingCost = wooLines.reduce((sum: number, l: any) => {
+                  const t = typeof l.total === 'number' ? l.total : parseFloat(String(l.total || '0'));
+                  return sum + (isNaN(t) ? 0 : t);
+                }, shippingCost);
+                shippingLabel = wooLines[0]?.method_title || wooLines[0]?.name || shippingLabel;
+              }
+
+              // Some payloads use shipping_total
+              if (shippingCost === 0 && (order as any).shipping_total != null) {
+                const t = typeof (order as any).shipping_total === 'number'
+                  ? (order as any).shipping_total
+                  : parseFloat(String((order as any).shipping_total));
+                if (!isNaN(t)) shippingCost = t;
+              }
               
-              // If shipping is 0 in database, extract from items array
+              // If still 0, extract from items array (Stripe sessions, some Woo orders)
               if (shippingCost === 0 && order.line_items) {
                 const shippingItems = order.line_items.filter((item: any) => {
                   const name = (item.name || '').toLowerCase();
@@ -263,13 +282,16 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
                          name.includes('whiz') ||
                          name.includes('toronto') ||
                          name.includes('gta') ||
-                         name.includes('canada wide');
+                         name.includes('canada wide') ||
+                         name.includes('standard');
                 });
-                
+                if (shippingItems.length > 0) {
+                  shippingLabel = shippingItems[0]?.name || shippingLabel;
+                }
                 shippingCost = shippingItems.reduce((sum: number, item: any) => {
                   const itemTotal = item.total || (item.price * item.quantity) || 0;
                   const total = typeof itemTotal === 'number' ? itemTotal : parseFloat(String(itemTotal || '0'));
-                  return sum + total;
+                  return sum + (isNaN(total) ? 0 : total);
                 }, 0);
               }
               
@@ -278,7 +300,7 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Truck className="h-4 w-4 text-primary" />
-                      <span className="font-medium text-sm">Shipping Cost</span>
+                      <span className="font-medium text-sm">{shippingLabel || 'Shipping Cost'}</span>
                     </div>
                     <span className="text-lg font-bold text-primary">
                       ${shippingCost.toFixed(2)}
