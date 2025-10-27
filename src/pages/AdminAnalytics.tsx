@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { subDays, startOfDay, endOfDay } from 'date-fns';
 import { useAbandonedCartAnalytics } from '@/hooks/useAbandonedCartAnalytics';
+import { useOrderAnalytics } from '@/hooks/useOrderAnalytics';
 
 const AdminAnalytics = () => {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ const AdminAnalytics = () => {
   };
 
   const { data: abandonedCartData, isLoading: isLoadingAbandoned } = useAbandonedCartAnalytics(getDateRange());
+  const { data: orderData, isLoading: isLoadingOrders } = useOrderAnalytics(getDateRange());
 
   const reportCards = [
     {
@@ -98,8 +100,12 @@ const AdminAnalytics = () => {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">Coming Soon</div>
-            <p className="text-xs text-muted-foreground">Revenue analytics</p>
+            <div className="text-2xl font-bold">
+              {isLoadingOrders ? '...' : `$${(orderData?.totalRevenue || 0).toFixed(2)}`}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {isLoadingOrders ? '...' : `$${(orderData?.averageOrderValue || 0).toFixed(2)} avg order`}
+            </p>
           </CardContent>
         </Card>
         <Card>
@@ -108,8 +114,12 @@ const AdminAnalytics = () => {
             <ShoppingCart className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">Coming Soon</div>
-            <p className="text-xs text-muted-foreground">Order analytics</p>
+            <div className="text-2xl font-bold">
+              {isLoadingOrders ? '...' : orderData?.totalOrders || 0}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {isLoadingOrders ? '...' : `${orderData?.pendingOrders || 0} pending, ${orderData?.fulfilledOrders || 0} fulfilled`}
+            </p>
           </CardContent>
         </Card>
         <Card>
