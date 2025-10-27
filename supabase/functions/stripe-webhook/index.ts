@@ -11,6 +11,34 @@ const supabase = createClient(
   Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
 );
 
+// Helper function to identify line item types
+function identifyLineItemType(itemName: string): 'product' | 'shipping' | 'tax' | 'gift_wrapping' {
+  const lowerName = itemName.toLowerCase();
+  
+  // Check for shipping variations
+  if (
+    lowerName.includes('shipping') || 
+    lowerName.includes('delivery') ||
+    lowerName.includes('toronto') ||
+    lowerName.includes('gta') ||
+    lowerName.includes('canada wide')
+  ) {
+    return 'shipping';
+  }
+  
+  // Check for tax
+  if (lowerName.includes('tax')) {
+    return 'tax';
+  }
+  
+  // Check for gift wrapping
+  if (lowerName.includes('gift wrap')) {
+    return 'gift_wrapping';
+  }
+  
+  return 'product';
+}
+
 serve(async (req) => {
   const signature = req.headers.get("stripe-signature");
   const webhookSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET");
@@ -48,32 +76,47 @@ serve(async (req) => {
         expand: ['data.price.product']
       });
 
-      // Parse items (excluding shipping and tax)
-      const items = lineItems.data
-        .filter(item => {
-          const name = item.description || '';
-          return !name.toLowerCase().includes('shipping') && !name.toLowerCase().includes('tax');
-        })
-        .map(item => ({
-          name: item.description || 'Product',
-          quantity: item.quantity || 1,
-          price: (item.price?.unit_amount || 0) / 100,
-        }));
+      // Log all line items for debugging
+      console.log('Line items:', lineItems.data.map(item => ({
+        description: item.description,
+        amount: (item.amount_total || 0) / 100,
+        type: identifyLineItemType(item.description || '')
+      })));
 
-      // Calculate totals
-      const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-      
-      // Find shipping and tax line items
-      const shippingItem = lineItems.data.find(item => 
-        item.description?.toLowerCase().includes('shipping')
+      // Categorize line items
+      const productItems = lineItems.data.filter(item => 
+        identifyLineItemType(item.description || '') === 'product'
       );
-      const taxItem = lineItems.data.find(item => 
-        item.description?.toLowerCase().includes('tax')
+      const shippingItems = lineItems.data.filter(item => 
+        identifyLineItemType(item.description || '') === 'shipping'
+      );
+      const taxItems = lineItems.data.filter(item => 
+        identifyLineItemType(item.description || '') === 'tax'
+      );
+      const giftWrappingItems = lineItems.data.filter(item => 
+        identifyLineItemType(item.description || '') === 'gift_wrapping'
       );
 
-      const shipping = shippingItem ? (shippingItem.amount_total || 0) / 100 : 0;
-      const tax = taxItem ? (taxItem.amount_total || 0) / 100 : 0;
+      // Map product items for storage (only products, not shipping/tax/gift wrapping)
+      const items = productItems.map(item => ({
+        name: item.description || 'Product',
+        quantity: item.quantity || 1,
+        price: (item.price?.unit_amount || 0) / 100,
+      }));
+
+      // Calculate totals from categorized items
+      const subtotal = productItems.reduce((sum, item) => 
+        sum + ((item.amount_total || 0) / 100), 0
+      );
+      const shipping = shippingItems.reduce((sum, item) => 
+        sum + ((item.amount_total || 0) / 100), 0
+      );
+      const tax = taxItems.reduce((sum, item) => 
+        sum + ((item.amount_total || 0) / 100), 0
+      );
       const total = (session.amount_total || 0) / 100;
+
+      console.log(`Order breakdown - Products: $${subtotal}, Shipping: $${shipping}, Tax: $${tax}, Total: $${total}`);
 
       // Generate a proper order number
       const timestamp = Date.now().toString().slice(-8);
