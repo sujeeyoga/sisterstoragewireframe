@@ -6,9 +6,14 @@ interface SaleBannerProps {}
 
 const SaleBanner = ({}: SaleBannerProps) => {
   const { isGTA, isLoading } = useLocationDetection();
+  
+  // Check for test mode via URL parameter or localStorage
+  const searchParams = new URLSearchParams(window.location.search);
+  const forceShow = searchParams.get('showGTABanner') === 'true' || 
+                    localStorage.getItem('forceGTABanner') === 'true';
 
-  // Don't render while loading or if not in GTA
-  if (isLoading || !isGTA) {
+  // Don't render while loading or if not in GTA (unless forced)
+  if (!forceShow && (isLoading || !isGTA)) {
     return null;
   }
 
