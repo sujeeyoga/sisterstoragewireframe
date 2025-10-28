@@ -114,7 +114,7 @@ const ProductDetail = () => {
 
   return (
     <Layout>
-      <div className="pb-10 pt-6">
+      <div className="pb-10 pt-12">
         <div className="container-custom">
           <Breadcrumbs productName={product.name} primaryCategorySlug={primaryCategorySlug} />
 
