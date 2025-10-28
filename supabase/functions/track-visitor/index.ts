@@ -70,12 +70,6 @@ Deno.serve(async (req) => {
 
     console.log('Tracking visitor:', { session_id, visitor_id, page_path, ip });
 
-    // Get geolocation data
-    const geoLocation = await getGeoLocation(ip);
-    
-    // Hash IP for privacy
-    const ip_hash = ip !== 'unknown' ? await hashIP(ip) : null;
-
     // Check if session already exists
     const { data: existingSession } = await supabase
       .from('visitor_analytics')
@@ -86,7 +80,7 @@ Deno.serve(async (req) => {
       .single();
 
     if (existingSession) {
-      // Update existing session
+      // Update existing session - NO geolocation call needed
       const duration_seconds = Math.floor(
         (new Date().getTime() - new Date(existingSession.session_start).getTime()) / 1000
       );
@@ -107,7 +101,26 @@ Deno.serve(async (req) => {
       }
 
       console.log('Session updated:', session_id, `${duration_seconds}s`);
+      
+      // Return existing location data
+      return new Response(
+        JSON.stringify({
+          success: true,
+          country: existingSession.country || 'Unknown',
+          session_id,
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 200,
+        }
+      );
     } else {
+      // New session - call geolocation API only once
+      const geoLocation = await getGeoLocation(ip);
+      
+      // Hash IP for privacy
+      const ip_hash = ip !== 'unknown' ? await hashIP(ip) : null;
+
       // Insert new session
       const { error: insertError } = await supabase
         .from('visitor_analytics')
@@ -132,19 +145,19 @@ Deno.serve(async (req) => {
       }
 
       console.log('New session created:', session_id);
+      
+      return new Response(
+        JSON.stringify({
+          success: true,
+          country: geoLocation.country || 'Unknown',
+          session_id,
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 200,
+        }
+      );
     }
-
-    return new Response(
-      JSON.stringify({
-        success: true,
-        country: geoLocation.country || 'Unknown',
-        session_id,
-      }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200,
-      }
-    );
   } catch (error) {
     console.error('Error tracking visitor:', error);
     return new Response(

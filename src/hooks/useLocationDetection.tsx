@@ -10,9 +10,12 @@ interface LocationData {
   isLoading: boolean;
 }
 
+const LOCATION_CACHE_KEY = 'user_location_cache';
+const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
+
 /**
  * Hook to detect if user is in Toronto/GTA area
- * Uses visitor analytics session data to determine location
+ * Uses cached location data or visitor analytics session data
  */
 export const useLocationDetection = (): LocationData => {
   const [location, setLocation] = useState<LocationData>({
@@ -23,6 +26,27 @@ export const useLocationDetection = (): LocationData => {
   useEffect(() => {
     const detectLocation = async () => {
       try {
+        // Check for cached location first
+        const cachedData = localStorage.getItem(LOCATION_CACHE_KEY);
+        if (cachedData) {
+          try {
+            const { location: cachedLocation, timestamp } = JSON.parse(cachedData);
+            const age = Date.now() - timestamp;
+            
+            // Use cached data if less than 24 hours old
+            if (age < CACHE_DURATION) {
+              console.log('Using cached location data');
+              setLocation({
+                ...cachedLocation,
+                isLoading: false,
+              });
+              return;
+            }
+          } catch (e) {
+            console.error('Error parsing cached location:', e);
+          }
+        }
+
         // Get the current session ID from localStorage (same as visitor tracking)
         const sessionKey = Object.keys(localStorage).find(key => key.startsWith('visitor_session_'));
         if (!sessionKey) {
@@ -53,15 +77,25 @@ export const useLocationDetection = (): LocationData => {
           return;
         }
 
-        if (data) {
+        if (data && data.city && data.region) {
           // Check if user is in GTA
           const isGTA = checkIsGTA(data.city, data.region);
           
-          setLocation({
+          const locationData = {
             city: data.city || undefined,
             region: data.region || undefined,
             country: data.country || undefined,
             isGTA,
+          };
+
+          // Cache the location data
+          localStorage.setItem(LOCATION_CACHE_KEY, JSON.stringify({
+            location: locationData,
+            timestamp: Date.now(),
+          }));
+          
+          setLocation({
+            ...locationData,
             isLoading: false,
           });
         } else {
