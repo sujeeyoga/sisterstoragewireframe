@@ -16,6 +16,7 @@ import {
   SidebarFooter,
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
+import Logo from '@/components/ui/Logo';
 
 const menuGroups = [
   {
@@ -87,10 +88,8 @@ export function AdminSidebar() {
 
   return (
     <Sidebar className={`bg-white border-r border-border ${isCollapsed ? 'w-14' : 'w-60'}`} collapsible="icon">
-      <div className="p-4 border-b bg-white">
-        {!isCollapsed && (
-          <h2 className="text-lg font-bold">Admin Panel</h2>
-        )}
+      <div className="p-4 border-b bg-white flex items-center justify-center">
+        <Logo size="sm" onClick={handleNavClick} />
       </div>
 
       <SidebarContent>
