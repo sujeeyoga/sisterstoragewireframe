@@ -204,6 +204,26 @@ serve(async (req) => {
         extractedId: paymentIntentId
       });
 
+      // Check if order already exists (webhook idempotency)
+      const { data: existingOrder, error: checkError } = await supabase
+        .from('orders')
+        .select('id, order_number')
+        .eq('stripe_session_id', session.id)
+        .single();
+
+      if (checkError && checkError.code !== 'PGRST116') {
+        // PGRST116 = no rows found, which is expected for new orders
+        console.error("Error checking for existing order:", checkError);
+      }
+
+      if (existingOrder) {
+        console.log(`Order already exists for session ${session.id}, skipping insert (order: ${existingOrder.order_number})`);
+        return new Response(JSON.stringify({ received: true, duplicate: true, order_number: existingOrder.order_number }), {
+          headers: { "Content-Type": "application/json" },
+          status: 200,
+        });
+      }
+
       // Store order in database for admin tracking
       const { error: orderError } = await supabase
         .from('orders')

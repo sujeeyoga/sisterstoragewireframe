@@ -6,6 +6,12 @@ verify_jwt = false
 [functions.fix-order-unit-prices]
 verify_jwt = false
 
+[functions.backfill-fulfilled-timestamps]
+verify_jwt = true
+
+[functions.check-order-integrity]
+verify_jwt = false
+
 [functions.track-visitor]
 verify_jwt = false
 

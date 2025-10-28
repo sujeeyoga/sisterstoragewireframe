@@ -967,6 +967,13 @@ export type Database = {
           user_id: string
         }[]
       }
+      get_duplicate_order_numbers: {
+        Args: never
+        Returns: {
+          count: number
+          order_number: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
