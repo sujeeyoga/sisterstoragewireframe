@@ -60,10 +60,33 @@ export function BulkShippingRefundTool() {
         'whitby', 'oshawa', 'newmarket', 'aurora', 'milton', 'scarborough'
       ];
 
-      const filtered = (data || []).filter(order => {
+      const gtaOrders = (data || []).filter(order => {
         const shippingAddr = order.shipping_address as any;
         const city = (shippingAddr?.city || '').toLowerCase();
         return gtaCities.some(gtaCity => city.includes(gtaCity));
+      });
+
+      // Fetch all refunds for these orders to check if shipping was already refunded
+      const orderIds = gtaOrders.map(o => o.id);
+      if (orderIds.length === 0) return [];
+
+      const { data: refundsData, error: refundsError } = await supabase
+        .from('refunds')
+        .select('order_id, amount, stripe_refund_id, notes, reason')
+        .in('order_id', orderIds);
+
+      if (refundsError) throw refundsError;
+
+      // Filter out orders that already have shipping refunds
+      const filtered = gtaOrders.filter(order => {
+        const orderRefunds = (refundsData || []).filter(r => r.order_id === order.id);
+        const hasShippingRefund = orderRefunds.some(refund => 
+          refund.stripe_refund_id && (
+            refund.notes?.toLowerCase().includes('shipping') || 
+            refund.reason?.toLowerCase().includes('shipping')
+          )
+        );
+        return !hasShippingRefund;
       });
 
       return filtered as OverchargedOrder[];
