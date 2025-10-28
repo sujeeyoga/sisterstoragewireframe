@@ -49,7 +49,7 @@ const FloatingSearchModule = ({ position = 0, onSearch, activeCategorySlug, onSe
   return (
     <>
       {/* Main floating search module */}
-      <div className={`w-full bg-white/95 backdrop-blur-sm border border-gray-200/50 transition-all duration-300 ${
+      <div className={`w-full bg-white/95 backdrop-blur-sm border border-gray-200/50 ${
         isFloating ? 'shadow-lg rounded-[25px]' : 'shadow-md rounded-[20px]'
       }`}>
         <div className="flex items-center justify-between px-6 py-4">
@@ -58,7 +58,6 @@ const FloatingSearchModule = ({ position = 0, onSearch, activeCategorySlug, onSe
             <EnhancedLogo 
               size={isFloating ? "lg" : "xl"} 
               scrolled={isFloating}
-              className="animate-fade-in"
               loading="eager"
             />
           </div>
@@ -84,19 +83,19 @@ const FloatingSearchModule = ({ position = 0, onSearch, activeCategorySlug, onSe
             <div className="hidden md:flex items-center gap-6">
               <Link 
                 to="/gallery" 
-                className="text-foreground font-medium transition-colors hover:text-[hsl(var(--primary))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))] rounded px-3 py-1"
+                className="text-foreground font-medium hover:text-[hsl(var(--primary))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))] rounded px-3 py-1"
               >
                 GALLERY
               </Link>
               <Link 
                 to="/about" 
-                className="text-foreground font-medium transition-colors hover:text-[hsl(var(--primary))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))] rounded px-3 py-1"
+                className="text-foreground font-medium hover:text-[hsl(var(--primary))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))] rounded px-3 py-1"
               >
                 ABOUT
               </Link>
               <Link 
                 to="/shop" 
-                className="bg-[hsl(var(--primary))] text-primary-foreground px-4 py-2 rounded-full font-medium transition-colors hover:bg-[hsl(var(--primary))]/90 focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))] focus:ring-offset-2"
+                className="bg-[hsl(var(--primary))] text-primary-foreground px-4 py-2 rounded-full font-medium hover:bg-[hsl(var(--primary))]/90 focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))] focus:ring-offset-2"
               >
                 SHOP
               </Link>
@@ -108,19 +107,19 @@ const FloatingSearchModule = ({ position = 0, onSearch, activeCategorySlug, onSe
             variant="ghost"
             size="icon"
             onClick={handleToggle}
-            className="shrink-0 p-2 hover:bg-gray-100 rounded-full transition-all duration-300"
+            className="shrink-0 p-2 hover:bg-gray-100 rounded-full"
             aria-label="Toggle menu"
           >
             <ChevronDown 
-              className={`h-5 w-5 transition-transform duration-300 ${
+              className={`h-5 w-5 ${
                 isExpanded ? 'rotate-180' : 'rotate-0'
-              }`} 
+              }`}
             />
           </Button>
         </div>
 
         {/* Expanded dropdown content */}
-        <div className={`overflow-hidden transition-all duration-300 ease-in-out ${
+        <div className={`overflow-hidden ${
           isExpanded ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'
         }`}>
           <div className="px-6 pb-6 space-y-6 border-t border-gray-100 bg-white">
@@ -128,7 +127,6 @@ const FloatingSearchModule = ({ position = 0, onSearch, activeCategorySlug, onSe
             <div className="flex justify-center">
               <EnhancedLogo 
                 size="xl" 
-                className="animate-fade-in"
                 loading="eager"
               />
             </div>
@@ -153,7 +151,7 @@ const FloatingSearchModule = ({ position = 0, onSearch, activeCategorySlug, onSe
                     onSelectCategory?.(undefined);
                     setIsExpanded(false);
                   }}
-                  className={`px-3 py-1 rounded-full text-xs transition-all ${
+                  className={`px-3 py-1 rounded-full text-xs ${
                     !activeCategorySlug
                       ? "bg-[hsl(var(--primary))] text-primary-foreground shadow"
                       : "bg-background border border-border text-foreground/80 hover:bg-primary/10"
@@ -168,7 +166,7 @@ const FloatingSearchModule = ({ position = 0, onSearch, activeCategorySlug, onSe
                       onSelectCategory?.(node.slug);
                       setIsExpanded(false);
                     }}
-                    className={`px-3 py-1 rounded-full text-xs transition-all ${
+                    className={`px-3 py-1 rounded-full text-xs ${
                       activeCategorySlug === node.slug
                         ? "bg-[hsl(var(--primary))] text-primary-foreground shadow"
                         : "bg-background border border-border text-foreground/80 hover:bg-primary/10"
@@ -191,7 +189,7 @@ const FloatingSearchModule = ({ position = 0, onSearch, activeCategorySlug, onSe
                   key={item.name}
                   to={item.path}
                   onClick={() => setIsExpanded(false)}
-                  className="text-[hsl(var(--primary))] text-lg font-medium py-3 px-4 rounded-lg hover:bg-gray-50 transition-colors text-center"
+                  className="text-[hsl(var(--primary))] text-lg font-medium py-3 px-4 rounded-lg hover:bg-gray-50 text-center"
                 >
                   {item.name}
                 </Link>
