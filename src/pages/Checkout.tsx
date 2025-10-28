@@ -47,16 +47,89 @@ const PROVINCES = [
   { code: 'YT', name: 'Yukon' }
 ];
 
+const US_STATES = [
+  { code: 'AL', name: 'Alabama' },
+  { code: 'AK', name: 'Alaska' },
+  { code: 'AZ', name: 'Arizona' },
+  { code: 'AR', name: 'Arkansas' },
+  { code: 'CA', name: 'California' },
+  { code: 'CO', name: 'Colorado' },
+  { code: 'CT', name: 'Connecticut' },
+  { code: 'DE', name: 'Delaware' },
+  { code: 'FL', name: 'Florida' },
+  { code: 'GA', name: 'Georgia' },
+  { code: 'HI', name: 'Hawaii' },
+  { code: 'ID', name: 'Idaho' },
+  { code: 'IL', name: 'Illinois' },
+  { code: 'IN', name: 'Indiana' },
+  { code: 'IA', name: 'Iowa' },
+  { code: 'KS', name: 'Kansas' },
+  { code: 'KY', name: 'Kentucky' },
+  { code: 'LA', name: 'Louisiana' },
+  { code: 'ME', name: 'Maine' },
+  { code: 'MD', name: 'Maryland' },
+  { code: 'MA', name: 'Massachusetts' },
+  { code: 'MI', name: 'Michigan' },
+  { code: 'MN', name: 'Minnesota' },
+  { code: 'MS', name: 'Mississippi' },
+  { code: 'MO', name: 'Missouri' },
+  { code: 'MT', name: 'Montana' },
+  { code: 'NE', name: 'Nebraska' },
+  { code: 'NV', name: 'Nevada' },
+  { code: 'NH', name: 'New Hampshire' },
+  { code: 'NJ', name: 'New Jersey' },
+  { code: 'NM', name: 'New Mexico' },
+  { code: 'NY', name: 'New York' },
+  { code: 'NC', name: 'North Carolina' },
+  { code: 'ND', name: 'North Dakota' },
+  { code: 'OH', name: 'Ohio' },
+  { code: 'OK', name: 'Oklahoma' },
+  { code: 'OR', name: 'Oregon' },
+  { code: 'PA', name: 'Pennsylvania' },
+  { code: 'RI', name: 'Rhode Island' },
+  { code: 'SC', name: 'South Carolina' },
+  { code: 'SD', name: 'South Dakota' },
+  { code: 'TN', name: 'Tennessee' },
+  { code: 'TX', name: 'Texas' },
+  { code: 'UT', name: 'Utah' },
+  { code: 'VT', name: 'Vermont' },
+  { code: 'VA', name: 'Virginia' },
+  { code: 'WA', name: 'Washington' },
+  { code: 'WV', name: 'West Virginia' },
+  { code: 'WI', name: 'Wisconsin' },
+  { code: 'WY', name: 'Wyoming' }
+];
+
+const COUNTRIES = [
+  { code: 'CA', name: 'Canada' },
+  { code: 'US', name: 'United States' }
+];
+
 // Validation functions
-const validatePostalCode = (code: string): boolean => {
-  return /^[A-Za-z]\d[A-Za-z]\d[A-Za-z]\d$/.test(code);
+const validatePostalCode = (code: string, country: string = 'CA'): boolean => {
+  if (country === 'CA') {
+    return /^[A-Za-z]\d[A-Za-z]\d[A-Za-z]\d$/.test(code);
+  } else if (country === 'US') {
+    const cleaned = code.replace(/[\s-]/g, '');
+    return /^\d{5}(\d{4})?$/.test(cleaned);
+  }
+  return false;
 };
 
-const formatPostalCode = (code: string): string => {
+const formatPostalCode = (code: string, country: string = 'CA'): string => {
   const cleaned = code.replace(/\s/g, '').toUpperCase();
-  if (cleaned.length === 6 && /^[A-Z]\d[A-Z]\d[A-Z]\d$/.test(cleaned)) {
-    return cleaned;
+  
+  if (country === 'CA') {
+    if (cleaned.length === 6 && /^[A-Z]\d[A-Z]\d[A-Z]\d$/.test(cleaned)) {
+      return cleaned;
+    }
+  } else if (country === 'US') {
+    const zipCleaned = cleaned.replace(/-/g, '');
+    if (/^\d{5}(\d{4})?$/.test(zipCleaned)) {
+      return zipCleaned;
+    }
   }
+  
   return cleaned;
 };
 
@@ -161,15 +234,17 @@ const Checkout = () => {
   };
 
   const handlePostalCodeBlur = () => {
-    const formatted = formatPostalCode(formData.postalCode);
+    const formatted = formatPostalCode(formData.postalCode, formData.country);
     if (formatted !== formData.postalCode) {
       setFormData(prev => ({ ...prev, postalCode: formatted }));
     }
     
-    if (formData.postalCode && !validatePostalCode(formatted)) {
+    if (formData.postalCode && !validatePostalCode(formatted, formData.country)) {
       setValidationErrors(prev => ({ 
         ...prev, 
-        postalCode: 'Invalid postal code format (e.g., A1A1A1)' 
+        postalCode: formData.country === 'US' 
+          ? 'Invalid ZIP code format (e.g., 12345 or 12345-6789)' 
+          : 'Invalid postal code format (e.g., A1A1A1)' 
       }));
     }
   };
@@ -177,6 +252,19 @@ const Checkout = () => {
   const handleProvinceChange = (value: string) => {
     setFormData(prev => ({ ...prev, province: value }));
     setValidationErrors(prev => ({ ...prev, province: '' }));
+  };
+
+  const handleCountryChange = (value: string) => {
+    setFormData(prev => ({ 
+      ...prev, 
+      country: value,
+      province: '', // Reset province/state when country changes
+      postalCode: '' // Reset postal/ZIP code
+    }));
+    setValidationErrors(prev => ({ ...prev, province: '', postalCode: '' }));
+    // Clear shipping rates when country changes
+    setShippingRates([]);
+    setSelectedShippingRate('');
   };
 
   // Check if manual address entry is complete for "Calculate Shipping" button
@@ -290,30 +378,41 @@ const Checkout = () => {
       return;
     }
     
-    // Validate postal code format
-    if (!validatePostalCode(formData.postalCode)) {
+    // Validate postal/ZIP code format
+    if (!validatePostalCode(formData.postalCode, formData.country)) {
       setValidationErrors(prev => ({ 
         ...prev, 
-        postalCode: 'Invalid postal code format (e.g., A1A1A1)' 
+        postalCode: formData.country === 'US' 
+          ? 'Invalid ZIP code format (e.g., 12345)' 
+          : 'Invalid postal code format (e.g., A1A1A1)' 
       }));
       toast({
-        title: "Invalid Postal Code",
-        description: "Please enter a valid Canadian postal code (e.g., A1A1A1).",
+        title: formData.country === 'US' ? "Invalid ZIP Code" : "Invalid Postal Code",
+        description: formData.country === 'US'
+          ? "Please enter a valid US ZIP code (e.g., 12345)."
+          : "Please enter a valid Canadian postal code (e.g., A1A1A1).",
         variant: "destructive",
       });
       return;
     }
 
-    // Validate province is valid 2-letter code
-    const validProvinceCodes = PROVINCES.map(p => p.code);
-    if (!validProvinceCodes.includes(formData.province)) {
+    // Validate province/state is valid 2-letter code
+    const validCodes = formData.country === 'US' 
+      ? US_STATES.map(s => s.code)
+      : PROVINCES.map(p => p.code);
+    
+    if (!validCodes.includes(formData.province)) {
       setValidationErrors(prev => ({ 
         ...prev, 
-        province: 'Please select a valid province' 
+        province: formData.country === 'US' 
+          ? 'Please select a valid state'
+          : 'Please select a valid province' 
       }));
       toast({
-        title: "Invalid Province",
-        description: "Please select a valid province from the dropdown.",
+        title: formData.country === 'US' ? "Invalid State" : "Invalid Province",
+        description: formData.country === 'US'
+          ? "Please select a valid state from the dropdown."
+          : "Please select a valid province from the dropdown.",
         variant: "destructive",
       });
       return;
@@ -513,6 +612,23 @@ const Checkout = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                  {/* Country Selector */}
+                  <div>
+                    <Label htmlFor="country">Country</Label>
+                    <Select value={formData.country} onValueChange={handleCountryChange}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select country" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {COUNTRIES.map((country) => (
+                          <SelectItem key={country.code} value={country.code}>
+                            {country.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
                   {/* Address Input */}
                   <div>
                     <Label htmlFor="address">Street Address</Label>
@@ -540,7 +656,7 @@ const Checkout = () => {
                           <Input
                             id="city"
                             name="city"
-                            placeholder="Toronto"
+                            placeholder={formData.country === 'US' ? 'New York' : 'Toronto'}
                             value={formData.city}
                             onChange={handleInputChange}
                             className={validationErrors.city ? "border-red-500" : ""}
@@ -552,29 +668,33 @@ const Checkout = () => {
                           )}
                         </div>
                         
-                        {/* Province */}
+                        {/* Province/State */}
                         <div>
-                          <Label htmlFor="province">Province</Label>
+                          <Label htmlFor="province">
+                            {formData.country === 'US' ? 'State' : 'Province'}
+                          </Label>
                           <Select value={formData.province} onValueChange={handleProvinceChange}>
                             <SelectTrigger className={validationErrors.province ? "border-red-500" : ""}>
-                              <SelectValue placeholder="Select province" />
+                              <SelectValue placeholder={formData.country === 'US' ? 'Select state' : 'Select province'} />
                             </SelectTrigger>
                             <SelectContent>
-                                {PROVINCES.map((province) => (
-                                  <SelectItem key={province.code} value={province.code}>
-                                    {province.name}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                            {validationErrors.province && (
-                              <p className="text-sm text-red-500 mt-1">{validationErrors.province}</p>
-                            )}
+                              {(formData.country === 'US' ? US_STATES : PROVINCES).map((region) => (
+                                <SelectItem key={region.code} value={region.code}>
+                                  {region.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          {validationErrors.province && (
+                            <p className="text-sm text-red-500 mt-1">{validationErrors.province}</p>
+                          )}
                         </div>
                         
-                        {/* Postal Code */}
+                        {/* Postal Code / ZIP Code */}
                         <div>
-                          <Label htmlFor="postalCode">Postal Code</Label>
+                          <Label htmlFor="postalCode">
+                            {formData.country === 'US' ? 'ZIP Code' : 'Postal Code'}
+                          </Label>
                           <Input
                             id="postalCode"
                             name="postalCode"
@@ -582,14 +702,16 @@ const Checkout = () => {
                             onChange={handleInputChange}
                             onBlur={handlePostalCodeBlur}
                             className={validationErrors.postalCode ? "border-red-500" : ""}
-                            placeholder="A1A1A1"
+                            placeholder={formData.country === 'US' ? '12345' : 'A1A1A1'}
                             autoComplete="postal-code"
                             required
                           />
                           {validationErrors.postalCode && (
                             <p className="text-sm text-red-500 mt-1">{validationErrors.postalCode}</p>
                           )}
-                          <p className="text-sm text-muted-foreground mt-1">Format: A1A1A1</p>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            {formData.country === 'US' ? 'Format: 12345' : 'Format: A1A1A1'}
+                          </p>
                         </div>
                       </div>
                       
