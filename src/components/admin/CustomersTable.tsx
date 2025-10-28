@@ -8,8 +8,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2 } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Loader2, Users, DollarSign, ShoppingCart, TrendingUp } from 'lucide-react';
+import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 interface Customer {
   id: number;
@@ -35,6 +36,49 @@ export function CustomersTable() {
     },
   });
 
+  // Calculate analytics data
+  const analytics = customers ? {
+    totalCustomers: customers.length,
+    totalRevenue: customers.reduce((sum, c) => sum + Number(c.total_spent), 0),
+    totalOrders: customers.reduce((sum, c) => sum + c.orders_count, 0),
+    avgOrderValue: customers.reduce((sum, c) => sum + Number(c.total_spent), 0) / 
+                   Math.max(customers.reduce((sum, c) => sum + c.orders_count, 0), 1),
+    
+    // Customer growth over time (by month)
+    customerGrowth: customers.reduce((acc, customer) => {
+      const month = new Date(customer.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+      const existing = acc.find(item => item.month === month);
+      if (existing) {
+        existing.customers += 1;
+      } else {
+        acc.push({ month, customers: 1 });
+      }
+      return acc;
+    }, [] as { month: string; customers: number }[]).sort((a, b) => 
+      new Date(a.month).getTime() - new Date(b.month).getTime()
+    ).slice(-12),
+    
+    // Top customers by spending
+    topCustomers: [...customers]
+      .sort((a, b) => Number(b.total_spent) - Number(a.total_spent))
+      .slice(0, 5)
+      .map(c => ({
+        name: c.first_name || c.last_name ? `${c.first_name || ''} ${c.last_name || ''}`.trim() : c.email.split('@')[0],
+        spent: Number(c.total_spent),
+      })),
+    
+    // Order distribution
+    orderDistribution: [
+      { range: '0 orders', count: customers.filter(c => c.orders_count === 0).length },
+      { range: '1-2 orders', count: customers.filter(c => c.orders_count >= 1 && c.orders_count <= 2).length },
+      { range: '3-5 orders', count: customers.filter(c => c.orders_count >= 3 && c.orders_count <= 5).length },
+      { range: '6-10 orders', count: customers.filter(c => c.orders_count >= 6 && c.orders_count <= 10).length },
+      { range: '10+ orders', count: customers.filter(c => c.orders_count > 10).length },
+    ].filter(item => item.count > 0),
+  } : null;
+
+  const COLORS = ['hsl(var(--primary))', 'hsl(var(--secondary))', 'hsl(var(--accent))', 'hsl(var(--muted))', 'hsl(var(--border))'];
+
   if (isLoading) {
     return (
       <div className="p-8">
@@ -51,6 +95,138 @@ export function CustomersTable() {
         <h1 className="text-3xl font-bold mb-2">Customers</h1>
         <p className="text-muted-foreground">Manage your customer database</p>
       </div>
+
+      {/* Stats Cards */}
+      {analytics && (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Total Customers</CardTitle>
+              <Users className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{analytics.totalCustomers}</div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+              <DollarSign className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">${analytics.totalRevenue.toFixed(2)}</div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
+              <ShoppingCart className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{analytics.totalOrders}</div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Avg Order Value</CardTitle>
+              <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">${analytics.avgOrderValue.toFixed(2)}</div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Charts */}
+      {analytics && (
+        <div className="grid gap-4 md:grid-cols-2 mb-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Customer Growth</CardTitle>
+              <CardDescription>New customers over time</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={analytics.customerGrowth}>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                  <XAxis dataKey="month" className="text-xs" />
+                  <YAxis className="text-xs" />
+                  <Tooltip />
+                  <Line type="monotone" dataKey="customers" stroke="hsl(var(--primary))" strokeWidth={2} />
+                </LineChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Top Customers</CardTitle>
+              <CardDescription>By total spending</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={analytics.topCustomers} layout="vertical">
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                  <XAxis type="number" className="text-xs" />
+                  <YAxis dataKey="name" type="category" width={100} className="text-xs" />
+                  <Tooltip formatter={(value) => `$${Number(value).toFixed(2)}`} />
+                  <Bar dataKey="spent" fill="hsl(var(--primary))" />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Order Distribution</CardTitle>
+              <CardDescription>Customer segments by order count</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    data={analytics.orderDistribution}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ range, percent }) => `${range}: ${(percent * 100).toFixed(0)}%`}
+                    outerRadius={80}
+                    fill="hsl(var(--primary))"
+                    dataKey="count"
+                  >
+                    {analytics.orderDistribution.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Revenue by Customer</CardTitle>
+              <CardDescription>Spending distribution</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={analytics.topCustomers}>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                  <XAxis dataKey="name" className="text-xs" angle={-45} textAnchor="end" height={80} />
+                  <YAxis className="text-xs" />
+                  <Tooltip formatter={(value) => `$${Number(value).toFixed(2)}`} />
+                  <Bar dataKey="spent" fill="hsl(var(--secondary))" />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </div>
+      )}
       
       <Card>
         <CardHeader>
