@@ -77,10 +77,12 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
   const formatAddress = (address: any) => {
     if (!address) return 'N/A';
     
+    // Handle both WooCommerce format (address_1, address_2, postcode) 
+    // and Stripe format (address, postal_code)
     const parts = [
-      address.address_1,
+      address.address_1 || address.address,
       address.address_2,
-      [address.city, address.state, address.postcode].filter(Boolean).join(', '),
+      [address.city, address.state, address.postcode || address.postal_code].filter(Boolean).join(', '),
       address.country
     ].filter(Boolean);
     
