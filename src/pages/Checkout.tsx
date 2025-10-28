@@ -20,6 +20,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
 
 import Logo from '@/components/ui/Logo';
+import SaleBanner from '@/components/SaleBanner';
 import { ArrowLeft, ShoppingBag, CreditCard, Truck, Trash2, Tag, Loader2, Package, Gift, Mail, MapPin, Plus, Minus } from 'lucide-react';
 
 // Province mapping and validation
@@ -523,8 +524,14 @@ const Checkout = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-gray-50">
+      {/* Sale Banner */}
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <SaleBanner />
+      </div>
+      
+      <div className="pt-20 pb-8 px-4">
+        <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
@@ -1022,6 +1029,7 @@ const Checkout = () => {
             </Card>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );
