@@ -14,28 +14,30 @@ const supabase = createClient(
 // Helper function to identify line item types
 function identifyLineItemType(itemName: string): 'product' | 'shipping' | 'tax' | 'gift_wrapping' {
   const lowerName = itemName.toLowerCase();
-  
-  // Check for shipping variations
-  if (
-    lowerName.includes('shipping') || 
-    lowerName.includes('delivery') ||
-    lowerName.includes('toronto') ||
-    lowerName.includes('gta') ||
-    lowerName.includes('canada wide')
-  ) {
+
+  // Common shipping provider and method keywords
+  const providerKeywords = [
+    'shipping', 'delivery', 'intelcom', 'canada post', 'canadapost', 'purolator',
+    'ups', 'fedex', 'dhl', 'stallion'
+  ];
+  const methodKeywords = ['standard', 'express', 'expedited', 'priority'];
+
+  // If it contains any clear shipping indicators, classify as shipping
+  if (providerKeywords.some(k => lowerName.includes(k)) ||
+      (methodKeywords.some(k => lowerName.includes(k)) && providerKeywords.some(k => lowerName.includes(k) || lowerName.includes('shipping')))) {
     return 'shipping';
   }
-  
+
   // Check for tax
   if (lowerName.includes('tax')) {
     return 'tax';
   }
-  
+
   // Check for gift wrapping
-  if (lowerName.includes('gift wrap')) {
+  if (lowerName.includes('gift wrap') || lowerName.includes('gift wrapping')) {
     return 'gift_wrapping';
   }
-  
+
   return 'product';
 }
 
@@ -118,6 +120,15 @@ serve(async (req) => {
 
       console.log(`Order breakdown - Products: $${subtotal}, Shipping: $${shipping}, Tax: $${tax}, Total: $${total}`);
 
+      // Discrepancy detection: compare expected vs. charged
+      const expectedTotal = Number((subtotal + shipping + tax).toFixed(2));
+      const chargedTotal = Number(total.toFixed(2));
+      const discrepancy = Number((expectedTotal - chargedTotal).toFixed(2));
+      const needsReview = Math.abs(discrepancy) > 0.5; // allow small rounding differences
+      if (needsReview) {
+        console.warn('⚠️ Order total discrepancy detected', { expectedTotal, chargedTotal, discrepancy, sessionId: session.id });
+      }
+      
       // Generate a proper order number
       const timestamp = Date.now().toString().slice(-8);
       const randomSuffix = Math.random().toString(36).substring(2, 6).toUpperCase();
@@ -200,7 +211,7 @@ serve(async (req) => {
           tax: emailData.tax,
           total: emailData.total,
           shipping_address: emailData.shippingAddress,
-          status: 'pending',
+          status: needsReview ? 'pending_review' : 'pending',
           payment_status: 'paid',
         });
 
