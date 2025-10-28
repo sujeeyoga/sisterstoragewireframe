@@ -8,6 +8,7 @@ interface LocationData {
   postalCode?: string;
   isGTA: boolean;
   isLoading: boolean;
+  shippingZone?: 'toronto-gta' | 'canada-wide' | 'us-standard' | 'us-west-coast' | 'international';
 }
 
 const LOCATION_CACHE_KEY = 'user_location_cache';
@@ -74,11 +75,20 @@ export const useLocationDetection = (): LocationData => {
           // Check if user is in GTA
           const isGTA = checkIsGTA(data.city, data.region);
           
+          // Determine shipping zone
+          const shippingZone = determineShippingZone(
+            data.country,
+            data.region,
+            data.city,
+            isGTA
+          );
+          
           const locationData = {
             city: data.city || undefined,
             region: data.region || undefined,
             country: data.country || undefined,
             isGTA,
+            shippingZone,
           };
 
           // Cache the location data
@@ -104,6 +114,46 @@ export const useLocationDetection = (): LocationData => {
   }, []);
 
   return location;
+};
+
+/**
+ * Determine which shipping zone the user belongs to
+ */
+const determineShippingZone = (
+  country?: string,
+  region?: string,
+  city?: string,
+  isGTA?: boolean
+): 'toronto-gta' | 'canada-wide' | 'us-standard' | 'us-west-coast' | 'international' => {
+  if (!country) return 'international';
+
+  const countryUpper = country.toUpperCase();
+
+  // Toronto & GTA
+  if (countryUpper === 'CA' && isGTA) {
+    return 'toronto-gta';
+  }
+
+  // Canada Wide (non-GTA)
+  if (countryUpper === 'CA') {
+    return 'canada-wide';
+  }
+
+  // US West Coast (CA, OR, WA)
+  if (countryUpper === 'US') {
+    const regionUpper = region?.toUpperCase();
+    if (
+      regionUpper === 'CALIFORNIA' || regionUpper === 'CA' ||
+      regionUpper === 'OREGON' || regionUpper === 'OR' ||
+      regionUpper === 'WASHINGTON' || regionUpper === 'WA'
+    ) {
+      return 'us-west-coast';
+    }
+    return 'us-standard';
+  }
+
+  // International
+  return 'international';
 };
 
 /**

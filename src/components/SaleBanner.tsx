@@ -1,33 +1,71 @@
 import React from 'react';
-import { BadgePercent } from 'lucide-react';
+import { BadgePercent, Truck, Globe, Zap } from 'lucide-react';
 import { useLocationDetection } from '@/hooks/useLocationDetection';
 
 interface SaleBannerProps {}
 
+// Regional message configuration
+const REGION_MESSAGES = {
+  'toronto-gta': {
+    icon: BadgePercent,
+    text: 'Free Shipping Over $50 in Toronto & GTA',
+    iconColor: 'text-brand-pink'
+  },
+  'canada-wide': {
+    icon: Truck,
+    text: 'Canada Wide Shipping Available • $15 Flat Rate',
+    iconColor: 'text-brand-pink'
+  },
+  'us-standard': {
+    icon: Globe,
+    text: 'Free US Shipping Over $75 • Ships in 5-7 Business Days',
+    iconColor: 'text-brand-pink'
+  },
+  'us-west-coast': {
+    icon: Zap,
+    text: 'Free Shipping Over $75 • Fast 3-5 Day Delivery to West Coast',
+    iconColor: 'text-brand-pink'
+  },
+  'international': {
+    icon: Globe,
+    text: 'International Shipping Available • $9.99 Standard Rate',
+    iconColor: 'text-brand-pink'
+  }
+} as const;
+
 const SaleBanner = ({}: SaleBannerProps) => {
-  const { isGTA, isLoading } = useLocationDetection();
+  const { shippingZone, isLoading } = useLocationDetection();
   
-  // Check for test mode via URL parameter or localStorage
+  // Check for test mode via URL parameter
   const searchParams = new URLSearchParams(window.location.search);
+  const testRegion = searchParams.get('testRegion') as keyof typeof REGION_MESSAGES | null;
   const forceShow = searchParams.get('showGTABanner') === 'true' || 
                     localStorage.getItem('forceGTABanner') === 'true';
 
-  // Don't render while loading or if not in GTA (unless forced)
-  if (!forceShow && (isLoading || !isGTA)) {
+  // Determine which zone to display
+  let activeZone: keyof typeof REGION_MESSAGES = 'international';
+  
+  if (testRegion && REGION_MESSAGES[testRegion]) {
+    activeZone = testRegion;
+  } else if (shippingZone) {
+    activeZone = shippingZone;
+  } else if (forceShow) {
+    activeZone = 'toronto-gta';
+  }
+
+  // Don't render while loading and no test mode
+  if (isLoading && !testRegion && !forceShow) {
     return null;
   }
 
-  // Create content items with separators - using exact requirements
-  const contentItems = [{
-    icon: <BadgePercent className="h-3 w-3 text-brand-pink mr-1 shrink-0" />,
-    text: "Free Shipping Over $50 in Toronto & GTA"
-  }, {
-    icon: <BadgePercent className="h-3 w-3 text-brand-pink mr-1 shrink-0" />,
-    text: "Free Shipping Over $50 in Toronto & GTA"
-  }, {
-    icon: <BadgePercent className="h-3 w-3 text-brand-pink mr-1 shrink-0" />,
-    text: "Free Shipping Over $50 in Toronto & GTA"
-  }];
+  const message = REGION_MESSAGES[activeZone];
+  const IconComponent = message.icon;
+
+  // Create content items with the regional message
+  const contentItems = Array(3).fill({
+    icon: <IconComponent className={`h-3 w-3 ${message.iconColor} mr-1 shrink-0`} />,
+    text: message.text
+  });
 
   // Duplicate content multiple times for seamless infinite loop
   const duplicatedContent = [
