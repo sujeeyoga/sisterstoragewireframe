@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
-import { Shield, Users, Key, Database, Mail, Truck, Plus, X } from 'lucide-react';
+import { Shield, Users, Key, Database, Mail, Truck, Plus, X, RefreshCw } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { BackfillPaymentIntents } from './BackfillPaymentIntents';
 import {
@@ -56,6 +56,7 @@ export function AdminSettings() {
   const [emailError, setEmailError] = useState('');
   const [deleteAdminId, setDeleteAdminId] = useState<string | null>(null);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [isSyncing, setIsSyncing] = useState(false);
 
   // Get current user ID
   useEffect(() => {
@@ -162,6 +163,39 @@ export function AdminSettings() {
 
     addAdminMutation.mutate(validation.data.email);
   };
+
+  // WooCommerce sync mutation
+  const syncWooCommerceMutation = useMutation({
+    mutationFn: async () => {
+      setIsSyncing(true);
+      
+      const { data, error } = await supabase.functions.invoke('woocommerce-sync', {
+        body: {},
+      });
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (data) => {
+      const message = data?.message || 'Sync completed successfully';
+      toast({
+        title: 'Sync Complete',
+        description: message,
+      });
+      queryClient.invalidateQueries({ queryKey: ['woocommerce-products'] });
+      queryClient.invalidateQueries({ queryKey: ['woocommerce-customers'] });
+      queryClient.invalidateQueries({ queryKey: ['sync-logs'] });
+      setIsSyncing(false);
+    },
+    onError: (error: any) => {
+      toast({
+        title: 'Sync Failed',
+        description: error.message || 'Failed to sync WooCommerce data',
+        variant: 'destructive',
+      });
+      setIsSyncing(false);
+    },
+  });
 
   return (
     <div className="container mx-auto py-6 space-y-6">
@@ -583,6 +617,24 @@ export function AdminSettings() {
                     Backup Database
                   </Button>
                 </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-3">
+                <Label>WooCommerce Sync</Label>
+                <p className="text-sm text-muted-foreground mb-3">
+                  Sync products and customers from your WooCommerce store
+                </p>
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start gap-2"
+                  onClick={() => syncWooCommerceMutation.mutate()}
+                  disabled={isSyncing}
+                >
+                  <RefreshCw className={`h-4 w-4 ${isSyncing ? 'animate-spin' : ''}`} />
+                  {isSyncing ? 'Syncing Products & Customers...' : 'Sync Products & Customers'}
+                </Button>
               </div>
 
               <Separator />
