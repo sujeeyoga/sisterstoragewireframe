@@ -100,11 +100,19 @@ serve(async (req) => {
       );
 
       // Map product items for storage (only products, not shipping/tax/gift wrapping)
-      const items = productItems.map(item => ({
-        name: item.description || 'Product',
-        quantity: item.quantity || 1,
-        price: (item.price?.unit_amount || 0) / 100,
-      }));
+      const items = productItems.map(item => {
+        // Calculate unit price from amount_total / quantity (more reliable than unit_amount for price_data)
+        const quantity = item.quantity || 1;
+        const unitPrice = item.amount_total && quantity 
+          ? (item.amount_total / quantity) / 100 
+          : (item.price?.unit_amount || 0) / 100;
+        
+        return {
+          name: item.description || 'Product',
+          quantity: quantity,
+          price: unitPrice,
+        };
+      });
 
       // Calculate totals from categorized items
       const subtotal = productItems.reduce((sum, item) => 
