@@ -73,6 +73,7 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
   const [isRefunding, setIsRefunding] = useState(false);
   const [refundType, setRefundType] = useState<'stripe' | 'manual'>('stripe');
   const [manualRefundConfirmed, setManualRefundConfirmed] = useState(false);
+  const [orderRefunds, setOrderRefunds] = useState<any[]>([]);
 
   const formatAddress = (address: any) => {
     if (!address) return 'N/A';
@@ -88,6 +89,24 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
     
     return parts.length > 0 ? parts.join('\n') : 'N/A';
   };
+
+  // Fetch refunds for this order
+  useEffect(() => {
+    const fetchRefunds = async () => {
+      const { data, error } = await supabase
+        .from('refunds')
+        .select('*')
+        .eq('order_id', order.id.toString());
+      
+      if (!error && data) {
+        setOrderRefunds(data);
+      }
+    };
+    
+    if (open && order.id) {
+      fetchRefunds();
+    }
+  }, [order.id, open]);
 
   // Reset refund form when order changes
   useEffect(() => {
@@ -302,9 +321,35 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Shipping:</span>
                     <span className="font-medium">
-                      ${(order.total - order.line_items?.reduce((sum: number, item: any) => 
-                        sum + (item.quantity * item.price), 0
-                      ) - ((order as any).tax || 0)).toFixed(2)}
+                      {(() => {
+                        const calculatedShipping = (order.total - order.line_items?.reduce((sum: number, item: any) => 
+                          sum + (item.quantity * item.price), 0
+                        ) - ((order as any).tax || 0));
+                        
+                        // Check if there's a shipping refund
+                        const shippingRefund = orderRefunds.find(r => 
+                          r.notes?.toLowerCase().includes('shipping') || 
+                          r.reason?.toLowerCase().includes('shipping')
+                        );
+                        
+                        if (shippingRefund && shippingRefund.amount > 0) {
+                          const correctedShipping = calculatedShipping - shippingRefund.amount;
+                          return (
+                            <span>
+                              <span className="line-through text-muted-foreground/50">${calculatedShipping.toFixed(2)}</span>
+                              {' '}
+                              <span className="text-green-600 dark:text-green-400 font-semibold">
+                                ${correctedShipping.toFixed(2)}
+                              </span>
+                              <span className="text-xs text-muted-foreground ml-2">
+                                (${shippingRefund.amount.toFixed(2)} refunded)
+                              </span>
+                            </span>
+                          );
+                        }
+                        
+                        return `$${calculatedShipping.toFixed(2)}`;
+                      })()}
                     </span>
                   </div>
                   {(order as any).tax > 0 && (
