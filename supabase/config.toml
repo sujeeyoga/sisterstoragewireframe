@@ -3,6 +3,9 @@ project_id = "attczdhexkpxpyqyasgz"
 [functions.flag-orders-for-review]
 verify_jwt = false
 
+[functions.fix-order-unit-prices]
+verify_jwt = false
+
 [functions.track-visitor]
 verify_jwt = false
 
