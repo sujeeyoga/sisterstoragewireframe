@@ -285,23 +285,29 @@ const AdminCustomerReports = () => {
           </CardHeader>
           <CardContent>
             {geoData && geoData.length > 0 ? (
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={geoData}>
+              <ResponsiveContainer width="100%" height={400}>
+                <BarChart data={geoData} layout="horizontal">
                   <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                  <XAxis dataKey="name" className="text-xs" />
-                  <YAxis className="text-xs" />
+                  <XAxis type="number" className="text-xs" />
+                  <YAxis type="category" dataKey="name" width={100} className="text-xs" />
                   <Tooltip 
                     contentStyle={{ 
                       backgroundColor: 'hsl(var(--background))',
                       border: '1px solid hsl(var(--border))',
                       borderRadius: '8px'
                     }}
+                    labelStyle={{ color: 'hsl(var(--foreground))' }}
                   />
-                  <Bar dataKey="value" fill="hsl(var(--primary))" name="Orders" />
+                  <Bar 
+                    dataKey="value" 
+                    fill="hsl(var(--primary))" 
+                    name="Orders"
+                    radius={[0, 8, 8, 0]}
+                  />
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <div className="h-[300px] flex items-center justify-center text-muted-foreground">
+              <div className="h-[400px] flex items-center justify-center text-muted-foreground">
                 No geographic data
               </div>
             )}
