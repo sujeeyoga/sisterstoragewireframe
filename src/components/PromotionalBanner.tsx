@@ -16,18 +16,18 @@ const PromotionalBanner = () => {
   const bannerText = texts as any;
   
   return (
-    <section className="py-16 md:py-20 bg-[hsl(var(--brand-pink))]">
+    <section className="py-20 md:py-24 bg-[hsl(var(--brand-pink))]">
       <div className="container-custom">
         <Card className="overflow-hidden border-none shadow-2xl">
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center py-10 md:py-14 px-8 md:px-12 lg:px-14 bg-white">
+          <div className="grid lg:grid-cols-2 gap-0 items-center bg-white">
             {/* Left Content */}
-            <div className="space-y-6 md:space-y-8 pl-4 md:pl-48 lg:pl-64">
+            <div className="space-y-8 lg:space-y-10 px-8 py-12 md:px-16 md:py-16 lg:px-20 lg:py-20">
               <EditableText
                 siteTextId={bannerText.id}
                 field="title"
                 value={bannerText.title}
                 as="h2"
-                className="text-3xl md:text-4xl lg:text-5xl font-black text-foreground leading-[1.1] tracking-tight"
+                className="text-4xl md:text-5xl lg:text-6xl font-black text-foreground leading-[1.05] tracking-tight"
               />
               
               <EditableText
@@ -35,13 +35,13 @@ const PromotionalBanner = () => {
                 field="description"
                 value={bannerText.description}
                 as="p"
-                className="text-lg md:text-xl text-muted-foreground max-w-lg leading-relaxed"
+                className="text-lg md:text-xl lg:text-2xl text-muted-foreground leading-relaxed max-w-xl"
               />
               
-              <Link to="/shop" className="block mt-4">
+              <Link to="/shop" className="inline-block">
                 <Button 
                   size="lg"
-                  className="bg-[hsl(var(--brand-pink))] text-white hover:bg-[hsl(var(--brand-pink))]/90 hover:scale-105 font-bold px-8 py-6 shadow-lg transition-all duration-300"
+                  className="bg-[hsl(var(--brand-pink))] text-white hover:bg-[hsl(var(--brand-pink))]/90 hover:scale-105 font-bold text-base lg:text-lg px-10 py-7 shadow-xl transition-all duration-300"
                 >
                   <EditableText
                     siteTextId={bannerText.id}
@@ -54,14 +54,14 @@ const PromotionalBanner = () => {
             </div>
 
             {/* Right Image */}
-            <div className="relative h-[400px] lg:h-[500px] -mr-8 md:-mr-12 lg:-mr-14">
+            <div className="relative h-[450px] lg:h-[600px]">
               {!imageLoaded && (
-                <Skeleton className="absolute inset-0 rounded-l-2xl" />
+                <Skeleton className="absolute inset-0" />
               )}
               <img
                 src="https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/1760125164235-26m74b.jpg"
                 alt="Sister Storage organized jewelry display"
-                className="w-full h-full object-cover rounded-l-2xl shadow-lg"
+                className="w-full h-full object-cover shadow-lg"
                 loading="lazy"
                 onLoad={() => setImageLoaded(true)}
               />
