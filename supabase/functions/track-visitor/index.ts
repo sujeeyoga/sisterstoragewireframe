@@ -21,23 +21,58 @@ interface GeoLocation {
 }
 
 async function getGeoLocation(ip: string): Promise<GeoLocation> {
+  // Don't attempt geolocation for unknown IPs
+  if (ip === 'unknown' || !ip) {
+    console.log('Skipping geolocation for unknown IP');
+    return {};
+  }
+
   try {
-    // Use ipapi.co for geolocation (free tier: 1000 requests/day)
-    const response = await fetch(`https://ipapi.co/${ip}/json/`);
+    // Primary: ip-api.com (free tier: 45 requests/minute, no key required)
+    console.log('Attempting geolocation for IP:', ip);
+    const response = await fetch(`http://ip-api.com/json/${ip}?fields=status,country,countryCode,region,regionName,city`);
+    
     if (!response.ok) {
-      console.error('Geolocation API error:', response.status);
+      console.error('Primary geolocation API error:', response.status);
+      throw new Error('Primary API failed');
+    }
+    
+    const data = await response.json();
+    
+    if (data.status === 'success') {
+      console.log('Geolocation success:', data);
+      return {
+        country: data.countryCode,
+        country_name: data.country,
+        region: data.regionName || data.region,
+        city: data.city,
+      };
+    } else {
+      console.error('Geolocation failed:', data);
+      throw new Error('API returned fail status');
+    }
+  } catch (error) {
+    console.error('Primary geolocation failed, trying fallback:', error);
+    
+    // Fallback: ipapi.co (free tier: 1000 requests/day)
+    try {
+      const fallbackResponse = await fetch(`https://ipapi.co/${ip}/json/`);
+      if (!fallbackResponse.ok) {
+        console.error('Fallback geolocation API error:', fallbackResponse.status);
+        return {};
+      }
+      const fallbackData = await fallbackResponse.json();
+      console.log('Fallback geolocation success:', fallbackData);
+      return {
+        country: fallbackData.country_code,
+        country_name: fallbackData.country_name,
+        region: fallbackData.region,
+        city: fallbackData.city,
+      };
+    } catch (fallbackError) {
+      console.error('Fallback geolocation also failed:', fallbackError);
       return {};
     }
-    const data = await response.json();
-    return {
-      country: data.country_code,
-      country_name: data.country_name,
-      region: data.region,
-      city: data.city,
-    };
-  } catch (error) {
-    console.error('Error fetching geolocation:', error);
-    return {};
   }
 }
 
