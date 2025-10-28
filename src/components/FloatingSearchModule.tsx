@@ -62,19 +62,19 @@ const FloatingSearchModule = ({
           <nav className="flex items-center gap-6">
             <Link 
               to="/gallery" 
-              className="text-foreground font-medium hover:text-brand-pink rounded px-3 py-1"
+              className="text-foreground font-medium hover:text-foreground/70 rounded px-3 py-1"
             >
               GALLERY
             </Link>
             <Link 
               to="/about" 
-              className="text-foreground font-medium hover:text-brand-pink rounded px-3 py-1"
+              className="text-foreground font-medium hover:text-foreground/70 rounded px-3 py-1"
             >
               ABOUT
             </Link>
             <Link 
               to="/shop" 
-              className="bg-brand-pink text-white px-4 py-2 rounded-full font-medium hover:bg-brand-pink/90"
+              className="bg-foreground text-background px-4 py-2 rounded-full font-medium hover:bg-foreground/90"
             >
               SHOP
             </Link>
@@ -109,13 +109,13 @@ const FloatingSearchModule = ({
 
           {/* Filter Input */}
           <div className="relative">
-            <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-brand-pink" />
+            <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               type="text"
               placeholder="Filter by category, rod count, or use case..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 pr-4 py-3 rounded-full border border-brand-pink/20 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-brand-pink focus:border-brand-pink w-full"
+              className="pl-10 pr-4 py-3 rounded-full border border-border bg-gray-50 focus:bg-white focus:ring-2 focus:ring-ring w-full"
             />
           </div>
 
@@ -125,8 +125,8 @@ const FloatingSearchModule = ({
               onClick={() => handleCategorySelect(undefined)}
               className={`px-3 py-1 rounded-full text-xs transition-colors ${
                 !activeCategorySlug
-                  ? "bg-brand-pink text-white shadow"
-                  : "bg-background border border-border text-foreground/80 hover:bg-brand-pink/10"
+                  ? "bg-foreground text-background shadow"
+                  : "bg-background border border-border text-foreground/80 hover:bg-muted"
               }`}
             >
               All
@@ -137,8 +137,8 @@ const FloatingSearchModule = ({
                 onClick={() => handleCategorySelect(node.slug)}
                 className={`px-3 py-1 rounded-full text-xs transition-colors ${
                   activeCategorySlug === node.slug
-                    ? "bg-brand-pink text-white shadow"
-                    : "bg-background border border-border text-foreground/80 hover:bg-brand-pink/10"
+                    ? "bg-foreground text-background shadow"
+                    : "bg-background border border-border text-foreground/80 hover:bg-muted"
                 }`}
               >
                 {node.label}
@@ -157,7 +157,7 @@ const FloatingSearchModule = ({
                 key={item.name}
                 to={item.path}
                 onClick={() => setIsExpanded(false)}
-                className="text-brand-pink text-lg font-medium py-3 px-4 rounded-lg hover:bg-gray-50 text-center transition-colors"
+                className="text-foreground text-lg font-medium py-3 px-4 rounded-lg hover:bg-gray-50 text-center transition-colors"
               >
                 {item.name}
               </Link>
