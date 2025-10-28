@@ -21,7 +21,7 @@ const Index = () => {
 
   return (
     <BaseLayout variant="standard" spacing="none" showFooter={true}>
-      <div className="min-h-screen bg-white -mt-28">
+      <div className="min-h-screen bg-[#F10781] -mt-28">
         {/* Hero Section - Critical, loads immediately */}
         <Hero />
         
