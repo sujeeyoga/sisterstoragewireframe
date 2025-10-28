@@ -1,17 +1,27 @@
 import React from 'react';
 import { BadgePercent } from 'lucide-react';
+import { useLocationDetection } from '@/hooks/useLocationDetection';
+
 interface SaleBannerProps {}
+
 const SaleBanner = ({}: SaleBannerProps) => {
+  const { isGTA, isLoading } = useLocationDetection();
+
+  // Don't render while loading or if not in GTA
+  if (isLoading || !isGTA) {
+    return null;
+  }
+
   // Create content items with separators - using exact requirements
   const contentItems = [{
     icon: <BadgePercent className="h-3 w-3 text-brand-pink mr-1 shrink-0" />,
-    text: "Free Shipping Over $50 in Toronto"
+    text: "Free Shipping Over $50 in Toronto & GTA"
   }, {
     icon: <BadgePercent className="h-3 w-3 text-brand-pink mr-1 shrink-0" />,
-    text: "Free Shipping Over $50 in Toronto"
+    text: "Free Shipping Over $50 in Toronto & GTA"
   }, {
     icon: <BadgePercent className="h-3 w-3 text-brand-pink mr-1 shrink-0" />,
-    text: "Free Shipping Over $50 in Toronto"
+    text: "Free Shipping Over $50 in Toronto & GTA"
   }];
 
   // Duplicate content multiple times for seamless infinite loop
