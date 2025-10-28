@@ -88,11 +88,15 @@ const EnhancedLogo: React.FC<LogoProps> = ({
         {!imageLoaded && (
           <div 
             className={cn(
-              "absolute inset-0 bg-[hsl(var(--brand-pink)/0.2)] animate-pulse rounded",
+              "flex items-center justify-center bg-[hsl(var(--brand-pink)/0.1)] rounded px-3",
               sizeClasses[size]
             )}
             style={{ width: '120px' }}
-          />
+          >
+            <span className="text-sm font-bold text-primary uppercase tracking-wide">
+              Sister Storage
+            </span>
+          </div>
         )}
         
         {/* Main logo image */}
