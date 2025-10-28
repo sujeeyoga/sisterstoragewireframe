@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import logoImage from '@/assets/sister-storage-logo-new.jpg';
@@ -24,6 +24,29 @@ const EnhancedLogo: React.FC<LogoProps> = ({
 }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const imgRef = useRef<HTMLImageElement | null>(null);
+
+  // Ensure we mark as loaded if the image is already cached
+  useEffect(() => {
+    const img = imgRef.current;
+    if (!img) return;
+    // If the image was cached and already complete, mark as loaded
+    if (img.complete) {
+      setImageLoaded(true);
+      return;
+    }
+    const onLoad = () => setImageLoaded(true);
+    img.addEventListener('load', onLoad);
+    return () => img.removeEventListener('load', onLoad);
+  }, []);
+
+  // Safety fallback to avoid perpetual skeleton in rare cases
+  useEffect(() => {
+    const t = setTimeout(() => {
+      if (!imageLoaded) setImageLoaded(true);
+    }, 2000);
+    return () => clearTimeout(t);
+  }, [imageLoaded]);
 
   // Responsive size mappings optimized for navbar
   const sizeClasses = {
@@ -74,6 +97,7 @@ const EnhancedLogo: React.FC<LogoProps> = ({
         
         {/* Main logo image */}
         <img 
+          ref={imgRef}
           src={logoImage}
           alt="Sister Storage - Elegant jewelry and keepsake storage solutions"
           className={cn(
@@ -83,6 +107,8 @@ const EnhancedLogo: React.FC<LogoProps> = ({
             imageLoaded ? "opacity-100" : "opacity-0"
           )}
           loading={loading}
+          decoding="async"
+          fetchPriority={loading === 'eager' ? 'high' : 'auto'}
           onLoad={handleImageLoad}
           onError={handleImageError}
         />
