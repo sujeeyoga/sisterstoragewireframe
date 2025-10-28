@@ -15,6 +15,44 @@ export function AnalyticsDashboard() {
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
+  // Today's stats
+  const { data: todayStats } = useQuery({
+    queryKey: ['admin-today-stats'],
+    queryFn: async () => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const [wooRes, stripeRes] = await Promise.all([
+        supabase
+          .from('woocommerce_orders')
+          .select('*')
+          .gte('date_created', today.toISOString()),
+        supabase
+          .from('orders')
+          .select('*')
+          .gte('created_at', today.toISOString()),
+      ]);
+
+      if (wooRes.error) throw wooRes.error;
+      if (stripeRes.error) throw stripeRes.error;
+
+      const allOrders = [
+        ...(wooRes.data || []).map((o) => ({
+          total: typeof o.total === 'number' ? o.total : parseFloat(String(o.total || '0')),
+        })),
+        ...(stripeRes.data || []).map((o: any) => ({
+          total: typeof o.total === 'number' ? o.total : parseFloat(String(o.total || '0')),
+        })),
+      ];
+
+      const totalOrders = allOrders.length;
+      const totalRevenue = allOrders.reduce((sum, o) => sum + (Number.isFinite(o.total) ? o.total : 0), 0);
+      const averageOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
+
+      return { totalOrders, totalRevenue, averageOrderValue };
+    },
+  });
+
   const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: ['admin-analytics'],
     queryFn: async () => {
@@ -222,12 +260,65 @@ export function AnalyticsDashboard() {
       <div>
         <h1 className="text-3xl font-bold">Dashboard</h1>
         <p className="text-muted-foreground mt-1">
-          Overview of your store performance (last 30 days)
+          Overview of your store performance
         </p>
       </div>
 
-      {/* KPI Cards - Bento Box Style */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      {/* Today's Performance */}
+      <div>
+        <h2 className="text-lg font-semibold mb-3">Today's Performance</h2>
+        <div className="grid gap-4 md:grid-cols-3">
+          <Card className="bg-gradient-to-br from-pink-50 to-white rounded-xl border-[0.5px] border-pink-300 shadow-sm">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Revenue Today</CardTitle>
+              <DollarSign className="h-4 w-4 text-pink-600" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-pink-900">
+                ${todayStats?.totalRevenue.toFixed(2) || '0.00'}
+              </div>
+              <p className="text-xs text-pink-600 mt-1">
+                Since midnight
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-pink-50 to-white rounded-xl border-[0.5px] border-pink-300 shadow-sm">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Orders Today</CardTitle>
+              <ShoppingCart className="h-4 w-4 text-pink-600" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-pink-900">
+                {todayStats?.totalOrders || 0}
+              </div>
+              <p className="text-xs text-pink-600 mt-1">
+                Total placed today
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-pink-50 to-white rounded-xl border-[0.5px] border-pink-300 shadow-sm">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Avg Today</CardTitle>
+              <TrendingUp className="h-4 w-4 text-pink-600" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-pink-900">
+                ${todayStats?.averageOrderValue.toFixed(2) || '0.00'}
+              </div>
+              <p className="text-xs text-pink-600 mt-1">
+                Per order today
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
+      {/* 30-Day KPI Cards */}
+      <div>
+        <h2 className="text-lg font-semibold mb-3">Last 30 Days</h2>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Link to="/admin/orders">
           <Card className="bg-white rounded-xl border-[0.5px] border-pink-500 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -291,6 +382,7 @@ export function AnalyticsDashboard() {
             </CardContent>
           </Card>
         </Link>
+        </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
