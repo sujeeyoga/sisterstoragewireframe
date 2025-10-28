@@ -174,14 +174,14 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
         className="fixed top-10 left-0 right-0 z-50 py-3"
       >
         <div className={`w-[min(1100px,calc(100%-40px))] mx-auto rounded-[25px] shadow-lg px-4 py-2 ${
-          isLoading ? 'bg-[hsl(var(--brand-pink)/0.2)]' : 'bg-white'
+          isLoading ? 'bg-[#F00881]/20' : 'bg-white'
         }`}>
           <Navbar position={position} />
         </div>
       </nav>
       
       {/* Static pink background strip behind nav */}
-      <div className="h-[120px] bg-[hsl(var(--brand-pink))] pt-3 pb-3" />
+      <div className="h-[120px] bg-[#F00881] pt-3 pb-3" />
       
       {/* Main content with proper top spacing */}
       <main className="bg-background" style={{ outline: 'none' }}>
