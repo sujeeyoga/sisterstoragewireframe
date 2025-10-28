@@ -50,7 +50,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
   return (
     <>
       <div 
-        className={`w-full grid grid-cols-[1fr_auto_1fr] items-center transition-all duration-300 ${
+        className={`w-full grid grid-cols-[1fr_auto_1fr] items-center ${
           isSticky ? 'py-1.5 px-3' : 'py-2 px-3'
         }`}
       >
@@ -59,7 +59,6 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
           <EnhancedLogo 
             size="3xl"
             scrolled={isSticky}
-            className="transition-all duration-300"
             loading="eager"
           />
         </div>
@@ -67,16 +66,16 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
         <div className="justify-self-center flex justify-center">
           {/* Full menu ≥1280px */}
           <div className="hidden xl:flex items-center gap-6">
-            <Link to="/" className={`px-4 py-2 rounded-full font-medium text-base transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] focus:ring-offset-2 min-h-[40px] flex items-center ${location.pathname === '/' ? 'bg-brand-pink text-white' : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'}`}>HOME</Link>
-            <Link to="/gallery" className={`px-3 py-2 rounded-full font-medium text-base transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${location.pathname === '/gallery' ? 'bg-brand-pink text-white' : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'}`}>GALLERY</Link>
-            <Link to="/shop" className={`px-3 py-2 rounded-full font-medium text-base transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${location.pathname === '/shop' ? 'bg-brand-pink text-white' : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'}`}>SHOP</Link>
+            <Link to="/" className={`px-4 py-2 rounded-full font-medium text-base focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] focus:ring-offset-2 min-h-[40px] flex items-center ${location.pathname === '/' ? 'bg-brand-pink text-white' : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'}`}>HOME</Link>
+            <Link to="/gallery" className={`px-3 py-2 rounded-full font-medium text-base focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${location.pathname === '/gallery' ? 'bg-brand-pink text-white' : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'}`}>GALLERY</Link>
+            <Link to="/shop" className={`px-3 py-2 rounded-full font-medium text-base focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${location.pathname === '/shop' ? 'bg-brand-pink text-white' : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'}`}>SHOP</Link>
           </div>
           
           {/* Condensed menu 768-1279px */}
           <div className="hidden lg:flex xl:hidden items-center gap-4">
-            <Link to="/" className={`px-4 py-2 rounded-full font-medium text-base transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] focus:ring-offset-2 min-h-[40px] flex items-center ${location.pathname === '/' ? 'bg-brand-pink text-white' : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'}`}>HOME</Link>
-            <Link to="/gallery" className={`px-3 py-2 rounded-full font-medium text-base transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${location.pathname === '/gallery' ? 'bg-brand-pink text-white' : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'}`}>GALLERY</Link>
-            <Link to="/shop" className={`px-3 py-2 rounded-full font-medium text-base transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${location.pathname === '/shop' ? 'bg-brand-pink text-white' : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'}`}>SHOP</Link>
+            <Link to="/" className={`px-4 py-2 rounded-full font-medium text-base focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] focus:ring-offset-2 min-h-[40px] flex items-center ${location.pathname === '/' ? 'bg-brand-pink text-white' : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'}`}>HOME</Link>
+            <Link to="/gallery" className={`px-3 py-2 rounded-full font-medium text-base focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${location.pathname === '/gallery' ? 'bg-brand-pink text-white' : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'}`}>GALLERY</Link>
+            <Link to="/shop" className={`px-3 py-2 rounded-full font-medium text-base focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${location.pathname === '/shop' ? 'bg-brand-pink text-white' : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'}`}>SHOP</Link>
           </div>
         </div>
 
@@ -88,7 +87,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
                 setCartOpen(true);
                 setMobileMenuOpen(false);
               }}
-              className="p-2 text-black hover:bg-black/10 rounded transition-colors relative focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] min-h-[40px] min-w-[40px] flex items-center justify-center"
+              className="p-2 text-black hover:bg-black/10 rounded relative focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] min-h-[40px] min-w-[40px] flex items-center justify-center"
               aria-label="Open cart"
             >
               <ShoppingBag className="h-5 w-5" />
@@ -102,16 +101,16 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
             </button>
           )}
           <button 
-            className="lg:hidden p-2.5 text-black focus:outline-none hover:bg-[hsl(var(--brand-pink)/0.1)] rounded-full transition-all duration-300 min-h-[40px] min-w-[40px] flex items-center justify-center focus:ring-2 focus:ring-[hsl(var(--brand-pink))] transform hover:scale-110"
+            className="lg:hidden p-2.5 text-black focus:outline-none hover:bg-[hsl(var(--brand-pink)/0.1)] rounded-full min-h-[40px] min-w-[40px] flex items-center justify-center focus:ring-2 focus:ring-[hsl(var(--brand-pink))]"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle menu"
             aria-expanded={mobileMenuOpen}
           >
             <div className="relative">
               {mobileMenuOpen ? (
-                <X className="h-5 w-5 text-[hsl(var(--brand-pink))] rotate-0 transition-all duration-300" />
+                <X className="h-5 w-5 text-[hsl(var(--brand-pink))]" />
               ) : (
-                <Menu className="h-5 w-5 text-[hsl(var(--brand-pink))] transition-all duration-300" />
+                <Menu className="h-5 w-5 text-[hsl(var(--brand-pink))]" />
               )}
             </div>
           </button>
@@ -123,27 +122,27 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
       {mobileMenuOpen && createPortal(
         (
           <div 
-            className="lg:hidden fixed inset-0 z-[1000] transition-all duration-300 ease-out"
+            className="lg:hidden fixed inset-0 z-[1000]"
             role="dialog"
             aria-modal="true"
             aria-label="Mobile navigation menu"
           >
             {/* Backdrop */}
             <div
-              className="absolute inset-0 bg-black/40 backdrop-blur-sm animate-fade-in"
+              className="absolute inset-0 bg-black/40 backdrop-blur-sm"
               onClick={() => setMobileMenuOpen(false)}
               aria-hidden="true"
             />
             
             {/* Clean slide-in panel */}
-            <aside className="absolute right-0 top-0 h-full w-[85%] max-w-sm bg-white shadow-2xl flex flex-col overflow-hidden animate-slide-in-right">
+            <aside className="absolute right-0 top-0 h-full w-[85%] max-w-sm bg-white shadow-2xl flex flex-col overflow-hidden">
               {/* Header - Simple like navbar */}
               <div className="flex-shrink-0 p-6 border-b border-gray-100 bg-white">
                 <div className="flex items-center justify-between">
                   <EnhancedLogo size="lg" className="shrink-0" />
                   <button
                     onClick={() => setMobileMenuOpen(false)}
-                    className="p-2 text-black hover:text-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink)/0.1)] rounded-full transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+                    className="p-2 text-black hover:text-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink)/0.1)] rounded-full min-h-[44px] min-w-[44px] flex items-center justify-center"
                     aria-label="Close navigation menu"
                   >
                     <X className="h-6 w-6" />
@@ -165,7 +164,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
                       <Link
                         key={item.name}
                         to={item.path}
-                        className={`block w-full text-left px-4 py-3 rounded-full font-medium text-xl transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${
+                        className={`block w-full text-left px-4 py-3 rounded-full font-medium text-xl focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] ${
                           isActive 
                             ? 'text-brand-pink' 
                             : 'text-black hover:text-brand-pink hover:bg-brand-pink/10'
@@ -217,7 +216,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
                       setMobileMenuOpen(false); 
                       setTimeout(() => setCartOpen(true), 100);
                     }}
-                    className="w-full flex items-center justify-between p-4 text-black hover:text-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))]/5 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))]"
+                    className="w-full flex items-center justify-between p-4 text-black hover:text-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))]/5 rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))]"
                   >
                     <div className="flex items-center gap-3">
                       <ShoppingBag className="h-6 w-6" />
@@ -241,7 +240,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
                       href="https://instagram.com/sisterstorageinc" 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="w-10 h-10 bg-[hsl(var(--brand-pink))] rounded-full flex items-center justify-center text-white hover:bg-[hsl(var(--brand-pink))]/90 transition-colors"
+                      className="w-10 h-10 bg-[hsl(var(--brand-pink))] rounded-full flex items-center justify-center text-white hover:bg-[hsl(var(--brand-pink))]/90"
                       aria-label="Follow us on Instagram"
                     >
                       <span className="text-sm font-bold" aria-hidden="true">IG</span>
@@ -250,7 +249,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
                       href="https://facebook.com/sisterstorage" 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="w-10 h-10 bg-[hsl(var(--brand-pink))] rounded-full flex items-center justify-center text-white hover:bg-[hsl(var(--brand-pink))]/90 transition-colors"
+                      className="w-10 h-10 bg-[hsl(var(--brand-pink))] rounded-full flex items-center justify-center text-white hover:bg-[hsl(var(--brand-pink))]/90"
                       aria-label="Follow us on Facebook"
                     >
                       <span className="text-sm font-bold" aria-hidden="true">FB</span>
