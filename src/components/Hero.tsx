@@ -111,12 +111,12 @@ const Hero = () => {
         
         {/* Background Layer: Hero Image (fades in with delay) */}
         <div 
-          className="absolute inset-0 z-0 animate-fade-in"
-          style={{ animationDelay: '1.1s', opacity: '0', animationFillMode: 'forwards' }}
+          className="absolute inset-0 z-0 opacity-0 animate-fade-in will-change-opacity"
+          style={{ animationDelay: '1.1s', animationFillMode: 'forwards' }}
         >
           <div 
-            className="w-full h-full"
-            style={{ transform: `translateY(${offset * 0.05}px)` }}
+            className="w-full h-full will-change-transform"
+            style={{ transform: `translateY(${offset * 0.05}px) translateZ(0)` }}
           >
             <img
               src={heroMainImage}
@@ -132,7 +132,7 @@ const Hero = () => {
 
         {/* Foreground Layer: Pink Content Section (slides from left) */}
         <div className="relative z-10 min-h-screen flex items-center justify-start pt-0">
-          <div className="bg-[hsl(var(--brand-pink))] flex items-center animate-slide-in-left w-full md:w-[28vw] lg:w-[26vw] shadow-2xl rounded-r-[3rem]" style={{ animationDelay: '0.3s' }}>
+          <div className="bg-[hsl(var(--brand-pink))] flex items-center animate-slide-in-left w-full md:w-[28vw] lg:w-[26vw] shadow-2xl rounded-r-[3rem] will-change-transform" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
             <div className="w-full py-12 md:py-16 pl-6 md:pl-8 lg:pl-12 pr-3 md:pr-6 lg:pr-8">
               <div className="flex flex-col gap-2 lg:gap-3 text-white">
                   <EditableText
