@@ -69,7 +69,7 @@ export function CustomersTable() {
     avgOrderValue: customers.reduce((sum, c) => sum + Number(c.total_spent), 0) / 
                    Math.max(customers.reduce((sum, c) => sum + c.orders_count, 0), 1),
     
-    // Customer growth over time (by month)
+    // Customer growth over time (by month) - all historical data
     customerGrowth: customers.reduce((acc, customer) => {
       const month = new Date(customer.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
       const existing = acc.find(item => item.month === month);
@@ -81,7 +81,7 @@ export function CustomersTable() {
       return acc;
     }, [] as { month: string; customers: number }[]).sort((a, b) => 
       new Date(a.month).getTime() - new Date(b.month).getTime()
-    ).slice(-12),
+    ),
     
     // Top customers by spending
     topCustomers: [...customers]
