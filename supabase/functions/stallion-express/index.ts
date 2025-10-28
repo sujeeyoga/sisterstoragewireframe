@@ -15,17 +15,31 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  // Helper function to format Canadian postal codes
-  const formatPostalCode = (postalCode: string): string => {
+  // Helper function to format Canadian postal codes and US ZIP codes
+  const formatPostalCode = (postalCode: string, country: string = 'CA'): string => {
     if (!postalCode) return '';
+    
     // Remove all spaces and convert to uppercase
     const cleaned = postalCode.replace(/\s/g, '').toUpperCase();
-    // Canadian postal codes should be 6 characters
-    if (cleaned.length !== 6) {
-      console.warn(`Invalid postal code length: ${postalCode} -> ${cleaned}`);
+    
+    // Canadian postal codes should be 6 characters (A1A1A1)
+    if (country === 'CA' || country === 'Canada') {
+      if (cleaned.length !== 6) {
+        console.warn(`Invalid Canadian postal code length: ${postalCode} -> ${cleaned}`);
+      }
       return cleaned;
     }
-    // Return without space for Stallion API
+    
+    // US ZIP codes should be 5 or 9 characters (12345 or 12345-6789)
+    if (country === 'US' || country === 'USA' || country === 'United States') {
+      // Remove any hyphens for consistency
+      const zipCleaned = cleaned.replace(/-/g, '');
+      if (zipCleaned.length !== 5 && zipCleaned.length !== 9) {
+        console.warn(`Invalid US ZIP code length: ${postalCode} -> ${zipCleaned}`);
+      }
+      return zipCleaned;
+    }
+    
     return cleaned;
   };
 
@@ -33,11 +47,14 @@ serve(async (req) => {
   const formatAddressForStallion = (address: any) => {
     if (!address) return address;
     
+    const country = address.country || 'CA';
+    
     return {
       ...address,
-      postal_code: address.postal_code ? formatPostalCode(address.postal_code) : '',
-      province_code: address.province_code || address.province || '',
+      postal_code: address.postal_code ? formatPostalCode(address.postal_code, country) : '',
+      province_code: address.province_code || address.province || address.state || '',
       address1: address.address1 || address.street || address.address || '',
+      country: country,
     };
   };
 

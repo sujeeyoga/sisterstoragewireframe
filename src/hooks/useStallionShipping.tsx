@@ -38,34 +38,57 @@ export const useStallionShipping = () => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
-  const validateCanadianPostalCode = (postalCode: string): { valid: boolean; formatted: string; error?: string } => {
-    if (!postalCode) return { valid: false, formatted: '', error: 'Postal code is required' };
-    
+  // Validate Canadian postal code or US ZIP code
+  const validatePostalCode = (postalCode: string, country: string = 'CA'): { valid: boolean; formatted: string; error?: string } => {
+    if (!postalCode) {
+      return { valid: false, formatted: '', error: 'Postal/ZIP code is required' };
+    }
+
     const cleaned = postalCode.replace(/\s/g, '').toUpperCase();
-    const formatted = cleaned.length === 6 ? `${cleaned.slice(0, 3)} ${cleaned.slice(3)}` : cleaned;
-    const regex = /^[A-Z]\d[A-Z] \d[A-Z]\d$/;
     
-    if (!regex.test(formatted)) {
+    if (country === 'CA' || country === 'Canada') {
+      const canadianPattern = /^[A-Z]\d[A-Z]\d[A-Z]\d$/;
+      if (!canadianPattern.test(cleaned)) {
+        return { 
+          valid: false, 
+          formatted: cleaned,
+          error: 'Invalid Canadian postal code (e.g., M5V3A8)'
+        };
+      }
+    } else if (country === 'US' || country === 'USA' || country === 'United States') {
+      const usPattern = /^\d{5}(-?\d{4})?$/;
+      const zipCleaned = cleaned.replace(/-/g, '');
+      if (!usPattern.test(zipCleaned)) {
+        return { 
+          valid: false, 
+          formatted: cleaned,
+          error: 'Invalid US ZIP code (e.g., 12345)'
+        };
+      }
+    } else {
       return { 
         valid: false, 
         formatted: cleaned,
-        error: `Invalid Canadian postal code: ${postalCode}. Expected format: A1A 1A1` 
+        error: 'Only CA and US addresses supported'
       };
     }
-    
+
     return { valid: true, formatted: cleaned };
   };
 
   const getRates = async (request: RateRequest) => {
     setLoading(true);
     try {
-      // Validate postal codes
-      const fromPostalValidation = validateCanadianPostalCode(request.from.postal_code);
+      // Validate postal codes based on country
+      const fromCountry = request.from.country || 'CA';
+      const toCountry = request.to.country || 'CA';
+      
+      const fromPostalValidation = validatePostalCode(request.from.postal_code, fromCountry);
       if (!fromPostalValidation.valid) {
         throw new Error(`From address: ${fromPostalValidation.error}`);
       }
       
-      const toPostalValidation = validateCanadianPostalCode(request.to.postal_code);
+      const toPostalValidation = validatePostalCode(request.to.postal_code, toCountry);
       if (!toPostalValidation.valid) {
         throw new Error(`To address: ${toPostalValidation.error}`);
       }
@@ -133,13 +156,16 @@ export const useStallionShipping = () => {
   const createShipment = async (request: ShipmentRequest) => {
     setLoading(true);
     try {
-      // Validate postal codes
-      const fromPostalValidation = validateCanadianPostalCode(request.from.postal_code);
+      // Validate postal codes based on country
+      const fromCountry = request.from.country || 'CA';
+      const toCountry = request.to.country || 'CA';
+      
+      const fromPostalValidation = validatePostalCode(request.from.postal_code, fromCountry);
       if (!fromPostalValidation.valid) {
         throw new Error(`From address: ${fromPostalValidation.error}`);
       }
       
-      const toPostalValidation = validateCanadianPostalCode(request.to.postal_code);
+      const toPostalValidation = validatePostalCode(request.to.postal_code, toCountry);
       if (!toPostalValidation.valid) {
         throw new Error(`To address: ${toPostalValidation.error}`);
       }

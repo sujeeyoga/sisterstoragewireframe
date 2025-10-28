@@ -22,11 +22,19 @@ interface AddressAutocompleteProps {
 }
 
 // Utility functions for formatting
-const formatPostalCode = (postal: string): string => {
+const formatPostalCode = (postal: string, country: string = 'CA'): string => {
   const cleaned = postal.replace(/\s/g, '').toUpperCase();
-  if (cleaned.length === 6 && /^[A-Z]\d[A-Z]\d[A-Z]\d$/.test(cleaned)) {
+  
+  // Canadian postal code
+  if (country === 'CA' && cleaned.length === 6 && /^[A-Z]\d[A-Z]\d[A-Z]\d$/.test(cleaned)) {
     return cleaned;
   }
+  
+  // US ZIP code
+  if (country === 'US' && /^\d{5}(-?\d{4})?$/.test(cleaned)) {
+    return cleaned;
+  }
+  
   return cleaned;
 };
 
@@ -49,8 +57,9 @@ const formatAddress = (address: string): string => {
     .join(' ');
 };
 
-// Province name to code mapping
-const PROVINCE_MAP: Record<string, string> = {
+// Province/State name to code mapping
+const PROVINCE_STATE_MAP: Record<string, string> = {
+  // Canadian Provinces
   'Alberta': 'AB',
   'British Columbia': 'BC',
   'Manitoba': 'MB',
@@ -64,6 +73,57 @@ const PROVINCE_MAP: Record<string, string> = {
   'Quebec': 'QC',
   'Saskatchewan': 'SK',
   'Yukon': 'YT',
+  // US States (common ones)
+  'Alabama': 'AL',
+  'Alaska': 'AK',
+  'Arizona': 'AZ',
+  'Arkansas': 'AR',
+  'California': 'CA',
+  'Colorado': 'CO',
+  'Connecticut': 'CT',
+  'Delaware': 'DE',
+  'Florida': 'FL',
+  'Georgia': 'GA',
+  'Hawaii': 'HI',
+  'Idaho': 'ID',
+  'Illinois': 'IL',
+  'Indiana': 'IN',
+  'Iowa': 'IA',
+  'Kansas': 'KS',
+  'Kentucky': 'KY',
+  'Louisiana': 'LA',
+  'Maine': 'ME',
+  'Maryland': 'MD',
+  'Massachusetts': 'MA',
+  'Michigan': 'MI',
+  'Minnesota': 'MN',
+  'Mississippi': 'MS',
+  'Missouri': 'MO',
+  'Montana': 'MT',
+  'Nebraska': 'NE',
+  'Nevada': 'NV',
+  'New Hampshire': 'NH',
+  'New Jersey': 'NJ',
+  'New Mexico': 'NM',
+  'New York': 'NY',
+  'North Carolina': 'NC',
+  'North Dakota': 'ND',
+  'Ohio': 'OH',
+  'Oklahoma': 'OK',
+  'Oregon': 'OR',
+  'Pennsylvania': 'PA',
+  'Rhode Island': 'RI',
+  'South Carolina': 'SC',
+  'South Dakota': 'SD',
+  'Tennessee': 'TN',
+  'Texas': 'TX',
+  'Utah': 'UT',
+  'Vermont': 'VT',
+  'Virginia': 'VA',
+  'Washington': 'WA',
+  'West Virginia': 'WV',
+  'Wisconsin': 'WI',
+  'Wyoming': 'WY',
 };
 
 // Extend Window interface for google
@@ -154,9 +214,9 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
     console.log('🔧 Initializing Google Places Autocomplete...');
     
     try {
-      // Initialize autocomplete with Canada restriction
+      // Initialize autocomplete with Canada and US restriction
       autocompleteRef.current = new window.google.maps.places.Autocomplete(inputRef.current, {
-        componentRestrictions: { country: 'ca' },
+        componentRestrictions: { country: ['ca', 'us'] },
         fields: ['address_components', 'formatted_address'],
         types: ['address']
       });
@@ -205,14 +265,17 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
                       components.locality?.long || '';
       const city = formatCity(rawCity);
       
-      // Get province code
+      // Get country
+      const country = components.country?.short || 'CA';
+      
+      // Get province/state code
       const provinceLong = components.administrative_area_level_1?.long || '';
       const provinceShort = components.administrative_area_level_1?.short || '';
-      const province = PROVINCE_MAP[provinceLong] || provinceShort || '';
+      const province = PROVINCE_STATE_MAP[provinceLong] || provinceShort || '';
       
-      // Get postal code
+      // Get postal/ZIP code
       const rawPostalCode = components.postal_code?.long || '';
-      const postalCode = rawPostalCode ? formatPostalCode(rawPostalCode) : '';
+      const postalCode = rawPostalCode ? formatPostalCode(rawPostalCode, country) : '';
 
       console.log('Formatted address data:', { fullAddress, city, province, postalCode });
 

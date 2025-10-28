@@ -19,6 +19,7 @@ export function StallionDashboard() {
 
   // Rate tester state
   const [postalCode, setPostalCode] = useState('');
+  const [country, setCountry] = useState('CA');
   const [weight, setWeight] = useState('1');
   const [rates, setRates] = useState<any[]>([]);
 
@@ -128,7 +129,7 @@ export function StallionDashboard() {
 
   const handleGetRates = async () => {
     if (!fulfillmentAddress || !postalCode) {
-      toast.error('Enter postal code and configure fulfillment address first');
+      toast.error('Enter postal/ZIP code and configure fulfillment address first');
       return;
     }
 
@@ -138,10 +139,10 @@ export function StallionDashboard() {
         to: {
           name: 'Test Customer',
           street1: '123 Test St',
-          city: 'Toronto',
-          province: 'ON',
+          city: country === 'US' ? 'New York' : 'Toronto',
+          province: country === 'US' ? 'NY' : 'ON',
           postal_code: postalCode.replace(/\s/g, '').toUpperCase(),
-          country: 'CA',
+          country: country,
         },
         packages: [{
           weight: parseFloat(weight) * 0.453592, // lbs to kg
@@ -270,7 +271,7 @@ export function StallionDashboard() {
         <Card>
           <CardHeader>
             <CardTitle>Quick Rate Tester</CardTitle>
-            <CardDescription>Test shipping rates to any postal code</CardDescription>
+            <CardDescription>Test shipping rates to Canada or US</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             {!fulfillmentAddress ? (
@@ -286,10 +287,27 @@ export function StallionDashboard() {
             ) : (
               <>
                 <div className="space-y-2">
-                  <Label htmlFor="postalCode">Destination Postal Code</Label>
+                  <Label htmlFor="country">Destination Country</Label>
+                  <select
+                    id="country"
+                    value={country}
+                    onChange={(e) => {
+                      setCountry(e.target.value);
+                      setPostalCode(e.target.value === 'US' ? '10001' : 'M5V3A8');
+                    }}
+                    className="w-full border rounded-md px-3 py-2 bg-background"
+                  >
+                    <option value="CA">Canada</option>
+                    <option value="US">United States</option>
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="postalCode">
+                    {country === 'US' ? 'Destination ZIP Code' : 'Destination Postal Code'}
+                  </Label>
                   <Input
                     id="postalCode"
-                    placeholder="M5V3A8"
+                    placeholder={country === 'US' ? '10001' : 'M5V3A8'}
                     value={postalCode}
                     onChange={(e) => setPostalCode(e.target.value)}
                   />
