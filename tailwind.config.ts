@@ -104,12 +104,12 @@ export default {
 					'charcoal': '#403E43',
 					'white': '#FFFFFF',
 					// New Sister Storage brand colors
-					'pink': '#E90064',
+					'pink': '#F00881',
 					'orange': '#FF8021',
 					'black': '#000000',
 					'gray': '#F4F4F4',
 					'peach': '#FFDCBD',
-					'light-pink': '#FE5FA4',
+					'light-pink': '#FCE7F3',
 					'gold': '#FFA51E',
 				}
 			},
