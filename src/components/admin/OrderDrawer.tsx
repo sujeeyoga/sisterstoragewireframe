@@ -74,6 +74,19 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
   const [refundType, setRefundType] = useState<'stripe' | 'manual'>('stripe');
   const [manualRefundConfirmed, setManualRefundConfirmed] = useState(false);
 
+  const formatAddress = (address: any) => {
+    if (!address) return 'N/A';
+    
+    const parts = [
+      address.address_1,
+      address.address_2,
+      [address.city, address.state, address.postcode].filter(Boolean).join(', '),
+      address.country
+    ].filter(Boolean);
+    
+    return parts.length > 0 ? parts.join('\n') : 'N/A';
+  };
+
   // Reset refund form when order changes
   useEffect(() => {
     setRefundAmount(order.total.toString());
@@ -215,25 +228,21 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label>Billing Address</Label>
-                <Textarea value={
-                  order.billing?.address_1 + '\n' +
-                  order.billing?.address_2 + '\n' +
-                  order.billing?.city + ', ' + order.billing?.state + ' ' + order.billing?.postcode + '\n' +
-                  order.billing?.country
-                  || 'N/A'} readOnly className="resize-none" />
+                <Textarea 
+                  value={formatAddress(order.billing)} 
+                  readOnly 
+                  className="resize-none" 
+                  rows={4}
+                />
               </div>
               <div>
                 <Label>Shipping Address</Label>
-                <Textarea value={
-                  order.shipping?.address_1 + '\n' +
-                  order.shipping?.address_2 + '\n' +
-                  order.shipping?.city + ', ' + order.shipping?.state + ' ' + order.shipping?.postcode + '\n' +
-                  order.shipping?.country
-                  || order.shipping_address?.address_1 + '\n' +
-                  order.shipping_address?.address_2 + '\n' +
-                  order.shipping_address?.city + ', ' + order.shipping_address?.state + ' ' + order.shipping_address?.postcode + '\n' +
-                  order.shipping_address?.country
-                  || 'N/A'} readOnly className="resize-none" />
+                <Textarea 
+                  value={formatAddress(order.shipping || order.shipping_address)} 
+                  readOnly 
+                  className="resize-none" 
+                  rows={4}
+                />
               </div>
             </div>
           </div>
@@ -269,8 +278,8 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
             <div>
               <Label>Items</Label>
               <div className="border rounded-md p-2">
-                {order.line_items?.map((item: any) => (
-                  <div key={item.id} className="py-2 border-b last:border-b-0">
+                {order.line_items?.map((item: any, index: number) => (
+                  <div key={item.id || index} className="py-2 border-b last:border-b-0">
                     <div className="font-semibold">{item.name}</div>
                     <div className="text-sm text-muted-foreground">
                       {item.quantity} x {item.price} = {(item.quantity * item.price).toFixed(2)}
