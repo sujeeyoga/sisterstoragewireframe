@@ -50,10 +50,9 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
   return (
     <>
       <div 
-        className={`w-full grid grid-cols-[1fr_auto_1fr] items-center transition-all duration-300 animate-fade-in ${
+        className={`w-full grid grid-cols-[1fr_auto_1fr] items-center transition-all duration-300 ${
           isSticky ? 'py-1.5 px-3' : 'py-2 px-3'
         }`}
-        style={{ animationDelay: '1.1s', opacity: 0, animationFillMode: 'forwards' }}
       >
         {/* Left: Logo */}
         <div className="justify-self-start shrink-0">
