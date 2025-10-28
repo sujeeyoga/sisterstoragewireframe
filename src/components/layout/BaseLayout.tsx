@@ -163,6 +163,7 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
       
       {/* Navigation: White navbar floating below banner */}
       <nav 
+        key={location.pathname}
         ref={navRef} 
         className="fixed top-10 left-0 right-0 z-50 py-3"
       >
