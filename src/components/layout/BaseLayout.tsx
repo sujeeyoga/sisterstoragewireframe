@@ -174,7 +174,7 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
         className="fixed top-10 left-0 right-0 z-50 py-3"
       >
         <div className={`w-[min(1100px,calc(100%-40px))] mx-auto rounded-[25px] shadow-lg px-4 py-2 ${
-          isLoading ? 'bg-[#F00881]' : 'bg-white'
+          isLoading ? 'bg-gray-100 animate-pulse' : 'bg-white'
         }`}>
           <Navbar position={position} />
         </div>
