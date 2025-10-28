@@ -105,7 +105,7 @@ const Hero = () => {
       <div className="hidden md:block relative min-h-screen overflow-hidden">
         {/* Pink Loading Background Layer (slides from left, fastest, lowest layer) */}
         <div 
-          className="absolute inset-0 bg-[hsl(var(--brand-pink))]"
+          className="absolute inset-0 bg-[#F1DAD4]"
           style={{ zIndex: -1 }}
         />
         
