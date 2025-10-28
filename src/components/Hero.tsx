@@ -109,10 +109,13 @@ const Hero = () => {
           style={{ zIndex: -1 }}
         />
         
-        {/* Background Layer: Hero Image (fades in with delay) */}
+        {/* Background Layer: Hero Image (fades in from pink) */}
         <div 
-          className="absolute inset-0 z-0 opacity-0 animate-fade-in will-change-opacity"
-          style={{ animationDelay: '1.1s', animationFillMode: 'forwards' }}
+          className="absolute inset-0 z-0 opacity-0 will-change-opacity"
+          style={{ 
+            animation: 'fadeIn 1.2s ease-out forwards',
+            animationDelay: '0.6s'
+          }}
         >
           <div 
             className="w-full h-full will-change-transform"
