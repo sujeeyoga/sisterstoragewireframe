@@ -1,6 +1,7 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect } from 'react';
+import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 import {
   Table,
   TableBody,
@@ -10,7 +11,8 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Loader2, Users, DollarSign, ShoppingCart, TrendingUp } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Loader2, Users, DollarSign, ShoppingCart, TrendingUp, RefreshCw } from 'lucide-react';
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 interface Customer {
@@ -25,6 +27,8 @@ interface Customer {
 
 export function CustomersTable() {
   const queryClient = useQueryClient();
+  const { toast } = useToast();
+  const [isSyncing, setIsSyncing] = useState(false);
   
   const { data: customers, isLoading } = useQuery({
     queryKey: ['admin-customers'],
@@ -36,6 +40,37 @@ export function CustomersTable() {
 
       if (error) throw error;
       return data as Customer[];
+    },
+  });
+
+  const syncMutation = useMutation({
+    mutationFn: async () => {
+      setIsSyncing(true);
+      
+      const { data, error } = await supabase.functions.invoke('woocommerce-sync', {
+        body: {},
+      });
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      toast({
+        title: 'Sync Started',
+        description: 'Customer data is being synced from WooCommerce. Refresh in a few moments to see updated data.',
+      });
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ['admin-customers'] });
+        setIsSyncing(false);
+      }, 3000);
+    },
+    onError: (error) => {
+      toast({
+        title: 'Sync Failed',
+        description: error instanceof Error ? error.message : 'Failed to sync customers',
+        variant: 'destructive',
+      });
+      setIsSyncing(false);
     },
   });
 
@@ -116,9 +151,19 @@ export function CustomersTable() {
 
   return (
     <div className="p-8">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold mb-2">Customers</h1>
-        <p className="text-muted-foreground">Manage your customer database</p>
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold mb-2">Customers</h1>
+          <p className="text-muted-foreground">View and analyze customer data from WooCommerce</p>
+        </div>
+        <Button
+          onClick={() => syncMutation.mutate()}
+          disabled={isSyncing}
+          variant="outline"
+        >
+          <RefreshCw className={`mr-2 h-4 w-4 ${isSyncing ? 'animate-spin' : ''}`} />
+          {isSyncing ? 'Syncing...' : 'Sync Customers'}
+        </Button>
       </div>
 
       {/* Stats Cards */}
@@ -319,9 +364,20 @@ export function CustomersTable() {
         </CardHeader>
         <CardContent>
           {!customers || customers.length === 0 ? (
-            <p className="text-muted-foreground text-center py-8">
-              No customers found. Run a WooCommerce sync to import customer data.
-            </p>
+            <div className="flex flex-col items-center justify-center py-12 space-y-4">
+              <p className="text-lg text-muted-foreground">No customers found</p>
+              <p className="text-sm text-muted-foreground text-center max-w-md">
+                Sync customer data from your WooCommerce store to view analytics, track spending, and analyze customer behavior
+              </p>
+              <Button
+                onClick={() => syncMutation.mutate()}
+                disabled={isSyncing}
+                size="lg"
+              >
+                <RefreshCw className={`mr-2 h-4 w-4 ${isSyncing ? 'animate-spin' : ''}`} />
+                {isSyncing ? 'Syncing...' : 'Sync Customers Now'}
+              </Button>
+            </div>
           ) : (
             <Table>
               <TableHeader>

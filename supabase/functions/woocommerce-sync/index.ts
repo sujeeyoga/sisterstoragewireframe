@@ -154,6 +154,17 @@ Deno.serve(async (req: Request) => {
     }
     console.log(`Synced ${productsProcessed} products`);
 
+    // Log product sync separately
+    const logProductTask = async () => {
+      await supabase.from("woocommerce_sync_log").insert({
+        status: "success",
+        sync_type: "products",
+        records_processed: productsProcessed,
+        message: `Synced ${productsProcessed} products`,
+      });
+    };
+    EdgeRuntime.waitUntil(logProductTask());
+
     // ===== SYNC CUSTOMERS =====
     console.log("Starting customer sync...");
     page = 1;
@@ -199,11 +210,22 @@ Deno.serve(async (req: Request) => {
     }
     console.log(`Synced ${customersProcessed} customers`);
 
-    // Log success in background
+    // Log customer sync separately
+    const logCustomerTask = async () => {
+      await supabase.from("woocommerce_sync_log").insert({
+        status: "success",
+        sync_type: "customers",
+        records_processed: customersProcessed,
+        message: `Synced ${customersProcessed} customers`,
+      });
+    };
+    EdgeRuntime.waitUntil(logCustomerTask());
+
+    // Log overall success
     const logSuccessTask = async () => {
       await supabase.from("woocommerce_sync_log").insert({
         status: "success",
-        sync_type: "products_and_customers",
+        sync_type: "full",
         records_processed: productsProcessed + customersProcessed,
         message: `Synced ${productsProcessed} products and ${customersProcessed} customers`,
       });

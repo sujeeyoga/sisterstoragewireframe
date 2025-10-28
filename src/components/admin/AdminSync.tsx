@@ -40,7 +40,7 @@ export const AdminSync = () => {
     onSuccess: () => {
       toast({
         title: 'Sync Started',
-        description: 'WooCommerce products are being synced. Check the logs below for status.',
+        description: 'WooCommerce products and customers are being synced. Check the logs below for status.',
       });
       setTimeout(() => {
         queryClient.invalidateQueries({ queryKey: ['sync-logs'] });
@@ -84,15 +84,15 @@ export const AdminSync = () => {
       <div className="mb-6">
         <h1 className="text-3xl font-bold mb-2">WooCommerce Sync</h1>
         <p className="text-muted-foreground">
-          Sync products from your WooCommerce store
+          Sync products and customers from your WooCommerce store
         </p>
       </div>
 
       <Card className="mb-8">
         <CardHeader>
-          <CardTitle>Product Sync</CardTitle>
+          <CardTitle>Product & Customer Sync</CardTitle>
           <CardDescription>
-            Sync products, prices, and inventory from your WooCommerce store
+            Sync products, customers, prices, and inventory from your WooCommerce store
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -102,10 +102,10 @@ export const AdminSync = () => {
             size="lg"
           >
             <RefreshCw className={`mr-2 h-4 w-4 ${isSyncing ? 'animate-spin' : ''}`} />
-            {isSyncing ? 'Syncing...' : 'Sync Products Now'}
+            {isSyncing ? 'Syncing...' : 'Sync Products & Customers'}
           </Button>
           <p className="text-sm text-muted-foreground mt-3">
-            This will fetch all products from WooCommerce and update your database with the latest prices, inventory, and product information.
+            This will fetch all products and customers from WooCommerce and update your database with the latest information including prices, inventory, customer orders, and spending data.
           </p>
         </CardContent>
       </Card>
