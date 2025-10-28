@@ -163,11 +163,10 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
       
       {/* Navigation: White navbar floating below banner */}
       <nav 
-        key={location.pathname}
         ref={navRef} 
         className="fixed top-10 left-0 right-0 z-50 py-3"
       >
-        <div className="w-[min(1100px,calc(100%-40px))] mx-auto rounded-[25px] shadow-lg px-4 py-2 bg-white nav-fade-in will-change-transform transform-gpu">
+        <div className={`w-[min(1100px,calc(100%-40px))] mx-auto rounded-[25px] shadow-lg px-4 py-2 bg-white will-change-transform transform-gpu ${location.pathname === '/' ? 'nav-fade-in' : ''}`}>
           <Navbar position={position} />
         </div>
       </nav>
