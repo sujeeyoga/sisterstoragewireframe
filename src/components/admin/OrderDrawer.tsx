@@ -36,6 +36,8 @@ import { Package, DollarSign, User, MapPin, CreditCard, Truck, ExternalLink, Ale
 import { StallionFulfillmentDialog } from './StallionFulfillmentDialog';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { useOrderShippingInfo } from '@/hooks/useOrderShippingInfo';
+import { Info } from 'lucide-react';
 
 interface OrderDrawerProps {
   order: {
@@ -74,6 +76,17 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
   const [refundType, setRefundType] = useState<'stripe' | 'manual'>('stripe');
   const [manualRefundConfirmed, setManualRefundConfirmed] = useState(false);
   const [orderRefunds, setOrderRefunds] = useState<any[]>([]);
+
+  // Calculate order subtotal for shipping calculation
+  const orderSubtotal = order.line_items?.reduce((sum: number, item: any) => 
+    sum + (item.quantity * item.price), 0
+  ) || 0;
+
+  // Fetch shipping zone information
+  const { data: shippingInfo, isLoading: isLoadingShipping } = useOrderShippingInfo(
+    order.shipping || order.shipping_address,
+    orderSubtotal
+  );
 
   const formatAddress = (address: any) => {
     if (!address) return 'N/A';
@@ -267,6 +280,75 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
               </div>
             </div>
           </div>
+          <Separator />
+
+          <div className="flex items-center space-x-2">
+            <Info className="h-4 w-4" />
+            <h3 className="text-lg font-semibold">Shipping Information</h3>
+          </div>
+          {isLoadingShipping ? (
+            <div className="text-sm text-muted-foreground">Loading shipping details...</div>
+          ) : shippingInfo?.zoneName ? (
+            <div className="space-y-3 rounded-lg border bg-muted/50 p-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-xs text-muted-foreground">Shipping Zone</Label>
+                  <div className="font-medium">{shippingInfo.zoneName}</div>
+                  {shippingInfo.zoneDescription && (
+                    <div className="text-sm text-muted-foreground mt-1">
+                      {shippingInfo.zoneDescription}
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <Label className="text-xs text-muted-foreground">Matched By</Label>
+                  <div className="font-medium">
+                    {shippingInfo.matchedRule ? (
+                      <div className="space-y-1">
+                        <div className="capitalize">
+                          {shippingInfo.matchedRule.type.replace(/_/g, ' ')}
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          {shippingInfo.matchedRule.value}
+                        </div>
+                      </div>
+                    ) : (
+                      'Default rule'
+                    )}
+                  </div>
+                </div>
+              </div>
+              
+              {shippingInfo.rateDetails && (
+                <div className="pt-3 border-t space-y-2">
+                  <Label className="text-xs text-muted-foreground">Rate Applied</Label>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="font-medium">{shippingInfo.rateDetails.methodName}</div>
+                      {shippingInfo.rateDetails.isFree && shippingInfo.rateDetails.freeThreshold && (
+                        <div className="text-sm text-green-600 dark:text-green-400">
+                          Free shipping (threshold: ${shippingInfo.rateDetails.freeThreshold})
+                        </div>
+                      )}
+                    </div>
+                    <div className="text-lg font-bold">
+                      {shippingInfo.rateDetails.isFree ? (
+                        <span className="text-green-600 dark:text-green-400">FREE</span>
+                      ) : (
+                        `$${shippingInfo.rateDetails.rateAmount.toFixed(2)}`
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <Alert>
+              <AlertDescription>
+                No shipping zone matched. Fallback rate may have been applied.
+              </AlertDescription>
+            </Alert>
+          )}
           <Separator />
 
           <div className="flex items-center space-x-2">

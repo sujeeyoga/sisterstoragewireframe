@@ -81,8 +81,11 @@ const matchesRule = (address: Address, rule: ShippingZoneRule): boolean => {
   }
 };
 
-const matchAddressToZone = (address: Address, zones: ShippingZone[]): ShippingZone | null => {
-  let bestMatch: { zone: ShippingZone; priority: number } | null = null;
+const matchAddressToZone = (
+  address: Address, 
+  zones: ShippingZone[]
+): { zone: ShippingZone; matchedRule: ShippingZoneRule } | null => {
+  let bestMatch: { zone: ShippingZone; matchedRule: ShippingZoneRule; priority: number } | null = null;
   
   for (const zone of zones) {
     if (!zone.enabled || !zone.rules || zone.rules.length === 0) {
@@ -95,14 +98,14 @@ const matchAddressToZone = (address: Address, zones: ShippingZone[]): ShippingZo
         const totalPriority = zone.priority + rulePriority;
         
         if (!bestMatch || totalPriority > bestMatch.priority) {
-          bestMatch = { zone, priority: totalPriority };
+          bestMatch = { zone, matchedRule: rule, priority: totalPriority };
         }
         break;
       }
     }
   }
   
-  return bestMatch?.zone || null;
+  return bestMatch ? { zone: bestMatch.zone, matchedRule: bestMatch.matchedRule } : null;
 };
 
 Deno.serve(async (req) => {
@@ -151,9 +154,11 @@ Deno.serve(async (req) => {
     }));
 
     // Match address to zone
-    const matchedZone = matchAddressToZone(address, zones);
+    const matchResult = matchAddressToZone(address, zones);
 
-    if (matchedZone) {
+    if (matchResult) {
+      const { zone: matchedZone, matchedRule } = matchResult;
+      
       // Calculate applicable rates
       const applicableRates = matchedZone.rates.map(rate => {
         // Check if free shipping threshold is met (applies to any rate type)
@@ -166,6 +171,7 @@ Deno.serve(async (req) => {
           method_name: rate.method_name,
           rate_amount: isFree ? 0 : rate.rate_amount,
           is_free: isFree,
+          free_threshold: rate.free_threshold,
           display_order: rate.display_order,
         };
       });
@@ -175,11 +181,17 @@ Deno.serve(async (req) => {
       return new Response(
         JSON.stringify({
           success: true,
-          matched_zone: {
+          zone: {
             id: matchedZone.id,
             name: matchedZone.name,
+            description: matchedZone.description,
+          },
+          matchedRule: {
+            rule_type: matchedRule.rule_type,
+            rule_value: matchedRule.rule_value,
           },
           rates: applicableRates,
+          appliedRate: applicableRates[0] || null,
           fallback_used: false,
         }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -204,7 +216,8 @@ Deno.serve(async (req) => {
     return new Response(
       JSON.stringify({
         success: true,
-        matched_zone: null,
+        zone: null,
+        matchedRule: null,
         rates: [
           {
             id: 'fallback',
@@ -214,6 +227,13 @@ Deno.serve(async (req) => {
             display_order: 0,
           },
         ],
+        appliedRate: {
+          id: 'fallback',
+          method_name: fallbackMethodName,
+          rate_amount: fallbackRate,
+          is_free: false,
+          display_order: 0,
+        },
         fallback_used: true,
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
