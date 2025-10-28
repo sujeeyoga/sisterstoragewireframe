@@ -47,15 +47,8 @@ export const useLocationDetection = (): LocationData => {
           }
         }
 
-        // Get the current session ID from localStorage (same as visitor tracking)
-        const sessionKey = Object.keys(localStorage).find(key => key.startsWith('visitor_session_'));
-        if (!sessionKey) {
-          setLocation({ isGTA: false, isLoading: false });
-          return;
-        }
-
-        const sessionData = JSON.parse(localStorage.getItem(sessionKey) || '{}');
-        const sessionId = sessionData.sessionId;
+        // Get the current session ID from sessionStorage (same as visitor tracking)
+        const sessionId = sessionStorage.getItem('session_id');
 
         if (!sessionId) {
           setLocation({ isGTA: false, isLoading: false });
