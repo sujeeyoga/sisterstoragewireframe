@@ -9,6 +9,7 @@ import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import { Shield, Users, Key, Database, Mail, Truck, Plus, X } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { BackfillPaymentIntents } from './BackfillPaymentIntents';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -589,6 +590,8 @@ export function AdminSettings() {
               </div>
             </CardContent>
           </Card>
+
+          <BackfillPaymentIntents />
         </TabsContent>
       </Tabs>
     </div>

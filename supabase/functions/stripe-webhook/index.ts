@@ -170,12 +170,27 @@ serve(async (req) => {
         console.error("Failed to send order confirmation email:", error);
       });
 
+      // Extract payment intent ID safely
+      let paymentIntentId: string | null = null;
+      if (session.payment_intent) {
+        // Handle both string ID and expanded PaymentIntent object
+        paymentIntentId = typeof session.payment_intent === 'string' 
+          ? session.payment_intent 
+          : session.payment_intent.id;
+      }
+
+      console.log('Payment Intent extraction:', {
+        type: typeof session.payment_intent,
+        value: session.payment_intent,
+        extractedId: paymentIntentId
+      });
+
       // Store order in database for admin tracking
       const { error: orderError } = await supabase
         .from('orders')
         .insert({
           stripe_session_id: session.id,
-          stripe_payment_intent_id: session.payment_intent as string,
+          stripe_payment_intent_id: paymentIntentId,
           customer_email: customerEmail,
           customer_name: emailData.customerName,
           order_number: emailData.orderNumber,
