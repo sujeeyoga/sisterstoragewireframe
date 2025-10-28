@@ -173,7 +173,7 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
         ref={navRef} 
         className="fixed top-10 left-0 right-0 z-50 py-3"
       >
-        <div className={`w-[min(1100px,calc(100%-40px))] mx-auto rounded-[25px] shadow-lg px-4 py-2 transition-colors duration-300 ${
+        <div className={`w-[min(1100px,calc(100%-40px))] mx-auto rounded-[25px] shadow-lg px-4 py-2 ${
           isLoading ? 'bg-[hsl(var(--brand-pink)/0.2)]' : 'bg-white'
         }`}>
           <Navbar position={position} />
