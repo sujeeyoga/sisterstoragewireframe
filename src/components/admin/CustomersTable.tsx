@@ -1,4 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import {
   Table,
@@ -23,6 +24,8 @@ interface Customer {
 }
 
 export function CustomersTable() {
+  const queryClient = useQueryClient();
+  
   const { data: customers, isLoading } = useQuery({
     queryKey: ['admin-customers'],
     queryFn: async () => {
@@ -35,6 +38,28 @@ export function CustomersTable() {
       return data as Customer[];
     },
   });
+
+  // Set up real-time subscription for customer updates
+  useEffect(() => {
+    const channel = supabase
+      .channel('customers-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'woocommerce_customers',
+        },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ['admin-customers'] });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
 
   // Calculate analytics data
   const analytics = customers ? {
@@ -152,11 +177,30 @@ export function CustomersTable() {
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
                 <LineChart data={analytics.customerGrowth}>
-                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                  <XAxis dataKey="month" className="text-xs" />
-                  <YAxis className="text-xs" />
-                  <Tooltip />
-                  <Line type="monotone" dataKey="customers" stroke="hsl(var(--primary))" strokeWidth={2} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                  <XAxis 
+                    dataKey="month" 
+                    tick={{ fill: 'hsl(var(--foreground))' }}
+                    stroke="hsl(var(--border))"
+                  />
+                  <YAxis 
+                    tick={{ fill: 'hsl(var(--foreground))' }}
+                    stroke="hsl(var(--border))"
+                  />
+                  <Tooltip 
+                    contentStyle={{
+                      backgroundColor: 'hsl(var(--card))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '6px',
+                    }}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="customers" 
+                    stroke="hsl(var(--primary))" 
+                    strokeWidth={2}
+                    dot={{ fill: 'hsl(var(--primary))' }}
+                  />
                 </LineChart>
               </ResponsiveContainer>
             </CardContent>
@@ -170,11 +214,28 @@ export function CustomersTable() {
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={analytics.topCustomers} layout="vertical">
-                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                  <XAxis type="number" className="text-xs" />
-                  <YAxis dataKey="name" type="category" width={100} className="text-xs" />
-                  <Tooltip formatter={(value) => `$${Number(value).toFixed(2)}`} />
-                  <Bar dataKey="spent" fill="hsl(var(--primary))" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                  <XAxis 
+                    type="number" 
+                    tick={{ fill: 'hsl(var(--foreground))' }}
+                    stroke="hsl(var(--border))"
+                  />
+                  <YAxis 
+                    dataKey="name" 
+                    type="category" 
+                    width={120} 
+                    tick={{ fill: 'hsl(var(--foreground))' }}
+                    stroke="hsl(var(--border))"
+                  />
+                  <Tooltip 
+                    formatter={(value) => `$${Number(value).toFixed(2)}`}
+                    contentStyle={{
+                      backgroundColor: 'hsl(var(--card))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '6px',
+                    }}
+                  />
+                  <Bar dataKey="spent" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
@@ -202,7 +263,14 @@ export function CustomersTable() {
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip />
+                  <Tooltip 
+                    contentStyle={{
+                      backgroundColor: 'hsl(var(--card))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '6px',
+                    }}
+                  />
+                  <Legend />
                 </PieChart>
               </ResponsiveContainer>
             </CardContent>
@@ -216,11 +284,28 @@ export function CustomersTable() {
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={analytics.topCustomers}>
-                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                  <XAxis dataKey="name" className="text-xs" angle={-45} textAnchor="end" height={80} />
-                  <YAxis className="text-xs" />
-                  <Tooltip formatter={(value) => `$${Number(value).toFixed(2)}`} />
-                  <Bar dataKey="spent" fill="hsl(var(--secondary))" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                  <XAxis 
+                    dataKey="name" 
+                    angle={-45} 
+                    textAnchor="end" 
+                    height={80}
+                    tick={{ fill: 'hsl(var(--foreground))' }}
+                    stroke="hsl(var(--border))"
+                  />
+                  <YAxis 
+                    tick={{ fill: 'hsl(var(--foreground))' }}
+                    stroke="hsl(var(--border))"
+                  />
+                  <Tooltip 
+                    formatter={(value) => `$${Number(value).toFixed(2)}`}
+                    contentStyle={{
+                      backgroundColor: 'hsl(var(--card))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '6px',
+                    }}
+                  />
+                  <Bar dataKey="spent" fill="hsl(var(--secondary))" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
