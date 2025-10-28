@@ -279,15 +279,39 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
 
             <div>
               <Label>Items</Label>
-              <div className="border rounded-md p-2">
+              <div className="border rounded-md p-2 space-y-2">
                 {order.line_items?.map((item: any, index: number) => (
                   <div key={item.id || index} className="py-2 border-b last:border-b-0">
                     <div className="font-semibold">{item.name}</div>
                     <div className="text-sm text-muted-foreground">
-                      {item.quantity} x {item.price} = {(item.quantity * item.price).toFixed(2)}
+                      {item.quantity} x ${item.price} = ${(item.quantity * item.price).toFixed(2)}
                     </div>
                   </div>
                 ))}
+                
+                {/* Order Breakdown */}
+                <div className="pt-3 mt-3 border-t space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Subtotal:</span>
+                    <span className="font-medium">
+                      ${order.line_items?.reduce((sum: number, item: any) => 
+                        sum + (item.quantity * item.price), 0
+                      ).toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Shipping:</span>
+                    <span className="font-medium">
+                      ${(order.total - order.line_items?.reduce((sum: number, item: any) => 
+                        sum + (item.quantity * item.price), 0
+                      )).toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-base font-bold pt-2 border-t">
+                    <span>Total:</span>
+                    <span>${order.total.toFixed(2)} {order.currency || 'CAD'}</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
