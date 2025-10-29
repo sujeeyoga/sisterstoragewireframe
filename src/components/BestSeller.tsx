@@ -184,7 +184,7 @@ const BestSeller = () => {
                 : "opacity-100 scale-100"
             )}>
               <Link 
-                to={`/shop/${buyCards[1].id}`} 
+                to="/shop" 
                 className="block h-full active:scale-95 md:active:scale-100 transition-transform"
                 onClick={() => handleMobileTap(buyCards[1].id)}
               >
