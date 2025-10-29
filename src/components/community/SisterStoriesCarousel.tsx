@@ -186,11 +186,13 @@ export const SisterStoriesCarousel = () => {
                       autoPlay
                       loop
                       playsInline
-                      webkit-playsinline="true"
-                      x5-playsinline="true"
                       preload={videoStories.indexOf(story) === 0 ? "auto" : "none"}
                       controlsList="nodownload nofullscreen noremoteplayback"
                       disablePictureInPicture
+                      style={{ 
+                        backgroundColor: 'hsl(var(--brand-pink))',
+                        pointerEvents: 'none'
+                      }}
                       onLoadedData={() => handleVideoLoad(story.id)}
                       onLoadedMetadata={() => handleVideoLoad(story.id)}
                       onPlay={() => setPlayingVideos(prev => new Set([...prev, story.id]))}
@@ -208,7 +210,6 @@ export const SisterStoriesCarousel = () => {
                         setLoadingVideos(prev => ({ ...prev, [story.id]: false }));
                       }}
                       className="w-full h-full object-cover"
-                      style={{ backgroundColor: 'hsl(var(--brand-pink))' }}
                     >
                       <source src={story.video} type="video/mp4" />
                       Your browser does not support the video tag.
