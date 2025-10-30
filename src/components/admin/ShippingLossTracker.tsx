@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useShippingLossDetails } from "@/hooks/useShippingLossDetails";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { OrderDrawer } from "./OrderDrawer";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Select,
   SelectContent,
@@ -42,6 +44,8 @@ export const ShippingLossTracker = ({ startDate, endDate }: ShippingLossTrackerP
   const [zoneFilter, setZoneFilter] = useState<string>("all");
   const [lossFilter, setLossFilter] = useState<"all" | "loss" | "gain">("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
+  const [selectedOrder, setSelectedOrder] = useState<any>(null);
 
   const { data, isLoading, error } = useShippingLossDetails({
     startDate,
@@ -50,6 +54,37 @@ export const ShippingLossTracker = ({ startDate, endDate }: ShippingLossTrackerP
     lossFilter,
     searchQuery,
   });
+
+  // Fetch full order details when an order is selected
+  useEffect(() => {
+    if (!selectedOrderId) {
+      setSelectedOrder(null);
+      return;
+    }
+
+    const fetchOrder = async () => {
+      // Check if it's a WooCommerce order (numeric ID)
+      const isWooOrder = !isNaN(Number(selectedOrderId));
+
+      if (isWooOrder) {
+        const { data: order } = await supabase
+          .from("woocommerce_orders")
+          .select("*")
+          .eq("id", Number(selectedOrderId))
+          .single();
+        setSelectedOrder(order);
+      } else {
+        const { data: order } = await supabase
+          .from("orders")
+          .select("*")
+          .eq("id", selectedOrderId)
+          .single();
+        setSelectedOrder(order);
+      }
+    };
+
+    fetchOrder();
+  }, [selectedOrderId]);
 
   if (isLoading) {
     return (
@@ -276,13 +311,14 @@ export const ShippingLossTracker = ({ startDate, endDate }: ShippingLossTrackerP
                       return (
                         <TableRow 
                           key={order.id}
-                          className={
+                          onClick={() => setSelectedOrderId(order.id)}
+                          className={`cursor-pointer ${
                             order.wasFreeShipping 
                               ? "bg-green-50/50 hover:bg-green-50" 
                               : highLoss 
                               ? "bg-red-50/50 hover:bg-red-50"
-                              : undefined
-                          }
+                              : "hover:bg-muted/50"
+                          }`}
                         >
                           <TableCell className="font-medium">
                             <div className="flex items-center gap-2">
@@ -399,6 +435,22 @@ export const ShippingLossTracker = ({ startDate, endDate }: ShippingLossTrackerP
           </div>
         </CardContent>
       </Card>
+
+      {selectedOrder && (
+        <OrderDrawer
+          order={selectedOrder}
+          open={!!selectedOrderId}
+          onClose={() => {
+            setSelectedOrderId(null);
+            setSelectedOrder(null);
+          }}
+          onStatusUpdate={() => {
+            // Refresh data when order status changes
+            setSelectedOrderId(null);
+            setSelectedOrder(null);
+          }}
+        />
+      )}
     </div>
   );
 };
