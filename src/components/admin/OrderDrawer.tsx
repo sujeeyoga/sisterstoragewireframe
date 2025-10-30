@@ -103,6 +103,22 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
     return parts.length > 0 ? parts.join('\n') : 'N/A';
   };
 
+  const formatOrderDate = (dateString: string | null | undefined): string => {
+    if (!dateString) return 'N/A';
+    
+    try {
+      const date = new Date(dateString);
+      // Check if date is valid
+      if (isNaN(date.getTime())) {
+        return 'Invalid date';
+      }
+      return format(date, 'MMMM d, yyyy h:mm a');
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return 'Invalid date';
+    }
+  };
+
   // Fetch refunds for this order
   useEffect(() => {
     const fetchRefunds = async () => {
@@ -403,7 +419,7 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
               </div>
               <div>
                 <Label>Order Date</Label>
-                <Input type="text" value={format(new Date(order.date_created), 'MMMM d, yyyy h:mm a')} readOnly />
+                <Input type="text" value={formatOrderDate(order.date_created)} readOnly />
               </div>
             </div>
 
