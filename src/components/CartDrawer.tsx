@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react';
-import { X, Trash2, Plus, Minus, ShoppingBag, Tag, Truck } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { X, Trash2, Plus, Minus, ShoppingBag, Tag, Truck, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/contexts/CartContext';
 import { Link, useLocation } from 'react-router-dom';
 import Logo from '@/components/ui/Logo';
 import { useStoreDiscount } from '@/hooks/useStoreDiscount';
+import { useLocationDetection } from '@/hooks/useLocationDetection';
+import { useShippingZones } from '@/hooks/useShippingZones';
 
 const CartDrawer = () => {
   const { items, removeItem, updateQuantity, totalItems, subtotal, isOpen, setIsOpen } = useCart();
@@ -12,6 +14,12 @@ const CartDrawer = () => {
   const location = useLocation();
   const drawerContentRef = React.useRef<HTMLDivElement>(null);
   const drawerRef = React.useRef<HTMLDivElement>(null);
+  
+  // Location detection and shipping estimation
+  const { city, region, country, postalCode, isLoading: locationLoading } = useLocationDetection();
+  const { calculateShipping } = useShippingZones();
+  const [estimatedShipping, setEstimatedShipping] = useState<number | null>(null);
+  const [shippingLoading, setShippingLoading] = useState(false);
   
   // Hide floating button when cart is open or on checkout page or admin pages
   const shouldHideFloatingButton = isOpen || location.pathname === '/checkout' || location.pathname.startsWith('/admin');
@@ -33,6 +41,34 @@ const CartDrawer = () => {
 
   // No body scroll lock - allow scrolling behind the drawer
 
+  // Estimate shipping when location is detected
+  useEffect(() => {
+    const estimateShipping = async () => {
+      if (!locationLoading && city && country && subtotal > 0) {
+        setShippingLoading(true);
+        try {
+          const result = await calculateShipping({
+            city,
+            province: region,
+            country,
+            postalCode
+          }, subtotal);
+          
+          if (result?.appliedRate?.rate_amount !== undefined) {
+            setEstimatedShipping(result.appliedRate.rate_amount);
+          }
+        } catch (error) {
+          console.error('Failed to estimate shipping:', error);
+          setEstimatedShipping(null);
+        } finally {
+          setShippingLoading(false);
+        }
+      }
+    };
+    
+    estimateShipping();
+  }, [city, region, country, postalCode, subtotal, locationLoading]);
+
   // Calculate discount and totals
   const discountedSubtotal = discount?.enabled ? applyDiscount(subtotal) : subtotal;
   const discountAmount = discount?.enabled ? getDiscountAmount(subtotal) : 0;
@@ -40,6 +76,7 @@ const CartDrawer = () => {
   // Calculate tax (example: 8.5%)
   const taxRate = 0.085;
   const taxAmount = discountedSubtotal * taxRate;
+  const estimatedTotal = discountedSubtotal + taxAmount + (estimatedShipping || 0);
   const total = discountedSubtotal + taxAmount;
 
   return (
@@ -276,16 +313,42 @@ const CartDrawer = () => {
                       <span>Estimated Tax</span>
                       <span className="font-medium text-gray-900">${taxAmount.toFixed(2)}</span>
                     </div>
-                    <div className="flex justify-between text-sm text-gray-600">
-                      <span>Shipping</span>
-                      <span className="text-gray-600">Calculated at checkout</span>
+                    
+                    {/* Estimated Shipping with Location */}
+                    <div className="flex justify-between text-sm">
+                      <div className="flex items-center gap-1">
+                        <span className="text-gray-600">Shipping</span>
+                        {city && country && (
+                          <div className="flex items-center gap-1 text-xs text-gray-500">
+                            <MapPin className="h-3 w-3" />
+                            <span>{city}, {country}</span>
+                          </div>
+                        )}
+                      </div>
+                      <span className="font-medium text-gray-900">
+                        {locationLoading || shippingLoading ? (
+                          <span className="text-gray-400">Estimating...</span>
+                        ) : estimatedShipping !== null ? (
+                          estimatedShipping === 0 ? (
+                            <span className="text-green-600 font-semibold">FREE</span>
+                          ) : (
+                            `~$${estimatedShipping.toFixed(2)}`
+                          )
+                        ) : (
+                          <span className="text-gray-400">At checkout</span>
+                        )}
+                      </span>
                     </div>
                   </div>
 
                   {/* Total */}
                   <div className="flex justify-between text-lg font-bold mb-4 pt-3 border-t border-gray-300">
-                    <span>Total</span>
-                    <span className="text-[hsl(var(--brand-pink))]">${total.toFixed(2)}</span>
+                    <span>
+                      {estimatedShipping !== null ? 'Est. Total' : 'Total'}
+                    </span>
+                    <span className="text-[hsl(var(--brand-pink))]">
+                      {estimatedShipping !== null ? `~$${estimatedTotal.toFixed(2)}` : `$${total.toFixed(2)}`}
+                    </span>
                   </div>
 
                   {/* Action Buttons */}
