@@ -255,6 +255,7 @@ export const AdminDashboard = () => {
         status: order.status,
         fulfillment_status: order.fulfillment_status || 'unfulfilled',
         date: order.date_created,
+        country: (order.shipping as any)?.country || 'N/A',
         source: 'woocommerce' as const
       }));
 
@@ -266,6 +267,7 @@ export const AdminDashboard = () => {
         status: order.status,
         fulfillment_status: order.fulfillment_status,
         date: order.created_at,
+        country: (order.shipping_address as any)?.country || 'N/A',
         source: 'stripe' as const
       }));
 
@@ -766,7 +768,7 @@ export const AdminDashboard = () => {
                       </div>
                       <p className="text-xs text-muted-foreground">{order.customer}</p>
                       <p className="text-xs text-muted-foreground">
-                        {format(new Date(order.date), 'MMM dd, HH:mm')}
+                        {format(new Date(order.date), 'MMM dd, HH:mm')} · {order.country}
                       </p>
                     </div>
                     <div className="text-right space-y-1">

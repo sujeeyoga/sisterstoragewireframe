@@ -131,6 +131,7 @@ export function AnalyticsDashboard() {
         total: typeof order.total === 'number' ? order.total : parseFloat(String(order.total || '0')),
         status: order.status as string,
         date: order.date_created as string,
+        country: order?.shipping?.country || 'N/A',
         source: 'woocommerce' as const,
       }));
 
@@ -141,6 +142,7 @@ export function AnalyticsDashboard() {
         total: typeof order.total === 'number' ? order.total : parseFloat(String(order.total || '0')),
         status: (order.status as string) || 'pending',
         date: order.created_at as string,
+        country: order?.shipping_address?.country || 'N/A',
         source: 'stripe' as const,
       }));
 
@@ -413,7 +415,7 @@ export function AnalyticsDashboard() {
                         {order.customer_name}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {format(new Date(order.date), 'MMM dd, HH:mm')}
+                        {format(new Date(order.date), 'MMM dd, HH:mm')} · {order.country}
                       </p>
                     </div>
                     <div className="text-right space-y-1">
