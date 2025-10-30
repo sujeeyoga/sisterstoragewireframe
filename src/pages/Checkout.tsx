@@ -810,6 +810,23 @@ const Checkout = () => {
                 </Card>
               )}
 
+              {/* US Tariff Notice */}
+              {formData.country === 'US' && shippingRates.length > 0 && (
+                <Card className="border-2 border-amber-400 bg-amber-50 animate-fade-in">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-amber-900 text-base">
+                      <Truck className="h-5 w-5" />
+                      About US Shipping Costs
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-amber-800">
+                      <strong>Ships from Canada:</strong> Current US shipping rates reflect cross-border tariffs, customs duties, and broker fees due to the ongoing trade situation between Canada and the United States. We pass through actual carrier costs to ensure transparency.
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
+
               {/* Shipping Options */}
               {shippingRates.length > 0 && (
                 <Card className="border-2 border-primary">
