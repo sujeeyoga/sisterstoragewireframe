@@ -28,7 +28,7 @@ const formatDuration = (seconds: number) => {
 };
 
 export default function AdminVisitorAnalytics() {
-  const [dateRange, setDateRange] = useState(7);
+  const [dateRange, setDateRange] = useState(1);
   const [granularity, setGranularity] = useState<TimeGranularity>('day');
   
   const { data: analytics, isLoading } = useVisitorAnalytics(dateRange, granularity);
@@ -73,6 +73,7 @@ export default function AdminVisitorAnalytics() {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem value="1">Today</SelectItem>
               <SelectItem value="7">Last 7 days</SelectItem>
               <SelectItem value="30">Last 30 days</SelectItem>
               <SelectItem value="90">Last 90 days</SelectItem>
