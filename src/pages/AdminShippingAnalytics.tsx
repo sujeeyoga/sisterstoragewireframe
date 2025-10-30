@@ -4,9 +4,10 @@ import { useShippingAnalytics } from '@/hooks/useShippingAnalytics';
 import { DollarSign, Package, Globe, Gift, TrendingUp, TrendingDown, AlertCircle } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { subDays } from 'date-fns';
+import { subDays, startOfDay } from 'date-fns';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 import { ShippingLossTracker } from '@/components/admin/ShippingLossTracker';
+import { Button } from '@/components/ui/button';
 
 const COLORS = ['#8B5CF6', '#EC4899', '#F59E0B', '#10B981', '#3B82F6', '#6366F1'];
 
@@ -21,12 +22,41 @@ const getCountryFlag = (countryCode: string): string => {
   );
 };
 
+const getDateRangeFromPreset = (preset: string) => {
+  const end = new Date();
+  switch (preset) {
+    case 'today':
+      return { start: startOfDay(new Date()), end };
+    case '7':
+      return { start: subDays(end, 7), end };
+    case '30':
+      return { start: subDays(end, 30), end };
+    case '90':
+      return { start: subDays(end, 90), end };
+    default:
+      return { start: subDays(end, 30), end };
+  }
+};
+
+const getDateRangeLabel = (preset: string) => {
+  switch (preset) {
+    case 'today':
+      return 'Today';
+    case '7':
+      return 'Last 7 days';
+    case '30':
+      return 'Last 30 days';
+    case '90':
+      return 'Last 90 days';
+    default:
+      return 'Last 30 days';
+  }
+};
+
 export default function AdminShippingAnalytics() {
   const [activeTab, setActiveTab] = useState("overview");
-  const [dateRange] = useState({
-    start: subDays(new Date(), 30),
-    end: new Date()
-  });
+  const [dateRangePreset, setDateRangePreset] = useState('30');
+  const dateRange = getDateRangeFromPreset(dateRangePreset);
 
   const { data: analytics, isLoading } = useShippingAnalytics(dateRange);
 
@@ -47,9 +77,41 @@ export default function AdminShippingAnalytics() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Shipping Analytics</h1>
-        <p className="text-muted-foreground">Last 30 days shipping performance</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">Shipping Analytics</h1>
+          <p className="text-muted-foreground">{getDateRangeLabel(dateRangePreset)} shipping performance</p>
+        </div>
+        <div className="flex gap-2">
+          <Button
+            variant={dateRangePreset === 'today' ? 'default' : 'outline'}
+            onClick={() => setDateRangePreset('today')}
+            size="sm"
+          >
+            Today
+          </Button>
+          <Button
+            variant={dateRangePreset === '7' ? 'default' : 'outline'}
+            onClick={() => setDateRangePreset('7')}
+            size="sm"
+          >
+            7 Days
+          </Button>
+          <Button
+            variant={dateRangePreset === '30' ? 'default' : 'outline'}
+            onClick={() => setDateRangePreset('30')}
+            size="sm"
+          >
+            30 Days
+          </Button>
+          <Button
+            variant={dateRangePreset === '90' ? 'default' : 'outline'}
+            onClick={() => setDateRangePreset('90')}
+            size="sm"
+          >
+            90 Days
+          </Button>
+        </div>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
