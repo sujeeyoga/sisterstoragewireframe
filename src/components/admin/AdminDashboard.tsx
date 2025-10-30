@@ -16,13 +16,13 @@ import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
 import { OrderDrawer } from './OrderDrawer';
 
-type DateRangePreset = '7d' | '30d' | '90d' | 'custom';
+type DateRangePreset = 'today' | '7d' | '30d' | '90d' | 'custom';
 
 export const AdminDashboard = () => {
   const { visitorCount } = useVisitorPresence();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const [dateRange, setDateRange] = useState<DateRangePreset>('30d');
+  const [dateRange, setDateRange] = useState<DateRangePreset>('today');
   const [customStartDate, setCustomStartDate] = useState<Date>();
   const [customEndDate, setCustomEndDate] = useState<Date>();
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
@@ -30,6 +30,11 @@ export const AdminDashboard = () => {
   const getDateRangeStart = () => {
     if (dateRange === 'custom' && customStartDate) {
       return customStartDate;
+    }
+    if (dateRange === 'today') {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return today;
     }
     const days = dateRange === '7d' ? 7 : dateRange === '30d' ? 30 : 90;
     return subDays(new Date(), days);
@@ -357,6 +362,13 @@ export const AdminDashboard = () => {
         
         {/* Date Range Selector */}
         <div className="flex items-center gap-2">
+          <Button
+            variant={dateRange === 'today' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setDateRange('today')}
+          >
+            Today
+          </Button>
           <Button
             variant={dateRange === '7d' ? 'default' : 'outline'}
             size="sm"
