@@ -131,15 +131,6 @@ serve(async (req) => {
       });
     }
 
-    // Validate free shipping eligibility before adding shipping cost
-    // GTA free shipping threshold is $50 for Toronto, Etobicoke, Scarborough, North York, Markham, Whitby, etc.
-    const FREE_SHIPPING_THRESHOLD = 50;
-    const gtaCities = ['toronto', 'etobicoke', 'scarborough', 'north york', 'markham', 'whitby', 'vaughan', 'richmond hill', 'pickering', 'ajax', 'oshawa', 'mississauga', 'brampton'];
-    
-    const customerCity = shippingAddress?.city?.toLowerCase().trim() || '';
-    const customerProvince = shippingAddress?.state?.toUpperCase() || shippingAddress?.province?.toUpperCase() || '';
-    const isGTA = gtaCities.some(city => customerCity.includes(city)) || customerProvince === 'ON';
-    
     // Calculate product subtotal (excluding gift wrapping)
     const productSubtotal = items.reduce((sum: number, item: any) => {
       const discountedPrice = discountPercentage > 0 
@@ -147,21 +138,56 @@ serve(async (req) => {
         : item.price;
       return sum + (discountedPrice * item.quantity);
     }, 0);
+
+    // Call calculate-shipping-zones to get accurate shipping rate with GTA free shipping logic
+    let finalShippingCost = shippingCost;
     
-    const qualifiesForFreeShipping = isGTA && productSubtotal >= FREE_SHIPPING_THRESHOLD;
+    if (shippingAddress?.city && shippingAddress?.country) {
+      try {
+        console.log('Calculating shipping via calculate-shipping-zones:', {
+          city: shippingAddress.city,
+          province: shippingAddress.state || shippingAddress.province,
+          country: shippingAddress.country,
+          subtotal: productSubtotal
+        });
+
+        const { data: shippingData, error: shippingError } = await supabaseClient.functions.invoke(
+          'calculate-shipping-zones',
+          {
+            body: {
+              address: {
+                city: shippingAddress.city,
+                province: shippingAddress.state || shippingAddress.province,
+                country: shippingAddress.country,
+                postalCode: shippingAddress.postal_code || shippingAddress.zip
+              },
+              subtotal: productSubtotal
+            }
+          }
+        );
+
+        if (shippingError) {
+          console.error('Shipping calculation error:', shippingError);
+        } else if (shippingData?.appliedRate?.rate_amount !== undefined) {
+          finalShippingCost = shippingData.appliedRate.rate_amount;
+          console.log('✅ Shipping calculated:', {
+            rate: finalShippingCost,
+            source: shippingData.rate_source,
+            zone: shippingData.zone?.name,
+            gtaFreeShipping: shippingData.appliedRate.gta_free_shipping_applied
+          });
+          
+          if (shippingData.appliedRate.gta_free_shipping_applied) {
+            console.log('🎉 GTA FREE SHIPPING APPLIED!');
+          }
+        }
+      } catch (error) {
+        console.error('Failed to calculate shipping:', error);
+        // Fall back to provided shipping cost
+      }
+    }
     
-    console.log('Free shipping check:', {
-      isGTA,
-      productSubtotal,
-      threshold: FREE_SHIPPING_THRESHOLD,
-      qualifiesForFreeShipping,
-      originalShippingCost: shippingCost,
-      city: customerCity,
-      province: customerProvince
-    });
-    
-    // Override shipping cost to 0 if qualifies for free shipping
-    const finalShippingCost = qualifiesForFreeShipping ? 0 : shippingCost;
+    console.log('Final shipping cost for Stripe:', finalShippingCost);
     
     // Add shipping as a line item only if there's a cost
     if (finalShippingCost && finalShippingCost > 0) {
@@ -175,8 +201,8 @@ serve(async (req) => {
         },
         quantity: 1,
       });
-    } else if (qualifiesForFreeShipping) {
-      console.log('✅ FREE SHIPPING APPLIED - Order qualifies!');
+    } else if (finalShippingCost === 0) {
+      console.log('✅ FREE SHIPPING - No shipping charge added to Stripe checkout');
     }
 
     // Add tax as a line item
