@@ -468,26 +468,28 @@ export const AdminDashboard = () => {
       {/* Revenue & Orders KPIs */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
         {/* Live Visitors Card */}
-        <Card className="hover:shadow-lg transition-shadow">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Live Visitors
-            </CardTitle>
-            <Users className="h-4 w-4 text-blue-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {visitorCount}
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">
-              Currently browsing
-            </p>
-            <div className="mt-2 flex items-center gap-2">
-              <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-              <span className="text-xs text-muted-foreground">Live</span>
-            </div>
-          </CardContent>
-        </Card>
+        <Link to="/admin/analytics/visitors" className="block">
+          <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Live Visitors
+              </CardTitle>
+              <Users className="h-4 w-4 text-blue-600" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {visitorCount}
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">
+                Currently browsing
+              </p>
+              <div className="mt-2 flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                <span className="text-xs text-muted-foreground">Live</span>
+              </div>
+            </CardContent>
+          </Card>
+        </Link>
         
         <Card className="hover:shadow-lg transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
