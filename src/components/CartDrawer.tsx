@@ -71,7 +71,7 @@ const CartDrawer = () => {
     };
     
     estimateShipping();
-  }, [city, region, country, postalCode, discountedSubtotal, locationLoading, calculateShipping, applyDiscount, discount]);
+  }, [city, region, country, postalCode, discountedSubtotal, locationLoading]);
 
   // Override shipping to 0 for Toronto/GTA orders over $50
   useEffect(() => {
