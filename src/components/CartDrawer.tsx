@@ -251,20 +251,22 @@ const CartDrawer = () => {
                     )}
                   </div>
 
-                  {/* US Shipping Notice */}
-                  <div className="bg-amber-50 border border-amber-400 rounded-lg p-3 mb-4">
-                    <div className="flex items-start gap-2">
-                      <Truck className="h-4 w-4 text-amber-700 mt-0.5 flex-shrink-0" />
-                      <div className="flex-1">
-                        <p className="text-xs font-semibold text-amber-900 mb-1">
-                          US Shipping Notice
-                        </p>
-                        <p className="text-xs text-amber-800">
-                          Ships from Canada. Current rates include cross-border tariffs and customs fees.
-                        </p>
+                  {/* US Shipping Notice - Only for US customers */}
+                  {country === 'US' && (
+                    <div className="bg-amber-50 border border-amber-400 rounded-lg p-3 mb-4">
+                      <div className="flex items-start gap-2">
+                        <Truck className="h-4 w-4 text-amber-700 mt-0.5 flex-shrink-0" />
+                        <div className="flex-1">
+                          <p className="text-xs font-semibold text-amber-900 mb-1">
+                            US Shipping Notice
+                          </p>
+                          <p className="text-xs text-amber-800">
+                            Ships from Canada. Current rates include cross-border tariffs and customs fees.
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  )}
 
                   {/* Free Shipping Progress for Toronto */}
                   {discountedSubtotal < 50 ? (
