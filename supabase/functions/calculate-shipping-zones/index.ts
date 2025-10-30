@@ -62,25 +62,8 @@ const getRulePriority = (ruleType: string): number => {
   return priorities[ruleType as keyof typeof priorities] || 0;
 };
 
-// GTA cities that qualify for free shipping over $50
-const GTA_CITIES = [
-  'TORONTO', 'ETOBICOKE', 'NORTH YORK', 'SCARBOROUGH', 'EAST YORK', 'YORK',
-  'MISSISSAUGA', 'BRAMPTON', 'MARKHAM', 'VAUGHAN', 'RICHMOND HILL',
-  'OAKVILLE', 'BURLINGTON', 'PICKERING', 'AJAX', 'WHITBY', 'OSHAWA',
-  'MILTON', 'NEWMARKET', 'AURORA', 'KING', 'CALEDON', 'GEORGINA'
-];
-
-const isGTAAddress = (address: Address): boolean => {
-  if (!address.city || !address.province || !address.country) return false;
-  
-  const normalizedCity = address.city.toUpperCase().trim();
-  const normalizedProvince = address.province.toUpperCase().trim();
-  const normalizedCountry = address.country.toUpperCase().trim();
-  
-  return normalizedCountry === 'CA' && 
-         normalizedProvince === 'ONTARIO' && 
-         GTA_CITIES.includes(normalizedCity);
-};
+// GTA zone ID - identifies the zone that should get free shipping over $50
+const GTA_ZONE_ID = 'aa000000-0000-0000-0000-000000000001';
 
 const matchesRule = (address: Address, rule: ShippingZoneRule): boolean => {
   const normalizedValue = rule.rule_value.toUpperCase().trim();
@@ -299,12 +282,12 @@ Deno.serve(async (req) => {
           // Non-US: use database rates
           console.log('Using database rates for non-US zone');
           
-          // Check if GTA free shipping applies
-          const isGTA = isGTAAddress(address);
-          const gtaFreeShipping = isGTA && subtotal >= 50;
+          // Check if this is the GTA zone and free shipping applies
+          const isGTAZone = matchedZone.id === GTA_ZONE_ID;
+          const gtaFreeShipping = isGTAZone && subtotal >= 50;
           
           if (gtaFreeShipping) {
-            console.log('🎉 GTA Free Shipping unlocked! (subtotal >= $50)');
+            console.log('🎉 GTA Free Shipping unlocked! (subtotal >= $50, matched to GTA zone)');
           }
           
           applicableRates = matchedZone.rates.map(rate => {
