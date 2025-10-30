@@ -127,6 +127,27 @@ serve(async (req) => {
       const total = (session.amount_total || 0) / 100;
 
       console.log(`Order breakdown - Products: $${subtotal}, Shipping: $${shipping}, Tax: $${tax}, Total: $${total}`);
+      
+      // VALIDATION: Calculate subtotal from items array to catch any discrepancies
+      const calculatedSubtotal = items.reduce((sum, item) => 
+        sum + (item.price * item.quantity), 0
+      );
+      const subtotalDiscrepancy = Math.abs(subtotal - calculatedSubtotal);
+      
+      if (subtotalDiscrepancy > 0.01) {
+        console.error(`⚠️ SUBTOTAL MISMATCH DETECTED!`, {
+          fromStripeLineItems: subtotal,
+          fromItemsArray: calculatedSubtotal,
+          discrepancy: subtotalDiscrepancy,
+          items: items,
+          sessionId: session.id
+        });
+        // Use the calculated subtotal from items array as it's more reliable
+        console.log(`Using calculated subtotal: $${calculatedSubtotal} instead of Stripe's: $${subtotal}`);
+      }
+      
+      // Use the more reliable calculated subtotal
+      const finalSubtotal = subtotalDiscrepancy > 0.01 ? calculatedSubtotal : subtotal;
 
       // Discrepancy detection: compare expected vs. charged
       const expectedTotal = Number((subtotal + shipping + tax).toFixed(2));
@@ -152,7 +173,7 @@ serve(async (req) => {
           day: 'numeric' 
         }),
         items,
-        subtotal,
+        subtotal: finalSubtotal,
         shipping,
         tax,
         total,
@@ -234,7 +255,7 @@ serve(async (req) => {
           customer_name: emailData.customerName,
           order_number: emailData.orderNumber,
           items: emailData.items,
-          subtotal: emailData.subtotal,
+          subtotal: finalSubtotal,
           shipping: emailData.shipping,
           tax: emailData.tax,
           total: emailData.total,
