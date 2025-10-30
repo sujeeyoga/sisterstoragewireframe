@@ -165,9 +165,9 @@ export function StallionFulfillmentDialog({ order, open, onClose, onSuccess }: S
       // Get shipping label
       const label = await getLabel(shipment.id);
 
-      // Find the selected rate to get actual cost
-      const selectedRateDetails = rates.find(r => r.service === selectedRate);
-      const actualStallionCost = selectedRateDetails?.rate || 0;
+      // Get actual cost from Stallion API response
+      // Stallion returns cost in various fields depending on API version
+      const actualStallionCost = Number(shipment.cost || shipment.rate || shipment.postage_cost || 0);
 
       // Update order in the correct database table
       const tableName = order.source === 'stripe' ? 'orders' : 'woocommerce_orders';

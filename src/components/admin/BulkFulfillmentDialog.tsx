@@ -227,8 +227,9 @@ export function BulkFulfillmentDialog({ orderIds, open, onClose, onSuccess, onRe
         // Get label
         const label = await getLabel(shipment.id);
 
-        // Get the actual cost from shipment (Stallion returns it)
-        const actualStallionCost = (shipment as any).rate || 0;
+        // Get actual cost from Stallion API response
+        // Stallion returns cost in various fields depending on API version
+        const actualStallionCost = Number((shipment as any).cost || (shipment as any).rate || (shipment as any).postage_cost || 0);
 
         // Update order in the correct table
         const tableName = order.source === 'stripe' ? 'orders' : 'woocommerce_orders';
