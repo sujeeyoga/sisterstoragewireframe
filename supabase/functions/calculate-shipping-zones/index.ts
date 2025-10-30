@@ -115,31 +115,29 @@ const getStallionRates = async (address: Address, supabase: any): Promise<any> =
   try {
     console.log('Fetching Stallion rates for address:', address);
     
-    // Use a generic address if street address not provided
-    const addressLine = '123 Main St'; // Placeholder since we only have city/state/zip
-    
     const { data, error } = await supabase.functions.invoke('stallion-express', {
       body: {
         action: 'get-rates',
         data: {
-          destination: {
+          to_address: {
             name: 'Customer',
             company: '',
-            address1: addressLine,
+            address1: '123 Main St',
             city: address.city || '',
-            province: address.province || '',
-            country: address.country || 'US',
+            province_code: address.province || '',
+            country_code: address.country || 'US',
             postal_code: address.postalCode || '',
             phone: ''
           },
-          package: {
-            length: 12,
-            width: 10,
-            height: 4,
-            weight: 2,
-            insurance: 0,
-            description: 'Bangle Storage Package'
-          }
+          weight: 0.5,
+          weight_unit: 'kg',
+          length: 12,
+          width: 10,
+          height: 4,
+          size_unit: 'cm',
+          package_contents: 'Bangle Storage Set',
+          value: 50,
+          currency: 'USD'
         }
       }
     });
@@ -161,17 +159,20 @@ const getStallionRates = async (address: Address, supabase: any): Promise<any> =
  * Transforms Stallion rates to our rate format
  */
 const transformStallionRates = (stallionData: any, subtotal: number): any[] => {
-  if (!stallionData?.quotes || !Array.isArray(stallionData.quotes)) {
-    console.log('No quotes in Stallion response');
+  // Stallion returns nested structure: { success: true, data: { rates: [...] } }
+  const rates = stallionData?.data?.rates || stallionData?.rates;
+  
+  if (!rates || !Array.isArray(rates)) {
+    console.log('No rates in Stallion response');
     return [];
   }
 
-  return stallionData.quotes
-    .filter((quote: any) => quote.price && quote.service_name)
-    .map((quote: any, index: number) => ({
-      id: `stallion_${quote.service_code || index}`,
-      method_name: quote.service_name,
-      rate_amount: parseFloat(quote.price),
+  return rates
+    .filter((rate: any) => rate.total && rate.postage_type)
+    .map((rate: any, index: number) => ({
+      id: `stallion_${rate.postage_type_id || index}`,
+      method_name: rate.postage_type,
+      rate_amount: parseFloat(rate.total),
       is_free: false,
       free_threshold: null,
       display_order: index + 1

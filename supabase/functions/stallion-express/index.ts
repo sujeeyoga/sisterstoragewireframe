@@ -47,14 +47,14 @@ serve(async (req) => {
   const formatAddressForStallion = (address: any) => {
     if (!address) return address;
     
-    const country = address.country || 'CA';
+    const country = address.country_code || address.country || 'CA';
     
     return {
       ...address,
       postal_code: address.postal_code ? formatPostalCode(address.postal_code, country) : '',
       province_code: address.province_code || address.province || address.state || '',
       address1: address.address1 || address.street || address.address || '',
-      country: country,
+      country_code: country,
     };
   };
 
