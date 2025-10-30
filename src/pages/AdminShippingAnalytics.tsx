@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useShippingAnalytics } from '@/hooks/useShippingAnalytics';
 import { DollarSign, Package, Globe, Gift, TrendingUp, TrendingDown, AlertCircle } from 'lucide-react';
@@ -56,7 +56,8 @@ const getDateRangeLabel = (preset: string) => {
 export default function AdminShippingAnalytics() {
   const [activeTab, setActiveTab] = useState("overview");
   const [dateRangePreset, setDateRangePreset] = useState('30');
-  const dateRange = getDateRangeFromPreset(dateRangePreset);
+  
+  const dateRange = useMemo(() => getDateRangeFromPreset(dateRangePreset), [dateRangePreset]);
 
   const { data: analytics, isLoading } = useShippingAnalytics(dateRange);
 
