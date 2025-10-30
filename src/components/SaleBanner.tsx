@@ -58,6 +58,11 @@ const SaleBanner = ({}: SaleBannerProps) => {
     return null;
   }
 
+  // Don't show banner for international users
+  if (activeZone === 'international' && !testRegion && !forceShow) {
+    return null;
+  }
+
   const message = REGION_MESSAGES[activeZone];
   const IconComponent = message.icon;
 
