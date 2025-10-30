@@ -70,14 +70,21 @@ const matchesRule = (address: Address, rule: ShippingZoneRule): boolean => {
   
   switch (rule.rule_type) {
     case 'postal_code_pattern':
+      // Handle wildcard pattern for catch-all
+      if (rule.rule_value === '*') return true;
       return address.postalCode 
         ? matchesPostalPattern(address.postalCode, rule.rule_value)
         : false;
     case 'city':
-      return address.city?.toUpperCase().trim() === normalizedValue;
+      // Normalize city names: remove extra spaces, handle case
+      const normalizedCity = address.city?.toUpperCase().trim().replace(/\s+/g, ' ');
+      const normalizedRuleCity = normalizedValue.replace(/\s+/g, ' ');
+      return normalizedCity === normalizedRuleCity;
     case 'province':
       return address.province?.toUpperCase().trim() === normalizedValue;
     case 'country':
+      // Handle wildcard for catch-all fallback zone
+      if (rule.rule_value === '*') return true;
       return address.country?.toUpperCase().trim() === normalizedValue;
     default:
       return false;
@@ -243,6 +250,16 @@ Deno.serve(async (req) => {
     // Match address to zone
     const matchResult = matchAddressToZone(address, zones);
 
+    // Log unmatched addresses for monitoring
+    if (!matchResult) {
+      console.log('⚠️ No zone matched for address:', {
+        city: address.city,
+        province: address.province,
+        country: address.country,
+        postalCode: address.postalCode,
+      });
+    }
+
     if (matchResult) {
       const { zone: matchedZone, matchedRule } = matchResult;
       
@@ -350,7 +367,16 @@ Deno.serve(async (req) => {
     const fallbackRate = fallbackData?.fallback_rate || 9.99;
     const fallbackMethodName = fallbackData?.fallback_method_name || 'Standard Shipping';
 
-    console.log('No zone matched, using fallback:', fallbackRate);
+    console.log('⚠️ Using fallback settings (no database zones matched):', {
+      rate: fallbackRate,
+      method: fallbackMethodName,
+      address: {
+        city: address.city,
+        province: address.province,
+        country: address.country,
+        postalCode: address.postalCode,
+      }
+    });
 
     return new Response(
       JSON.stringify({
