@@ -227,6 +227,9 @@ export function BulkFulfillmentDialog({ orderIds, open, onClose, onSuccess, onRe
         // Get label
         const label = await getLabel(shipment.id);
 
+        // Get the actual cost from shipment (Stallion returns it)
+        const actualStallionCost = (shipment as any).rate || 0;
+
         // Update order in the correct table
         const tableName = order.source === 'stripe' ? 'orders' : 'woocommerce_orders';
         await supabase
@@ -237,6 +240,7 @@ export function BulkFulfillmentDialog({ orderIds, open, onClose, onSuccess, onRe
             stallion_shipment_id: shipment.id,
             shipping_label_url: label.url,
             fulfilled_at: new Date().toISOString(),
+            stallion_cost: actualStallionCost,
             status: order.source === 'stripe' ? 'processing' : 'completed'
           })
           .eq('id', String(order.id));

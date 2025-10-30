@@ -20,7 +20,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle, TrendingDown, TrendingUp, Package, DollarSign, Info } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { AlertCircle, TrendingDown, TrendingUp, Package, DollarSign, Info, Gift } from "lucide-react";
 import { format } from "date-fns";
 
 interface ShippingLossTrackerProps {
@@ -91,7 +92,7 @@ export const ShippingLossTracker = ({ startDate, endDate }: ShippingLossTrackerP
   return (
     <div className="space-y-6">
       {/* Summary Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
         <Card className="border-red-100">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -156,6 +157,23 @@ export const ShippingLossTracker = ({ startDate, endDate }: ShippingLossTrackerP
             </div>
             <p className="text-xs text-muted-foreground mt-1">
               {stats.torontoGTAOrders} orders in free zone
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-green-100">
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              Free Shipping Given
+            </CardTitle>
+            <Gift className="h-4 w-4 text-green-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-green-600">
+              ${stats.totalDiscountsGiven.toFixed(2)}
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              {stats.freeShippingOrders} orders · Avg ${stats.avgDiscount.toFixed(2)}
             </p>
           </CardContent>
         </Card>
@@ -229,96 +247,152 @@ export const ShippingLossTracker = ({ startDate, endDate }: ShippingLossTrackerP
           <div className="rounded-md border">
             <Table>
               <TableHeader>
-                <TableRow>
+               <TableRow>
                   <TableHead>Order #</TableHead>
                   <TableHead>Customer</TableHead>
                   <TableHead>Location</TableHead>
                   <TableHead>Zone</TableHead>
                   <TableHead className="text-right">Actual Cost</TableHead>
                   <TableHead className="text-right">Charged</TableHead>
+                  <TableHead className="text-right">Discount</TableHead>
                   <TableHead className="text-right">Difference</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {orders.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center text-muted-foreground">
+                    <TableCell colSpan={8} className="text-center text-muted-foreground">
                       No orders found matching your filters
                     </TableCell>
                   </TableRow>
                 ) : (
-                  orders.map((order) => {
-                    const isLoss = order.difference > 0;
-                    const isGain = order.difference < 0;
-                    const missingCost = !order.hasStallionCost;
-                    return (
-                      <TableRow key={order.id}>
-                        <TableCell className="font-medium">
-                          <div className="flex items-center gap-2">
-                            {order.orderNumber}
-                            {missingCost && (
-                              <Badge variant="outline" className="text-xs">
-                                No Cost Data
-                              </Badge>
-                            )}
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex flex-col">
-                            <span className="text-sm">{order.customerName}</span>
-                            <span className="text-xs text-muted-foreground">
-                              {order.customerEmail}
-                            </span>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-2">
-                            <span className="text-xl">
-                              {getCountryFlag(order.country)}
-                            </span>
-                            <span className="text-sm">{order.city}</span>
-                          </div>
-                        </TableCell>
-                        <TableCell className="text-sm">{order.zone}</TableCell>
-                        <TableCell className="text-right font-medium">
-                          {missingCost ? (
-                            <span className="text-muted-foreground">-</span>
-                          ) : (
-                            <span className="text-red-600">${order.actualCost.toFixed(2)}</span>
-                          )}
-                        </TableCell>
-                        <TableCell className="text-right font-medium text-green-600">
-                          ${order.charged.toFixed(2)}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          {missingCost ? (
-                            <span className="text-muted-foreground text-sm">No data</span>
-                          ) : (
-                            <div className="flex items-center justify-end gap-1">
-                              {isLoss && (
-                                <TrendingDown className="h-4 w-4 text-red-600" />
+                  <TooltipProvider>
+                    {orders.map((order) => {
+                      const isLoss = order.difference > 0;
+                      const isGain = order.difference < 0;
+                      const missingCost = !order.hasStallionCost;
+                      const highLoss = order.difference > 20;
+                      
+                      return (
+                        <TableRow 
+                          key={order.id}
+                          className={
+                            order.wasFreeShipping 
+                              ? "bg-green-50/50 hover:bg-green-50" 
+                              : highLoss 
+                              ? "bg-red-50/50 hover:bg-red-50"
+                              : undefined
+                          }
+                        >
+                          <TableCell className="font-medium">
+                            <div className="flex items-center gap-2">
+                              {order.orderNumber}
+                              {order.wasFreeShipping && (
+                                <Badge variant="default" className="text-xs bg-green-100 text-green-800 border-green-200">
+                                  🎉 Free
+                                </Badge>
                               )}
-                              {isGain && (
-                                <TrendingUp className="h-4 w-4 text-green-600" />
+                              {missingCost && (
+                                <Badge variant="outline" className="text-xs">
+                                  No Cost Data
+                                </Badge>
                               )}
-                              <span
-                                className={`font-bold ${
-                                  isLoss
-                                    ? "text-red-600"
-                                    : isGain
-                                    ? "text-green-600"
-                                    : "text-muted-foreground"
-                                }`}
-                              >
-                                {isLoss ? "-" : isGain ? "+" : ""}$
-                                {Math.abs(order.difference).toFixed(2)}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex flex-col">
+                              <span className="text-sm">{order.customerName}</span>
+                              <span className="text-xs text-muted-foreground">
+                                {order.customerEmail}
                               </span>
                             </div>
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <span className="text-xl">
+                                {getCountryFlag(order.country)}
+                              </span>
+                              <span className="text-sm">{order.city}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-sm">{order.zone}</TableCell>
+                          <TableCell className="text-right font-medium">
+                            {missingCost ? (
+                              <span className="text-muted-foreground">-</span>
+                            ) : (
+                              <span className="text-red-600">${order.actualCost.toFixed(2)}</span>
+                            )}
+                          </TableCell>
+                          <TableCell className="text-right font-medium">
+                            {order.wasFreeShipping ? (
+                              <div className="flex flex-col items-end gap-0.5">
+                                <span className="line-through text-muted-foreground text-xs">
+                                  ${order.originalRate.toFixed(2)}
+                                </span>
+                                <span className="text-green-600 font-bold text-sm">FREE</span>
+                              </div>
+                            ) : (
+                              <span className="text-green-600">${order.charged.toFixed(2)}</span>
+                            )}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            {order.wasFreeShipping ? (
+                              <Badge variant="secondary" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
+                                💰 ${order.discountApplied.toFixed(2)}
+                              </Badge>
+                            ) : order.meetsThreshold ? (
+                              <Badge variant="outline" className="text-xs text-muted-foreground">
+                                Qualified
+                              </Badge>
+                            ) : (
+                              <span className="text-xs text-muted-foreground">-</span>
+                            )}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            {missingCost ? (
+                              <span className="text-muted-foreground text-sm">No data</span>
+                            ) : (
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <div className="flex items-center justify-end gap-1 cursor-help">
+                                    {isLoss && (
+                                      <TrendingDown className="h-4 w-4 text-red-600" />
+                                    )}
+                                    {isGain && (
+                                      <TrendingUp className="h-4 w-4 text-green-600" />
+                                    )}
+                                    <span
+                                      className={`font-bold ${
+                                        isLoss
+                                          ? "text-red-600"
+                                          : isGain
+                                          ? "text-green-600"
+                                          : "text-muted-foreground"
+                                      }`}
+                                    >
+                                      {isLoss ? "-" : isGain ? "+" : ""}$
+                                      {Math.abs(order.difference).toFixed(2)}
+                                    </span>
+                                  </div>
+                                </TooltipTrigger>
+                                <TooltipContent className="text-xs max-w-[250px]">
+                                  <div className="space-y-1">
+                                    <p className="font-semibold">Loss Breakdown:</p>
+                                    <p>• You paid Stallion: ${order.actualCost.toFixed(2)}</p>
+                                    <p>• Customer paid: ${order.charged.toFixed(2)}{order.wasFreeShipping ? " (free shipping)" : ""}</p>
+                                    <p>• Your {isLoss ? "loss" : "gain"}: ${Math.abs(order.difference).toFixed(2)}</p>
+                                    {order.wasFreeShipping && (
+                                      <p className="pt-1 border-t mt-1">• Discount given: ${order.discountApplied.toFixed(2)}</p>
+                                    )}
+                                  </div>
+                                </TooltipContent>
+                              </Tooltip>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TooltipProvider>
                 )}
               </TableBody>
             </Table>

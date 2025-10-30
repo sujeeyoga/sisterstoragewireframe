@@ -17,6 +17,12 @@ interface ShippingLossOrder {
   createdAt: string;
   shippingAddress: any;
   hasStallionCost: boolean;
+  wasFreeShipping: boolean;
+  discountApplied: number;
+  originalRate: number;
+  meetsThreshold: boolean;
+  freeShippingThreshold: number | null;
+  subtotal: number;
 }
 
 interface ShippingLossStats {
@@ -26,6 +32,9 @@ interface ShippingLossStats {
   biggestLoss: number;
   torontoGTALoss: number;
   torontoGTAOrders: number;
+  totalDiscountsGiven: number;
+  freeShippingOrders: number;
+  avgDiscount: number;
 }
 
 interface ShippingLossData {
@@ -97,6 +106,15 @@ export const useShippingLossDetails = (params: UseShippingLossDetailsParams) => 
           const charged = Number(order.shipping || 0);
           const difference = actualCost - charged;
 
+          // Calculate discount information
+          const subtotal = Number(order.subtotal || 0);
+          const zoneRate = matchedZone?.rates?.[0];
+          const freeThreshold = zoneRate?.free_threshold || null;
+          const originalRate = Number(zoneRate?.rate_amount || 0);
+          const meetsThreshold = freeThreshold !== null && subtotal >= freeThreshold;
+          const wasFreeShipping = charged === 0 && meetsThreshold;
+          const discountApplied = wasFreeShipping ? originalRate : 0;
+
           allOrders.push({
             id: order.id,
             orderNumber: order.order_number,
@@ -111,6 +129,12 @@ export const useShippingLossDetails = (params: UseShippingLossDetailsParams) => 
             createdAt: order.created_at!,
             shippingAddress: shippingAddr,
             hasStallionCost,
+            wasFreeShipping,
+            discountApplied,
+            originalRate,
+            meetsThreshold,
+            freeShippingThreshold: freeThreshold,
+            subtotal,
           });
         });
       }
@@ -147,6 +171,15 @@ export const useShippingLossDetails = (params: UseShippingLossDetailsParams) => 
           const difference = actualCost - charged;
           const billingAddr = order.billing as any;
 
+          // Calculate discount information
+          const subtotal = Number(order.total || 0) - charged; // Approximate subtotal
+          const zoneRate = matchedZone?.rates?.[0];
+          const freeThreshold = zoneRate?.free_threshold || null;
+          const originalRate = Number(zoneRate?.rate_amount || 0);
+          const meetsThreshold = freeThreshold !== null && subtotal >= freeThreshold;
+          const wasFreeShipping = charged === 0 && meetsThreshold;
+          const discountApplied = wasFreeShipping ? originalRate : 0;
+
           allOrders.push({
             id: order.id.toString(),
             orderNumber: `WC-${order.id}`,
@@ -161,6 +194,12 @@ export const useShippingLossDetails = (params: UseShippingLossDetailsParams) => 
             createdAt: order.created_at!,
             shippingAddress: shippingAddr,
             hasStallionCost,
+            wasFreeShipping,
+            discountApplied,
+            originalRate,
+            meetsThreshold,
+            freeShippingThreshold: freeThreshold,
+            subtotal,
           });
         });
       }
@@ -209,6 +248,11 @@ export const useShippingLossDetails = (params: UseShippingLossDetailsParams) => 
       const torontoLossOrders = torontoOrders.filter((o) => o.difference > 0);
       const torontoGTALoss = torontoLossOrders.reduce((sum, o) => sum + o.difference, 0);
 
+      // Free shipping stats
+      const freeShippingOrders = allOrders.filter((o) => o.wasFreeShipping);
+      const totalDiscountsGiven = freeShippingOrders.reduce((sum, o) => sum + o.discountApplied, 0);
+      const avgDiscount = freeShippingOrders.length > 0 ? totalDiscountsGiven / freeShippingOrders.length : 0;
+
       return {
         orders: filteredOrders,
         stats: {
@@ -218,6 +262,9 @@ export const useShippingLossDetails = (params: UseShippingLossDetailsParams) => 
           biggestLoss,
           torontoGTALoss,
           torontoGTAOrders: torontoLossOrders.length,
+          totalDiscountsGiven,
+          freeShippingOrders: freeShippingOrders.length,
+          avgDiscount,
         },
       };
     },

@@ -165,6 +165,10 @@ export function StallionFulfillmentDialog({ order, open, onClose, onSuccess }: S
       // Get shipping label
       const label = await getLabel(shipment.id);
 
+      // Find the selected rate to get actual cost
+      const selectedRateDetails = rates.find(r => r.service === selectedRate);
+      const actualStallionCost = selectedRateDetails?.rate || 0;
+
       // Update order in the correct database table
       const tableName = order.source === 'stripe' ? 'orders' : 'woocommerce_orders';
       await supabase
@@ -175,6 +179,7 @@ export function StallionFulfillmentDialog({ order, open, onClose, onSuccess }: S
           stallion_shipment_id: shipment.id,
           shipping_label_url: label.url,
           fulfilled_at: new Date().toISOString(),
+          stallion_cost: actualStallionCost,
           status: order.source === 'stripe' ? 'processing' : 'completed'
         })
         .eq('id', String(order.id));
