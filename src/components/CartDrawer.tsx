@@ -271,7 +271,7 @@ const CartDrawer = () => {
                     </div>
                   )}
 
-                  {/* Free Shipping Progress for Toronto - Only for Toronto/GTA customers */}
+                  {/* Free Shipping Progress for Toronto - Only show when shipping is actually free or progress bar */}
                   {isGTA && (
                     <>
                       {discountedSubtotal < 50 ? (
@@ -280,7 +280,7 @@ const CartDrawer = () => {
                             <Truck className="h-4 w-4 text-[hsl(var(--brand-pink))] mt-0.5 flex-shrink-0" />
                             <div className="flex-1">
                               <p className="text-xs font-semibold text-[hsl(var(--brand-pink))] mb-1">
-                                Toronto Free Shipping
+                                Toronto/GTA Free Shipping
                               </p>
                               <p className="text-xs text-gray-700">
                                 Spend <span className="font-bold text-[hsl(var(--brand-pink))]">
@@ -296,7 +296,7 @@ const CartDrawer = () => {
                             />
                           </div>
                         </div>
-                      ) : (
+                      ) : estimatedShipping === 0 ? (
                         <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-500/30 rounded-lg p-3 mb-4">
                           <div className="flex items-center gap-2">
                             <div className="flex-shrink-0 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
@@ -307,12 +307,12 @@ const CartDrawer = () => {
                                 🎉 FREE Shipping Unlocked!
                               </p>
                               <p className="text-xs text-green-600">
-                                For Toronto orders over $50
+                                For Toronto/GTA orders over $50
                               </p>
                             </div>
                           </div>
                         </div>
-                      )}
+                      ) : null}
                     </>
                   )}
 
