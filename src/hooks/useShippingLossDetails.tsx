@@ -16,6 +16,7 @@ interface ShippingLossOrder {
   difference: number;
   createdAt: string;
   shippingAddress: any;
+  hasStallionCost: boolean;
 }
 
 interface ShippingLossStats {
@@ -58,21 +59,21 @@ export const useShippingLossDetails = (params: UseShippingLossDetailsParams) => 
 
       const zones = (zonesData || []) as ShippingZone[];
 
-      // Fetch Stripe orders
+      // Fetch Stripe orders (including those without stallion_cost)
       const { data: stripeOrders } = await supabase
         .from("orders")
         .select("*")
         .gte("created_at", startDate.toISOString())
         .lte("created_at", endDate.toISOString())
-        .not("stallion_cost", "is", null);
+        .order("created_at", { ascending: false });
 
-      // Fetch WooCommerce orders
+      // Fetch WooCommerce orders (including those without stallion_cost)
       const { data: wooOrders } = await supabase
         .from("woocommerce_orders")
         .select("*")
         .gte("created_at", startDate.toISOString())
         .lte("created_at", endDate.toISOString())
-        .not("stallion_cost", "is", null);
+        .order("created_at", { ascending: false });
 
       // Process orders
       const allOrders: ShippingLossOrder[] = [];
@@ -91,6 +92,7 @@ export const useShippingLossDetails = (params: UseShippingLossDetailsParams) => 
           };
 
           const matchedZone = matchAddressToZone(address, zones);
+          const hasStallionCost = order.stallion_cost != null;
           const actualCost = Number(order.stallion_cost || 0);
           const charged = Number(order.shipping || 0);
           const difference = actualCost - charged;
@@ -108,6 +110,7 @@ export const useShippingLossDetails = (params: UseShippingLossDetailsParams) => 
             difference,
             createdAt: order.created_at!,
             shippingAddress: shippingAddr,
+            hasStallionCost,
           });
         });
       }
@@ -126,6 +129,7 @@ export const useShippingLossDetails = (params: UseShippingLossDetailsParams) => 
           };
 
           const matchedZone = matchAddressToZone(address, zones);
+          const hasStallionCost = order.stallion_cost != null;
           const actualCost = Number(order.stallion_cost || 0);
           
           // Extract shipping cost from line_items or meta_data
@@ -156,6 +160,7 @@ export const useShippingLossDetails = (params: UseShippingLossDetailsParams) => 
             difference,
             createdAt: order.created_at!,
             shippingAddress: shippingAddr,
+            hasStallionCost,
           });
         });
       }

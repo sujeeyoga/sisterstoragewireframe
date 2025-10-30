@@ -3,6 +3,7 @@ import { useShippingLossDetails } from "@/hooks/useShippingLossDetails";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -19,7 +20,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle, TrendingDown, TrendingUp, Package, DollarSign } from "lucide-react";
+import { AlertCircle, TrendingDown, TrendingUp, Package, DollarSign, Info } from "lucide-react";
 import { format } from "date-fns";
 
 interface ShippingLossTrackerProps {
@@ -164,7 +165,16 @@ export const ShippingLossTracker = ({ startDate, endDate }: ShippingLossTrackerP
         <Alert>
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
-            No shipping cost data available yet. Stallion costs will be tracked automatically when you fulfill orders through the Stallion integration.
+            No orders found in the selected date range.
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {hasData && stats.ordersWithLoss === 0 && (
+        <Alert>
+          <Info className="h-4 w-4" />
+          <AlertDescription>
+            Stallion costs will be tracked automatically when you fulfill orders through the Stallion integration. Orders shown below are missing actual shipping cost data.
           </AlertDescription>
         </Alert>
       )}
@@ -240,10 +250,18 @@ export const ShippingLossTracker = ({ startDate, endDate }: ShippingLossTrackerP
                   orders.map((order) => {
                     const isLoss = order.difference > 0;
                     const isGain = order.difference < 0;
+                    const missingCost = !order.hasStallionCost;
                     return (
                       <TableRow key={order.id}>
                         <TableCell className="font-medium">
-                          {order.orderNumber}
+                          <div className="flex items-center gap-2">
+                            {order.orderNumber}
+                            {missingCost && (
+                              <Badge variant="outline" className="text-xs">
+                                No Cost Data
+                              </Badge>
+                            )}
+                          </div>
                         </TableCell>
                         <TableCell>
                           <div className="flex flex-col">
@@ -262,33 +280,41 @@ export const ShippingLossTracker = ({ startDate, endDate }: ShippingLossTrackerP
                           </div>
                         </TableCell>
                         <TableCell className="text-sm">{order.zone}</TableCell>
-                        <TableCell className="text-right font-medium text-red-600">
-                          ${order.actualCost.toFixed(2)}
+                        <TableCell className="text-right font-medium">
+                          {missingCost ? (
+                            <span className="text-muted-foreground">-</span>
+                          ) : (
+                            <span className="text-red-600">${order.actualCost.toFixed(2)}</span>
+                          )}
                         </TableCell>
                         <TableCell className="text-right font-medium text-green-600">
                           ${order.charged.toFixed(2)}
                         </TableCell>
                         <TableCell className="text-right">
-                          <div className="flex items-center justify-end gap-1">
-                            {isLoss && (
-                              <TrendingDown className="h-4 w-4 text-red-600" />
-                            )}
-                            {isGain && (
-                              <TrendingUp className="h-4 w-4 text-green-600" />
-                            )}
-                            <span
-                              className={`font-bold ${
-                                isLoss
-                                  ? "text-red-600"
-                                  : isGain
-                                  ? "text-green-600"
-                                  : "text-muted-foreground"
-                              }`}
-                            >
-                              {isLoss ? "-" : isGain ? "+" : ""}$
-                              {Math.abs(order.difference).toFixed(2)}
-                            </span>
-                          </div>
+                          {missingCost ? (
+                            <span className="text-muted-foreground text-sm">No data</span>
+                          ) : (
+                            <div className="flex items-center justify-end gap-1">
+                              {isLoss && (
+                                <TrendingDown className="h-4 w-4 text-red-600" />
+                              )}
+                              {isGain && (
+                                <TrendingUp className="h-4 w-4 text-green-600" />
+                              )}
+                              <span
+                                className={`font-bold ${
+                                  isLoss
+                                    ? "text-red-600"
+                                    : isGain
+                                    ? "text-green-600"
+                                    : "text-muted-foreground"
+                                }`}
+                              >
+                                {isLoss ? "-" : isGain ? "+" : ""}$
+                                {Math.abs(order.difference).toFixed(2)}
+                              </span>
+                            </div>
+                          )}
                         </TableCell>
                       </TableRow>
                     );
