@@ -8,6 +8,9 @@ interface Order {
   id: number | string;
   status: string;
   total: number;
+  subtotal?: number;
+  shipping_cost?: number;
+  tax?: number;
   currency?: string;
   date_created: string;
   billing: {
@@ -60,6 +63,18 @@ export function OrderCard({ order, onView, isSelected, onSelect, selectionMode, 
   const customerName = `${order.billing.first_name || ''} ${order.billing.last_name || ''}`.trim() || 'Guest';
   const contact = order.billing.phone || order.billing.email || '';
   const itemCount = order.line_items?.length || 0;
+  
+  // Calculate shipping from available data
+  const shipping = order.shipping_cost !== undefined 
+    ? order.shipping_cost 
+    : (order.subtotal !== undefined && order.tax !== undefined)
+      ? order.total - order.subtotal - order.tax
+      : undefined;
+  
+  const subtotal = order.subtotal !== undefined
+    ? order.subtotal
+    : order.line_items?.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  
   const total = `${order.currency || 'USD'} $${Number(order.total || 0).toFixed(2)}`;
   const relativeTime = getRelativeTime(order.date_created);
   
@@ -217,6 +232,11 @@ export function OrderCard({ order, onView, isSelected, onSelect, selectionMode, 
           
           <div className="text-[14px] text-muted-foreground">
             {itemCount} {itemCount === 1 ? 'item' : 'items'} • {total}
+            {shipping !== undefined && (
+              <span className="ml-1 text-xs">
+                (${subtotal?.toFixed(2)} + ${shipping.toFixed(2)} shipping)
+              </span>
+            )}
           </div>
           
           <div className="text-[13px] text-muted-foreground flex items-center gap-1">
