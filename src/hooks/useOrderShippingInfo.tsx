@@ -13,6 +13,7 @@ interface ShippingInfo {
     rateAmount: number;
     isFree: boolean;
     freeThreshold: number | null;
+    source?: string;
   } | null;
   calculatedShipping: number;
 }
@@ -59,6 +60,7 @@ export const useOrderShippingInfo = (shippingAddress: any, orderTotal: number) =
             rateAmount: data.appliedRate.rate_amount,
             isFree: data.appliedRate.is_free,
             freeThreshold: data.appliedRate.free_threshold || null,
+            source: data.source || 'database',
           } : null,
           calculatedShipping: data.appliedRate?.rate_amount || 0,
         };

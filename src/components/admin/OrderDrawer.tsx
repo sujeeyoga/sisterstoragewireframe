@@ -286,10 +286,50 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
             <Info className="h-4 w-4" />
             <h3 className="text-lg font-semibold">Shipping Information</h3>
           </div>
+          
+          {/* Actual Charged Shipping */}
+          <div className="rounded-lg border-2 border-primary/20 bg-primary/5 p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <Label className="text-sm font-semibold text-primary">Actual Charged Shipping</Label>
+                <div className="text-xs text-muted-foreground mt-1">Amount customer paid at checkout</div>
+              </div>
+              <div className="text-2xl font-bold text-primary">
+                {(() => {
+                  const actualShipping = (order.total - order.line_items?.reduce((sum: number, item: any) => 
+                    sum + (item.quantity * item.price), 0
+                  ) - ((order as any).tax || 0));
+                  return `$${actualShipping.toFixed(2)} ${order.currency || 'USD'}`;
+                })()}
+              </div>
+            </div>
+          </div>
+
+          {/* Current Rate Information */}
           {isLoadingShipping ? (
-            <div className="text-sm text-muted-foreground">Loading shipping details...</div>
+            <div className="text-sm text-muted-foreground">Loading current shipping rates...</div>
           ) : shippingInfo?.zoneName ? (
             <div className="space-y-3 rounded-lg border bg-muted/50 p-4">
+              <div className="flex items-center justify-between">
+                <Label className="text-xs text-muted-foreground">Current Rate (for reference)</Label>
+                {(() => {
+                  const actualShipping = (order.total - order.line_items?.reduce((sum: number, item: any) => 
+                    sum + (item.quantity * item.price), 0
+                  ) - ((order as any).tax || 0));
+                  const currentRate = shippingInfo.rateDetails?.rateAmount || 0;
+                  const difference = Math.abs(currentRate - actualShipping);
+                  
+                  if (difference > 0.01) {
+                    return (
+                      <Badge variant={currentRate > actualShipping ? "destructive" : "default"}>
+                        {currentRate > actualShipping ? `+$${difference.toFixed(2)} higher` : `-$${difference.toFixed(2)} lower`}
+                      </Badge>
+                    );
+                  }
+                  return <Badge variant="outline">Same as charged</Badge>;
+                })()}
+              </div>
+              
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label className="text-xs text-muted-foreground">Shipping Zone</Label>
@@ -321,13 +361,13 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
               
               {shippingInfo.rateDetails && (
                 <div className="pt-3 border-t space-y-2">
-                  <Label className="text-xs text-muted-foreground">Rate Applied</Label>
+                  <Label className="text-xs text-muted-foreground">Current Rate Method</Label>
                   <div className="flex items-center justify-between">
                     <div>
                       <div className="font-medium">{shippingInfo.rateDetails.methodName}</div>
-                      {shippingInfo.rateDetails.isFree && shippingInfo.rateDetails.freeThreshold && (
-                        <div className="text-sm text-green-600 dark:text-green-400">
-                          Free shipping (threshold: ${shippingInfo.rateDetails.freeThreshold})
+                      {shippingInfo.rateDetails.source && (
+                        <div className="text-xs text-muted-foreground mt-1">
+                          Source: {shippingInfo.rateDetails.source === 'stallion' ? 'Stallion API (CAD)' : 'Database'}
                         </div>
                       )}
                     </div>
@@ -345,7 +385,7 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
           ) : (
             <Alert>
               <AlertDescription>
-                No shipping zone matched. Fallback rate may have been applied.
+                No shipping zone matched. Fallback rate may have been applied at checkout.
               </AlertDescription>
             </Alert>
           )}
