@@ -247,6 +247,29 @@ serve(async (req) => {
         console.error("Error storing order:", orderError);
       } else {
         console.log("Order stored successfully");
+        
+        // Mark any abandoned carts as recovered
+        const { data: abandonedCarts, error: cartFetchError } = await supabase
+          .from('abandoned_carts')
+          .select('id')
+          .eq('email', customerEmail)
+          .is('recovered_at', null);
+        
+        if (cartFetchError) {
+          console.error("Error fetching abandoned carts:", cartFetchError);
+        } else if (abandonedCarts && abandonedCarts.length > 0) {
+          const cartIds = abandonedCarts.map(cart => cart.id);
+          const { error: updateError } = await supabase
+            .from('abandoned_carts')
+            .update({ recovered_at: new Date().toISOString() })
+            .in('id', cartIds);
+          
+          if (updateError) {
+            console.error("Error updating abandoned carts:", updateError);
+          } else {
+            console.log(`Marked ${abandonedCarts.length} abandoned cart(s) as recovered for ${customerEmail}`);
+          }
+        }
       }
     }
 
