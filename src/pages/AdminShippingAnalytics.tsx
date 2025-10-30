@@ -3,8 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useShippingAnalytics } from '@/hooks/useShippingAnalytics';
 import { DollarSign, Package, Globe, Gift, TrendingUp, TrendingDown, AlertCircle } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { subDays } from 'date-fns';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
+import { ShippingLossTracker } from '@/components/admin/ShippingLossTracker';
 
 const COLORS = ['#8B5CF6', '#EC4899', '#F59E0B', '#10B981', '#3B82F6', '#6366F1'];
 
@@ -20,6 +22,7 @@ const getCountryFlag = (countryCode: string): string => {
 };
 
 export default function AdminShippingAnalytics() {
+  const [activeTab, setActiveTab] = useState("overview");
   const [dateRange] = useState({
     start: subDays(new Date(), 30),
     end: new Date()
@@ -49,17 +52,24 @@ export default function AdminShippingAnalytics() {
         <p className="text-muted-foreground">Last 30 days shipping performance</p>
       </div>
 
-      {!hasStallionData && (
-        <Alert>
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            Stallion cost tracking is not yet configured. The profit/loss metrics will show once you start tracking actual Stallion shipping costs in order records.
-          </AlertDescription>
-        </Alert>
-      )}
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList>
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="loss-tracker">Loss Tracker</TabsTrigger>
+        </TabsList>
 
-      {/* Key Metrics */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-6">
+        <TabsContent value="overview" className="space-y-6 mt-6">
+          {!hasStallionData && (
+            <Alert>
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                Stallion cost tracking is not yet configured. The profit/loss metrics will show once you start tracking actual Stallion shipping costs in order records.
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {/* Key Metrics */}
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -164,100 +174,106 @@ export default function AdminShippingAnalytics() {
               {analytics.profitMargin.toFixed(1)}% margin
             </p>
           </CardContent>
-        </Card>
-      </div>
-
-      {/* Charts */}
-      <div className="grid gap-4 md:grid-cols-2">
-        {/* Shipping by Country - Bar Chart */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Shipping Revenue by Country</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={analytics.shippingByCountry.slice(0, 10)}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis 
-                  dataKey="country" 
-                  tick={{ fontSize: 12 }}
-                  tickFormatter={(value) => getCountryFlag(value)}
-                />
-                <YAxis />
-                <Tooltip 
-                  formatter={(value: number) => [`$${value.toFixed(2)}`, 'Revenue']}
-                  labelFormatter={(label) => `${getCountryFlag(label)} ${label}`}
-                />
-                <Bar dataKey="revenue" fill="#8B5CF6" />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
-        {/* Orders by Country - Pie Chart */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Order Distribution by Country</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={analytics.shippingByCountry.slice(0, 6)}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={(entry) => `${getCountryFlag(entry.country)} ${entry.orders}`}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="orders"
-                >
-                  {analytics.shippingByCountry.slice(0, 6).map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip 
-                  formatter={(value: number, name, entry: any) => [
-                    `${value} orders`,
-                    `${getCountryFlag(entry.payload.country)} ${entry.payload.country}`
-                  ]}
-                />
-                <Legend 
-                  formatter={(value, entry: any) => `${getCountryFlag(entry.payload.country)} ${entry.payload.country}`}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Top Countries Table */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Top Shipping Destinations</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-2">
-            {analytics.shippingByCountry.slice(0, 10).map((country, index) => (
-              <div key={country.country} className="flex items-center justify-between p-3 border rounded-lg">
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl">{getCountryFlag(country.country)}</span>
-                  <div>
-                    <p className="font-medium">{country.country}</p>
-                    <p className="text-sm text-muted-foreground">{country.orders} orders</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="font-bold">${country.revenue.toFixed(2)}</p>
-                  <p className="text-sm text-muted-foreground">
-                    ${(country.revenue / country.orders).toFixed(2)} avg
-                  </p>
-                </div>
-              </div>
-            ))}
+          </Card>
           </div>
-        </CardContent>
-      </Card>
+
+          {/* Charts */}
+          <div className="grid gap-4 md:grid-cols-2">
+            {/* Shipping by Country - Bar Chart */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Shipping Revenue by Country</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={analytics.shippingByCountry.slice(0, 10)}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis 
+                      dataKey="country" 
+                      tick={{ fontSize: 12 }}
+                      tickFormatter={(value) => getCountryFlag(value)}
+                    />
+                    <YAxis />
+                    <Tooltip 
+                      formatter={(value: number) => [`$${value.toFixed(2)}`, 'Revenue']}
+                      labelFormatter={(label) => `${getCountryFlag(label)} ${label}`}
+                    />
+                    <Bar dataKey="revenue" fill="#8B5CF6" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            {/* Orders by Country - Pie Chart */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Order Distribution by Country</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={analytics.shippingByCountry.slice(0, 6)}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={(entry) => `${getCountryFlag(entry.country)} ${entry.orders}`}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="orders"
+                    >
+                      {analytics.shippingByCountry.slice(0, 6).map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip 
+                      formatter={(value: number, name, entry: any) => [
+                        `${value} orders`,
+                        `${getCountryFlag(entry.payload.country)} ${entry.payload.country}`
+                      ]}
+                    />
+                    <Legend 
+                      formatter={(value, entry: any) => `${getCountryFlag(entry.payload.country)} ${entry.payload.country}`}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Top Countries Table */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Top Shipping Destinations</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                {analytics.shippingByCountry.slice(0, 10).map((country, index) => (
+                  <div key={country.country} className="flex items-center justify-between p-3 border rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl">{getCountryFlag(country.country)}</span>
+                      <div>
+                        <p className="font-medium">{country.country}</p>
+                        <p className="text-sm text-muted-foreground">{country.orders} orders</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-bold">${country.revenue.toFixed(2)}</p>
+                      <p className="text-sm text-muted-foreground">
+                        ${(country.revenue / country.orders).toFixed(2)} avg
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="loss-tracker" className="mt-6">
+          <ShippingLossTracker startDate={dateRange.start} endDate={dateRange.end} />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
