@@ -282,11 +282,12 @@ export const ShippingLossTracker = ({ startDate, endDate }: ShippingLossTrackerP
           <div className="rounded-md border">
             <Table>
               <TableHeader>
-               <TableRow>
+                <TableRow>
                   <TableHead>Order #</TableHead>
                   <TableHead>Customer</TableHead>
                   <TableHead>Location</TableHead>
                   <TableHead>Zone</TableHead>
+                  <TableHead>Status</TableHead>
                   <TableHead className="text-right">Actual Cost</TableHead>
                   <TableHead className="text-right">Charged</TableHead>
                   <TableHead className="text-right">Discount</TableHead>
@@ -296,7 +297,7 @@ export const ShippingLossTracker = ({ startDate, endDate }: ShippingLossTrackerP
               <TableBody>
                 {orders.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={8} className="text-center text-muted-foreground">
+                    <TableCell colSpan={9} className="text-center text-muted-foreground">
                       No orders found matching your filters
                     </TableCell>
                   </TableRow>
@@ -352,6 +353,14 @@ export const ShippingLossTracker = ({ startDate, endDate }: ShippingLossTrackerP
                             </div>
                           </TableCell>
                           <TableCell className="text-sm">{order.zone}</TableCell>
+                          <TableCell>
+                            <Badge 
+                              variant={order.fulfillmentStatus === "fulfilled" ? "default" : "outline"}
+                              className={order.fulfillmentStatus === "fulfilled" ? "bg-green-600 hover:bg-green-700" : ""}
+                            >
+                              {order.fulfillmentStatus === "fulfilled" ? "Fulfilled" : "Unfulfilled"}
+                            </Badge>
+                          </TableCell>
                           <TableCell className="text-right font-medium">
                             {missingCost ? (
                               <span className="text-muted-foreground">-</span>
