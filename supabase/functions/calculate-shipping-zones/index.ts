@@ -115,6 +115,9 @@ const getStallionRates = async (address: Address, supabase: any): Promise<any> =
   try {
     console.log('Fetching Stallion rates for address:', address);
     
+    // Use a generic address if street address not provided
+    const addressLine = '123 Main St'; // Placeholder since we only have city/state/zip
+    
     const { data, error } = await supabase.functions.invoke('stallion-express', {
       body: {
         action: 'get-rates',
@@ -122,7 +125,7 @@ const getStallionRates = async (address: Address, supabase: any): Promise<any> =
           destination: {
             name: 'Customer',
             company: '',
-            address1: address.city || '',
+            address1: addressLine,
             city: address.city || '',
             province: address.province || '',
             country: address.country || 'US',
@@ -135,7 +138,7 @@ const getStallionRates = async (address: Address, supabase: any): Promise<any> =
             height: 4,
             weight: 2,
             insurance: 0,
-            description: 'Package'
+            description: 'Bangle Storage Package'
           }
         }
       }
