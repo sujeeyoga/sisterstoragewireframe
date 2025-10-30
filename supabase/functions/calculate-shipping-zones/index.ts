@@ -108,6 +108,73 @@ const matchAddressToZone = (
   return bestMatch ? { zone: bestMatch.zone, matchedRule: bestMatch.matchedRule } : null;
 };
 
+/**
+ * Calls Stallion API to get real-time shipping rates
+ */
+const getStallionRates = async (address: Address, supabase: any): Promise<any> => {
+  try {
+    console.log('Fetching Stallion rates for address:', address);
+    
+    const { data, error } = await supabase.functions.invoke('stallion-express', {
+      body: {
+        action: 'get-rates',
+        data: {
+          destination: {
+            name: 'Customer',
+            company: '',
+            address1: address.city || '',
+            city: address.city || '',
+            province: address.province || '',
+            country: address.country || 'US',
+            postal_code: address.postalCode || '',
+            phone: ''
+          },
+          package: {
+            length: 12,
+            width: 10,
+            height: 4,
+            weight: 2,
+            insurance: 0,
+            description: 'Package'
+          }
+        }
+      }
+    });
+
+    if (error) {
+      console.error('Stallion API error:', error);
+      return null;
+    }
+
+    console.log('Stallion rates response:', data);
+    return data;
+  } catch (error) {
+    console.error('Error calling Stallion API:', error);
+    return null;
+  }
+};
+
+/**
+ * Transforms Stallion rates to our rate format
+ */
+const transformStallionRates = (stallionData: any, subtotal: number): any[] => {
+  if (!stallionData?.quotes || !Array.isArray(stallionData.quotes)) {
+    console.log('No quotes in Stallion response');
+    return [];
+  }
+
+  return stallionData.quotes
+    .filter((quote: any) => quote.price && quote.service_name)
+    .map((quote: any, index: number) => ({
+      id: `stallion_${quote.service_code || index}`,
+      method_name: quote.service_name,
+      rate_amount: parseFloat(quote.price),
+      is_free: false,
+      free_threshold: null,
+      display_order: index + 1
+    }));
+};
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -159,24 +226,44 @@ Deno.serve(async (req) => {
     if (matchResult) {
       const { zone: matchedZone, matchedRule } = matchResult;
       
-      // Calculate applicable rates
-      const applicableRates = matchedZone.rates.map(rate => {
-        // Check if free shipping threshold is met (applies to any rate type)
-        const isFree = 
-          rate.free_threshold !== null && 
-          subtotal >= rate.free_threshold;
-        
-        return {
-          id: rate.id,
-          method_name: rate.method_name,
-          rate_amount: isFree ? 0 : rate.rate_amount,
-          is_free: isFree,
-          free_threshold: rate.free_threshold,
-          display_order: rate.display_order,
-        };
-      });
+      let applicableRates = [];
+      let rateSource = 'database';
 
-      console.log('Matched zone:', matchedZone.name, 'rates:', applicableRates);
+      // For US zones, try to get real-time Stallion rates
+      const isUSZone = address.country?.toUpperCase() === 'US' || 
+                       matchedRule.rule_value?.toUpperCase() === 'US';
+
+      if (isUSZone) {
+        console.log('US zone detected, fetching Stallion rates...');
+        const stallionData = await getStallionRates(address, supabase);
+        
+        if (stallionData) {
+          applicableRates = transformStallionRates(stallionData, subtotal);
+          rateSource = 'stallion';
+          console.log('Using Stallion rates:', applicableRates);
+        }
+      }
+
+      // Fall back to database rates if Stallion failed or not US
+      if (applicableRates.length === 0) {
+        console.log('Using database rates');
+        applicableRates = matchedZone.rates.map(rate => {
+          const isFree = 
+            rate.free_threshold !== null && 
+            subtotal >= rate.free_threshold;
+          
+          return {
+            id: rate.id,
+            method_name: rate.method_name,
+            rate_amount: isFree ? 0 : rate.rate_amount,
+            is_free: isFree,
+            free_threshold: rate.free_threshold,
+            display_order: rate.display_order,
+          };
+        });
+      }
+
+      console.log('Matched zone:', matchedZone.name, 'rates:', applicableRates, 'source:', rateSource);
 
       return new Response(
         JSON.stringify({
@@ -193,6 +280,7 @@ Deno.serve(async (req) => {
           rates: applicableRates,
           appliedRate: applicableRates[0] || null,
           fallback_used: false,
+          rate_source: rateSource,
         }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
