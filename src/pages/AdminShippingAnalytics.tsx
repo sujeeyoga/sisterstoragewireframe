@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useShippingAnalytics } from '@/hooks/useShippingAnalytics';
-import { DollarSign, Package, Globe, Gift } from 'lucide-react';
+import { DollarSign, Package, Globe, Gift, TrendingUp, TrendingDown, AlertCircle } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { subDays } from 'date-fns';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 
@@ -38,6 +39,9 @@ export default function AdminShippingAnalytics() {
     ? Math.round((analytics.freeShippingOrders / analytics.totalOrders) * 100) 
     : 0;
 
+  const hasStallionData = analytics.ordersWithStallionCost > 0;
+  const isProfit = analytics.shippingProfit >= 0;
+
   return (
     <div className="space-y-6">
       <div>
@@ -45,8 +49,17 @@ export default function AdminShippingAnalytics() {
         <p className="text-muted-foreground">Last 30 days shipping performance</p>
       </div>
 
+      {!hasStallionData && (
+        <Alert>
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            Stallion cost tracking is not yet configured. The profit/loss metrics will show once you start tracking actual Stallion shipping costs in order records.
+          </AlertDescription>
+        </Alert>
+      )}
+
       {/* Key Metrics */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -111,6 +124,44 @@ export default function AdminShippingAnalytics() {
             </div>
             <p className="text-xs text-muted-foreground mt-1">
               Unique destinations
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              Stallion Costs
+            </CardTitle>
+            <Package className="h-4 w-4 text-red-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              ${analytics.totalStallionCost.toFixed(2)}
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              {analytics.ordersWithStallionCost} orders tracked
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className={isProfit ? 'border-green-200' : 'border-red-200'}>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              {isProfit ? 'Profit' : 'Loss'}
+            </CardTitle>
+            {isProfit ? (
+              <TrendingUp className="h-4 w-4 text-green-600" />
+            ) : (
+              <TrendingDown className="h-4 w-4 text-red-600" />
+            )}
+          </CardHeader>
+          <CardContent>
+            <div className={`text-2xl font-bold ${isProfit ? 'text-green-600' : 'text-red-600'}`}>
+              {isProfit ? '+' : ''}{analytics.shippingProfit >= 0 ? '$' : '-$'}{Math.abs(analytics.shippingProfit).toFixed(2)}
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              {analytics.profitMargin.toFixed(1)}% margin
             </p>
           </CardContent>
         </Card>

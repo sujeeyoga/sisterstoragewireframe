@@ -9,6 +9,10 @@ interface ShippingAnalytics {
   freeShippingOrders: number;
   countriesServed: number;
   shippingByCountry: { country: string; orders: number; revenue: number }[];
+  totalStallionCost: number;
+  shippingProfit: number;
+  profitMargin: number;
+  ordersWithStallionCost: number;
 }
 
 interface DateRange {
@@ -26,7 +30,7 @@ export function useShippingAnalytics({ start, end }: DateRange) {
       // Fetch Stripe orders
       const { data: stripeOrders, error: stripeError } = await supabase
         .from('orders')
-        .select('shipping, shipping_address')
+        .select('shipping, shipping_address, stallion_cost')
         .gte('created_at', startDate)
         .lte('created_at', endDate);
 
@@ -35,7 +39,7 @@ export function useShippingAnalytics({ start, end }: DateRange) {
       // Fetch WooCommerce orders
       const { data: wooOrders, error: wooError } = await supabase
         .from('woocommerce_orders')
-        .select('total, shipping')
+        .select('total, shipping, stallion_cost')
         .gte('date_created', startDate)
         .lte('date_created', endDate);
 
@@ -44,18 +48,25 @@ export function useShippingAnalytics({ start, end }: DateRange) {
       // Process Stripe orders
       const stripeData = (stripeOrders || []).map(o => ({
         shipping: Number(o.shipping || 0),
+        stallionCost: Number(o.stallion_cost || 0),
         country: (o.shipping_address as any)?.country || 'Unknown'
       }));
 
       // Process WooCommerce orders
       const wooData = (wooOrders || []).map(o => ({
         shipping: Number((o.shipping as any)?.total || 0),
+        stallionCost: Number(o.stallion_cost || 0),
         country: (o.shipping as any)?.country || 'Unknown'
       }));
 
       const allOrders = [...stripeData, ...wooData];
 
       const totalShippingRevenue = allOrders.reduce((sum, o) => sum + o.shipping, 0);
+      const totalStallionCost = allOrders.reduce((sum, o) => sum + o.stallionCost, 0);
+      const shippingProfit = totalShippingRevenue - totalStallionCost;
+      const profitMargin = totalShippingRevenue > 0 ? (shippingProfit / totalShippingRevenue) * 100 : 0;
+      const ordersWithStallionCost = allOrders.filter(o => o.stallionCost > 0).length;
+      
       const totalOrders = allOrders.length;
       const averageShippingCost = totalOrders > 0 ? totalShippingRevenue / totalOrders : 0;
       const freeShippingOrders = allOrders.filter(o => o.shipping === 0).length;
@@ -82,7 +93,11 @@ export function useShippingAnalytics({ start, end }: DateRange) {
         totalOrders,
         freeShippingOrders,
         countriesServed,
-        shippingByCountry
+        shippingByCountry,
+        totalStallionCost,
+        shippingProfit,
+        profitMargin,
+        ordersWithStallionCost
       };
     },
     refetchInterval: 60000,

@@ -160,6 +160,7 @@ export type Database = {
           shipping_address: Json | null
           shipping_label_url: string | null
           shipping_notification_sent_at: string | null
+          stallion_cost: number | null
           stallion_shipment_id: string | null
           status: string
           stripe_payment_intent_id: string | null
@@ -186,6 +187,7 @@ export type Database = {
           shipping_address?: Json | null
           shipping_label_url?: string | null
           shipping_notification_sent_at?: string | null
+          stallion_cost?: number | null
           stallion_shipment_id?: string | null
           status?: string
           stripe_payment_intent_id?: string | null
@@ -212,6 +214,7 @@ export type Database = {
           shipping_address?: Json | null
           shipping_label_url?: string | null
           shipping_notification_sent_at?: string | null
+          stallion_cost?: number | null
           stallion_shipment_id?: string | null
           status?: string
           stripe_payment_intent_id?: string | null
@@ -804,6 +807,7 @@ export type Database = {
           shipping: Json | null
           shipping_label_url: string | null
           shipping_notification_sent_at: string | null
+          stallion_cost: number | null
           stallion_shipment_id: string | null
           status: string
           total: number | null
@@ -826,6 +830,7 @@ export type Database = {
           shipping?: Json | null
           shipping_label_url?: string | null
           shipping_notification_sent_at?: string | null
+          stallion_cost?: number | null
           stallion_shipment_id?: string | null
           status: string
           total?: number | null
@@ -848,6 +853,7 @@ export type Database = {
           shipping?: Json | null
           shipping_label_url?: string | null
           shipping_notification_sent_at?: string | null
+          stallion_cost?: number | null
           stallion_shipment_id?: string | null
           status?: string
           total?: number | null
