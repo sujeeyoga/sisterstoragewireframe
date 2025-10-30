@@ -16,7 +16,7 @@ import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, L
 
 const AdminAnalytics = () => {
   const navigate = useNavigate();
-  const [dateRange, setDateRange] = useState<'7d' | '30d' | '90d' | '6m' | '12m' | '24m'>('30d');
+  const [dateRange, setDateRange] = useState<'today' | '7d' | '30d' | '90d' | '6m' | '12m' | '24m'>('today');
   const [customDateRange, setCustomDateRange] = useState<{
     from: Date | undefined;
     to: Date | undefined;
@@ -28,6 +28,9 @@ const AdminAnalytics = () => {
     let start: Date;
     
     switch (dateRange) {
+      case 'today':
+        start = startOfDay(end);
+        break;
       case '7d':
         start = subDays(end, 7);
         break;
@@ -47,7 +50,7 @@ const AdminAnalytics = () => {
         start = subDays(end, 730);
         break;
       default:
-        start = subDays(end, 30);
+        start = startOfDay(end);
     }
     
     return { start, end };
@@ -138,6 +141,7 @@ const AdminAnalytics = () => {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="today">Today</SelectItem>
                 <SelectItem value="7d">Last 7 days</SelectItem>
                 <SelectItem value="30d">Last 30 days</SelectItem>
                 <SelectItem value="90d">Last 90 days</SelectItem>
