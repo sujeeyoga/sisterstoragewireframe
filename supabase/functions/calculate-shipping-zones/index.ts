@@ -244,23 +244,38 @@ Deno.serve(async (req) => {
         }
       }
 
-      // Fall back to database rates if Stallion failed or not US
+      // Fall back to appropriate rates if Stallion failed
       if (applicableRates.length === 0) {
-        console.log('Using database rates');
-        applicableRates = matchedZone.rates.map(rate => {
-          const isFree = 
-            rate.free_threshold !== null && 
-            subtotal >= rate.free_threshold;
-          
-          return {
-            id: rate.id,
-            method_name: rate.method_name,
-            rate_amount: isFree ? 0 : rate.rate_amount,
-            is_free: isFree,
-            free_threshold: rate.free_threshold,
-            display_order: rate.display_order,
-          };
-        });
+        if (isUSZone) {
+          // US fallback: $25 standard shipping
+          console.log('Using US fallback rate: $25');
+          applicableRates = [{
+            id: 'us_fallback',
+            method_name: 'Standard Shipping',
+            rate_amount: 25,
+            is_free: false,
+            free_threshold: null,
+            display_order: 0,
+          }];
+          rateSource = 'us_fallback';
+        } else {
+          // Non-US: use database rates
+          console.log('Using database rates');
+          applicableRates = matchedZone.rates.map(rate => {
+            const isFree = 
+              rate.free_threshold !== null && 
+              subtotal >= rate.free_threshold;
+            
+            return {
+              id: rate.id,
+              method_name: rate.method_name,
+              rate_amount: isFree ? 0 : rate.rate_amount,
+              is_free: isFree,
+              free_threshold: rate.free_threshold,
+              display_order: rate.display_order,
+            };
+          });
+        }
       }
 
       console.log('Matched zone:', matchedZone.name, 'rates:', applicableRates, 'source:', rateSource);
