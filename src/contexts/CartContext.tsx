@@ -47,19 +47,6 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         console.error('Failed to parse cart from localStorage:', error);
         localStorage.removeItem('cart');
       }
-    } else {
-      // Add test items for development/testing
-      const testItems: CartItem[] = [
-        {
-          id: 'test-1',
-          name: 'Test Product',
-          price: 29.99,
-          image: '/placeholder.svg',
-          quantity: 1,
-          description: 'Test product for checkout testing'
-        }
-      ];
-      setItems(testItems);
     }
   }, []);
   
