@@ -19,6 +19,7 @@ interface Order {
   shipping: {
     address_1?: string;
     city?: string;
+    country?: string;
   };
   line_items: any[];
   payment_method_title?: string;
@@ -219,6 +220,12 @@ export function OrderCard({ order, onView, isSelected, onSelect, selectionMode, 
               <>
                 <span className="mx-1">•</span>
                 <span>{order.payment_method_title}</span>
+              </>
+            )}
+            {order.shipping?.country && (
+              <>
+                <span className="mx-1">•</span>
+                <span className="font-medium">{order.shipping.country}</span>
               </>
             )}
           </div>

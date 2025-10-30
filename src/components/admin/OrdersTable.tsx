@@ -213,6 +213,7 @@ export function OrdersTable() {
               <TableHead>Order</TableHead>
               <TableHead>Date</TableHead>
               <TableHead>Customer</TableHead>
+              <TableHead>Country</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Payment</TableHead>
               <TableHead className="text-right">Total</TableHead>
@@ -222,7 +223,7 @@ export function OrdersTable() {
           <TableBody>
             {filteredOrders?.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
                   No orders found. Try adjusting your filters.
                 </TableCell>
               </TableRow>
@@ -242,6 +243,9 @@ export function OrdersTable() {
                         {order.billing?.email}
                       </div>
                     </div>
+                  </TableCell>
+                  <TableCell className="text-sm font-medium">
+                    {order.shipping?.country || 'N/A'}
                   </TableCell>
                   <TableCell>{getStatusBadge(order.status)}</TableCell>
                   <TableCell className="text-sm">
