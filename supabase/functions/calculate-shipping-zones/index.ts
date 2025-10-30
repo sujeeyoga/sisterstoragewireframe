@@ -284,10 +284,10 @@ Deno.serve(async (req) => {
           
           // Check if this is the GTA zone and free shipping applies
           const isGTAZone = matchedZone.id === GTA_ZONE_ID;
-          const gtaFreeShipping = isGTAZone && subtotal >= 50;
+          const gtaFreeShipping = isGTAZone && subtotal >= 75;
           
           if (gtaFreeShipping) {
-            console.log('🎉 GTA Free Shipping unlocked! (subtotal >= $50, matched to GTA zone)');
+            console.log('🎉 GTA Free Shipping unlocked! (subtotal >= $75, matched to GTA zone)');
           }
           
           applicableRates = matchedZone.rates.map(rate => {
