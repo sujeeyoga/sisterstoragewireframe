@@ -62,6 +62,15 @@ const getRulePriority = (ruleType: string): number => {
   return priorities[ruleType as keyof typeof priorities] || 0;
 };
 
+/**
+ * Extracts country codes from zone rules for pre-validation
+ */
+const getZoneCountries = (zone: ShippingZone): string[] => {
+  return zone.rules
+    .filter(r => r.rule_type === 'country')
+    .map(r => r.rule_value.toUpperCase().trim());
+};
+
 // GTA zone ID - identifies the zone that should get free shipping over $50
 const GTA_ZONE_ID = 'aa000000-0000-0000-0000-000000000001';
 
@@ -102,6 +111,33 @@ const matchAddressToZone = (
       continue;
     }
     
+    // CRITICAL: Country pre-validation to prevent cross-border city name collisions
+    // Before checking any rules, validate that the address country matches zone requirements
+    const zoneCountries = getZoneCountries(zone);
+    if (zoneCountries.length > 0 && !zoneCountries.includes('*')) {
+      const addressCountry = address.country?.toUpperCase().trim();
+      
+      if (!addressCountry || !zoneCountries.includes(addressCountry)) {
+        // Country mismatch - skip this zone entirely to prevent false matches
+        console.log(`🚫 Zone "${zone.name}" rejected - country mismatch:`, {
+          zoneCountries,
+          addressCountry,
+          address: {
+            city: address.city,
+            province: address.province,
+            postalCode: address.postalCode
+          }
+        });
+        continue; // Skip to next zone
+      }
+      
+      console.log(`✅ Zone "${zone.name}" country validated:`, {
+        country: addressCountry,
+        zoneCountries
+      });
+    }
+    
+    // Country is valid (or zone has no country restriction), proceed with rule matching
     for (const rule of zone.rules) {
       if (matchesRule(address, rule)) {
         const rulePriority = getRulePriority(rule.rule_type);
