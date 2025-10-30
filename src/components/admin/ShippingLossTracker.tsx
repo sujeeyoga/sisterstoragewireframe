@@ -284,7 +284,7 @@ export const ShippingLossTracker = ({ startDate, endDate }: ShippingLossTrackerP
               <TableHeader>
                 <TableRow>
                   <TableHead>Order #</TableHead>
-                  <TableHead>Customer</TableHead>
+                  <TableHead>Details</TableHead>
                   <TableHead>Location</TableHead>
                   <TableHead>Zone</TableHead>
                   <TableHead>Status</TableHead>
@@ -339,9 +339,11 @@ export const ShippingLossTracker = ({ startDate, endDate }: ShippingLossTrackerP
                           </TableCell>
                           <TableCell>
                             <div className="flex flex-col">
-                              <span className="text-sm">{order.customerName}</span>
+                              <span className="text-sm font-mono text-xs">
+                                {order.orderNumber}
+                              </span>
                               <span className="text-xs text-muted-foreground">
-                                {order.customerEmail}
+                                Click to view
                               </span>
                             </div>
                           </TableCell>
