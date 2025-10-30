@@ -229,8 +229,8 @@ export const useShippingLossDetails = (params: UseShippingLossDetailsParams) => 
         );
       }
 
-      // Sort by highest loss first
-      filteredOrders.sort((a, b) => b.difference - a.difference);
+      // Sort by latest orders first
+      filteredOrders.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
       // Calculate stats
       const ordersWithLoss = filteredOrders.filter((o) => o.difference > 0);
