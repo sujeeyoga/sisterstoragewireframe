@@ -32,7 +32,10 @@ import {
   ShoppingCart,
   TrendingUp,
   DollarSign,
-  Package
+  Package,
+  Download,
+  X,
+  Check
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { subDays } from 'date-fns';
@@ -53,6 +56,8 @@ const AdminAbandonedCheckouts = () => {
   const [selectedCart, setSelectedCart] = useState<any>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isSendingReminder, setIsSendingReminder] = useState(false);
+  const [selectedCartIds, setSelectedCartIds] = useState<Set<string>>(new Set());
+  const [isPerformingBulkAction, setIsPerformingBulkAction] = useState(false);
 
   const dateRangeValues = useMemo(() => {
     const end = new Date();
@@ -127,6 +132,165 @@ const AdminAbandonedCheckouts = () => {
     }
   };
 
+  const handleBulkClose = async () => {
+    if (selectedCartIds.size === 0) return;
+    
+    setIsPerformingBulkAction(true);
+    try {
+      const { error } = await supabase
+        .from('abandoned_carts')
+        .update({ closed_at: new Date().toISOString() })
+        .in('id', Array.from(selectedCartIds));
+
+      if (error) throw error;
+
+      toast({
+        title: 'Carts Closed',
+        description: `${selectedCartIds.size} cart(s) closed successfully`,
+      });
+
+      setSelectedCartIds(new Set());
+      refetchCarts();
+    } catch (error: any) {
+      console.error('Failed to close carts:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to close selected carts',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsPerformingBulkAction(false);
+    }
+  };
+
+  const handleBulkSendReminders = async () => {
+    if (selectedCartIds.size === 0) return;
+    
+    setIsPerformingBulkAction(true);
+    try {
+      const selectedCarts = carts?.filter(c => selectedCartIds.has(c.id)) || [];
+      let successCount = 0;
+
+      for (const cart of selectedCarts) {
+        const { error } = await supabase.functions.invoke('send-abandoned-cart-email', {
+          body: {
+            email: cart.email,
+            cartItems: cart.cart_items,
+            subtotal: cart.subtotal,
+            sessionId: cart.session_id,
+          },
+        });
+
+        if (!error) successCount++;
+      }
+
+      toast({
+        title: 'Reminders Sent',
+        description: `${successCount} of ${selectedCartIds.size} reminder(s) sent successfully`,
+      });
+
+      setSelectedCartIds(new Set());
+      refetchCarts();
+    } catch (error: any) {
+      console.error('Failed to send bulk reminders:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to send reminders',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsPerformingBulkAction(false);
+    }
+  };
+
+  const handleExportCSV = () => {
+    if (!carts || carts.length === 0) {
+      toast({
+        title: 'No Data',
+        description: 'No carts to export',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    const headers = ['Email', 'Cart Value', 'Items', 'Abandoned Date', 'Reminder Sent', 'Status'];
+    const rows = carts.map(cart => [
+      cart.email,
+      Number(cart.subtotal).toFixed(2),
+      Array.isArray(cart.cart_items) ? cart.cart_items.length : 0,
+      format(new Date(cart.created_at), 'yyyy-MM-dd HH:mm'),
+      cart.reminder_sent_at ? format(new Date(cart.reminder_sent_at), 'yyyy-MM-dd HH:mm') : 'Not sent',
+      cart.closed_at ? 'Closed' : cart.recovered_at ? 'Recovered' : 'Pending'
+    ]);
+
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `abandoned-carts-${format(new Date(), 'yyyy-MM-dd')}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    toast({
+      title: 'Export Complete',
+      description: `${carts.length} cart(s) exported to CSV`,
+    });
+  };
+
+  const handleQuickFilter = (filter: 'today' | 'high-value' | 'no-reminder' | 'clear') => {
+    switch (filter) {
+      case 'today':
+        setDateRange('7d');
+        setRecoveryStatus('pending');
+        setClosedStatus('open');
+        break;
+      case 'high-value':
+        setRecoveryStatus('pending');
+        setClosedStatus('open');
+        break;
+      case 'no-reminder':
+        setReminderSent('not_sent');
+        setRecoveryStatus('pending');
+        setClosedStatus('open');
+        break;
+      case 'clear':
+        setDateRange('30d');
+        setRecoveryStatus('all');
+        setReminderSent('all');
+        setClosedStatus('open');
+        break;
+    }
+  };
+
+  const toggleCartSelection = (cartId: string) => {
+    const newSelection = new Set(selectedCartIds);
+    if (newSelection.has(cartId)) {
+      newSelection.delete(cartId);
+    } else {
+      newSelection.add(cartId);
+    }
+    setSelectedCartIds(newSelection);
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedCartIds.size === carts?.length) {
+      setSelectedCartIds(new Set());
+    } else {
+      setSelectedCartIds(new Set(carts?.map(c => c.id) || []));
+    }
+  };
+
+  const highValueCarts = useMemo(() => {
+    return carts?.filter(cart => Number(cart.subtotal) >= 50) || [];
+  }, [carts]);
+
   const openCartDetails = (cart: any) => {
     setSelectedCart(cart);
     setIsDrawerOpen(true);
@@ -155,6 +319,24 @@ const AdminAbandonedCheckouts = () => {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => refetchCarts()}
+            className="gap-2"
+          >
+            <RefreshCw className="h-4 w-4" />
+            Refresh
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleExportCSV}
+            className="gap-2"
+          >
+            <Download className="h-4 w-4" />
+            Export CSV
+          </Button>
           <Calendar className="h-4 w-4 text-muted-foreground" />
           <Select value={dateRange} onValueChange={(value: any) => setDateRange(value)}>
             <SelectTrigger className="w-[180px]">
@@ -167,6 +349,43 @@ const AdminAbandonedCheckouts = () => {
             </SelectContent>
           </Select>
         </div>
+      </div>
+
+      {/* Quick Filters */}
+      <div className="flex flex-wrap gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => handleQuickFilter('today')}
+          className="gap-2"
+        >
+          Today's Abandonments
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => handleQuickFilter('high-value')}
+          className="gap-2"
+        >
+          High Value (${highValueCarts.length})
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => handleQuickFilter('no-reminder')}
+          className="gap-2"
+        >
+          No Reminder Sent
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => handleQuickFilter('clear')}
+          className="gap-2"
+        >
+          <X className="h-3 w-3" />
+          Clear Filters
+        </Button>
       </div>
 
       {/* Stats Cards */}
@@ -296,12 +515,52 @@ const AdminAbandonedCheckouts = () => {
         </CardContent>
       </Card>
 
+      {/* Bulk Action Bar */}
+      {selectedCartIds.size > 0 && (
+        <Card className="border-primary">
+          <CardContent className="py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Check className="h-4 w-4 text-primary" />
+                <span className="font-medium">{selectedCartIds.size} cart(s) selected</span>
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleBulkSendReminders}
+                  disabled={isPerformingBulkAction}
+                >
+                  <Mail className="h-4 w-4 mr-2" />
+                  Send Reminders
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleBulkClose}
+                  disabled={isPerformingBulkAction}
+                >
+                  Close Selected
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setSelectedCartIds(new Set())}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Abandoned Carts Table */}
       <Card>
         <CardHeader>
           <CardTitle>Abandoned Carts</CardTitle>
           <CardDescription>
-            Click on a row to view cart details and take action
+            Select carts for bulk actions or click a row to view details
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -315,6 +574,14 @@ const AdminAbandonedCheckouts = () => {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-12">
+                    <input
+                      type="checkbox"
+                      checked={selectedCartIds.size === carts?.length && carts?.length > 0}
+                      onChange={toggleSelectAll}
+                      className="rounded border-gray-300"
+                    />
+                  </TableHead>
                   <TableHead>Email</TableHead>
                   <TableHead>Cart Value</TableHead>
                   <TableHead>Items</TableHead>
@@ -327,7 +594,7 @@ const AdminAbandonedCheckouts = () => {
               <TableBody>
                 {carts?.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
+                    <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
                       No abandoned carts found for the selected filters
                     </TableCell>
                   </TableRow>
@@ -338,7 +605,15 @@ const AdminAbandonedCheckouts = () => {
                       className="cursor-pointer hover:bg-muted/50"
                       onClick={() => openCartDetails(cart)}
                     >
-                  <TableCell className="font-medium">{cart.email}</TableCell>
+                      <TableCell onClick={(e) => e.stopPropagation()}>
+                        <input
+                          type="checkbox"
+                          checked={selectedCartIds.has(cart.id)}
+                          onChange={() => toggleCartSelection(cart.id)}
+                          className="rounded border-gray-300"
+                        />
+                      </TableCell>
+                      <TableCell className="font-medium">{cart.email}</TableCell>
                       <TableCell>${Number(cart.subtotal).toFixed(2)}</TableCell>
                       <TableCell>{Array.isArray(cart.cart_items) ? cart.cart_items.length : 0}</TableCell>
                       <TableCell>{format(new Date(cart.created_at), 'MMM d, yyyy')}</TableCell>
