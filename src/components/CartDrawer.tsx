@@ -41,10 +41,14 @@ const CartDrawer = () => {
 
   // No body scroll lock - allow scrolling behind the drawer
 
-  // Estimate shipping when location is detected
+  // Calculate discount first
+  const discountedSubtotal = discount?.enabled ? applyDiscount(subtotal) : subtotal;
+  const discountAmount = discount?.enabled ? getDiscountAmount(subtotal) : 0;
+
+  // Estimate shipping when location is detected (using discounted subtotal)
   useEffect(() => {
     const estimateShipping = async () => {
-      if (!locationLoading && city && country && subtotal > 0) {
+      if (!locationLoading && city && country && discountedSubtotal > 0) {
         setShippingLoading(true);
         try {
           const result = await calculateShipping({
@@ -52,7 +56,7 @@ const CartDrawer = () => {
             province: region,
             country,
             postalCode
-          }, subtotal);
+          }, discountedSubtotal);
           
           if (result?.appliedRate?.rate_amount !== undefined) {
             setEstimatedShipping(result.appliedRate.rate_amount);
@@ -67,16 +71,22 @@ const CartDrawer = () => {
     };
     
     estimateShipping();
-  }, [city, region, country, postalCode, subtotal, locationLoading]);
+  }, [city, region, country, postalCode, discountedSubtotal, locationLoading, calculateShipping, applyDiscount, discount]);
 
-  // Calculate discount and totals
-  const discountedSubtotal = discount?.enabled ? applyDiscount(subtotal) : subtotal;
-  const discountAmount = discount?.enabled ? getDiscountAmount(subtotal) : 0;
-  
-  // Calculate tax (example: 8.5%)
+  // Override shipping to 0 for Toronto/GTA orders over $50
+  useEffect(() => {
+    if (isGTA && discountedSubtotal >= 50) {
+      setEstimatedShipping(0);
+    }
+  }, [isGTA, discountedSubtotal]);
+
+  // Calculate tax on discounted subtotal (8.5%)
   const taxRate = 0.085;
   const taxAmount = discountedSubtotal * taxRate;
-  const estimatedTotal = discountedSubtotal + taxAmount + (estimatedShipping || 0);
+  
+  // Calculate final totals (shipping is 0 if free shipping unlocked for GTA)
+  const finalShipping = estimatedShipping ?? 0;
+  const estimatedTotal = discountedSubtotal + taxAmount + finalShipping;
   const total = discountedSubtotal + taxAmount;
 
   return (
