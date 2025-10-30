@@ -157,26 +157,39 @@ const getStallionRates = async (address: Address, supabase: any): Promise<any> =
 
 /**
  * Transforms Stallion rates to our rate format
+ * Converts CAD to USD using conservative rate
  */
 const transformStallionRates = (stallionData: any, subtotal: number): any[] => {
   // Stallion returns nested structure: { success: true, data: { rates: [...] } }
   const rates = stallionData?.data?.rates || stallionData?.rates;
+  const CAD_TO_USD = 0.73; // Conservative conversion rate
   
   if (!rates || !Array.isArray(rates)) {
     console.log('No rates in Stallion response');
     return [];
   }
 
+  console.log(`Converting Stallion rates using CAD→USD rate: ${CAD_TO_USD}`);
+
   return rates
     .filter((rate: any) => rate.total && rate.postage_type)
-    .map((rate: any, index: number) => ({
-      id: `stallion_${rate.postage_type_id || index}`,
-      method_name: rate.postage_type,
-      rate_amount: parseFloat(rate.total),
-      is_free: false,
-      free_threshold: null,
-      display_order: index + 1
-    }));
+    .map((rate: any, index: number) => {
+      const cadAmount = parseFloat(rate.total);
+      const usdAmount = cadAmount * CAD_TO_USD;
+      
+      console.log(`Stallion rate: ${rate.postage_type} - $${cadAmount.toFixed(2)} CAD → $${usdAmount.toFixed(2)} USD`);
+      
+      return {
+        id: `stallion_${rate.postage_type_id || index}`,
+        method_name: `${rate.postage_type} (from Canada)`,
+        rate_amount: parseFloat(usdAmount.toFixed(2)),
+        is_free: false,
+        free_threshold: null,
+        display_order: index + 1,
+        currency: 'USD',
+        original_cad_amount: cadAmount,
+      };
+    });
 };
 
 Deno.serve(async (req) => {
@@ -251,20 +264,20 @@ Deno.serve(async (req) => {
       // Fall back to appropriate rates if Stallion failed
       if (applicableRates.length === 0) {
         if (isUSZone) {
-          // US fallback: $25 standard shipping
-          console.log('Using US fallback rate: $25');
+          // US fallback: Higher safety rate if Stallion completely fails
+          console.log('⚠️ Stallion API failed - using US safety fallback: $35');
           applicableRates = [{
-            id: 'us_fallback',
-            method_name: 'Standard Shipping',
-            rate_amount: 25,
+            id: 'us_safety_fallback',
+            method_name: 'Standard Shipping (Estimated)',
+            rate_amount: 35,
             is_free: false,
             free_threshold: null,
             display_order: 0,
           }];
-          rateSource = 'us_fallback';
+          rateSource = 'us_safety_fallback';
         } else {
           // Non-US: use database rates
-          console.log('Using database rates');
+          console.log('Using database rates for non-US zone');
           applicableRates = matchedZone.rates.map(rate => {
             const isFree = 
               rate.free_threshold !== null && 
@@ -279,6 +292,7 @@ Deno.serve(async (req) => {
               display_order: rate.display_order,
             };
           });
+          rateSource = 'database';
         }
       }
 
@@ -300,6 +314,7 @@ Deno.serve(async (req) => {
           appliedRate: applicableRates[0] || null,
           fallback_used: false,
           rate_source: rateSource,
+          source: rateSource,
         }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
