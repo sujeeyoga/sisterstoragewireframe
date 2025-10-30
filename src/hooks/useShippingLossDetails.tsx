@@ -23,6 +23,7 @@ interface ShippingLossOrder {
   meetsThreshold: boolean;
   freeShippingThreshold: number | null;
   subtotal: number;
+  total: number;
   fulfillmentStatus: string;
 }
 
@@ -136,6 +137,7 @@ export const useShippingLossDetails = (params: UseShippingLossDetailsParams) => 
             meetsThreshold,
             freeShippingThreshold: freeThreshold,
             subtotal,
+            total: Number(order.total || 0),
             fulfillmentStatus: order.fulfillment_status || "unfulfilled",
           });
         });
@@ -202,6 +204,7 @@ export const useShippingLossDetails = (params: UseShippingLossDetailsParams) => 
             meetsThreshold,
             freeShippingThreshold: freeThreshold,
             subtotal,
+            total: Number(order.total || 0),
             fulfillmentStatus: order.fulfillment_status || "unfulfilled",
           });
         });

@@ -292,12 +292,13 @@ export const ShippingLossTracker = ({ startDate, endDate }: ShippingLossTrackerP
                   <TableHead className="text-right">Charged</TableHead>
                   <TableHead className="text-right">Discount</TableHead>
                   <TableHead className="text-right">Difference</TableHead>
+                  <TableHead className="text-right">Order Total</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {orders.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={9} className="text-center text-muted-foreground">
+                    <TableCell colSpan={10} className="text-center text-muted-foreground">
                       No orders found matching your filters
                     </TableCell>
                   </TableRow>
@@ -433,6 +434,9 @@ export const ShippingLossTracker = ({ startDate, endDate }: ShippingLossTrackerP
                                 </TooltipContent>
                               </Tooltip>
                             )}
+                          </TableCell>
+                          <TableCell className="text-right font-semibold">
+                            ${order.total.toFixed(2)}
                           </TableCell>
                         </TableRow>
                       );
