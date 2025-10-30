@@ -128,19 +128,19 @@ export default function AdminShippingAnalytics() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-red-100">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Stallion Costs
+              You're Paying (Stallion)
             </CardTitle>
             <Package className="h-4 w-4 text-red-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-bold text-red-600">
               ${analytics.totalStallionCost.toFixed(2)}
             </div>
             <p className="text-xs text-muted-foreground mt-1">
-              {analytics.ordersWithStallionCost} orders tracked
+              Actual shipping costs · {analytics.ordersWithStallionCost} orders
             </p>
           </CardContent>
         </Card>
