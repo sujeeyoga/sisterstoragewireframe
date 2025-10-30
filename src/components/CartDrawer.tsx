@@ -73,13 +73,6 @@ const CartDrawer = () => {
     estimateShipping();
   }, [city, region, country, postalCode, discountedSubtotal, locationLoading]);
 
-  // Override shipping to 0 for Toronto/GTA orders over $50
-  useEffect(() => {
-    if (isGTA && discountedSubtotal >= 50) {
-      setEstimatedShipping(0);
-    }
-  }, [isGTA, discountedSubtotal]);
-
   // Calculate tax on discounted subtotal (8.5%)
   const taxRate = 0.085;
   const taxAmount = discountedSubtotal * taxRate;

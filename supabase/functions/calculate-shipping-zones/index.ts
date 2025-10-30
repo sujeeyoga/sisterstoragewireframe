@@ -62,6 +62,26 @@ const getRulePriority = (ruleType: string): number => {
   return priorities[ruleType as keyof typeof priorities] || 0;
 };
 
+// GTA cities that qualify for free shipping over $50
+const GTA_CITIES = [
+  'TORONTO', 'ETOBICOKE', 'NORTH YORK', 'SCARBOROUGH', 'EAST YORK', 'YORK',
+  'MISSISSAUGA', 'BRAMPTON', 'MARKHAM', 'VAUGHAN', 'RICHMOND HILL',
+  'OAKVILLE', 'BURLINGTON', 'PICKERING', 'AJAX', 'WHITBY', 'OSHAWA',
+  'MILTON', 'NEWMARKET', 'AURORA', 'KING', 'CALEDON', 'GEORGINA'
+];
+
+const isGTAAddress = (address: Address): boolean => {
+  if (!address.city || !address.province || !address.country) return false;
+  
+  const normalizedCity = address.city.toUpperCase().trim();
+  const normalizedProvince = address.province.toUpperCase().trim();
+  const normalizedCountry = address.country.toUpperCase().trim();
+  
+  return normalizedCountry === 'CA' && 
+         normalizedProvince === 'ONTARIO' && 
+         GTA_CITIES.includes(normalizedCity);
+};
+
 const matchesRule = (address: Address, rule: ShippingZoneRule): boolean => {
   const normalizedValue = rule.rule_value.toUpperCase().trim();
   
@@ -278,10 +298,23 @@ Deno.serve(async (req) => {
         } else {
           // Non-US: use database rates
           console.log('Using database rates for non-US zone');
+          
+          // Check if GTA free shipping applies
+          const isGTA = isGTAAddress(address);
+          const gtaFreeShipping = isGTA && subtotal >= 50;
+          
+          if (gtaFreeShipping) {
+            console.log('🎉 GTA Free Shipping unlocked! (subtotal >= $50)');
+          }
+          
           applicableRates = matchedZone.rates.map(rate => {
-            const isFree = 
+            // Check database free threshold first
+            const meetsDatabaseThreshold = 
               rate.free_threshold !== null && 
               subtotal >= rate.free_threshold;
+            
+            // Apply GTA free shipping or database threshold
+            const isFree = gtaFreeShipping || meetsDatabaseThreshold;
             
             return {
               id: rate.id,
@@ -290,9 +323,10 @@ Deno.serve(async (req) => {
               is_free: isFree,
               free_threshold: rate.free_threshold,
               display_order: rate.display_order,
+              gta_free_shipping_applied: gtaFreeShipping,
             };
           });
-          rateSource = 'database';
+          rateSource = gtaFreeShipping ? 'gta_free_shipping' : 'database';
         }
       }
 
