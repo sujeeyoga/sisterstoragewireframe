@@ -30,7 +30,7 @@ export const useAbandonedCartAnalytics = (dateRange: { start: Date; end: Date })
       const remindersSent = data?.filter(cart => cart.reminder_sent_at).length || 0;
       const recoveryRate = totalAbandoned > 0 ? (recoveredCount / totalAbandoned) * 100 : 0;
       const pendingValue = data
-        ?.filter(cart => !cart.recovered_at)
+        ?.filter(cart => !cart.recovered_at && !cart.closed_at)
         .reduce((sum, cart) => sum + Number(cart.subtotal || 0), 0) || 0;
 
       return {
