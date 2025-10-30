@@ -39,6 +39,12 @@ interface Order {
   meta_data?: any;
 }
 
+const getCountryFlag = (countryCode: string) => {
+  if (!countryCode || countryCode === 'N/A') return '🌍';
+  const code = countryCode.toUpperCase();
+  return code.split('').map(char => String.fromCodePoint(127397 + char.charCodeAt(0))).join('');
+};
+
 export function OrdersTable() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -244,8 +250,8 @@ export function OrdersTable() {
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell className="text-sm font-medium">
-                    {order.shipping?.country || 'N/A'}
+                  <TableCell className="text-sm">
+                    {getCountryFlag(order.shipping?.country || 'N/A')}
                   </TableCell>
                   <TableCell>{getStatusBadge(order.status)}</TableCell>
                   <TableCell className="text-sm">

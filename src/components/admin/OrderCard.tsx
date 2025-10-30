@@ -49,6 +49,12 @@ const statusConfig = {
   failed: { label: 'Failed', className: 'bg-rose-50 text-rose-700 border-rose-200' },
 };
 
+const getCountryFlag = (countryCode: string) => {
+  if (!countryCode || countryCode === 'N/A') return '🌍';
+  const code = countryCode.toUpperCase();
+  return code.split('').map(char => String.fromCodePoint(127397 + char.charCodeAt(0))).join('');
+};
+
 export function OrderCard({ order, onView, isSelected, onSelect, selectionMode, onStatusUpdate, onArchive, onUnarchive }: OrderCardProps) {
   const status = statusConfig[order.status as keyof typeof statusConfig] || statusConfig.pending;
   const customerName = `${order.billing.first_name || ''} ${order.billing.last_name || ''}`.trim() || 'Guest';
@@ -225,7 +231,7 @@ export function OrderCard({ order, onView, isSelected, onSelect, selectionMode, 
             {order.shipping?.country && (
               <>
                 <span className="mx-1">•</span>
-                <span className="font-medium">{order.shipping.country}</span>
+                <span>{getCountryFlag(order.shipping.country)}</span>
               </>
             )}
           </div>

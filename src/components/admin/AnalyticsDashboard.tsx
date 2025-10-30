@@ -105,6 +105,12 @@ export function AnalyticsDashboard() {
     },
   });
 
+  const getCountryFlag = (countryCode: string) => {
+    if (!countryCode || countryCode === 'N/A') return '🌍';
+    const code = countryCode.toUpperCase();
+    return code.split('').map(char => String.fromCodePoint(127397 + char.charCodeAt(0))).join('');
+  };
+
   const { data: recentOrders } = useQuery({
     queryKey: ['admin-recent-orders'],
     queryFn: async () => {
@@ -415,7 +421,7 @@ export function AnalyticsDashboard() {
                         {order.customer_name}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {format(new Date(order.date), 'MMM dd, HH:mm')} · {order.country}
+                        {format(new Date(order.date), 'MMM dd, HH:mm')} · {getCountryFlag(order.country)}
                       </p>
                     </div>
                     <div className="text-right space-y-1">
