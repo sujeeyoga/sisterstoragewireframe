@@ -6,6 +6,7 @@ interface AbandonedCartFilters {
   dateRange: { start: Date; end: Date };
   recoveryStatus: 'all' | 'pending' | 'recovered';
   reminderSent: 'all' | 'sent' | 'not_sent';
+  closedStatus: 'all' | 'open' | 'closed';
 }
 
 export const useAbandonedCartsList = (filters: AbandonedCartFilters) => {
@@ -31,6 +32,13 @@ export const useAbandonedCartsList = (filters: AbandonedCartFilters) => {
         query = query.not('reminder_sent_at', 'is', null);
       } else if (filters.reminderSent === 'not_sent') {
         query = query.is('reminder_sent_at', null);
+      }
+
+      // Apply closed status filter
+      if (filters.closedStatus === 'open') {
+        query = query.is('closed_at', null);
+      } else if (filters.closedStatus === 'closed') {
+        query = query.not('closed_at', 'is', null);
       }
 
       const { data, error } = await query;

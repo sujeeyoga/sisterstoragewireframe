@@ -19,7 +19,8 @@ export const useAbandonedCartAnalytics = (dateRange: { start: Date; end: Date })
         .from('abandoned_carts')
         .select('*')
         .gte('created_at', startOfDay(dateRange.start).toISOString())
-        .lte('created_at', endOfDay(dateRange.end).toISOString());
+        .lte('created_at', endOfDay(dateRange.end).toISOString())
+        .is('closed_at', null); // Exclude closed carts from analytics
 
       if (error) throw error;
 

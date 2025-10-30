@@ -49,6 +49,7 @@ const AdminAbandonedCheckouts = () => {
   const [dateRange, setDateRange] = useState<'7d' | '30d' | '90d'>('30d');
   const [recoveryStatus, setRecoveryStatus] = useState<'all' | 'pending' | 'recovered'>('all');
   const [reminderSent, setReminderSent] = useState<'all' | 'sent' | 'not_sent'>('all');
+  const [closedStatus, setClosedStatus] = useState<'all' | 'open' | 'closed'>('open');
   const [selectedCart, setSelectedCart] = useState<any>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isSendingReminder, setIsSendingReminder] = useState(false);
@@ -60,10 +61,11 @@ const AdminAbandonedCheckouts = () => {
   }, [dateRange]);
 
   const { data: analytics, isLoading: isLoadingAnalytics } = useAbandonedCartAnalytics(dateRangeValues);
-  const { data: carts, isLoading: isLoadingCarts } = useAbandonedCartsList({
+  const { data: carts, isLoading: isLoadingCarts, refetch: refetchCarts } = useAbandonedCartsList({
     dateRange: dateRangeValues,
     recoveryStatus,
     reminderSent,
+    closedStatus,
   });
 
   const handleSendReminder = async (cartId: string, email: string) => {
@@ -96,6 +98,32 @@ const AdminAbandonedCheckouts = () => {
       });
     } finally {
       setIsSendingReminder(false);
+    }
+  };
+
+  const handleCloseCart = async (cartId: string) => {
+    try {
+      const { error } = await supabase
+        .from('abandoned_carts')
+        .update({ closed_at: new Date().toISOString() })
+        .eq('id', cartId);
+
+      if (error) throw error;
+
+      toast({
+        title: 'Cart Closed',
+        description: 'Abandoned cart has been dismissed',
+      });
+
+      setIsDrawerOpen(false);
+      refetchCarts();
+    } catch (error: any) {
+      console.error('Failed to close cart:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to close cart',
+        variant: 'destructive',
+      });
     }
   };
 
@@ -252,6 +280,19 @@ const AdminAbandonedCheckouts = () => {
               </SelectContent>
             </Select>
           </div>
+          <div className="flex-1">
+            <label className="text-sm font-medium mb-2 block">Cart Status</label>
+            <Select value={closedStatus} onValueChange={(value: any) => setClosedStatus(value)}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="open">Open</SelectItem>
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="closed">Closed</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </CardContent>
       </Card>
 
@@ -311,7 +352,9 @@ const AdminAbandonedCheckouts = () => {
                         )}
                       </TableCell>
                       <TableCell>
-                        {cart.recovered_at ? (
+                        {cart.closed_at ? (
+                          <Badge variant="outline">Closed</Badge>
+                        ) : cart.recovered_at ? (
                           <Badge variant="default" className="bg-green-500">Recovered</Badge>
                         ) : (
                           <Badge variant="secondary">Pending</Badge>
@@ -407,19 +450,46 @@ const AdminAbandonedCheckouts = () => {
                       <span>{format(new Date(selectedCart.recovered_at), 'MMM d, yyyy h:mm a')}</span>
                     </div>
                   )}
+                  {selectedCart.closed_at && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Closed</span>
+                      <span>{format(new Date(selectedCart.closed_at), 'MMM d, yyyy h:mm a')}</span>
+                    </div>
+                  )}
                 </div>
               </div>
 
               {/* Actions */}
               <div className="space-y-2">
-                <Button 
-                  className="w-full" 
-                  onClick={() => handleSendReminder(selectedCart.id, selectedCart.email)}
-                  disabled={isSendingReminder}
-                >
-                  <Mail className="h-4 w-4 mr-2" />
-                  {selectedCart.reminder_sent_at ? 'Resend' : 'Send'} Recovery Email
-                </Button>
+                {!selectedCart.closed_at && !selectedCart.recovered_at && (
+                  <>
+                    <Button 
+                      className="w-full" 
+                      onClick={() => handleSendReminder(selectedCart.id, selectedCart.email)}
+                      disabled={isSendingReminder}
+                    >
+                      <Mail className="h-4 w-4 mr-2" />
+                      {selectedCart.reminder_sent_at ? 'Resend' : 'Send'} Recovery Email
+                    </Button>
+                    <Button 
+                      className="w-full" 
+                      variant="outline"
+                      onClick={() => handleCloseCart(selectedCart.id)}
+                    >
+                      Close Cart
+                    </Button>
+                  </>
+                )}
+                {selectedCart.closed_at && (
+                  <p className="text-sm text-muted-foreground text-center py-2">
+                    This cart has been closed
+                  </p>
+                )}
+                {selectedCart.recovered_at && (
+                  <p className="text-sm text-muted-foreground text-center py-2">
+                    This cart was recovered through checkout
+                  </p>
+                )}
               </div>
             </div>
           )}

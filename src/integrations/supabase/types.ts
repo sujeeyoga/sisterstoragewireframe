@@ -17,6 +17,7 @@ export type Database = {
       abandoned_carts: {
         Row: {
           cart_items: Json
+          closed_at: string | null
           created_at: string | null
           email: string
           id: string
@@ -27,6 +28,7 @@ export type Database = {
         }
         Insert: {
           cart_items?: Json
+          closed_at?: string | null
           created_at?: string | null
           email: string
           id?: string
@@ -37,6 +39,7 @@ export type Database = {
         }
         Update: {
           cart_items?: Json
+          closed_at?: string | null
           created_at?: string | null
           email?: string
           id?: string
