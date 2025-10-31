@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, TrendingUp, Package, Users, Calendar, Globe } from 'lucide-react';
+import { ShoppingCart, TrendingUp, Package, Users, Calendar, Globe, Target } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -72,6 +72,15 @@ const AdminAnalytics = () => {
   const { data: abandonedCartTimeSeries } = useAbandonedCartTimeSeriesAnalytics(dateRangeValues);
 
   const reportCards = [
+    {
+      title: 'Conversion Analytics',
+      description: 'Track views-to-sale ratio and conversion trends',
+      icon: Target,
+      stats: 'Optimize conversion rates',
+      link: '/admin/analytics/conversion',
+      color: 'text-rose-500',
+      bgColor: 'bg-rose-50',
+    },
     {
       title: 'Visitor Analytics',
       description: 'Track site visitors by time and location',
