@@ -102,8 +102,7 @@ const US_STATES = [
 ];
 
 const COUNTRIES = [
-  { code: 'CA', name: 'Canada' },
-  { code: 'US', name: 'United States' }
+  { code: 'CA', name: 'Canada' }
 ];
 
 // Validation functions
