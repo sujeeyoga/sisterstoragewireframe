@@ -12,6 +12,11 @@ export interface DatabaseProduct {
   manage_stock: boolean;
   in_stock: boolean;
   visible: boolean;
+  weight: number | null;  // in grams
+  length: number | null;  // in cm
+  width: number | null;   // in cm
+  height: number | null;  // in cm
+  package_value: number | null;  // for customs (USD)
   images: Array<{
     id: number;
     src: string;
@@ -62,6 +67,12 @@ export interface Product {
   caption?: string;
   funnelStage?: string;
   bundleContents?: string;
+  // Shipping dimensions for ChitChats
+  weight?: number;  // in grams
+  length?: number;  // in cm
+  width?: number;   // in cm
+  height?: number;  // in cm
+  packageValue?: number;  // for customs (USD)
 }
 
 // Transform database product to frontend product
@@ -110,5 +121,11 @@ export function transformProduct(dbProduct: any): Product {
     caption: metaData.caption,
     funnelStage: metaData.funnelStage,
     bundleContents: dbProduct.short_description || undefined,
+    // Shipping dimensions for ChitChats
+    weight: dbProduct.weight || undefined,
+    length: dbProduct.length || undefined,
+    width: dbProduct.width || undefined,
+    height: dbProduct.height || undefined,
+    packageValue: dbProduct.package_value || undefined,
   };
 }

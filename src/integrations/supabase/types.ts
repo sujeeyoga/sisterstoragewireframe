@@ -872,12 +872,15 @@ export type Database = {
           categories: Json | null
           created_at: string | null
           description: string | null
+          height: number | null
           id: number
           images: Json | null
           in_stock: boolean | null
+          length: number | null
           manage_stock: boolean | null
           meta_data: Json | null
           name: string
+          package_value: number | null
           price: number | null
           regular_price: number | null
           sale_price: number | null
@@ -887,18 +890,23 @@ export type Database = {
           synced_at: string | null
           updated_at: string | null
           visible: boolean
+          weight: number | null
+          width: number | null
         }
         Insert: {
           attributes?: Json | null
           categories?: Json | null
           created_at?: string | null
           description?: string | null
+          height?: number | null
           id: number
           images?: Json | null
           in_stock?: boolean | null
+          length?: number | null
           manage_stock?: boolean | null
           meta_data?: Json | null
           name: string
+          package_value?: number | null
           price?: number | null
           regular_price?: number | null
           sale_price?: number | null
@@ -908,18 +916,23 @@ export type Database = {
           synced_at?: string | null
           updated_at?: string | null
           visible?: boolean
+          weight?: number | null
+          width?: number | null
         }
         Update: {
           attributes?: Json | null
           categories?: Json | null
           created_at?: string | null
           description?: string | null
+          height?: number | null
           id?: number
           images?: Json | null
           in_stock?: boolean | null
+          length?: number | null
           manage_stock?: boolean | null
           meta_data?: Json | null
           name?: string
+          package_value?: number | null
           price?: number | null
           regular_price?: number | null
           sale_price?: number | null
@@ -929,6 +942,8 @@ export type Database = {
           synced_at?: string | null
           updated_at?: string | null
           visible?: boolean
+          weight?: number | null
+          width?: number | null
         }
         Relationships: []
       }
