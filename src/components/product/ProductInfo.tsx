@@ -147,7 +147,6 @@ const ProductInfo = ({ product, quantity, setQuantity, onAddToCart, onBuyNow }: 
           <Button 
             variant="buy"
             size="sm"
-            disabled={!product.stock}
             onClick={onAddToCart}
             className="w-full"
           >
@@ -159,7 +158,6 @@ const ProductInfo = ({ product, quantity, setQuantity, onAddToCart, onBuyNow }: 
           <Button 
             variant="buy"
             size="sm"
-            disabled={!product.stock}
             onClick={onBuyNow}
             className="w-full"
           >
