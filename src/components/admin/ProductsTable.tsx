@@ -247,6 +247,9 @@ export const ProductsTable = () => {
                   {getSortIcon('stock')}
                 </Button>
               </TableHead>
+              <TableHead>Weight (g)</TableHead>
+              <TableHead>Dimensions (cm)</TableHead>
+              <TableHead>Value ($)</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>
                 <Button
@@ -265,13 +268,13 @@ export const ProductsTable = () => {
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-8">
+                <TableCell colSpan={9} className="text-center py-8">
                   Loading products...
                 </TableCell>
               </TableRow>
             ) : products?.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-8">
+                <TableCell colSpan={9} className="text-center py-8">
                   No products found
                 </TableCell>
               </TableRow>
@@ -304,6 +307,29 @@ export const ProductsTable = () => {
                     </TableCell>
                     <TableCell>
                       {shopProduct ? displayStock : (product.manage_stock ? product.stock_quantity : 'Unlimited')}
+                    </TableCell>
+                    <TableCell>
+                      {product.weight ? (
+                        <span className="text-sm">{Number(product.weight).toFixed(0)}g</span>
+                      ) : (
+                        <span className="text-muted-foreground text-sm">—</span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {product.length && product.width && product.height ? (
+                        <span className="text-sm">
+                          {Number(product.length).toFixed(0)}×{Number(product.width).toFixed(0)}×{Number(product.height).toFixed(0)}
+                        </span>
+                      ) : (
+                        <span className="text-muted-foreground text-sm">—</span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {product.package_value ? (
+                        <span className="text-sm">${Number(product.package_value).toFixed(0)}</span>
+                      ) : (
+                        <span className="text-muted-foreground text-sm">—</span>
+                      )}
                     </TableCell>
                     <TableCell>
                       <Badge variant={displayInStock ? 'default' : 'destructive'}>

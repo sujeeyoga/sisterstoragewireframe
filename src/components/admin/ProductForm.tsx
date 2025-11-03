@@ -27,6 +27,11 @@ type ProductFormData = {
   stock_quantity: number | null;
   in_stock: boolean;
   images: string[];
+  weight: number | null;
+  length: number | null;
+  width: number | null;
+  height: number | null;
+  package_value: number | null;
 };
 
 type VersionHistory = {
@@ -92,6 +97,11 @@ export const ProductForm = () => {
         stock_quantity: product.stock_quantity,
         in_stock: product.in_stock,
         images: imageUrls,
+        weight: product.weight ? Number(product.weight) : null,
+        length: product.length ? Number(product.length) : null,
+        width: product.width ? Number(product.width) : null,
+        height: product.height ? Number(product.height) : null,
+        package_value: product.package_value ? Number(product.package_value) : null,
       };
       reset(initialData);
       setUploadedImages(imageUrls);
@@ -226,6 +236,11 @@ export const ProductForm = () => {
           stock_quantity: data.stock_quantity,
           in_stock: data.in_stock,
           images: uploadedImages.map(url => ({ src: url })),
+          weight: data.weight,
+          length: data.length,
+          width: data.width,
+          height: data.height,
+          package_value: data.package_value,
           updated_at: new Date().toISOString(),
         };
         
@@ -249,6 +264,11 @@ export const ProductForm = () => {
           stock_quantity: data.stock_quantity,
           in_stock: data.in_stock,
           images: uploadedImages.map(url => ({ src: url })),
+          weight: data.weight,
+          length: data.length,
+          width: data.width,
+          height: data.height,
+          package_value: data.package_value,
         };
         
         const { error } = await supabase
@@ -736,6 +756,82 @@ export const ProductForm = () => {
                   </p>
                 </div>
               </div>
+
+              {/* Shipping Information */}
+              <Card className="bg-muted/50">
+                <CardHeader>
+                  <CardTitle className="text-lg">Shipping Information</CardTitle>
+                  <p className="text-sm text-muted-foreground">
+                    Used for calculating accurate shipping rates
+                  </p>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="weight">Weight (grams)</Label>
+                      <Input
+                        id="weight"
+                        type="number"
+                        step="1"
+                        {...register('weight', { valueAsNumber: true })}
+                        placeholder="e.g., 170 for Travel box"
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        Travel: 170g, Medium: 297g, Large: 581g
+                      </p>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="package_value">Package Value (USD)</Label>
+                      <Input
+                        id="package_value"
+                        type="number"
+                        step="1"
+                        {...register('package_value', { valueAsNumber: true })}
+                        placeholder="e.g., 75"
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        For customs declarations
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid gap-4 md:grid-cols-3">
+                    <div className="space-y-2">
+                      <Label htmlFor="length">Length (cm)</Label>
+                      <Input
+                        id="length"
+                        type="number"
+                        step="0.1"
+                        {...register('length', { valueAsNumber: true })}
+                        placeholder="e.g., 25"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="width">Width (cm)</Label>
+                      <Input
+                        id="width"
+                        type="number"
+                        step="0.1"
+                        {...register('width', { valueAsNumber: true })}
+                        placeholder="e.g., 20"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="height">Height (cm)</Label>
+                      <Input
+                        id="height"
+                        type="number"
+                        step="0.1"
+                        {...register('height', { valueAsNumber: true })}
+                        placeholder="e.g., 10"
+                      />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
 
               <div className="flex gap-4">
                 <Button type="submit" disabled={saveMutation.isPending}>
