@@ -90,6 +90,7 @@ serve(async (req) => {
             value_amount: (rateParams.package_value || 50).toString(),
             currency_code: "usd",
             origin_country: "CA",
+            hs_tariff_code: "4202926010", // HTS code for jewelry boxes (10 digits)
             weight: rateParams.weight,
             weight_unit: "g"
           }],
@@ -124,8 +125,23 @@ serve(async (req) => {
         
         console.log('ChitChats rates response:', rateData);
 
-        // Delete the draft shipment
+        // Refresh rates to get actual pricing
         if (rateData.id) {
+          const refreshResponse = await fetch(
+            getApiUrl(clientId, `/shipments/${rateData.id}/refresh`),
+            {
+              method: 'PATCH',
+              headers: {
+                'Authorization': authHeader,
+                'Content-Type': 'application/json',
+              },
+            }
+          );
+
+          const refreshData = await refreshResponse.json();
+          console.log('ChitChats refresh rates response:', refreshData);
+
+          // Delete the draft shipment
           await fetch(
             getApiUrl(clientId, `/shipments/${rateData.id}`),
             {
@@ -134,6 +150,11 @@ serve(async (req) => {
                 'Authorization': authHeader,
               },
             }
+          );
+
+          return new Response(
+            JSON.stringify({ success: true, data: refreshData }),
+            { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           );
         }
 
