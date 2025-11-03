@@ -288,7 +288,7 @@ const Checkout = () => {
         province: formData.province,
         country: formData.country,
         postalCode: formData.postalCode,
-      }, subtotal);
+      }, subtotal, items);
 
       if (result.success && result.rates) {
         setShippingRates(result.rates);

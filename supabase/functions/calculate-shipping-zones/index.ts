@@ -236,9 +236,64 @@ Deno.serve(async (req) => {
       Deno.env.get('SUPABASE_ANON_KEY') ?? ''
     );
 
-    const { address, subtotal } = await req.json();
+    const { address, subtotal, items = [] } = await req.json();
 
-    console.log('Calculating shipping for address:', address, 'subtotal:', subtotal);
+    console.log('Calculating shipping for address:', address, 'subtotal:', subtotal, 'items:', items.length);
+
+    // Calculate package info from cart items
+    let totalWeight = 0;
+    let totalValue = 0;
+    let maxLength = 0;
+    let maxWidth = 0;
+    let maxHeight = 0;
+
+    if (items && items.length > 0) {
+      // Fetch product details for weight calculation
+      const productIds = items.map((item: any) => item.id);
+      
+      const { data: products, error: productsError } = await supabase
+        .from('woocommerce_products')
+        .select('id, weight, length, width, height, price')
+        .in('id', productIds);
+
+      if (!productsError && products) {
+        console.log('Fetched product weights:', products);
+        
+        items.forEach((item: any) => {
+          const product = products.find(p => p.id === item.id);
+          if (product) {
+            // Weight is in grams, multiply by quantity
+            const itemWeight = (product.weight || 500) * (item.quantity || 1);
+            totalWeight += itemWeight;
+            
+            // Track max dimensions for package size
+            maxLength = Math.max(maxLength, product.length || 25);
+            maxWidth = Math.max(maxWidth, product.width || 20);
+            maxHeight = Math.max(maxHeight, product.height || 10);
+            
+            // Calculate total value for customs
+            totalValue += (product.price || 50) * (item.quantity || 1);
+          }
+        });
+        
+        console.log('Calculated package info:', {
+          totalWeight,
+          maxLength,
+          maxWidth,
+          maxHeight,
+          totalValue,
+        });
+      }
+    }
+
+    // Use calculated values or defaults
+    const packageInfo = {
+      weight: totalWeight || 500,
+      length: maxLength || 25,
+      width: maxWidth || 20,
+      height: maxHeight || 10,
+      value: totalValue || 50,
+    };
 
     // Fetch all zones with rules and rates
     const { data: zonesData, error: zonesError } = await supabase
@@ -294,8 +349,8 @@ Deno.serve(async (req) => {
                        matchedRule.rule_value?.toUpperCase() === 'US';
 
       if (isUSZone) {
-        console.log('US zone detected, fetching ChitChats rates...');
-        const chitchatsData = await getChitChatsRates(address, supabase);
+        console.log('US zone detected, fetching ChitChats rates with package info:', packageInfo);
+        const chitchatsData = await getChitChatsRates(address, supabase, packageInfo);
         
         if (chitchatsData?.success) {
           applicableRates = transformChitChatsRates(chitchatsData, subtotal);

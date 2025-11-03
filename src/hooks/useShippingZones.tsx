@@ -75,9 +75,17 @@ export const useShippingZones = () => {
   });
 
   // Calculate shipping using edge function
-  const calculateShipping = async (address: Address, subtotal: number) => {
+  const calculateShipping = async (
+    address: Address, 
+    subtotal: number, 
+    items?: Array<{ id: string | number; quantity: number }>
+  ) => {
     const { data, error } = await supabase.functions.invoke('calculate-shipping-zones', {
-      body: { address, subtotal },
+      body: { 
+        address, 
+        subtotal,
+        items: items || []
+      },
     });
 
     if (error) throw error;

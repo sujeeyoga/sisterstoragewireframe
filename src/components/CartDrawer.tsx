@@ -56,7 +56,7 @@ const CartDrawer = () => {
             province: region,
             country,
             postalCode
-          }, discountedSubtotal);
+          }, discountedSubtotal, items);
           
           if (result?.appliedRate?.rate_amount !== undefined) {
             setEstimatedShipping(result.appliedRate.rate_amount);
