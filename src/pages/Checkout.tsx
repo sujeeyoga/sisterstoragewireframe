@@ -855,17 +855,27 @@ const Checkout = () => {
                           }`}>
                             <RadioGroupItem value={rate.id} id={rate.id} />
                             <Label htmlFor={rate.id} className="flex-1 cursor-pointer">
-                              <div className="flex justify-between items-center">
-                                <div>
-                                  <p className="font-semibold text-base">
-                                    {rate.postage_fee && rate.tariff_fee ? (
-                                      <>postage ${rate.postage_fee.toFixed(2)} + tariff ${rate.tariff_fee.toFixed(2)}, {rate.delivery_estimate}</>
-                                    ) : (
-                                      rate.method_name
-                                    )}
-                                  </p>
+                              <div className="flex justify-between items-start gap-4">
+                                <div className="flex-1">
+                                  {rate.postage_fee && rate.tariff_fee ? (
+                                    <div className="space-y-1">
+                                      <p className="font-semibold text-base">International Tracked Shipping</p>
+                                      <div className="text-sm text-muted-foreground space-y-0.5">
+                                        <p>Postage: ${rate.postage_fee.toFixed(2)}</p>
+                                        <p>Tariff: ${rate.tariff_fee.toFixed(2)}</p>
+                                        <p className="text-xs mt-1.5 text-primary font-medium">{rate.delivery_estimate}</p>
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <>
+                                      <p className="font-semibold text-base">{rate.method_name}</p>
+                                      {rate.delivery_estimate && (
+                                        <p className="text-sm text-muted-foreground mt-1">{rate.delivery_estimate}</p>
+                                      )}
+                                    </>
+                                  )}
                                   {rate.is_free && (
-                                    <p className="text-sm text-green-600 font-medium mt-1">
+                                    <p className="text-sm text-green-600 font-medium mt-2">
                                       <span className="inline-flex items-center gap-1">
                                         ✓ Free shipping
                                       </span>
@@ -873,7 +883,7 @@ const Checkout = () => {
                                   )}
                                 </div>
                                 <div className="text-right">
-                                  <p className="font-bold text-lg text-primary">
+                                  <p className="font-bold text-xl text-primary">
                                     {rate.is_free || rate.rate_amount === 0 ? 'FREE' : `$${rate.rate_amount.toFixed(2)}`}
                                   </p>
                                   <p className="text-xs text-muted-foreground">CAD</p>
