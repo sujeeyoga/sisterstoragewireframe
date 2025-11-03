@@ -4,6 +4,7 @@ import Section from "@/components/layout/Section";
 import { Product } from "@/types/product";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
+import { ProductsGridSkeleton } from "@/components/skeletons/ProductsGridSkeleton";
 
 interface ProductsSectionProps {
   products: Product[];
@@ -28,8 +29,8 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({ products, isLoading, 
   if (isLoading) {
     return (
       <Section spacing="lg" width="full" as="div">
-        <div className="text-center py-16 text-muted-foreground">
-          Loading products...
+        <div className="container-custom py-8">
+          <ProductsGridSkeleton />
         </div>
       </Section>
     );
