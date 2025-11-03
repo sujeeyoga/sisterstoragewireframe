@@ -26,8 +26,10 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const taxonomy = productTaxonomyMap[product.id] ?? undefined;
   const attrs = taxonomy?.attributes;
   
-  const discountedPrice = discount?.enabled ? applyDiscount(product.price) : product.price;
-  const hasDiscount = discount?.enabled && discount.percentage > 0;
+  const discountedPrice = (discount?.enabled && product.slug !== 'multipurpose-box' && product.id !== 'multipurpose-box') 
+    ? applyDiscount(product.price) 
+    : product.price;
+  const hasDiscount = discount?.enabled && discount.percentage > 0 && product.slug !== 'multipurpose-box' && product.id !== 'multipurpose-box';
   
   if (!shouldShowProduct(product.stockQuantity)) return null;
   
@@ -102,7 +104,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
           
           {/* Product badges */}
           <div className="absolute top-3 left-3 flex flex-col gap-2">
-            {hasDiscount && (
+            {hasDiscount && product.slug !== 'multipurpose-box' && product.id !== 'multipurpose-box' && (
               <Badge className="bg-green-600 text-white">
                 <Tag className="h-3 w-3 mr-1" />
                 {discount.percentage}% OFF
