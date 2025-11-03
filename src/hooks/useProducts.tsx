@@ -12,7 +12,6 @@ export function useProducts() {
         .select('*')
         .eq('in_stock', true)
         .eq('visible', true)
-        .neq('slug', 'multipurpose-box-1-large-box')
         .order('name');
 
       if (error) {
@@ -76,7 +75,6 @@ export function useProductsByCategory(category: string) {
           .select('*')
           .eq('in_stock', true)
           .eq('visible', true)
-          .neq('slug', 'multipurpose-box-1-large-box')
           .order('name');
 
       if (error || !data) {
@@ -92,7 +90,6 @@ export function useProductsByCategory(category: string) {
         .select('*')
         .eq('in_stock', true)
         .eq('visible', true)
-        .neq('slug', 'multipurpose-box-1-large-box')
         .order('name');
 
       if (error || !data) {
@@ -122,7 +119,6 @@ export function useBestSellers(limit: number = 4) {
         .select('*')
         .eq('in_stock', true)
         .eq('visible', true)
-        .neq('slug', 'multipurpose-box-1-large-box')
         .order('id')
         .limit(limit);
 
