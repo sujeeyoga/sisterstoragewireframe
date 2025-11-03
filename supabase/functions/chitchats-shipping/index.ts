@@ -123,12 +123,15 @@ serve(async (req) => {
           throw new Error(`Invalid JSON response from ChitChats: ${responseText.substring(0, 200)}`);
         }
         
-        console.log('ChitChats rates response:', rateData);
+        console.log('ChitChats initial response:', rateData);
 
         // Refresh rates to get actual pricing
-        if (rateData.id) {
+        const shipmentId = rateData?.shipment?.id || rateData?.id;
+        console.log('Shipment ID for refresh:', shipmentId);
+        
+        if (shipmentId) {
           const refreshResponse = await fetch(
-            getApiUrl(clientId, `/shipments/${rateData.id}/refresh`),
+            getApiUrl(clientId, `/shipments/${shipmentId}/refresh`),
             {
               method: 'PATCH',
               headers: {
@@ -138,12 +141,13 @@ serve(async (req) => {
             }
           );
 
+          console.log('Refresh response status:', refreshResponse.status);
           const refreshData = await refreshResponse.json();
-          console.log('ChitChats refresh rates response:', refreshData);
+          console.log('ChitChats refresh rates response:', JSON.stringify(refreshData).substring(0, 500));
 
           // Delete the draft shipment
           await fetch(
-            getApiUrl(clientId, `/shipments/${rateData.id}`),
+            getApiUrl(clientId, `/shipments/${shipmentId}`),
             {
               method: 'DELETE',
               headers: {
