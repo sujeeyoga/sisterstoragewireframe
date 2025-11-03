@@ -30,6 +30,10 @@ interface ChitChatsShipmentRequest extends ChitChatsRateRequest {
 
 const CHITCHATS_API_BASE = "https://chitchats.com/api/v1";
 
+const getApiUrl = (clientId: string, path: string) => {
+  return `${CHITCHATS_API_BASE}/clients/${clientId}${path}`;
+};
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -55,41 +59,82 @@ serve(async (req) => {
     const { action, ...params } = await req.json();
     console.log('ChitChats request:', { action, params });
 
-    const authHeader = `Basic ${btoa(`${clientId}:${apiToken}`)}`;
+    const authHeader = `${apiToken}`;
 
     switch (action) {
       case 'get_rates': {
         const rateParams = params as ChitChatsRateRequest;
         
-        // Build query parameters for rate quote
-        const queryParams = new URLSearchParams({
-          to_country: rateParams.to_country,
-          to_postal_code: rateParams.to_postal_code,
-          weight: rateParams.weight.toString(),
-        });
-
-        if (rateParams.to_state) queryParams.append('to_state', rateParams.to_state);
-        if (rateParams.to_city) queryParams.append('to_city', rateParams.to_city);
-        if (rateParams.length) queryParams.append('length', rateParams.length.toString());
-        if (rateParams.width) queryParams.append('width', rateParams.width.toString());
-        if (rateParams.height) queryParams.append('height', rateParams.height.toString());
+        // Create a draft shipment to get rates
+        const shipmentPayload = {
+          name: "Rate Quote",
+          address_1: "123 Street",
+          city: rateParams.to_city || "",
+          province_code: rateParams.to_state || "",
+          postal_code: rateParams.to_postal_code,
+          country_code: rateParams.to_country,
+          package_contents: "merchandise",
+          value: rateParams.package_value || 50,
+          value_currency: "USD",
+          postage_type: "unknown",
+          package_type: "parcel",
+          size_unit: "cm",
+          size_x: rateParams.length || 25,
+          size_y: rateParams.width || 20,
+          size_z: rateParams.height || 10,
+          weight_unit: "g",
+          weight: rateParams.weight,
+          line_items: [{
+            quantity: 1,
+            description: "Jewelry organizer",
+            value_amount: (rateParams.package_value || 50).toString(),
+            currency_code: "usd",
+            origin_country: "CA",
+            weight: rateParams.weight,
+            weight_unit: "g"
+          }],
+        };
 
         const rateResponse = await fetch(
-          `${CHITCHATS_API_BASE}/rates?${queryParams.toString()}`,
+          getApiUrl(clientId, '/shipments'),
           {
-            method: 'GET',
+            method: 'POST',
             headers: {
               'Authorization': authHeader,
               'Content-Type': 'application/json',
             },
+            body: JSON.stringify(shipmentPayload),
           }
         );
 
-        const rateData = await rateResponse.json();
-        console.log('ChitChats rates response:', rateData);
+        console.log('ChitChats API response status:', rateResponse.status);
+        const responseText = await rateResponse.text();
+        console.log('ChitChats API raw response:', responseText.substring(0, 500));
 
         if (!rateResponse.ok) {
-          throw new Error(`ChitChats API error: ${JSON.stringify(rateData)}`);
+          throw new Error(`ChitChats API error (${rateResponse.status}): ${responseText.substring(0, 200)}`);
+        }
+
+        let rateData;
+        try {
+          rateData = JSON.parse(responseText);
+        } catch (e) {
+          throw new Error(`Invalid JSON response from ChitChats: ${responseText.substring(0, 200)}`);
+        }
+        
+        console.log('ChitChats rates response:', rateData);
+
+        // Delete the draft shipment
+        if (rateData.id) {
+          await fetch(
+            getApiUrl(clientId, `/shipments/${rateData.id}`),
+            {
+              method: 'DELETE',
+              headers: {
+                'Authorization': authHeader,
+              },
+            }
+          );
         }
 
         return new Response(
@@ -116,17 +161,17 @@ serve(async (req) => {
           value: shipmentParams.package_value || 50,
           value_currency: 'USD',
           order_id: shipmentParams.order_id || '',
+          weight_unit: 'g',
           weight: shipmentParams.weight,
           size_unit: 'cm',
           size_x: shipmentParams.length || 25,
           size_y: shipmentParams.width || 20,
           size_z: shipmentParams.height || 10,
-          carrier: shipmentParams.carrier || 'usps',
-          service_code: shipmentParams.service_code || 'usps_priority_mail',
+          postage_type: shipmentParams.service_code || 'usps_priority',
         };
 
         const shipmentResponse = await fetch(
-          `${CHITCHATS_API_BASE}/shipments`,
+          getApiUrl(clientId, '/shipments'),
           {
             method: 'POST',
             headers: {
@@ -154,7 +199,7 @@ serve(async (req) => {
         const { shipment_id } = params;
         
         const shipmentResponse = await fetch(
-          `${CHITCHATS_API_BASE}/shipments/${shipment_id}`,
+          getApiUrl(clientId, `/shipments/${shipment_id}`),
           {
             method: 'GET',
             headers: {
@@ -180,12 +225,11 @@ serve(async (req) => {
         const { shipment_id } = params;
         
         const voidResponse = await fetch(
-          `${CHITCHATS_API_BASE}/shipments/${shipment_id}/void`,
+          getApiUrl(clientId, `/shipments/${shipment_id}`),
           {
-            method: 'POST',
+            method: 'DELETE',
             headers: {
               'Authorization': authHeader,
-              'Content-Type': 'application/json',
             },
           }
         );
