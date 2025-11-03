@@ -7,6 +7,7 @@ import { useNewsletterSettings } from '@/hooks/useNewsletterSettings';
 import { useAbandonedCart } from '@/hooks/useAbandonedCart';
 import { useShippingSettings } from '@/hooks/useShippingSettings';
 import { useShippingZones } from '@/hooks/useShippingZones';
+import { useFreeGiftPromotion } from '@/hooks/useFreeGiftPromotion';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
@@ -143,6 +144,7 @@ const Checkout = () => {
   const { newsletter } = useNewsletterSettings();
   const { shippingSettings } = useShippingSettings();
   const { calculateShipping } = useShippingZones();
+  const { promotion, qualifiesForGift } = useFreeGiftPromotion();
   
   const [isProcessing, setIsProcessing] = useState(false);
   const [isLoadingRates, setIsLoadingRates] = useState(false);
@@ -329,6 +331,18 @@ const Checkout = () => {
     }
   };
 
+  // Check if customer qualifies for free gift
+  const giftQualified = qualifiesForGift(formData.country, subtotal);
+  const freeGiftProduct = giftQualified ? {
+    id: promotion?.gift_product_id || 25814005,
+    name: 'Medium Bangle Box',
+    price: 25.00,
+    quantity: 1,
+    image: '/lovable-uploads/medium-bangle-2rod-final.jpg',
+    description: 'FREE GIFT - Medium Bangle Box',
+    isFreeGift: true,
+  } : null;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -437,17 +451,31 @@ const Checkout = () => {
     setIsProcessing(true);
 
     try {
+      // Prepare items array, adding free gift if qualified
+      const checkoutItems = [
+        ...items.map(item => ({
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          image: item.image,
+          description: item.description || `${item.name} - Quantity: ${item.quantity}`,
+        })),
+        ...(freeGiftProduct ? [{
+          id: freeGiftProduct.id,
+          name: freeGiftProduct.name,
+          price: 0, // Free gift - $0 price
+          quantity: 1,
+          image: freeGiftProduct.image,
+          description: freeGiftProduct.description,
+          isFreeGift: true,
+        }] : [])
+      ];
+
       // Call Stripe checkout edge function
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: {
-          items: items.map(item => ({
-            id: item.id,
-            name: item.name,
-            price: item.price,
-            quantity: item.quantity,
-            image: item.image,
-            description: item.description || `${item.name} - Quantity: ${item.quantity}`,
-          })),
+          items: checkoutItems,
           customerEmail: formData.email,
           customerPhone: formData.phone,
           shippingAddress: {
@@ -556,6 +584,39 @@ const Checkout = () => {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Checkout Form */}
           <div className="lg:col-span-2 space-y-6">
+            {/* US Free Gift Promotion Banner */}
+            {formData.country === 'US' && promotion?.enabled && (
+              <Card className={`border-2 ${giftQualified ? 'bg-gradient-to-r from-green-50 to-emerald-50 border-green-500 animate-fade-in' : 'bg-gradient-to-r from-purple-50 to-pink-50 border-purple-400'}`}>
+                <CardContent className="py-4">
+                  {giftQualified ? (
+                    <div className="flex items-center gap-3">
+                      <Gift className="h-8 w-8 text-green-600" />
+                      <div>
+                        <p className="font-bold text-green-900 text-lg">
+                          🎉 Free Medium Bangle Box Added!
+                        </p>
+                        <p className="text-sm text-green-700">
+                          Your order qualifies for a FREE $25 Medium Bangle Box!
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-3">
+                      <Gift className="h-8 w-8 text-purple-600" />
+                      <div>
+                        <p className="font-bold text-purple-900">
+                          ${(100 - subtotal).toFixed(2)} away from a FREE Medium Bangle Box! 🎁
+                        </p>
+                        <p className="text-sm text-purple-700">
+                          Add ${(100 - subtotal).toFixed(2)} more to your order to get a free $25 gift!
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Contact Information */}
               <Card>
@@ -998,8 +1059,33 @@ const Checkout = () => {
                           ${(item.price * item.quantity).toFixed(2)}
                         </span>
                       </div>
-                    </div>
+                     </div>
                   ))}
+
+                  {/* Free Gift Item */}
+                  {giftQualified && freeGiftProduct && (
+                    <div className="space-y-2 pb-4 border-b bg-gradient-to-r from-green-50 to-emerald-50 -mx-4 px-4 py-3 rounded-lg animate-fade-in">
+                      <div className="flex gap-3">
+                        <img 
+                          src={freeGiftProduct.image} 
+                          alt={freeGiftProduct.name}
+                          className="w-16 h-16 object-cover rounded border-2 border-green-500"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start gap-2">
+                            <Gift className="h-4 w-4 text-green-600 mt-0.5" />
+                            <div className="flex-1">
+                              <p className="text-sm font-bold text-green-900">{freeGiftProduct.name}</p>
+                              <p className="text-xs text-green-700 mt-0.5">🎁 FREE GIFT - No charge!</p>
+                              <p className="text-xs text-green-600 mt-1">
+                                Qualifying order: {formData.country} ${subtotal.toFixed(2)}+ ✓
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <Separator />

@@ -629,6 +629,71 @@ export function StoreSettings() {
               )}
             </CardContent>
           </Card>
+
+          {/* US Free Gift Promotion */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-xl">
+                <Gift className="h-5 w-5" />
+                US Free Gift Promotion
+              </CardTitle>
+              <CardDescription>Automatically add a free gift for qualifying US orders</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="flex items-center justify-between p-4 rounded-lg border bg-muted/50">
+                <div className="space-y-1">
+                  <Label className="text-base font-medium">Enable Free Gift for US Orders</Label>
+                  <p className="text-sm text-muted-foreground">Add Medium Bangle Box for orders $100+</p>
+                </div>
+                <Switch
+                  checked={false}
+                  onCheckedChange={async (checked) => {
+                    try {
+                      const { data: existing } = await supabase
+                        .from('store_settings')
+                        .select('*')
+                        .eq('setting_key', 'us_free_gift_promotion')
+                        .maybeSingle();
+
+                      if (existing) {
+                        await supabase
+                          .from('store_settings')
+                          .update({ enabled: checked })
+                          .eq('setting_key', 'us_free_gift_promotion');
+                      } else {
+                        await supabase
+                          .from('store_settings')
+                          .insert({
+                            setting_key: 'us_free_gift_promotion',
+                            enabled: checked,
+                            setting_value: {
+                              min_order_amount: 100,
+                              gift_product_id: 25814005,
+                              countries: ['US'],
+                              display_message: 'Free Medium Bangle Box with orders over $100! 🎁'
+                            }
+                          });
+                      }
+                      queryClient.invalidateQueries({ queryKey: ['free-gift-promotion'] });
+                      toast({ title: "Success", description: "Free gift promotion updated" });
+                    } catch (error: any) {
+                      toast({
+                        title: "Error",
+                        description: error.message,
+                        variant: "destructive",
+                      });
+                    }
+                  }}
+                />
+              </div>
+
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <p className="text-sm text-green-800">
+                  <strong>How it works:</strong> When a US customer's order reaches $100 or more, a Medium Bangle Box ($25 value) will automatically be added to their order at no charge.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         {/* CUSTOMER TAB */}

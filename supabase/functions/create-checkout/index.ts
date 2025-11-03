@@ -87,7 +87,32 @@ serve(async (req) => {
 
     // Build line items for Stripe from cart items with discount already applied
     const lineItems = items.map((item: any) => {
-      // Apply discount to item price if discount exists
+      // Handle free gift items - always $0, no discount applied
+      if (item.isFreeGift || item.price === 0) {
+        const freeItemData: any = {
+          price_data: {
+            currency: 'cad',
+            product_data: {
+              name: `${item.name} (FREE GIFT 🎁)`,
+              description: item.description || 'Complimentary gift with your order',
+            },
+            unit_amount: 0, // Always $0 for free gifts
+          },
+          quantity: item.quantity,
+        };
+
+        // Add image if available
+        if (item.image && (item.image.startsWith('http') || item.image.startsWith('/'))) {
+          const fullImageUrl = item.image.startsWith('http') 
+            ? item.image 
+            : `${req.headers.get("origin")}${item.image}`;
+          freeItemData.price_data.product_data.images = [fullImageUrl];
+        }
+
+        return freeItemData;
+      }
+
+      // Apply discount to regular item price if discount exists
       const discountedPrice = discountPercentage > 0 
         ? item.price * (1 - discountPercentage / 100)
         : item.price;
@@ -116,6 +141,9 @@ serve(async (req) => {
       return itemData;
     });
 
+    console.log('Line items created:', lineItems.length, 'items');
+    console.log('Has free gift:', items.some((item: any) => item.isFreeGift));
+
     // Add gift wrapping as line item if enabled
     if (giftWrapping?.enabled && giftWrapping.fee > 0) {
       lineItems.push({
@@ -133,6 +161,10 @@ serve(async (req) => {
 
     // Calculate product subtotal (excluding gift wrapping)
     const productSubtotal = items.reduce((sum: number, item: any) => {
+      // Skip free gift items from subtotal calculation
+      if (item.isFreeGift || item.price === 0) {
+        return sum;
+      }
       const discountedPrice = discountPercentage > 0 
         ? item.price * (1 - discountPercentage / 100)
         : item.price;
