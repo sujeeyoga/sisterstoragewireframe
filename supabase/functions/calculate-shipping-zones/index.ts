@@ -155,87 +155,74 @@ const matchAddressToZone = (
 };
 
 /**
- * Calls Stallion API to get real-time shipping rates
+ * Calls ChitChats API to get real-time US shipping rates
  */
-const getStallionRates = async (address: Address, supabase: any): Promise<any> => {
+const getChitChatsRates = async (address: Address, supabase: any, packageInfo: any = {}): Promise<any> => {
   try {
-    console.log('Fetching Stallion rates for address:', address);
+    console.log('Fetching ChitChats rates for address:', address);
     
-    const { data, error } = await supabase.functions.invoke('stallion-express', {
+    const { data, error } = await supabase.functions.invoke('chitchats-shipping', {
       body: {
-        action: 'get-rates',
-        data: {
-          to_address: {
-            name: 'Customer',
-            company: '',
-            address1: '123 Main St',
-            city: address.city || '',
-            province_code: address.province || '',
-            country_code: address.country || 'US',
-            postal_code: address.postalCode || '',
-            phone: ''
-          },
-          weight: 0.5,
-          weight_unit: 'kg',
-          length: 12,
-          width: 10,
-          height: 4,
-          size_unit: 'cm',
-          package_contents: 'Bangle Storage Set',
-          value: 50,
-          currency: 'USD'
-        }
+        action: 'get_rates',
+        to_country: address.country || 'US',
+        to_state: address.province,
+        to_city: address.city,
+        to_postal_code: address.postalCode || '',
+        weight: packageInfo.weight || 500, // default 500g
+        length: packageInfo.length || 25,
+        width: packageInfo.width || 20,
+        height: packageInfo.height || 10,
+        package_value: packageInfo.value || 50,
       }
     });
 
     if (error) {
-      console.error('Stallion API error:', error);
+      console.error('ChitChats API error:', error);
       return null;
     }
 
-    console.log('Stallion rates response:', data);
+    console.log('ChitChats rates response:', data);
     return data;
   } catch (error) {
-    console.error('Error calling Stallion API:', error);
+    console.error('Error calling ChitChats API:', error);
     return null;
   }
 };
 
 /**
- * Transforms Stallion rates to our rate format
- * Converts CAD to USD using conservative rate
+ * Transforms ChitChats rates to our rate format
  */
-const transformStallionRates = (stallionData: any, subtotal: number): any[] => {
-  // Stallion returns nested structure: { success: true, data: { rates: [...] } }
-  const rates = stallionData?.data?.rates || stallionData?.rates;
-  const CAD_TO_USD = 0.73; // Conservative conversion rate
+const transformChitChatsRates = (chitchatsData: any, subtotal: number): any[] => {
+  // ChitChats returns: { success: true, data: { rates: [...] } }
+  const rates = chitchatsData?.data?.rates || [];
   
   if (!rates || !Array.isArray(rates)) {
-    console.log('No rates in Stallion response');
+    console.log('No rates in ChitChats response');
     return [];
   }
 
-  console.log(`Converting Stallion rates using CAD→USD rate: ${CAD_TO_USD}`);
+  console.log(`Processing ${rates.length} ChitChats rates`);
 
   return rates
-    .filter((rate: any) => rate.total && rate.postage_type)
+    .filter((rate: any) => rate.price && rate.name)
     .map((rate: any, index: number) => {
-      const cadAmount = parseFloat(rate.total);
-      const usdAmount = cadAmount * CAD_TO_USD;
+      const amount = parseFloat(rate.price);
       
-      console.log(`Stallion rate: ${rate.postage_type} - $${cadAmount.toFixed(2)} CAD → $${usdAmount.toFixed(2)} USD`);
+      console.log(`ChitChats rate: ${rate.name} - $${amount.toFixed(2)} USD`);
       
       return {
-        id: `stallion_${rate.postage_type_id || index}`,
-        method_name: `${rate.postage_type} (from Canada)`,
-        rate_amount: parseFloat(usdAmount.toFixed(2)),
+        id: `chitchats_${rate.service_code || index}`,
+        method_name: rate.name,
+        rate_amount: parseFloat(amount.toFixed(2)),
         is_free: false,
         free_threshold: null,
         display_order: index + 1,
-        currency: 'USD',
-        original_cad_amount: cadAmount,
+        carrier: rate.carrier,
+        service_code: rate.service_code,
+        delivery_estimate: rate.delivery_estimate,
       };
-    });
+    })
+    .sort((a, b) => a.rate_amount - b.rate_amount); // Sort by price
 };
 
 Deno.serve(async (req) => {
@@ -302,26 +289,26 @@ Deno.serve(async (req) => {
       let applicableRates = [];
       let rateSource = 'database';
 
-      // For US zones, try to get real-time Stallion rates
+      // For US zones, try to get real-time ChitChats rates
       const isUSZone = address.country?.toUpperCase() === 'US' || 
                        matchedRule.rule_value?.toUpperCase() === 'US';
 
       if (isUSZone) {
-        console.log('US zone detected, fetching Stallion rates...');
-        const stallionData = await getStallionRates(address, supabase);
+        console.log('US zone detected, fetching ChitChats rates...');
+        const chitchatsData = await getChitChatsRates(address, supabase);
         
-        if (stallionData) {
-          applicableRates = transformStallionRates(stallionData, subtotal);
-          rateSource = 'stallion';
-          console.log('Using Stallion rates:', applicableRates);
+        if (chitchatsData?.success) {
+          applicableRates = transformChitChatsRates(chitchatsData, subtotal);
+          rateSource = 'chitchats';
+          console.log('Using ChitChats rates:', applicableRates);
         }
       }
 
-      // Fall back to appropriate rates if Stallion failed
+      // Fall back to appropriate rates if ChitChats failed
       if (applicableRates.length === 0) {
         if (isUSZone) {
-          // US fallback: Higher safety rate if Stallion completely fails
-          console.log('⚠️ Stallion API failed - using US safety fallback: $35');
+          // US fallback: Higher safety rate if ChitChats completely fails
+          console.log('⚠️ ChitChats API failed - using US safety fallback: $35');
           applicableRates = [{
             id: 'us_safety_fallback',
             method_name: 'Standard Shipping (Estimated)',
