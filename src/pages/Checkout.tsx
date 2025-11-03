@@ -102,7 +102,8 @@ const US_STATES = [
 ];
 
 const COUNTRIES = [
-  { code: 'CA', name: 'Canada' }
+  { code: 'CA', name: 'Canada' },
+  { code: 'US', name: 'United States' }
 ];
 
 // Validation functions
@@ -188,8 +189,13 @@ const Checkout = () => {
     }
   }, [formData.address, formData.city, formData.province, formData.postalCode, formStage]);
 
-  // Calculate tax based on province
-  const getTaxRate = (province: string): number => {
+  // Calculate tax based on province/country
+  const getTaxRate = (province: string, country: string = 'CA'): number => {
+    // No tax for US orders (customer responsible for use tax)
+    if (country === 'US') {
+      return 0;
+    }
+    
     const taxRates: { [key: string]: number } = {
       'ON': 0.13,  // HST 13%
       'BC': 0.12,  // GST + PST
@@ -208,7 +214,7 @@ const Checkout = () => {
     return taxRates[province.toUpperCase()] || 0.13; // Default to ON HST
   };
 
-  const taxRate = getTaxRate(formData.province);
+  const taxRate = getTaxRate(formData.province, formData.country);
   const discountedSubtotal = discount?.enabled ? applyDiscount(subtotal) : subtotal;
   const discountAmount = discount?.enabled ? getDiscountAmount(subtotal) : 0;
   const giftWrappingFee = includeGiftWrapping && giftOptions?.wrappingEnabled ? (giftOptions.wrappingPrice || 0) : 0;
