@@ -193,10 +193,10 @@ const getChitChatsRates = async (address: Address, supabase: any, packageInfo: a
  * Transforms ChitChats rates to our rate format
  */
 const transformChitChatsRates = (chitchatsData: any, subtotal: number): any[] => {
-  // ChitChats returns: { success: true, data: { rates: [...] } }
-  const rates = chitchatsData?.data?.rates || [];
-  
-  if (!rates || !Array.isArray(rates)) {
+  // ChitChats returns: { success: true, data: { shipment: { rates: [...] } } }
+  const rates = chitchatsData?.data?.shipment?.rates || [];
+
+  if (!Array.isArray(rates) || rates.length === 0) {
     console.log('No rates in ChitChats response');
     return [];
   }
@@ -204,25 +204,28 @@ const transformChitChatsRates = (chitchatsData: any, subtotal: number): any[] =>
   console.log(`Processing ${rates.length} ChitChats rates`);
 
   return rates
-    .filter((rate: any) => rate.price && rate.name)
     .map((rate: any, index: number) => {
-      const amount = parseFloat(rate.price);
-      
-      console.log(`ChitChats rate: ${rate.name} - $${amount.toFixed(2)} USD`);
-      
+      const amount = parseFloat(rate.payment_amount || rate.postage_fee || '0');
+      const tariff = parseFloat(rate.tariff_fee || '0');
+      const name = rate.postage_description || rate.postage_type || 'Shipping';
+
+      console.log(`ChitChats rate: ${name} - total $${amount.toFixed(2)} (postage ${rate.postage_fee} + tariff ${rate.tariff_fee})`);
+
       return {
-        id: `chitchats_${rate.service_code || index}`,
-        method_name: rate.name,
+        id: `chitchats_${rate.postage_type || index}`,
+        method_name: name,
         rate_amount: parseFloat(amount.toFixed(2)),
         is_free: false,
         free_threshold: null,
         display_order: index + 1,
-        carrier: rate.carrier,
-        service_code: rate.service_code,
-        delivery_estimate: rate.delivery_estimate,
+        carrier: rate.postage_carrier_type,
+        service_code: rate.postage_type,
+        delivery_estimate: rate.delivery_time_description,
+        tariff_fee: tariff,
+        postage_fee: parseFloat(rate.postage_fee || '0'),
       };
     })
-    .sort((a, b) => a.rate_amount - b.rate_amount); // Sort by price
+    .sort((a, b) => a.rate_amount - b.rate_amount); // Sort by total cost
 };
 
 Deno.serve(async (req) => {
