@@ -19,7 +19,7 @@ import { OrderDrawer } from './OrderDrawer';
 type DateRangePreset = 'today' | '7d' | '30d' | '90d' | 'custom';
 
 export const AdminDashboard = () => {
-  const { visitorCount, visitorCountries } = useVisitorPresence();
+  const { visitorCount, visitorCountries, tariffRates } = useVisitorPresence();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [dateRange, setDateRange] = useState<DateRangePreset>('today');
@@ -524,12 +524,38 @@ export const AdminDashboard = () => {
                 <span className="text-xs text-muted-foreground">Live</span>
               </div>
               {visitorCountries.length > 0 && (
-                <div className="mt-2 flex flex-wrap gap-1">
-                  {visitorCountries.map((visitor, index) => (
-                    <span key={index} className="text-lg" title={visitor.country}>
-                      {getCountryFlag(visitor.country)}
-                    </span>
-                  ))}
+                <div className="mt-2 space-y-1">
+                  {visitorCountries.map((visitor, index) => {
+                    const countryCode = visitor.country?.length === 2 ? visitor.country : 
+                      Object.entries({
+                        'Canada': 'CA',
+                        'United States': 'US',
+                        'United Kingdom': 'GB',
+                        'Australia': 'AU',
+                        'Germany': 'DE',
+                        'France': 'FR',
+                        'Mexico': 'MX',
+                        'Japan': 'JP',
+                      }).find(([name]) => name === visitor.country)?.[1];
+                    
+                    const tariff = countryCode ? tariffRates[countryCode] : null;
+                    
+                    return (
+                      <div key={index} className="flex items-center gap-2 text-xs">
+                        <span className="text-base" title={visitor.country}>
+                          {getCountryFlag(visitor.country)}
+                        </span>
+                        <span className="text-muted-foreground">
+                          {visitor.country}
+                        </span>
+                        {tariff && tariff.tariff_percentage > 0 && (
+                          <span className="text-amber-700 font-medium">
+                            +{tariff.tariff_percentage}% tariff
+                          </span>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </CardContent>

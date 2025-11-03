@@ -557,6 +557,45 @@ export type Database = {
         }
         Relationships: []
       }
+      tariff_rates: {
+        Row: {
+          broker_fee: number | null
+          country_code: string
+          country_name: string
+          created_at: string
+          customs_fee: number | null
+          effective_date: string
+          id: string
+          notes: string | null
+          tariff_percentage: number
+          updated_at: string
+        }
+        Insert: {
+          broker_fee?: number | null
+          country_code: string
+          country_name: string
+          created_at?: string
+          customs_fee?: number | null
+          effective_date?: string
+          id?: string
+          notes?: string | null
+          tariff_percentage?: number
+          updated_at?: string
+        }
+        Update: {
+          broker_fee?: number | null
+          country_code?: string
+          country_name?: string
+          created_at?: string
+          customs_fee?: number | null
+          effective_date?: string
+          id?: string
+          notes?: string | null
+          tariff_percentage?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       uploaded_images: {
         Row: {
           created_at: string | null

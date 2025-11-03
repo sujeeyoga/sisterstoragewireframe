@@ -14,10 +14,19 @@ interface VisitorCountry {
   country: string;
 }
 
+interface TariffRate {
+  country_code: string;
+  country_name: string;
+  tariff_percentage: number;
+  customs_fee: number;
+  broker_fee: number;
+}
+
 export const useVisitorPresence = (trackVisitor: boolean = false) => {
   const [visitorCount, setVisitorCount] = useState(0);
   const [visitors, setVisitors] = useState<VisitorPresence>({});
   const [visitorCountries, setVisitorCountries] = useState<VisitorCountry[]>([]);
+  const [tariffRates, setTariffRates] = useState<{ [key: string]: TariffRate }>({});
   const sessionIdRef = useRef<string | null>(null);
   const heartbeatIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -68,10 +77,28 @@ export const useVisitorPresence = (trackVisitor: boolean = false) => {
       }
     };
 
+    const fetchTariffRates = async () => {
+      const { data, error } = await supabase
+        .from('tariff_rates')
+        .select('*');
+
+      if (data && !error) {
+        const ratesMap = data.reduce((acc: { [key: string]: TariffRate }, rate) => {
+          acc[rate.country_code] = rate;
+          return acc;
+        }, {});
+        setTariffRates(ratesMap);
+      }
+    };
+
     if (!trackVisitor) {
       // Only fetch countries for admin viewing
       fetchVisitorCountries();
-      const interval = setInterval(fetchVisitorCountries, 30000); // Refresh every 30s
+      fetchTariffRates();
+      const interval = setInterval(() => {
+        fetchVisitorCountries();
+        fetchTariffRates();
+      }, 30000); // Refresh every 30s
       return () => clearInterval(interval);
     }
   }, [trackVisitor]);
@@ -160,7 +187,7 @@ export const useVisitorPresence = (trackVisitor: boolean = false) => {
     };
   }, [trackVisitor]);
 
-  return { visitorCount, visitors, visitorCountries };
+  return { visitorCount, visitors, visitorCountries, tariffRates };
 };
 
 // Generate or retrieve session ID (unique per browser session)
