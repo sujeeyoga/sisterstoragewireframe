@@ -857,7 +857,13 @@ const Checkout = () => {
                             <Label htmlFor={rate.id} className="flex-1 cursor-pointer">
                               <div className="flex justify-between items-center">
                                 <div>
-                                  <p className="font-semibold text-base">{rate.method_name}</p>
+                                  <p className="font-semibold text-base">
+                                    {rate.postage_fee && rate.tariff_fee ? (
+                                      <>postage ${rate.postage_fee.toFixed(2)} + tariff ${rate.tariff_fee.toFixed(2)}, {rate.delivery_estimate}</>
+                                    ) : (
+                                      rate.method_name
+                                    )}
+                                  </p>
                                   {rate.is_free && (
                                     <p className="text-sm text-green-600 font-medium mt-1">
                                       <span className="inline-flex items-center gap-1">
