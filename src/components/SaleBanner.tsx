@@ -18,12 +18,12 @@ const REGION_MESSAGES = {
   },
   'us-standard': {
     icon: Globe,
-    text: 'Free US Shipping Over $75 • Ships in 5-7 Business Days',
+    text: 'Free Medium Box with orders over $100 🎁 • Free Shipping Over $75',
     iconColor: 'text-brand-pink'
   },
   'us-west-coast': {
     icon: Zap,
-    text: 'Free Shipping Over $75 • Fast 3-5 Day Delivery to West Coast',
+    text: 'Free Medium Box with orders over $100 🎁 • Free Shipping Over $75',
     iconColor: 'text-brand-pink'
   },
   'international': {
