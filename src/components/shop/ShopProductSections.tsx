@@ -100,10 +100,18 @@ const ShopProductSections = ({ products }: ShopProductSectionsProps) => {
             
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {organizers.map((product) => {
-                // Define bullets for jewelry organizer
-                const bullets = product.id === 'jewelry-bag-organizer' 
-                  ? ['7 zip pouches', 'Flat fold for travel', 'Soft-touch lining']
-                  : undefined;
+                // Define custom bullets for each organizer
+                let bullets = undefined;
+                
+                if (product.id === 'jewelry-bag-organizer') {
+                  bullets = ['7 zip pouches', 'Flat fold for travel', 'Soft-touch lining'];
+                } else if (product.id === '25814133' || product.name.toLowerCase().includes('multipurpose')) {
+                  bullets = [
+                    'Up to 24 adjustable compartments',
+                    'Perfect for bangles, rings & jewelry',
+                    '38cm × 25cm × 9cm large capacity'
+                  ];
+                }
                 
                 return (
                   <SimpleProductCard 
