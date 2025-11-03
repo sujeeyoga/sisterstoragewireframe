@@ -9,9 +9,15 @@ interface VisitorPresence {
   }>;
 }
 
+interface VisitorCountry {
+  visitor_id: string;
+  country: string;
+}
+
 export const useVisitorPresence = (trackVisitor: boolean = false) => {
   const [visitorCount, setVisitorCount] = useState(0);
   const [visitors, setVisitors] = useState<VisitorPresence>({});
+  const [visitorCountries, setVisitorCountries] = useState<VisitorCountry[]>([]);
   const sessionIdRef = useRef<string | null>(null);
   const heartbeatIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -40,6 +46,35 @@ export const useVisitorPresence = (trackVisitor: boolean = false) => {
       console.error('Error invoking track-visitor:', error);
     }
   };
+
+  // Fetch visitor countries from analytics
+  useEffect(() => {
+    const fetchVisitorCountries = async () => {
+      const { data, error } = await supabase
+        .from('visitor_analytics')
+        .select('visitor_id, country')
+        .gte('created_at', new Date(Date.now() - 5 * 60 * 1000).toISOString()) // Last 5 minutes
+        .order('created_at', { ascending: false });
+
+      if (data && !error) {
+        // Get unique visitor countries
+        const uniqueCountries = data.reduce((acc: VisitorCountry[], curr) => {
+          if (!acc.find(v => v.visitor_id === curr.visitor_id)) {
+            acc.push({ visitor_id: curr.visitor_id, country: curr.country || 'Unknown' });
+          }
+          return acc;
+        }, []);
+        setVisitorCountries(uniqueCountries);
+      }
+    };
+
+    if (!trackVisitor) {
+      // Only fetch countries for admin viewing
+      fetchVisitorCountries();
+      const interval = setInterval(fetchVisitorCountries, 30000); // Refresh every 30s
+      return () => clearInterval(interval);
+    }
+  }, [trackVisitor]);
 
   useEffect(() => {
     const channel = supabase.channel('site-visitors');
@@ -125,7 +160,7 @@ export const useVisitorPresence = (trackVisitor: boolean = false) => {
     };
   }, [trackVisitor]);
 
-  return { visitorCount, visitors };
+  return { visitorCount, visitors, visitorCountries };
 };
 
 // Generate or retrieve session ID (unique per browser session)

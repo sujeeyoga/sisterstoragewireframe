@@ -19,7 +19,7 @@ import { OrderDrawer } from './OrderDrawer';
 type DateRangePreset = 'today' | '7d' | '30d' | '90d' | 'custom';
 
 export const AdminDashboard = () => {
-  const { visitorCount } = useVisitorPresence();
+  const { visitorCount, visitorCountries } = useVisitorPresence();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [dateRange, setDateRange] = useState<DateRangePreset>('today');
@@ -237,9 +237,33 @@ export const AdminDashboard = () => {
   console.log('Dashboard stats:', stats, 'Loading:', isLoading, 'Error:', error);
 
   const getCountryFlag = (countryCode: string) => {
-    if (!countryCode || countryCode === 'N/A') return '🌍';
-    const code = countryCode.toUpperCase();
-    return code.split('').map(char => String.fromCodePoint(127397 + char.charCodeAt(0))).join('');
+    if (!countryCode || countryCode === 'N/A' || countryCode === 'Unknown') return '🌍';
+    
+    // Map common country names to codes if needed
+    const countryNameToCode: { [key: string]: string } = {
+      'Canada': 'CA',
+      'United States': 'US',
+      'United Kingdom': 'GB',
+      'Australia': 'AU',
+      'Germany': 'DE',
+      'France': 'FR',
+      'Italy': 'IT',
+      'Spain': 'ES',
+      'Mexico': 'MX',
+      'Brazil': 'BR',
+      'Japan': 'JP',
+      'China': 'CN',
+      'India': 'IN',
+    };
+    
+    const code = (countryNameToCode[countryCode] || countryCode).toUpperCase();
+    
+    // Only convert if it's a 2-letter code
+    if (code.length === 2) {
+      return code.split('').map(char => String.fromCodePoint(127397 + char.charCodeAt(0))).join('');
+    }
+    
+    return '🌍';
   };
 
   const { data: recentOrders } = useQuery({
@@ -499,6 +523,15 @@ export const AdminDashboard = () => {
                 <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
                 <span className="text-xs text-muted-foreground">Live</span>
               </div>
+              {visitorCountries.length > 0 && (
+                <div className="mt-2 flex flex-wrap gap-1">
+                  {visitorCountries.map((visitor, index) => (
+                    <span key={index} className="text-lg" title={visitor.country}>
+                      {getCountryFlag(visitor.country)}
+                    </span>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </Link>
