@@ -132,10 +132,10 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
         {/* What's Included */}
         {(bullets || rodCount || product.originalPrice || product.bundleContents || openBoxDetails) && (
           <div className="space-y-2">
-            <h3 className="text-sm font-bold text-[hsl(var(--brand-pink))] uppercase tracking-wider">
+            <h3 className="text-xs font-bold text-[hsl(var(--brand-pink))] uppercase tracking-wider">
               What's Included
             </h3>
-            <ul className="space-y-2">
+            <ul className="space-y-1.5">
               {openBoxDetails ? (
                 <li>
                   <div className="space-y-2">
@@ -186,12 +186,12 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
               ) : null}
               {bullets && bullets.map((line, i) => (
                 <li key={i}>
-                  <p className="text-gray-600 text-2xl leading-relaxed font-medium">{line}</p>
+                  <p className="text-gray-600 text-sm leading-relaxed">• {line}</p>
                 </li>
               ))}
               {!openBoxDetails && product.features && product.features.slice(0, 3).map((feature, i) => (
                 <li key={`feature-${i}`}>
-                  <p className="text-gray-600 text-2xl leading-relaxed font-medium">{feature}</p>
+                  <p className="text-gray-600 text-sm leading-relaxed">• {feature}</p>
                 </li>
               ))}
             </ul>
