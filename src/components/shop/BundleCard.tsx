@@ -159,11 +159,11 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
           <div className="flex items-center justify-between">
             <div className="flex items-baseline gap-2">
               <span className="text-2xl font-black text-gray-900">${product.price.toFixed(2)}</span>
-              {product.originalPrice && product.originalPrice > product.price && product.slug !== 'multipurpose-box' && product.id !== 'multipurpose-box' && (
+              {product.originalPrice && product.originalPrice > product.price && (product.originalPrice - product.price) > 0 && (
                 <span className="text-sm text-gray-400 line-through">${product.originalPrice.toFixed(2)}</span>
               )}
             </div>
-            {product.originalPrice && product.originalPrice > product.price && product.slug !== 'multipurpose-box' && product.id !== 'multipurpose-box' && (
+            {product.originalPrice && product.originalPrice > product.price && (product.originalPrice - product.price) > 0 && (
               <div className="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-lg">
                 Save ${(product.originalPrice - product.price).toFixed(2)}
               </div>

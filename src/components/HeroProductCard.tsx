@@ -96,12 +96,14 @@ const HeroProductCard = ({
                 </>
               )}
             </div>
-            <div className="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-lg min-w-[4rem] text-center">
-              {hasDiscount 
-                ? `Save $${(price - discountedPrice).toFixed(2)}`
-                : `Save $${(originalPrice - price).toFixed(2)}`
-              }
-            </div>
+            {((hasDiscount && (price - discountedPrice) > 0) || (!hasDiscount && (originalPrice - price) > 0)) && (
+              <div className="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-lg min-w-[4rem] text-center">
+                {hasDiscount 
+                  ? `Save $${(price - discountedPrice).toFixed(2)}`
+                  : `Save $${(originalPrice - price).toFixed(2)}`
+                }
+              </div>
+            )}
           </div>
           
           <AddToCartBar 

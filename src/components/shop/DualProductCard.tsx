@@ -78,7 +78,7 @@ const DualProductCard = ({ products }: DualProductCardProps) => {
           <div className="flex items-center justify-between h-8">
             <div className="flex items-baseline gap-1">
               <span className="text-lg font-bold text-gray-900">${product.price}</span>
-              {product.originalPrice && product.slug !== 'multipurpose-box' && product.id !== 'multipurpose-box' && (
+              {product.originalPrice && product.originalPrice > product.price && (product.originalPrice - product.price) > 0 && (
                 <span className="text-sm text-gray-400 line-through">${product.originalPrice}</span>
               )}
             </div>

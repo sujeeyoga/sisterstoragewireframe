@@ -139,7 +139,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
                   <span className="text-sm text-muted-foreground line-through">${product.price.toFixed(2)}</span>
                   <span className="font-bold text-2xl text-green-600">${discountedPrice.toFixed(2)}</span>
                 </div>
-              ) : (product.originalPrice && product.originalPrice > product.price && product.slug !== 'multipurpose-box' && product.id !== 'multipurpose-box') ? (
+              ) : (product.originalPrice && product.originalPrice > product.price && (product.originalPrice - product.price) > 0) ? (
                 <div className="flex flex-col items-end">
                   <span className="text-sm text-muted-foreground line-through">${product.originalPrice.toFixed(2)}</span>
                   <span className="font-bold text-2xl text-[hsl(var(--primary))]">${product.price.toFixed(2)}</span>

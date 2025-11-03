@@ -220,7 +220,7 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
                   ) : (
                   <>
                     <span className="text-3xl font-bold text-gray-900">${product.price.toFixed(2)}</span>
-                    {product.originalPrice && product.slug !== 'multipurpose-box' && product.id !== 'multipurpose-box' && (
+                    {product.originalPrice && product.originalPrice > product.price && (product.originalPrice - product.price) > 0 && (
                       <span className="text-lg text-gray-400 line-through">${product.originalPrice.toFixed(2)}</span>
                     )}
                   </>
@@ -230,7 +230,7 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
                   <Badge className="bg-green-600 text-white">
                     SAVE ${(product.price - discountedPrice).toFixed(2)}
                   </Badge>
-                ) : (product.originalPrice && product.slug !== 'multipurpose-box' && product.id !== 'multipurpose-box') ? (
+                ) : (product.originalPrice && product.originalPrice > product.price && (product.originalPrice - product.price) > 0) ? (
                   <Badge variant="destructive" className="bg-red-500 text-white">
                     SAVE ${(product.originalPrice - product.price).toFixed(2)}
                   </Badge>
