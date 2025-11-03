@@ -34,6 +34,7 @@ import {
 import { format } from 'date-fns';
 import { Package, DollarSign, User, MapPin, CreditCard, Truck, ExternalLink, AlertTriangle, RefreshCw, AlertCircle } from 'lucide-react';
 import { StallionFulfillmentDialog } from './StallionFulfillmentDialog';
+import { ChitChatsFulfillmentDialog } from './ChitChatsFulfillmentDialog';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useOrderShippingInfo } from '@/hooks/useOrderShippingInfo';
@@ -68,6 +69,7 @@ interface OrderDrawerProps {
 export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawerProps) {
   const [newStatus, setNewStatus] = useState(order.status);
   const [fulfillmentDialogOpen, setFulfillmentDialogOpen] = useState(false);
+  const [fulfillmentService, setFulfillmentService] = useState<'stallion' | 'chitchats'>('stallion');
   const [refundDialogOpen, setRefundDialogOpen] = useState(false);
   const [refundAmount, setRefundAmount] = useState<string>(order.total.toString());
   const [refundReason, setRefundReason] = useState('requested_by_customer');
@@ -565,7 +567,18 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
               </Alert>
             )}
 
-            <Button onClick={() => setFulfillmentDialogOpen(true)} size="sm">
+            <Button 
+              onClick={() => {
+                // Determine which fulfillment service to use based on destination country
+                const shippingAddr = order.shipping_address || order.shipping || order.billing;
+                const country = shippingAddr?.country || shippingAddr?.country_code || 'CA';
+                const isUS = country.toUpperCase() === 'US' || country.toUpperCase() === 'USA' || country.toUpperCase() === 'UNITED STATES';
+                
+                setFulfillmentService(isUS ? 'chitchats' : 'stallion');
+                setFulfillmentDialogOpen(true);
+              }} 
+              size="sm"
+            >
               Manage Fulfillment
             </Button>
           </div>
@@ -590,15 +603,27 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
           )}
         </div>
 
-        <StallionFulfillmentDialog
-          order={order}
-          open={fulfillmentDialogOpen}
-          onClose={() => setFulfillmentDialogOpen(false)}
-          onSuccess={() => {
-            setFulfillmentDialogOpen(false);
-            onClose();
-          }}
-        />
+        {fulfillmentService === 'stallion' ? (
+          <StallionFulfillmentDialog
+            order={order}
+            open={fulfillmentDialogOpen}
+            onClose={() => setFulfillmentDialogOpen(false)}
+            onSuccess={() => {
+              setFulfillmentDialogOpen(false);
+              onClose();
+            }}
+          />
+        ) : (
+          <ChitChatsFulfillmentDialog
+            order={order}
+            open={fulfillmentDialogOpen}
+            onClose={() => setFulfillmentDialogOpen(false)}
+            onSuccess={() => {
+              setFulfillmentDialogOpen(false);
+              onClose();
+            }}
+          />
+        )}
 
         <AlertDialog open={refundDialogOpen} onOpenChange={setRefundDialogOpen}>
           <AlertDialogContent className="max-w-2xl">
