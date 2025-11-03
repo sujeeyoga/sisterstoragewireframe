@@ -933,16 +933,23 @@ const Checkout = () => {
                   {items.map((item) => (
                     <div key={item.id} className="space-y-2 pb-4 border-b last:border-0">
                       <div className="flex gap-3">
-                        {item.image.startsWith('http') ? (
+                        {item.image && (item.image.startsWith('http') || item.image.startsWith('/')) ? (
                           <img 
                             src={item.image} 
                             alt={item.name}
                             className="w-16 h-16 object-cover rounded"
+                            onError={(e) => {
+                              // Fallback to placeholder if image fails to load
+                              e.currentTarget.style.display = 'none';
+                              const fallback = document.createElement('div');
+                              fallback.className = 'w-16 h-16 rounded flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-pink-500 to-rose-500';
+                              fallback.innerHTML = '<span class="text-white font-bold text-xs">SS</span>';
+                              e.currentTarget.parentElement?.appendChild(fallback);
+                            }}
                           />
                         ) : (
                           <div 
-                            className="w-16 h-16 rounded flex items-center justify-center flex-shrink-0"
-                            style={{ backgroundColor: item.image.startsWith('#') ? item.image : '#e90064' }}
+                            className="w-16 h-16 rounded flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-pink-500 to-rose-500"
                           >
                             <span className="text-white font-bold text-xs">SS</span>
                           </div>
