@@ -13,6 +13,7 @@ import { useOrderAnalytics } from '@/hooks/useOrderAnalytics';
 import { useOrderTimeSeriesAnalytics } from '@/hooks/useOrderTimeSeriesAnalytics';
 import { useAbandonedCartTimeSeriesAnalytics } from '@/hooks/useAbandonedCartTimeSeriesAnalytics';
 import { useActiveCartAnalytics } from '@/hooks/useActiveCartAnalytics';
+import { BackfillActiveCarts } from '@/components/admin/BackfillActiveCarts';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Area, AreaChart, ComposedChart } from 'recharts';
 
 const AdminAnalytics = () => {
@@ -175,6 +176,9 @@ const AdminAnalytics = () => {
           </div>
         </div>
       </div>
+
+      {/* Test Data Tool - Only for development */}
+      <BackfillActiveCarts />
 
       {/* Key Metrics Overview */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
