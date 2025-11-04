@@ -1,215 +1,400 @@
 import { useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
-import { Download, Link as LinkIcon, Sparkles } from 'lucide-react';
+import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card } from '@/components/ui/card';
 import { Slider } from '@/components/ui/slider';
-import Layout from '@/components/layout/Layout';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Helmet } from 'react-helmet-async';
+import { supabase } from '@/integrations/supabase/client';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { toast } from 'sonner';
+import { generateUniqueShortCode, buildShortUrl } from '@/lib/qrCodeUtils';
+import { useNavigate } from 'react-router-dom';
+import { Copy } from 'lucide-react';
 
-const QRCodeGenerator = () => {
+export default function QRCodeGenerator() {
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState<'static' | 'dynamic'>('static');
+  
+  // Static QR state
   const [url, setUrl] = useState('https://sisterstorage.ca');
   const [size, setSize] = useState(256);
   const [fgColor, setFgColor] = useState('#000000');
   const [bgColor, setBgColor] = useState('#ffffff');
 
+  // Dynamic QR state
+  const [qrName, setQrName] = useState('');
+  const [destinationUrl, setDestinationUrl] = useState('');
+  const [createdQR, setCreatedQR] = useState<{ shortCode: string; shortUrl: string } | null>(null);
+
+  // Check if user is admin
+  const { data: isAdmin } = useQuery({
+    queryKey: ['is-admin'],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return false;
+
+      const { data } = await supabase.rpc('has_role', {
+        _user_id: user.id,
+        _role: 'admin',
+      });
+
+      return data === true;
+    },
+  });
+
+  // Create dynamic QR mutation
+  const createDynamicQR = useMutation({
+    mutationFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Must be logged in');
+
+      const shortCode = await generateUniqueShortCode();
+      const { error } = await supabase.from('qr_codes').insert({
+        short_code: shortCode,
+        name: qrName,
+        destination_url: destinationUrl,
+        created_by: user.id,
+        is_active: true,
+      });
+
+      if (error) throw error;
+
+      return { shortCode, shortUrl: buildShortUrl(shortCode) };
+    },
+    onSuccess: (data) => {
+      setCreatedQR(data);
+      toast.success('Dynamic QR code created!');
+    },
+    onError: (error: Error) => {
+      toast.error('Error creating QR code: ' + error.message);
+    },
+  });
+
   const downloadQRCode = () => {
-    const svg = document.getElementById('qr-code-svg');
+    const svg = document.getElementById('qr-code') as unknown as SVGSVGElement;
     if (!svg) return;
 
-    const svgData = new XMLSerializer().serializeToString(svg);
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const svgData = new XMLSerializer().serializeToString(svg);
     const img = new Image();
-
-    canvas.width = size;
-    canvas.height = size;
-
+    
     img.onload = () => {
-      ctx?.drawImage(img, 0, 0);
-      const pngFile = canvas.toDataURL('image/png');
-
-      const downloadLink = document.createElement('a');
-      downloadLink.download = 'qrcode.png';
-      downloadLink.href = pngFile;
-      downloadLink.click();
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.drawImage(img, 0, 0);
+      
+      canvas.toBlob((blob) => {
+        if (!blob) return;
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'qrcode.png';
+        link.click();
+        URL.revokeObjectURL(url);
+      });
     };
-
+    
     img.src = 'data:image/svg+xml;base64,' + btoa(svgData);
+  };
+
+  const handleCopyShortUrl = () => {
+    if (createdQR) {
+      navigator.clipboard.writeText(createdQR.shortUrl);
+      toast.success('Short URL copied!');
+    }
   };
 
   return (
     <Layout>
       <Helmet>
         <title>QR Code Generator - Sister Storage</title>
-        <meta name="description" content="Generate custom QR codes for your website or business" />
+        <meta name="description" content="Create custom QR codes for your business" />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 py-20">
-        <div className="container max-w-6xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 mb-4">
-              <Sparkles className="w-8 h-8 text-primary" />
-              <h1 className="text-4xl md:text-5xl font-bold">QR Code Generator</h1>
-            </div>
-            <p className="text-muted-foreground text-lg">Create custom QR codes instantly</p>
-          </div>
+      <div className="container mx-auto px-4 py-12 max-w-4xl">
+        <h1 className="text-4xl font-bold text-center mb-8">QR Code Generator</h1>
 
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Left side - Controls */}
-            <Card className="p-6 space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="url" className="flex items-center gap-2">
-                  <LinkIcon className="w-4 h-4" />
-                  URL or Text
-                </Label>
-                <Input
-                  id="url"
-                  type="text"
-                  placeholder="Enter URL or text"
-                  value={url}
-                  onChange={(e) => setUrl(e.target.value)}
-                  className="font-mono text-sm"
-                />
-              </div>
+        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'static' | 'dynamic')} className="mb-8">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="static">Static QR Code</TabsTrigger>
+            <TabsTrigger value="dynamic" disabled={!isAdmin}>
+              Dynamic QR Code {!isAdmin && '(Admin Only)'}
+            </TabsTrigger>
+          </TabsList>
 
-              <div className="space-y-2">
-                <Label htmlFor="size">
-                  Size: {size}px
-                </Label>
-                <Slider
-                  id="size"
-                  min={128}
-                  max={512}
-                  step={32}
-                  value={[size]}
-                  onValueChange={(values) => setSize(values[0])}
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
+          {/* Static QR Code Tab */}
+          <TabsContent value="static">
+            <div className="grid md:grid-cols-2 gap-8">
+              <div className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="fgColor">Foreground Color</Label>
-                  <div className="flex gap-2">
-                    <Input
-                      id="fgColor"
-                      type="color"
-                      value={fgColor}
-                      onChange={(e) => setFgColor(e.target.value)}
-                      className="w-16 h-10 p-1 cursor-pointer"
-                    />
-                    <Input
-                      type="text"
-                      value={fgColor}
-                      onChange={(e) => setFgColor(e.target.value)}
-                      className="font-mono text-sm"
-                    />
-                  </div>
+                  <Label htmlFor="url">URL or Text</Label>
+                  <Input
+                    id="url"
+                    value={url}
+                    onChange={(e) => setUrl(e.target.value)}
+                    placeholder="https://sisterstorage.ca"
+                  />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="bgColor">Background Color</Label>
-                  <div className="flex gap-2">
-                    <Input
-                      id="bgColor"
-                      type="color"
-                      value={bgColor}
-                      onChange={(e) => setBgColor(e.target.value)}
-                      className="w-16 h-10 p-1 cursor-pointer"
-                    />
-                    <Input
-                      type="text"
-                      value={bgColor}
-                      onChange={(e) => setBgColor(e.target.value)}
-                      className="font-mono text-sm"
-                    />
+                  <Label>Size: {size}px</Label>
+                  <Slider
+                    value={[size]}
+                    onValueChange={(values) => setSize(values[0])}
+                    min={128}
+                    max={512}
+                    step={32}
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="fgColor">Foreground</Label>
+                    <div className="flex gap-2">
+                      <Input
+                        id="fgColor"
+                        type="color"
+                        value={fgColor}
+                        onChange={(e) => setFgColor(e.target.value)}
+                        className="w-16 h-10 p-1"
+                      />
+                      <Input
+                        type="text"
+                        value={fgColor}
+                        onChange={(e) => setFgColor(e.target.value)}
+                        className="font-mono"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="bgColor">Background</Label>
+                    <div className="flex gap-2">
+                      <Input
+                        id="bgColor"
+                        type="color"
+                        value={bgColor}
+                        onChange={(e) => setBgColor(e.target.value)}
+                        className="w-16 h-10 p-1"
+                      />
+                      <Input
+                        type="text"
+                        value={bgColor}
+                        onChange={(e) => setBgColor(e.target.value)}
+                        className="font-mono"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <Label>Quick Presets</Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setFgColor('#000000');
+                        setBgColor('#ffffff');
+                      }}
+                    >
+                      Classic
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setFgColor('#ffffff');
+                        setBgColor('#000000');
+                      }}
+                    >
+                      Inverted
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setFgColor('#DC2626');
+                        setBgColor('#FEE2E2');
+                      }}
+                    >
+                      Red
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setFgColor('#2563EB');
+                        setBgColor('#DBEAFE');
+                      }}
+                    >
+                      Blue
+                    </Button>
+                  </div>
+                </div>
+
+                <Button onClick={downloadQRCode} className="w-full">
+                  Download QR Code
+                </Button>
+              </div>
+
+              <div className="flex flex-col items-center justify-center space-y-4">
+                <div className="p-8 bg-white rounded-lg shadow-lg">
+                  <QRCodeSVG
+                    id="qr-code"
+                    value={url}
+                    size={size}
+                    fgColor={fgColor}
+                    bgColor={bgColor}
+                    level="M"
+                  />
+                </div>
+                <p className="text-sm text-muted-foreground text-center">
+                  Scan this QR code to test it
+                </p>
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* Dynamic QR Code Tab */}
+          <TabsContent value="dynamic">
+            {createdQR ? (
+              <div className="space-y-6">
+                <div className="p-6 border rounded-lg bg-muted/50">
+                  <h3 className="text-lg font-semibold mb-4">QR Code Created Successfully!</h3>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <Label>Short URL</Label>
+                      <div className="flex gap-2 mt-1">
+                        <Input value={createdQR.shortUrl} readOnly />
+                        <Button variant="outline" size="icon" onClick={handleCopyShortUrl}>
+                          <Copy className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-center py-6">
+                      <div className="p-8 bg-white rounded-lg shadow-lg">
+                        <QRCodeSVG
+                          id="dynamic-qr-code"
+                          value={createdQR.shortUrl}
+                          size={256}
+                          level="M"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex gap-2">
+                      <Button 
+                        onClick={() => {
+                          const svg = document.getElementById('dynamic-qr-code') as unknown as SVGSVGElement;
+                          if (svg) {
+                            const canvas = document.createElement('canvas');
+                            const ctx = canvas.getContext('2d');
+                            if (!ctx) return;
+                            
+                            const svgData = new XMLSerializer().serializeToString(svg);
+                            const img = new Image();
+                            img.onload = () => {
+                              canvas.width = img.width;
+                              canvas.height = img.height;
+                              ctx.drawImage(img, 0, 0);
+                              canvas.toBlob((blob) => {
+                                if (!blob) return;
+                                const url = URL.createObjectURL(blob);
+                                const link = document.createElement('a');
+                                link.href = url;
+                                link.download = `qr-${createdQR.shortCode}.png`;
+                                link.click();
+                                URL.revokeObjectURL(url);
+                              });
+                            };
+                            img.src = 'data:image/svg+xml;base64,' + btoa(svgData);
+                          }
+                        }}
+                        className="flex-1"
+                      >
+                        Download QR Code
+                      </Button>
+                      <Button 
+                        variant="outline"
+                        onClick={() => navigate('/admin/qr-codes')}
+                        className="flex-1"
+                      >
+                        Manage QR Codes
+                      </Button>
+                    </div>
+
+                    <Button 
+                      variant="outline" 
+                      onClick={() => {
+                        setCreatedQR(null);
+                        setQrName('');
+                        setDestinationUrl('');
+                      }}
+                      className="w-full"
+                    >
+                      Create Another
+                    </Button>
                   </div>
                 </div>
               </div>
+            ) : (
+              <div className="grid md:grid-cols-2 gap-8">
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="qr-name">QR Code Name</Label>
+                    <Input
+                      id="qr-name"
+                      value={qrName}
+                      onChange={(e) => setQrName(e.target.value)}
+                      placeholder="e.g., Holiday 2025 Promo"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      A friendly name to identify this QR code
+                    </p>
+                  </div>
 
-              <Button 
-                onClick={downloadQRCode} 
-                className="w-full"
-                size="lg"
-              >
-                <Download className="w-4 h-4 mr-2" />
-                Download QR Code
-              </Button>
-            </Card>
+                  <div className="space-y-2">
+                    <Label htmlFor="destination">Destination URL</Label>
+                    <Input
+                      id="destination"
+                      value={destinationUrl}
+                      onChange={(e) => setDestinationUrl(e.target.value)}
+                      placeholder="https://sisterstorage.ca/shop"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Where should this QR code redirect to? You can change this later.
+                    </p>
+                  </div>
 
-            {/* Right side - Preview */}
-            <Card className="p-6 flex flex-col items-center justify-center">
-              <div className="mb-4">
-                <h3 className="text-lg font-semibold text-center">Preview</h3>
+                  <Button 
+                    onClick={() => createDynamicQR.mutate()}
+                    disabled={!qrName || !destinationUrl || createDynamicQR.isPending}
+                    className="w-full"
+                  >
+                    {createDynamicQR.isPending ? 'Creating...' : 'Create Dynamic QR Code'}
+                  </Button>
+                </div>
+
+                <div className="flex flex-col items-center justify-center space-y-4 p-6 border rounded-lg bg-muted/50">
+                  <h3 className="text-lg font-semibold">Dynamic QR Benefits</h3>
+                  <ul className="space-y-2 text-sm text-muted-foreground">
+                    <li>✅ Change destination URL anytime</li>
+                    <li>✅ Track scan analytics</li>
+                    <li>✅ Enable/disable campaigns</li>
+                    <li>✅ No need to reprint QR codes</li>
+                    <li>✅ Perfect for marketing campaigns</li>
+                  </ul>
+                </div>
               </div>
-              <div 
-                className="p-8 rounded-2xl shadow-lg"
-                style={{ backgroundColor: bgColor }}
-              >
-                <QRCodeSVG
-                  id="qr-code-svg"
-                  value={url || 'https://sisterstorage.ca'}
-                  size={size}
-                  fgColor={fgColor}
-                  bgColor={bgColor}
-                  level="H"
-                  includeMargin={false}
-                />
-              </div>
-              <p className="text-sm text-muted-foreground mt-4 text-center">
-                Scan to test your QR code
-              </p>
-            </Card>
-          </div>
-
-          {/* Quick presets */}
-          <Card className="p-6 mt-8">
-            <h3 className="text-lg font-semibold mb-4">Quick Presets</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setFgColor('#000000');
-                  setBgColor('#ffffff');
-                }}
-              >
-                Classic
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setFgColor('#ffffff');
-                  setBgColor('#000000');
-                }}
-              >
-                Inverted
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setFgColor('#6366f1');
-                  setBgColor('#ffffff');
-                }}
-              >
-                Brand
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setFgColor('#059669');
-                  setBgColor('#f0fdf4');
-                }}
-              >
-                Green
-              </Button>
-            </div>
-          </Card>
-        </div>
+            )}
+          </TabsContent>
+        </Tabs>
       </div>
     </Layout>
   );
-};
-
-export default QRCodeGenerator;
+}

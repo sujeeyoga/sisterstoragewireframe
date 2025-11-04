@@ -266,6 +266,77 @@ export type Database = {
         }
         Relationships: []
       }
+      qr_codes: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          destination_url: string
+          id: string
+          is_active: boolean | null
+          name: string
+          scan_count: number | null
+          short_code: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          destination_url: string
+          id?: string
+          is_active?: boolean | null
+          name: string
+          scan_count?: number | null
+          short_code: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          destination_url?: string
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          scan_count?: number | null
+          short_code?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      qr_scans: {
+        Row: {
+          id: string
+          ip_hash: string | null
+          qr_code_id: string | null
+          referrer: string | null
+          scanned_at: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          id?: string
+          ip_hash?: string | null
+          qr_code_id?: string | null
+          referrer?: string | null
+          scanned_at?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          id?: string
+          ip_hash?: string | null
+          qr_code_id?: string | null
+          referrer?: string | null
+          scanned_at?: string | null
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "qr_scans_qr_code_id_fkey"
+            columns: ["qr_code_id"]
+            isOneToOne: false
+            referencedRelation: "qr_codes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       refunds: {
         Row: {
           amount: number

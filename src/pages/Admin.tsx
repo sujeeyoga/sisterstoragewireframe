@@ -31,6 +31,7 @@ import { QuickOptimizer } from '@/components/admin/QuickOptimizer';
 import { ShippingZonesManager } from '@/components/admin/ShippingZonesManager';
 import LaunchCardsManager from '@/components/admin/LaunchCardsManager';
 import WaitlistSignups from '@/components/admin/WaitlistSignups';
+import { QRCodesManager } from '@/components/admin/QRCodesManager';
 import Uploads from '@/pages/Uploads';
 import { BulkShippingRefundTool } from '@/components/admin/BulkShippingRefundTool';
 import AdminShippingAnalytics from '@/pages/AdminShippingAnalytics';
@@ -87,6 +88,7 @@ const Admin = () => {
         <Route path="videos" element={<VideoUploader />} />
           <Route path="sister-stories" element={<SisterStoriesManager />} />
           <Route path="launch-cards" element={<LaunchCardsManager />} />
+          <Route path="qr-codes" element={<QRCodesManager />} />
           <Route path="waitlist-signups" element={<WaitlistSignups />} />
           <Route path="uploads" element={<Uploads />} />
         <Route path="*" element={<Navigate to="/admin" replace />} />

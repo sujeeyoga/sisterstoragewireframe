@@ -24,6 +24,7 @@ import Gift from "./pages/Gift";
 import Checkout from "./pages/Checkout";
 import OpenBox from "./pages/OpenBox";
 import QRCodeGenerator from "./pages/QRCodeGenerator";
+import QRRedirect from "./pages/QRRedirect";
 import { CartProvider } from "./contexts/CartContext";
 import { AdminEditModeProvider } from "./contexts/AdminEditModeContext";
 import { EditModeToggle } from "./components/admin/EditModeToggle";
@@ -90,6 +91,7 @@ const App = () => {
               <Route path="/contact" element={<ProtectedRoutes><PageTransition><Contact /></PageTransition></ProtectedRoutes>} />
               <Route path="/gift" element={<ProtectedRoutes><PageTransition><Gift /></PageTransition></ProtectedRoutes>} />
               <Route path="/qr-generator" element={<ProtectedRoutes><PageTransition><QRCodeGenerator /></PageTransition></ProtectedRoutes>} />
+              <Route path="/q/:shortCode" element={<QRRedirect />} />
               <Route path="/privacy-policy" element={<ProtectedRoutes><PageTransition><PrivacyPolicy /></PageTransition></ProtectedRoutes>} />
               <Route path="/terms-of-service" element={<ProtectedRoutes><PageTransition><TermsOfService /></PageTransition></ProtectedRoutes>} />
               <Route path="/accessibility" element={<ProtectedRoutes><PageTransition><Accessibility /></PageTransition></ProtectedRoutes>} />

@@ -1,4 +1,4 @@
-import { LayoutDashboard, Package, Layout, RefreshCw, Settings, Users, ShoppingCart, Image, FolderOpen, FileText, Sparkles, Truck, Video, Film, LogOut, DollarSign, Type, PackageCheck, Mail, TrendingUp, Globe, Ship } from 'lucide-react';
+import { LayoutDashboard, Package, Layout, RefreshCw, Settings, Users, ShoppingCart, Image, FolderOpen, FileText, Sparkles, Truck, Video, Film, LogOut, DollarSign, Type, PackageCheck, Mail, TrendingUp, Globe, Ship, QrCode } from 'lucide-react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -43,6 +43,7 @@ const menuGroups = [
       { title: 'Pages', url: '/admin/pages', icon: FileText, end: false },
       { title: 'Sections', url: '/admin/sections', icon: Layout, end: false },
       { title: 'Site Content', url: '/admin/texts', icon: Type, end: false },
+      { title: 'QR Codes', url: '/admin/qr-codes', icon: QrCode, end: false },
     ]
   },
   {
