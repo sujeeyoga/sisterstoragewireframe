@@ -60,8 +60,11 @@ const ProductImage = ({ images, color, name }: ProductImageProps) => {
           {images.map((image, index) => (
             <button
               key={index}
-              onClick={() => setSelectedImage(index)}
-              className={`rounded-[1.5rem] overflow-hidden aspect-square border-2 transition-all relative ${
+              onClick={() => {
+                console.log('[ProductImage] Thumbnail clicked:', index);
+                setSelectedImage(index);
+              }}
+              className={`rounded-[1.5rem] overflow-hidden aspect-square border-2 transition-all relative cursor-pointer hover:scale-105 ${
                 selectedImage === index 
                   ? 'border-primary ring-2 ring-primary/20' 
                   : 'border-transparent hover:border-gray-300'
