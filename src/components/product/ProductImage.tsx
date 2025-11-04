@@ -64,9 +64,18 @@ const ProductImage = ({ images, color, name }: ProductImageProps) => {
                 console.log('[ProductImage] Thumbnail clicked:', index);
                 setSelectedImage(index);
               }}
+              onPointerDown={(e) => {
+                e.preventDefault();
+                setSelectedImage(index);
+              }}
+              onTouchStart={(e) => {
+                e.preventDefault();
+                setSelectedImage(index);
+              }}
               type="button"
               aria-label={`View image ${index + 1}`}
-              className={`rounded-[1.5rem] overflow-hidden aspect-square border-2 transition-all relative cursor-pointer active:scale-95 min-h-[72px] sm:min-h-[80px] ${
+              aria-pressed={selectedImage === index}
+              className={`rounded-[1.5rem] overflow-hidden aspect-square border-2 transition-all relative cursor-pointer active:scale-95 min-h-[72px] sm:min-h-[80px] z-10 pointer-events-auto ${
                 selectedImage === index 
                   ? 'border-primary ring-2 ring-primary/20 scale-105' 
                   : 'border-transparent hover:border-gray-300'
