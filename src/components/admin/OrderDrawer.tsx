@@ -314,9 +314,17 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
               </div>
               <div className="text-2xl font-bold text-primary">
                 {(() => {
-                  const actualShipping = (order.total - order.line_items?.reduce((sum: number, item: any) => 
-                    sum + (item.quantity * item.price), 0
-                  ) - ((order as any).tax || 0));
+                  // Find the shipping item
+                  const shippingItem = order.line_items?.find((item: any) => 
+                    item.name?.toLowerCase().includes('shipping') ||
+                    item.name?.toLowerCase().includes('chit chats') ||
+                    item.name?.toLowerCase().includes('stallion')
+                  );
+                  
+                  const actualShipping = shippingItem 
+                    ? (shippingItem.quantity * shippingItem.price)
+                    : 0;
+                    
                   return `$${actualShipping.toFixed(2)} ${order.currency || 'USD'}`;
                 })()}
               </div>
@@ -331,9 +339,16 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
               <div className="flex items-center justify-between">
                 <Label className="text-xs text-muted-foreground">Current Rate (for reference)</Label>
                 {(() => {
-                  const actualShipping = (order.total - order.line_items?.reduce((sum: number, item: any) => 
-                    sum + (item.quantity * item.price), 0
-                  ) - ((order as any).tax || 0));
+                  // Find the shipping item
+                  const shippingItem = order.line_items?.find((item: any) => 
+                    item.name?.toLowerCase().includes('shipping') ||
+                    item.name?.toLowerCase().includes('chit chats') ||
+                    item.name?.toLowerCase().includes('stallion')
+                  );
+                  
+                  const actualShipping = shippingItem 
+                    ? (shippingItem.quantity * shippingItem.price)
+                    : 0;
                   const currentRate = shippingInfo.rateDetails?.rateAmount || 0;
                   const difference = Math.abs(currentRate - actualShipping);
                   
