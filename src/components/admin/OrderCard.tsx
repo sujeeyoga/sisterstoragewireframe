@@ -1,3 +1,4 @@
+import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -40,6 +41,7 @@ interface OrderCardProps {
   onStatusUpdate?: (status: string) => void;
   onArchive?: () => void;
   onUnarchive?: () => void;
+  onLongPress?: () => void;
 }
 
 const statusConfig = {
@@ -58,7 +60,24 @@ const getCountryFlag = (countryCode: string) => {
   return code.split('').map(char => String.fromCodePoint(127397 + char.charCodeAt(0))).join('');
 };
 
-export function OrderCard({ order, onView, isSelected, onSelect, selectionMode, onStatusUpdate, onArchive, onUnarchive }: OrderCardProps) {
+export function OrderCard({ order, onView, isSelected, onSelect, selectionMode, onStatusUpdate, onArchive, onUnarchive, onLongPress }: OrderCardProps) {
+  const [pressTimer, setPressTimer] = React.useState<NodeJS.Timeout | null>(null);
+  
+  const handlePressStart = (e: React.MouseEvent | React.TouchEvent) => {
+    if (selectionMode) return; // Already in selection mode
+    
+    const timer = setTimeout(() => {
+      onLongPress?.();
+    }, 500);
+    setPressTimer(timer);
+  };
+  
+  const handlePressEnd = () => {
+    if (pressTimer) {
+      clearTimeout(pressTimer);
+      setPressTimer(null);
+    }
+  };
   const status = statusConfig[order.status as keyof typeof statusConfig] || statusConfig.pending;
   const customerName = `${order.billing.first_name || ''} ${order.billing.last_name || ''}`.trim() || 'Guest';
   const contact = order.billing.phone || order.billing.email || '';
@@ -215,8 +234,25 @@ export function OrderCard({ order, onView, isSelected, onSelect, selectionMode, 
     }
   };
   
+  const handleCardClick = (e: React.MouseEvent) => {
+    if (selectionMode) {
+      e.stopPropagation();
+      onSelect?.(!isSelected);
+    } else {
+      onView();
+    }
+  };
+  
   return (
-    <article className="bg-card rounded-2xl border shadow-sm p-4 space-y-2 cursor-pointer hover:shadow-md transition-shadow" onClick={onView}>
+    <article 
+      className="bg-card rounded-2xl border shadow-sm p-4 space-y-2 cursor-pointer hover:shadow-md transition-shadow" 
+      onClick={handleCardClick}
+      onMouseDown={handlePressStart}
+      onMouseUp={handlePressEnd}
+      onMouseLeave={handlePressEnd}
+      onTouchStart={handlePressStart}
+      onTouchEnd={handlePressEnd}
+    >
       <div className="flex items-start gap-3">
         {selectionMode && (
           <div className="pt-1" onClick={(e) => e.stopPropagation()}>

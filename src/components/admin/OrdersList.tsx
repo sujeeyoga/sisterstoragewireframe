@@ -550,6 +550,15 @@ export function OrdersList() {
                   unarchive: true
                 });
               }}
+              onLongPress={() => {
+                if (!selectionMode) {
+                  setSelectionMode(true);
+                  setSelectedOrderIds(new Set([order.id]));
+                  toast.success('Selection mode enabled', {
+                    description: 'Tap cards to select more orders'
+                  });
+                }
+              }}
             />
           ))
         )}
