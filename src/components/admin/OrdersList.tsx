@@ -618,6 +618,20 @@ export function OrdersList() {
         selectedCount={selectedOrderIds.size}
         onFulfill={handleBulkFulfill}
         onPrint={handleBulkPrint}
+        onArchive={async () => {
+          const count = selectedOrderIds.size;
+          for (const orderId of selectedOrderIds) {
+            const order = orders?.orders.find(o => o.id === orderId);
+            if (order) {
+              await archiveOrderMutation.mutateAsync({
+                orderId,
+                source: order.source
+              });
+            }
+          }
+          setSelectedOrderIds(new Set());
+          toast.success(`Archived ${count} orders`);
+        }}
         onCancel={() => setSelectedOrderIds(new Set())}
         isPrinting={isPrintingLabels}
       />

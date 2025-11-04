@@ -1,15 +1,16 @@
 import { Button } from '@/components/ui/button';
-import { Printer, Package, Truck, Loader2 } from 'lucide-react';
+import { Printer, Package, Truck, Loader2, Archive } from 'lucide-react';
 
 interface OrderBulkBarProps {
   selectedCount: number;
   onFulfill: () => void;
   onPrint: () => void;
+  onArchive: () => void;
   onCancel: () => void;
   isPrinting?: boolean;
 }
 
-export function OrderBulkBar({ selectedCount, onFulfill, onPrint, onCancel, isPrinting }: OrderBulkBarProps) {
+export function OrderBulkBar({ selectedCount, onFulfill, onPrint, onArchive, onCancel, isPrinting }: OrderBulkBarProps) {
   if (selectedCount === 0) return null;
   
   return (
@@ -36,6 +37,16 @@ export function OrderBulkBar({ selectedCount, onFulfill, onPrint, onCancel, isPr
             )}
             <span className="hidden sm:inline">{isPrinting ? 'Loading...' : 'Print Labels'}</span>
             <span className="sm:hidden">{isPrinting ? '...' : 'Print'}</span>
+          </Button>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={onArchive}
+            className="flex-1 sm:flex-none min-h-[44px] bg-green-50 border-green-300 text-green-700 hover:bg-green-100"
+          >
+            <Archive className="h-4 w-4 sm:mr-2" />
+            <span className="hidden sm:inline">Archive</span>
+            <span className="sm:hidden">Archive</span>
           </Button>
           <Button size="sm" onClick={onFulfill} className="flex-1 sm:flex-none min-h-[44px]">
             <Truck className="h-4 w-4 sm:mr-2" />
