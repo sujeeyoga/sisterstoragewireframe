@@ -34,8 +34,8 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { QRCodeSVG } from 'qrcode.react';
 import { toast } from 'sonner';
-import { Plus, Edit, Trash2, Copy, Download, QrCode, BarChart3 } from 'lucide-react';
-import { generateUniqueShortCode, buildShortUrl, downloadQRCodeImage } from '@/lib/qrCodeUtils';
+import { Plus, Edit, Trash2, Copy, Download, QrCode, BarChart3, Settings } from 'lucide-react';
+import { generateUniqueShortCode, buildShortUrl, buildShortUrlSync, downloadQRCodeImage } from '@/lib/qrCodeUtils';
 import { format } from 'date-fns';
 
 interface QRCode {
@@ -54,11 +54,54 @@ export const QRCodesManager = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [previewDialogOpen, setPreviewDialogOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const [selectedQR, setSelectedQR] = useState<QRCode | null>(null);
+  const [productionDomain, setProductionDomain] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     destination_url: '',
     is_active: true,
+  });
+
+  // Fetch production domain setting
+  const { data: domainSetting } = useQuery({
+    queryKey: ['production-domain'],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('store_settings')
+        .select('setting_value')
+        .eq('setting_key', 'production_domain')
+        .eq('enabled', true)
+        .single();
+      
+      if (data?.setting_value && typeof data.setting_value === 'object' && 'domain' in data.setting_value) {
+        setProductionDomain(data.setting_value.domain as string);
+      }
+      return data;
+    },
+  });
+
+  // Save production domain
+  const saveDomainMutation = useMutation({
+    mutationFn: async (domain: string) => {
+      const { error } = await supabase
+        .from('store_settings')
+        .upsert({
+          setting_key: 'production_domain',
+          setting_value: { domain },
+          enabled: true,
+        });
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['production-domain'] });
+      toast.success('Production domain saved!');
+      setSettingsOpen(false);
+    },
+    onError: (error) => {
+      toast.error('Error saving domain: ' + error.message);
+    },
   });
 
   // Fetch QR codes
@@ -166,9 +209,10 @@ export const QRCodesManager = () => {
   };
 
   const handleCopyShortUrl = (shortCode: string) => {
-    const url = buildShortUrl(shortCode);
-    navigator.clipboard.writeText(url);
-    toast.success('Short URL copied to clipboard!');
+    buildShortUrl(shortCode).then(url => {
+      navigator.clipboard.writeText(url);
+      toast.success('Short URL copied to clipboard!');
+    });
   };
 
   const handleDownload = (qr: QRCode, format: 'png' | 'jpg' = 'png') => {
@@ -216,10 +260,16 @@ export const QRCodesManager = () => {
           <h1 className="text-3xl font-bold">QR Code Manager</h1>
           <p className="text-muted-foreground">Create and manage dynamic QR codes</p>
         </div>
-        <Button onClick={() => setDialogOpen(true)}>
-          <Plus className="mr-2 h-4 w-4" />
-          Create QR Code
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => setSettingsOpen(true)}>
+            <Settings className="mr-2 h-4 w-4" />
+            Settings
+          </Button>
+          <Button onClick={() => setDialogOpen(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            Create QR Code
+          </Button>
+        </div>
       </div>
 
       {/* Statistics */}
@@ -303,7 +353,7 @@ export const QRCodesManager = () => {
                       >
                         <QRCodeSVG
                           id={`qr-${qr.id}`}
-                          value={buildShortUrl(qr.short_code)}
+                          value={buildShortUrlSync(qr.short_code)}
                           size={48}
                           level="M"
                         />
@@ -372,6 +422,45 @@ export const QRCodesManager = () => {
         </CardContent>
       </Card>
 
+      {/* Settings Dialog */}
+      <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>QR Code Settings</DialogTitle>
+            <DialogDescription>
+              Configure your production domain for QR codes
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="production_domain">Production Domain</Label>
+              <Input
+                id="production_domain"
+                value={productionDomain}
+                onChange={(e) => setProductionDomain(e.target.value)}
+                placeholder="https://sisterstorage.ca"
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                This is the domain that will be used in your QR codes. Must include https://
+              </p>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setSettingsOpen(false)}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={() => saveDomainMutation.mutate(productionDomain)}
+              disabled={!productionDomain || saveDomainMutation.isPending}
+            >
+              {saveDomainMutation.isPending ? 'Saving...' : 'Save'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Create/Edit Dialog */}
       <Dialog open={dialogOpen} onOpenChange={handleCloseDialog}>
         <DialogContent>
@@ -418,7 +507,7 @@ export const QRCodesManager = () => {
               <div className="border rounded-lg p-4 space-y-2">
                 <p className="text-sm font-medium">Preview</p>
                 <div className="flex justify-center">
-                  <QRCodeSVG value={buildShortUrl(selectedQR.short_code)} size={150} level="M" />
+                  <QRCodeSVG value={buildShortUrlSync(selectedQR.short_code)} size={150} level="M" />
                 </div>
                 <p className="text-xs text-center text-muted-foreground">
                   /q/{selectedQR.short_code}
@@ -453,7 +542,7 @@ export const QRCodesManager = () => {
               <div className="flex justify-center p-8 bg-white rounded-lg">
                 <QRCodeSVG
                   id={`preview-qr-${selectedQR.id}`}
-                  value={buildShortUrl(selectedQR.short_code)}
+                  value={buildShortUrlSync(selectedQR.short_code)}
                   size={300}
                   level="H"
                 />

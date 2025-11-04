@@ -49,8 +49,37 @@ export async function generateUniqueShortCode(): Promise<string> {
 
 /**
  * Build the full short URL for a given short code
+ * Uses production domain from store settings if available
  */
-export function buildShortUrl(shortCode: string): string {
+export async function buildShortUrl(shortCode: string, useProductionDomain = true): Promise<string> {
+  if (useProductionDomain) {
+    try {
+      const { supabase } = await import('@/integrations/supabase/client');
+      const { data } = await supabase
+        .from('store_settings')
+        .select('setting_value')
+        .eq('setting_key', 'production_domain')
+        .eq('enabled', true)
+        .single();
+      
+      if (data?.setting_value && typeof data.setting_value === 'object' && 'domain' in data.setting_value) {
+        return `${data.setting_value.domain}/q/${shortCode}`;
+      }
+    } catch (error) {
+      console.error('Error fetching production domain:', error);
+    }
+  }
+  
+  // Fallback to current origin
+  const baseUrl = window.location.origin;
+  return `${baseUrl}/q/${shortCode}`;
+}
+
+/**
+ * Build short URL synchronously (for components that can't use async)
+ * Always uses current origin
+ */
+export function buildShortUrlSync(shortCode: string): string {
   const baseUrl = window.location.origin;
   return `${baseUrl}/q/${shortCode}`;
 }

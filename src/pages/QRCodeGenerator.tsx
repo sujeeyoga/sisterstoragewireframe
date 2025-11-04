@@ -62,7 +62,8 @@ export default function QRCodeGenerator() {
 
       if (error) throw error;
 
-      return { shortCode, shortUrl: buildShortUrl(shortCode) };
+      const shortUrl = await buildShortUrl(shortCode);
+      return { shortCode, shortUrl };
     },
     onSuccess: (data) => {
       setCreatedQR(data);
@@ -105,8 +106,10 @@ export default function QRCodeGenerator() {
 
   const handleCopyShortUrl = () => {
     if (createdQR) {
-      navigator.clipboard.writeText(createdQR.shortUrl);
-      toast.success('Short URL copied!');
+      buildShortUrl(createdQR.shortCode).then(url => {
+        navigator.clipboard.writeText(url);
+        toast.success('Short URL copied!');
+      });
     }
   };
 
