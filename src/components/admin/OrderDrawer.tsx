@@ -314,9 +314,14 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
               </div>
               <div className="text-2xl font-bold text-primary">
                 {(() => {
-                  // Check if shipping is in a dedicated column (Stripe orders from orders table)
-                  if ((order as any).shipping !== undefined && (order as any).shipping !== null) {
-                    return `$${Number((order as any).shipping).toFixed(2)} ${order.currency || 'USD'}`;
+                  const shippingValue = (order as any).shipping;
+                  // If there's a dedicated shipping amount and it's numeric, use it
+                  if (
+                    (typeof shippingValue === 'number' && Number.isFinite(shippingValue)) ||
+                    (typeof shippingValue === 'string' && !isNaN(parseFloat(shippingValue)))
+                  ) {
+                    const amt = typeof shippingValue === 'number' ? shippingValue : parseFloat(shippingValue);
+                    return `$${amt.toFixed(2)} ${order.currency || 'USD'}`;
                   }
                   
                   // Otherwise, find shipping item in line_items (WooCommerce orders)
@@ -327,7 +332,7 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
                   );
                   
                   const actualShipping = shippingItem 
-                    ? (shippingItem.quantity * shippingItem.price)
+                    ? (Number(shippingItem.quantity) * Number(shippingItem.price))
                     : 0;
                     
                   return `$${actualShipping.toFixed(2)} ${order.currency || 'USD'}`;
@@ -346,8 +351,12 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
                 {(() => {
                   // Check if shipping is in a dedicated column (Stripe orders)
                   let actualShipping = 0;
-                  if ((order as any).shipping !== undefined && (order as any).shipping !== null) {
-                    actualShipping = Number((order as any).shipping);
+                  const shippingValue = (order as any).shipping;
+                  if (
+                    (typeof shippingValue === 'number' && Number.isFinite(shippingValue)) ||
+                    (typeof shippingValue === 'string' && !isNaN(parseFloat(shippingValue)))
+                  ) {
+                    actualShipping = typeof shippingValue === 'number' ? shippingValue : parseFloat(shippingValue);
                   } else {
                     // Otherwise, find shipping item in line_items (WooCommerce orders)
                     const shippingItem = order.line_items?.find((item: any) => 
@@ -356,7 +365,7 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
                       item.name?.toLowerCase().includes('stallion')
                     );
                     actualShipping = shippingItem 
-                      ? (shippingItem.quantity * shippingItem.price)
+                      ? (Number(shippingItem.quantity) * Number(shippingItem.price))
                       : 0;
                   }
                   
