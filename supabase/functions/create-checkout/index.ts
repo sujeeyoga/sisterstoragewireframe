@@ -223,11 +223,35 @@ serve(async (req) => {
     
     // Add shipping as a line item only if there's a cost
     if (finalShippingCost && finalShippingCost > 0) {
+      // Extract carrier from shipping method name
+      const methodName = shippingMethod || 'Shipping';
+      const isChitChats = methodName.toLowerCase().includes('chit chats');
+      const isStallion = methodName.toLowerCase().includes('stallion');
+      
+      let carrier = 'standard';
+      let service = 'Standard shipping';
+      
+      if (isChitChats) {
+        carrier = 'chitchats';
+        service = methodName;
+      } else if (isStallion) {
+        carrier = 'stallion';
+        service = methodName;
+      } else {
+        service = methodName;
+      }
+      
       lineItems.push({
         price_data: {
           currency: 'cad',
           product_data: {
-            name: shippingMethod || 'Shipping',
+            name: methodName,
+            description: service,
+            metadata: {
+              isShipping: 'true',
+              carrier: carrier,
+              service: service,
+            },
           },
           unit_amount: Math.round(finalShippingCost * 100),
         },

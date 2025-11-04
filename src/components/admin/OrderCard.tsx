@@ -62,21 +62,42 @@ export function OrderCard({ order, onView, isSelected, onSelect, selectionMode, 
   const status = statusConfig[order.status as keyof typeof statusConfig] || statusConfig.pending;
   const customerName = `${order.billing.first_name || ''} ${order.billing.last_name || ''}`.trim() || 'Guest';
   const contact = order.billing.phone || order.billing.email || '';
-  const itemCount = order.line_items?.length || 0;
+  
+  // Extract shipping item from line_items
+  const shippingItem = order.line_items?.find((item: any) => 
+    item.name?.toLowerCase().includes('shipping') ||
+    item.name?.toLowerCase().includes('chit chats') ||
+    item.name?.toLowerCase().includes('stallion')
+  );
+  
+  // Filter out shipping from regular items for accurate count
+  const regularItems = order.line_items?.filter((item: any) => 
+    !item.name?.toLowerCase().includes('shipping') &&
+    !item.name?.toLowerCase().includes('chit chats') &&
+    !item.name?.toLowerCase().includes('stallion')
+  ) || [];
+  
+  const itemCount = regularItems.length || 0;
   
   // Calculate shipping from available data
-  const shipping = order.shipping_cost !== undefined 
-    ? order.shipping_cost 
-    : (order.subtotal !== undefined && order.tax !== undefined)
-      ? order.total - order.subtotal - order.tax
-      : undefined;
+  const shipping = shippingItem 
+    ? (shippingItem.quantity * shippingItem.price)
+    : order.shipping_cost !== undefined 
+      ? order.shipping_cost 
+      : (order.subtotal !== undefined && order.tax !== undefined)
+        ? order.total - order.subtotal - order.tax
+        : undefined;
   
   const subtotal = order.subtotal !== undefined
     ? order.subtotal
-    : order.line_items?.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    : regularItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   
   const total = `${order.currency || 'USD'} $${Number(order.total || 0).toFixed(2)}`;
   const relativeTime = getRelativeTime(order.date_created);
+  
+  // Extract shipping carrier info
+  const isChitChats = shippingItem?.name?.toLowerCase().includes('chit chats');
+  const isStallion = shippingItem?.name?.toLowerCase().includes('stallion');
   
   const getFulfillmentInfo = () => {
     if (order.tracking_number) {
@@ -232,9 +253,12 @@ export function OrderCard({ order, onView, isSelected, onSelect, selectionMode, 
           
           <div className="text-[14px] text-muted-foreground">
             {itemCount} {itemCount === 1 ? 'item' : 'items'} • {total}
-            {shipping !== undefined && (
-              <span className="ml-1 text-xs">
-                (${subtotal?.toFixed(2)} + ${shipping.toFixed(2)} shipping)
+            {shipping !== undefined && shipping > 0 && (
+              <span className="ml-2 inline-flex items-center gap-1">
+                {isChitChats && <Badge variant="default" className="bg-blue-500 text-white text-[10px] px-1.5 py-0">ChitChats</Badge>}
+                {isStallion && <Badge variant="default" className="bg-green-500 text-white text-[10px] px-1.5 py-0">Stallion</Badge>}
+                {!isChitChats && !isStallion && <Badge variant="outline" className="text-[10px] px-1.5 py-0">Shipping</Badge>}
+                <span className="text-xs">${shipping.toFixed(2)}</span>
               </span>
             )}
           </div>

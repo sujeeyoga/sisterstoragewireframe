@@ -439,7 +439,11 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
             <div>
               <Label>Items</Label>
               <div className="border rounded-md p-2 space-y-2">
-                {order.line_items?.map((item: any, index: number) => (
+                {order.line_items?.filter((item: any) => 
+                  !item.name?.toLowerCase().includes('shipping') && 
+                  !item.name?.toLowerCase().includes('chit chats') &&
+                  !item.name?.toLowerCase().includes('stallion')
+                ).map((item: any, index: number) => (
                   <div key={item.id || index} className="py-2 border-b last:border-b-0">
                     <div className="font-semibold">{item.name}</div>
                     <div className="text-sm text-muted-foreground">
@@ -453,11 +457,46 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Subtotal:</span>
                     <span className="font-medium">
-                      ${order.line_items?.reduce((sum: number, item: any) => 
+                      ${order.line_items?.filter((item: any) => 
+                        !item.name?.toLowerCase().includes('shipping') && 
+                        !item.name?.toLowerCase().includes('chit chats') &&
+                        !item.name?.toLowerCase().includes('stallion')
+                      ).reduce((sum: number, item: any) => 
                         sum + (item.quantity * item.price), 0
                       ).toFixed(2)}
                     </span>
                   </div>
+                  
+                  {/* Shipping Method Section */}
+                  {(() => {
+                    const shippingItem = order.line_items?.find((item: any) => 
+                      item.name?.toLowerCase().includes('shipping') ||
+                      item.name?.toLowerCase().includes('chit chats') ||
+                      item.name?.toLowerCase().includes('stallion')
+                    );
+                    
+                    if (shippingItem) {
+                      const isChitChats = shippingItem.name?.toLowerCase().includes('chit chats');
+                      const isStallion = shippingItem.name?.toLowerCase().includes('stallion');
+                      
+                      return (
+                        <div className="flex justify-between text-sm items-center">
+                          <span className="text-muted-foreground flex items-center gap-2">
+                            <Truck className="h-4 w-4" />
+                            Shipping Method:
+                            {isChitChats && <Badge variant="default" className="bg-blue-500">ChitChats</Badge>}
+                            {isStallion && <Badge variant="default" className="bg-green-500">Stallion</Badge>}
+                            {!isChitChats && !isStallion && <Badge variant="outline">Standard</Badge>}
+                          </span>
+                          <span className="font-medium">
+                            ${(shippingItem.quantity * shippingItem.price).toFixed(2)}
+                          </span>
+                        </div>
+                      );
+                    }
+                    return null;
+                  })()}
+                  
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Shipping:</span>
                     <span className="font-medium">

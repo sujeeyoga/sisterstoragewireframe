@@ -220,6 +220,7 @@ export function OrdersTable() {
               <TableHead>Date</TableHead>
               <TableHead>Customer</TableHead>
               <TableHead>Country</TableHead>
+              <TableHead>Shipping</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Payment</TableHead>
               <TableHead className="text-right">Total</TableHead>
@@ -229,50 +230,74 @@ export function OrdersTable() {
           <TableBody>
             {filteredOrders?.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
+                <TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
                   No orders found. Try adjusting your filters.
                 </TableCell>
               </TableRow>
             ) : (
-              filteredOrders?.map((order) => (
-                <TableRow key={order.id}>
-                  <TableCell className="font-medium">#{order.id}</TableCell>
-                  <TableCell>
-                    {format(new Date(order.date_created), 'MMM dd, yyyy')}
-                  </TableCell>
-                  <TableCell>
-                    <div>
-                      <div className="font-medium">
-                        {order.billing?.first_name} {order.billing?.last_name}
+              filteredOrders?.map((order) => {
+                const shippingItem = order.line_items?.find((item: any) => 
+                  item.name?.toLowerCase().includes('shipping') ||
+                  item.name?.toLowerCase().includes('chit chats') ||
+                  item.name?.toLowerCase().includes('stallion')
+                );
+                const isChitChats = shippingItem?.name?.toLowerCase().includes('chit chats');
+                const isStallion = shippingItem?.name?.toLowerCase().includes('stallion');
+                
+                return (
+                  <TableRow key={order.id}>
+                    <TableCell className="font-medium">#{order.id}</TableCell>
+                    <TableCell>
+                      {format(new Date(order.date_created), 'MMM dd, yyyy')}
+                    </TableCell>
+                    <TableCell>
+                      <div>
+                        <div className="font-medium">
+                          {order.billing?.first_name} {order.billing?.last_name}
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          {order.billing?.email}
+                        </div>
                       </div>
-                      <div className="text-sm text-muted-foreground">
-                        {order.billing?.email}
+                    </TableCell>
+                    <TableCell className="text-sm">
+                      {getCountryFlag(order.shipping?.country || 'N/A')}
+                    </TableCell>
+                    <TableCell>
+                      {shippingItem ? (
+                        <div className="flex flex-col gap-1">
+                          {isChitChats && <Badge variant="default" className="bg-blue-500 text-white w-fit">ChitChats</Badge>}
+                          {isStallion && <Badge variant="default" className="bg-green-500 text-white w-fit">Stallion</Badge>}
+                          {!isChitChats && !isStallion && <Badge variant="outline" className="w-fit">Standard</Badge>}
+                          <span className="text-xs text-muted-foreground">
+                            ${(shippingItem.quantity * shippingItem.price).toFixed(2)}
+                          </span>
+                        </div>
+                      ) : (
+                        <Badge variant="secondary" className="w-fit">No Shipping</Badge>
+                      )}
+                    </TableCell>
+                    <TableCell>{getStatusBadge(order.status)}</TableCell>
+                    <TableCell className="text-sm">
+                      {order.payment_method_title || 'N/A'}
+                    </TableCell>
+                    <TableCell className="text-right font-medium">
+                      {order.currency} ${Number(order.total).toFixed(2)}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setSelectedOrder(order)}
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
                       </div>
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-sm">
-                    {getCountryFlag(order.shipping?.country || 'N/A')}
-                  </TableCell>
-                  <TableCell>{getStatusBadge(order.status)}</TableCell>
-                  <TableCell className="text-sm">
-                    {order.payment_method_title || 'N/A'}
-                  </TableCell>
-                  <TableCell className="text-right font-medium">
-                    {order.currency} ${Number(order.total).toFixed(2)}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setSelectedOrder(order)}
-                      >
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))
+                    </TableCell>
+                  </TableRow>
+                );
+              })
             )}
           </TableBody>
         </Table>
