@@ -314,8 +314,18 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
               </div>
               <div className="text-2xl font-bold text-primary">
                 {(() => {
+                  // Prefer explicit shipping cost if provided by the caller mapping
+                  const shippingCostVal = (order as any).shipping_cost;
+                  if (
+                    (typeof shippingCostVal === 'number' && Number.isFinite(shippingCostVal)) ||
+                    (typeof shippingCostVal === 'string' && !isNaN(parseFloat(shippingCostVal)))
+                  ) {
+                    const amt = typeof shippingCostVal === 'number' ? shippingCostVal : parseFloat(shippingCostVal);
+                    return `$${amt.toFixed(2)} ${order.currency || 'USD'}`;
+                  }
+
+                  // Next, check if there's a dedicated shipping amount field named `shipping`
                   const shippingValue = (order as any).shipping;
-                  // If there's a dedicated shipping amount and it's numeric, use it
                   if (
                     (typeof shippingValue === 'number' && Number.isFinite(shippingValue)) ||
                     (typeof shippingValue === 'string' && !isNaN(parseFloat(shippingValue)))
@@ -349,24 +359,32 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
               <div className="flex items-center justify-between">
                 <Label className="text-xs text-muted-foreground">Current Rate (for reference)</Label>
                 {(() => {
-                  // Check if shipping is in a dedicated column (Stripe orders)
+                  // Prefer explicit shipping cost from mapping; else try `shipping` numeric; else derive from line items
                   let actualShipping = 0;
-                  const shippingValue = (order as any).shipping;
+                  const shippingCostVal = (order as any).shipping_cost;
                   if (
-                    (typeof shippingValue === 'number' && Number.isFinite(shippingValue)) ||
-                    (typeof shippingValue === 'string' && !isNaN(parseFloat(shippingValue)))
+                    (typeof shippingCostVal === 'number' && Number.isFinite(shippingCostVal)) ||
+                    (typeof shippingCostVal === 'string' && !isNaN(parseFloat(shippingCostVal)))
                   ) {
-                    actualShipping = typeof shippingValue === 'number' ? shippingValue : parseFloat(shippingValue);
+                    actualShipping = typeof shippingCostVal === 'number' ? shippingCostVal : parseFloat(shippingCostVal);
                   } else {
-                    // Otherwise, find shipping item in line_items (WooCommerce orders)
-                    const shippingItem = order.line_items?.find((item: any) => 
-                      item.name?.toLowerCase().includes('shipping') ||
-                      item.name?.toLowerCase().includes('chit chats') ||
-                      item.name?.toLowerCase().includes('stallion')
-                    );
-                    actualShipping = shippingItem 
-                      ? (Number(shippingItem.quantity) * Number(shippingItem.price))
-                      : 0;
+                    const shippingValue = (order as any).shipping;
+                    if (
+                      (typeof shippingValue === 'number' && Number.isFinite(shippingValue)) ||
+                      (typeof shippingValue === 'string' && !isNaN(parseFloat(shippingValue)))
+                    ) {
+                      actualShipping = typeof shippingValue === 'number' ? shippingValue : parseFloat(shippingValue);
+                    } else {
+                      // Otherwise, find shipping item in line_items (WooCommerce orders)
+                      const shippingItem = order.line_items?.find((item: any) => 
+                        item.name?.toLowerCase().includes('shipping') ||
+                        item.name?.toLowerCase().includes('chit chats') ||
+                        item.name?.toLowerCase().includes('stallion')
+                      );
+                      actualShipping = shippingItem 
+                        ? (Number(shippingItem.quantity) * Number(shippingItem.price))
+                        : 0;
+                    }
                   }
                   
                   const currentRate = shippingInfo.rateDetails?.rateAmount || 0;
