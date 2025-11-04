@@ -51,6 +51,7 @@ export function OrdersList() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(50);
   const [showArchived, setShowArchived] = useState(false);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [filters, setFilters] = useState<OrderFiltersState>({
     dateRange: 'all',
     statuses: [],
@@ -495,13 +496,15 @@ export function OrdersList() {
           showArchived={showArchived}
           onToggleArchived={() => setShowArchived(!showArchived)}
           statusCounts={statusCounts}
+          viewMode={viewMode}
+          onViewModeChange={setViewMode}
         />
 
       <div className="p-4">
         <OrdersAnalyticsSummary />
       </div>
       
-      <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className={`p-4 ${viewMode === 'list' ? 'grid grid-cols-1 gap-4' : 'grid grid-cols-1 md:grid-cols-2 gap-4'}`}>
         {!orders?.orders || orders.orders.length === 0 ? (
           <div className="py-12 text-center space-y-4">
             <Package className="h-16 w-16 mx-auto text-muted-foreground/50" />

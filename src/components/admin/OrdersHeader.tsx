@@ -1,6 +1,6 @@
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Search, Filter, ArrowUpDown, MoreVertical, ArrowLeft, RefreshCw, CheckSquare, Square, ChevronDown } from 'lucide-react';
+import { Search, Filter, ArrowUpDown, MoreVertical, ArrowLeft, RefreshCw, CheckSquare, Square, ChevronDown, LayoutGrid, List } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { useState, useEffect } from 'react';
@@ -29,6 +29,8 @@ interface OrdersHeaderProps {
   showArchived?: boolean;
   onToggleArchived?: () => void;
   statusCounts?: Record<string, number>;
+  viewMode?: 'grid' | 'list';
+  onViewModeChange?: (mode: 'grid' | 'list') => void;
 }
 
 const statusChips = [
@@ -55,6 +57,8 @@ export function OrdersHeader({
   showArchived = false,
   onToggleArchived,
   statusCounts,
+  viewMode = 'grid',
+  onViewModeChange,
 }: OrdersHeaderProps) {
   const [isSyncing, setIsSyncing] = useState(false);
   const [lastSyncTime, setLastSyncTime] = useState<Date | null>(null);
@@ -169,7 +173,29 @@ export function OrdersHeader({
               {selectionMode ? <CheckSquare className="h-5 w-5" /> : <Square className="h-5 w-5" />}
             </Button>
           )}
-          <Button 
+          {onViewModeChange && (
+            <div className="flex border rounded-md">
+              <Button 
+                variant={viewMode === 'grid' ? "default" : "ghost"}
+                size="icon"
+                onClick={() => onViewModeChange('grid')}
+                title="Grid view"
+                className="rounded-r-none"
+              >
+                <LayoutGrid className="h-5 w-5" />
+              </Button>
+              <Button 
+                variant={viewMode === 'list' ? "default" : "ghost"}
+                size="icon"
+                onClick={() => onViewModeChange('list')}
+                title="List view"
+                className="rounded-l-none"
+              >
+                <List className="h-5 w-5" />
+              </Button>
+            </div>
+          )}
+          <Button
             variant="ghost" 
             size="icon"
             onClick={handleSyncTracking}
