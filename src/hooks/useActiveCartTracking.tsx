@@ -1,6 +1,7 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useDebounce } from "./useDebounce";
+import { useSessionManagement } from "./useSessionManagement";
 
 interface CartItem {
   id: string;
@@ -15,27 +16,7 @@ export const useActiveCartTracking = (
   subtotal: number,
   userEmail?: string
 ) => {
-  const sessionId = useRef<string>("");
-  const hasInitialized = useRef(false);
-
-  // Get or create session ID from visitor analytics
-  useEffect(() => {
-    const getSessionId = async () => {
-      // Try to get from localStorage first
-      let storedSessionId = localStorage.getItem("visitor_session_id");
-      
-      if (!storedSessionId) {
-        // Generate new session ID
-        storedSessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-        localStorage.setItem("visitor_session_id", storedSessionId);
-      }
-      
-      sessionId.current = storedSessionId;
-      hasInitialized.current = true;
-    };
-
-    getSessionId();
-  }, []);
+  const { sessionId, visitorId, hasInitialized } = useSessionManagement();
 
   // Debounce cart items and subtotal to avoid excessive DB writes
   const debouncedItems = useDebounce(items, 5000); // 5 second debounce
@@ -43,17 +24,18 @@ export const useActiveCartTracking = (
 
   // Track cart changes in database
   useEffect(() => {
-    if (!hasInitialized.current || !sessionId.current) return;
+    if (!hasInitialized || !sessionId) return;
     
     const trackCart = async () => {
       // Don't track empty carts
       if (debouncedItems.length === 0) {
+        console.log("[Cart Tracking] Cart is empty, deleting from DB");
         // Delete the active cart if it exists
         try {
           await supabase
             .from("active_carts")
             .delete()
-            .eq("session_id", sessionId.current);
+            .eq("session_id", sessionId);
         } catch (error) {
           console.error("Error deleting active cart:", error);
         }
@@ -61,23 +43,21 @@ export const useActiveCartTracking = (
       }
 
       try {
-        // Try to get visitor_id from visitor_analytics
-        const { data: visitorData } = await supabase
-          .from("visitor_analytics")
-          .select("visitor_id")
-          .eq("session_id", sessionId.current)
-          .order("created_at", { ascending: false })
-          .limit(1)
-          .single();
-
         const cartData = {
-          session_id: sessionId.current,
-          visitor_id: visitorData?.visitor_id || null,
+          session_id: sessionId,
+          visitor_id: visitorId || null,
           email: userEmail || null,
           cart_items: debouncedItems as any,
           subtotal: debouncedSubtotal,
           last_updated: new Date().toISOString(),
         };
+
+        console.log("[Cart Tracking] Upserting cart:", {
+          session_id: sessionId,
+          visitor_id: visitorId,
+          items: debouncedItems.length,
+          subtotal: debouncedSubtotal,
+        });
 
         // Upsert the cart (insert or update)
         const { error } = await supabase
@@ -88,6 +68,8 @@ export const useActiveCartTracking = (
 
         if (error) {
           console.error("Error tracking active cart:", error);
+        } else {
+          console.log("[Cart Tracking] Successfully tracked cart");
         }
       } catch (error) {
         console.error("Error in cart tracking:", error);
@@ -99,13 +81,14 @@ export const useActiveCartTracking = (
 
   // Mark cart as converted when checkout is completed
   const markAsConverted = async () => {
-    if (!sessionId.current) return;
+    if (!sessionId) return;
 
     try {
+      console.log("[Cart Tracking] Marking cart as converted:", sessionId);
       await supabase
         .from("active_carts")
         .update({ converted_at: new Date().toISOString() })
-        .eq("session_id", sessionId.current);
+        .eq("session_id", sessionId);
     } catch (error) {
       console.error("Error marking cart as converted:", error);
     }

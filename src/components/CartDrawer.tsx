@@ -25,6 +25,15 @@ const CartDrawer = () => {
   // Track active cart in real-time
   useActiveCartTracking(items, subtotal);
   
+  // Debug log for cart tracking
+  useEffect(() => {
+    console.log("[CartDrawer] Cart state:", { 
+      itemCount: items.length, 
+      subtotal, 
+      items: items.map(i => ({ id: i.id, name: i.name, quantity: i.quantity }))
+    });
+  }, [items, subtotal]);
+  
   // Hide floating button when cart is open or on checkout page or admin pages
   const shouldHideFloatingButton = isOpen || location.pathname === '/checkout' || location.pathname.startsWith('/admin');
 

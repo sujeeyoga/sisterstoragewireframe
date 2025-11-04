@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { useSessionManagement } from './useSessionManagement';
 
 interface VisitorPresence {
   [key: string]: Array<{
@@ -27,15 +28,13 @@ export const useVisitorPresence = (trackVisitor: boolean = false) => {
   const [visitors, setVisitors] = useState<VisitorPresence>({});
   const [visitorCountries, setVisitorCountries] = useState<VisitorCountry[]>([]);
   const [tariffRates, setTariffRates] = useState<{ [key: string]: TariffRate }>({});
-  const sessionIdRef = useRef<string | null>(null);
   const heartbeatIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  
+  const { sessionId, visitorId, hasInitialized } = useSessionManagement();
 
   // Track visitor in database
   const trackVisitorInDB = async (pagePath: string) => {
-    if (!trackVisitor) return;
-
-    const visitorId = generateVisitorId();
-    const sessionId = getSessionId();
+    if (!trackVisitor || !hasInitialized || !sessionId || !visitorId) return;
 
     try {
       const response = await supabase.functions.invoke('track-visitor', {
@@ -104,7 +103,9 @@ export const useVisitorPresence = (trackVisitor: boolean = false) => {
   }, [trackVisitor]);
 
   useEffect(() => {
-    const channel = supabase.channel('site-visitors');
+    if (!trackVisitor || !hasInitialized) return;
+
+    const channel = supabase.channel('visitor-presence');
 
     // Track presence changes
     channel
@@ -130,49 +131,46 @@ export const useVisitorPresence = (trackVisitor: boolean = false) => {
         console.log('Visitor left:', leftPresences);
       })
       .subscribe(async (status) => {
-        if (status === 'SUBSCRIBED' && trackVisitor) {
-          // Track current visitor
-          const visitorId = generateVisitorId();
+        if (status === 'SUBSCRIBED' && trackVisitor && sessionId) {
+          // Track presence with our session ID
+          const userId = sessionId;
+          
           await channel.track({
-            user_id: visitorId,
+            user_id: userId,
             online_at: new Date().toISOString(),
             page: window.location.pathname,
           });
+          
+          console.log('[Visitor Presence] Tracking visitor with session:', sessionId);
+
+          // Track initial page visit
+          trackVisitorInDB(window.location.pathname);
         }
       });
 
-    // Update page when route changes
-    const handleRouteChange = () => {
-      if (trackVisitor) {
-        const visitorId = generateVisitorId();
-        channel.track({
-          user_id: visitorId,
-          online_at: new Date().toISOString(),
-          page: window.location.pathname,
-        });
-        
-        // Track in database
-        trackVisitorInDB(window.location.pathname);
-      }
+    const handleRouteChange = async () => {
+      if (!sessionId) return;
+      
+      await channel.track({
+        user_id: sessionId,
+        online_at: new Date().toISOString(),
+        page: window.location.pathname,
+      });
+
+      // Track the page change
+      trackVisitorInDB(window.location.pathname);
     };
 
     window.addEventListener('popstate', handleRouteChange);
 
-    // Track initial page view
-    if (trackVisitor) {
+    // Set up heartbeat to update session duration
+    heartbeatIntervalRef.current = setInterval(() => {
       trackVisitorInDB(window.location.pathname);
-      
-      // Set up heartbeat to update session duration
-      heartbeatIntervalRef.current = setInterval(() => {
-        trackVisitorInDB(window.location.pathname);
-      }, 30000); // Update every 30 seconds
-    }
+    }, 30000); // Update every 30 seconds
 
     // Track when user leaves
     const handleBeforeUnload = () => {
-      if (trackVisitor) {
-        trackVisitorInDB(window.location.pathname);
-      }
+      trackVisitorInDB(window.location.pathname);
     };
 
     window.addEventListener('beforeunload', handleBeforeUnload);
@@ -182,34 +180,11 @@ export const useVisitorPresence = (trackVisitor: boolean = false) => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
       if (heartbeatIntervalRef.current) {
         clearInterval(heartbeatIntervalRef.current);
+        heartbeatIntervalRef.current = null;
       }
       channel.unsubscribe();
     };
-  }, [trackVisitor]);
+  }, [trackVisitor, hasInitialized, sessionId]);
 
   return { visitorCount, visitors, visitorCountries, tariffRates };
 };
-
-// Generate or retrieve session ID (unique per browser session)
-function getSessionId(): string {
-  let sessionId = sessionStorage.getItem('session_id');
-  
-  if (!sessionId) {
-    sessionId = `session_${Math.random().toString(36).substring(2, 15)}_${Date.now()}`;
-    sessionStorage.setItem('session_id', sessionId);
-  }
-  
-  return sessionId;
-}
-
-// Generate or retrieve visitor ID from sessionStorage
-function generateVisitorId(): string {
-  let visitorId = sessionStorage.getItem('visitor_id');
-  
-  if (!visitorId) {
-    visitorId = `visitor_${Math.random().toString(36).substring(2, 15)}`;
-    sessionStorage.setItem('visitor_id', visitorId);
-  }
-  
-  return visitorId;
-}
