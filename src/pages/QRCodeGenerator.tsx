@@ -29,6 +29,24 @@ export default function QRCodeGenerator() {
   const [destinationUrl, setDestinationUrl] = useState('');
   const [createdQR, setCreatedQR] = useState<{ shortCode: string; shortUrl: string } | null>(null);
 
+  // Fetch production domain
+  const { data: productionDomain } = useQuery({
+    queryKey: ['production-domain'],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('store_settings')
+        .select('setting_value')
+        .eq('setting_key', 'production_domain')
+        .eq('enabled', true)
+        .single();
+      
+      if (data?.setting_value && typeof data.setting_value === 'object' && 'domain' in data.setting_value) {
+        return data.setting_value.domain as string;
+      }
+      return null;
+    },
+  });
+
   // Check if user is admin
   const { data: isAdmin } = useQuery({
     queryKey: ['is-admin'],
@@ -373,6 +391,14 @@ export default function QRCodeGenerator() {
                       Where should this QR code redirect to? You can change this later.
                     </p>
                   </div>
+
+                  {productionDomain && (
+                    <div className="bg-muted/50 rounded-lg p-3 text-xs space-y-1">
+                      <p className="font-medium">📍 Production Domain Configured:</p>
+                      <p className="text-muted-foreground">{productionDomain}</p>
+                      <p className="text-muted-foreground">Your QR codes will use this domain.</p>
+                    </div>
+                  )}
 
                   <Button 
                     onClick={() => createDynamicQR.mutate()}

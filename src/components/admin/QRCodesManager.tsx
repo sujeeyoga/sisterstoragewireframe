@@ -57,6 +57,7 @@ export const QRCodesManager = () => {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [selectedQR, setSelectedQR] = useState<QRCode | null>(null);
   const [productionDomain, setProductionDomain] = useState('');
+  const [linkType, setLinkType] = useState<'short' | 'direct'>('short');
   const [formData, setFormData] = useState({
     name: '',
     destination_url: '',
@@ -208,11 +209,21 @@ export const QRCodesManager = () => {
     setDialogOpen(true);
   };
 
+  const getBaseUrl = () => productionDomain || window.location.origin;
+
   const handleCopyShortUrl = (shortCode: string) => {
-    buildShortUrl(shortCode).then(url => {
-      navigator.clipboard.writeText(url);
-      toast.success('Short URL copied to clipboard!');
-    });
+    const baseUrl = getBaseUrl();
+    const url = `${baseUrl}/q/${shortCode}`;
+    navigator.clipboard.writeText(url);
+    toast.success('Short URL copied to clipboard!');
+  };
+
+  const getQRValue = (qr: QRCode) => {
+    if (linkType === 'direct') {
+      return qr.destination_url;
+    }
+    const baseUrl = getBaseUrl();
+    return `${baseUrl}/q/${qr.short_code}`;
   };
 
   const handleDownload = (qr: QRCode, format: 'png' | 'jpg' = 'png') => {
@@ -242,7 +253,8 @@ export const QRCodesManager = () => {
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = `qr-${qr.short_code}-${qr.name.replace(/\s+/g, '-').toLowerCase()}.${format}`;
+        const linkTypeStr = linkType === 'short' ? 'short' : 'direct';
+        link.download = `qr-${linkTypeStr}-${qr.short_code}-${qr.name.replace(/\s+/g, '-').toLowerCase()}.${format}`;
         link.click();
         URL.revokeObjectURL(url);
       }, mimeType, 0.95);
@@ -271,6 +283,21 @@ export const QRCodesManager = () => {
           </Button>
         </div>
       </div>
+
+      {!productionDomain && (
+        <div className="bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
+          <p className="text-sm text-yellow-800 dark:text-yellow-200">
+            ⚠️ No production domain configured. QR codes will use the current URL. 
+            <Button 
+              variant="link" 
+              className="h-auto p-0 ml-1 text-yellow-800 dark:text-yellow-200 underline"
+              onClick={() => setSettingsOpen(true)}
+            >
+              Set domain now
+            </Button>
+          </p>
+        </div>
+      )}
 
       {/* Statistics */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -353,7 +380,7 @@ export const QRCodesManager = () => {
                       >
                         <QRCodeSVG
                           id={`qr-${qr.id}`}
-                          value={buildShortUrlSync(qr.short_code)}
+                          value={`${getBaseUrl()}/q/${qr.short_code}`}
                           size={48}
                           level="M"
                         />
@@ -442,8 +469,19 @@ export const QRCodesManager = () => {
                 placeholder="https://sisterstorage.ca"
               />
               <p className="text-xs text-muted-foreground mt-1">
-                This is the domain that will be used in your QR codes. Must include https://
+                This is the domain that will be used in your QR codes. Must start with https://
               </p>
+              {productionDomain && !productionDomain.startsWith('https://') && (
+                <p className="text-xs text-destructive mt-1">
+                  ⚠️ Production domain must start with https://
+                </p>
+              )}
+            </div>
+            <div className="bg-muted/50 rounded-lg p-3 text-xs space-y-1">
+              <p className="font-medium">💡 Tips:</p>
+              <p>• Set this to your live domain (e.g., https://sisterstorage.ca)</p>
+              <p>• Re-download any previously created QR codes after changing this</p>
+              <p>• QR codes will use this domain instead of the preview URL</p>
             </div>
           </div>
 
@@ -453,7 +491,7 @@ export const QRCodesManager = () => {
             </Button>
             <Button 
               onClick={() => saveDomainMutation.mutate(productionDomain)}
-              disabled={!productionDomain || saveDomainMutation.isPending}
+              disabled={!productionDomain || !productionDomain.startsWith('https://') || saveDomainMutation.isPending}
             >
               {saveDomainMutation.isPending ? 'Saving...' : 'Save'}
             </Button>
@@ -507,7 +545,7 @@ export const QRCodesManager = () => {
               <div className="border rounded-lg p-4 space-y-2">
                 <p className="text-sm font-medium">Preview</p>
                 <div className="flex justify-center">
-                  <QRCodeSVG value={buildShortUrlSync(selectedQR.short_code)} size={150} level="M" />
+                  <QRCodeSVG value={`${getBaseUrl()}/q/${selectedQR.short_code}`} size={150} level="M" />
                 </div>
                 <p className="text-xs text-center text-muted-foreground">
                   /q/{selectedQR.short_code}
@@ -539,10 +577,36 @@ export const QRCodesManager = () => {
 
           {selectedQR && (
             <div className="space-y-6">
+              <div className="space-y-3">
+                <Label>Link Type</Label>
+                <div className="grid grid-cols-2 gap-2">
+                  <Button
+                    variant={linkType === 'short' ? 'default' : 'outline'}
+                    onClick={() => setLinkType('short')}
+                    className="w-full"
+                  >
+                    Short URL
+                  </Button>
+                  <Button
+                    variant={linkType === 'direct' ? 'default' : 'outline'}
+                    onClick={() => setLinkType('direct')}
+                    className="w-full"
+                  >
+                    Direct URL
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {linkType === 'short' 
+                    ? `Short URL: ${getBaseUrl()}/q/${selectedQR.short_code} (trackable, updatable)`
+                    : `Direct URL: ${selectedQR.destination_url} (no redirect, no tracking)`
+                  }
+                </p>
+              </div>
+
               <div className="flex justify-center p-8 bg-white rounded-lg">
                 <QRCodeSVG
                   id={`preview-qr-${selectedQR.id}`}
-                  value={buildShortUrlSync(selectedQR.short_code)}
+                  value={getQRValue(selectedQR)}
                   size={300}
                   level="H"
                 />
@@ -571,6 +635,9 @@ export const QRCodesManager = () => {
               <div className="text-xs text-muted-foreground space-y-1">
                 <p>• PNG: Transparent background, best for web</p>
                 <p>• JPG: White background, smaller file size</p>
+                {!productionDomain && linkType === 'short' && (
+                  <p className="text-yellow-600 dark:text-yellow-500">⚠️ Using preview domain. Configure production domain in settings.</p>
+                )}
               </div>
             </div>
           )}
