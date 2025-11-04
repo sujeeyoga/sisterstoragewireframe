@@ -10,8 +10,12 @@ export function OrdersAnalyticsSummary() {
     end: new Date()
   };
 
-  const { data: orderData, isLoading: orderLoading } = useOrderAnalytics(dateRange);
-  const { data: cartData, isLoading: cartLoading } = useAbandonedCartAnalytics(dateRange);
+  const { data: orderData, isLoading: orderLoading, error: orderError } = useOrderAnalytics(dateRange);
+  const { data: cartData, isLoading: cartLoading, error: cartError } = useAbandonedCartAnalytics(dateRange);
+
+  console.log('[OrdersAnalyticsSummary] Loading states:', { orderLoading, cartLoading });
+  console.log('[OrdersAnalyticsSummary] Data:', { orderData, cartData });
+  console.log('[OrdersAnalyticsSummary] Errors:', { orderError, cartError });
 
   if (orderLoading || cartLoading) {
     return (
