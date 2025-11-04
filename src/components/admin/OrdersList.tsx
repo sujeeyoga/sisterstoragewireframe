@@ -8,6 +8,7 @@ import { OrderFilters, OrderFiltersState } from './OrderFilters';
 import { OrderBulkBar } from './OrderBulkBar';
 import { OrderDrawer } from './OrderDrawer';
 import { BulkFulfillmentDialog } from './BulkFulfillmentDialog';
+import { OrdersAnalyticsSummary } from './OrdersAnalyticsSummary';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Package, RotateCcw } from 'lucide-react';
@@ -495,6 +496,10 @@ export function OrdersList() {
           onToggleArchived={() => setShowArchived(!showArchived)}
           statusCounts={statusCounts}
         />
+
+      <div className="p-4">
+        <OrdersAnalyticsSummary />
+      </div>
       
       <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
         {!orders?.orders || orders.orders.length === 0 ? (
