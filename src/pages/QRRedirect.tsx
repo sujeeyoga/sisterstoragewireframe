@@ -12,18 +12,34 @@ export default function QRRedirect() {
   const { data: qrCode, isLoading, error } = useQuery({
     queryKey: ['qr-redirect', shortCode],
     queryFn: async () => {
-      if (!shortCode) throw new Error('No short code provided');
+      console.log('QR Redirect - Short code:', shortCode);
+      
+      if (!shortCode) {
+        console.error('QR Redirect - No short code provided');
+        throw new Error('No short code provided');
+      }
 
+      console.log('QR Redirect - Fetching QR code from database...');
       const { data, error } = await supabase
         .from('qr_codes')
         .select('*')
         .eq('short_code', shortCode)
         .eq('is_active', true)
-        .single();
+        .maybeSingle();
 
-      if (error) throw error;
-      if (!data) throw new Error('QR code not found');
+      console.log('QR Redirect - Database response:', { data, error });
 
+      if (error) {
+        console.error('QR Redirect - Database error:', error);
+        throw error;
+      }
+      
+      if (!data) {
+        console.error('QR Redirect - QR code not found in database');
+        throw new Error('QR code not found');
+      }
+
+      console.log('QR Redirect - QR code found:', data);
       return data;
     },
     enabled: !!shortCode,
@@ -32,6 +48,9 @@ export default function QRRedirect() {
   useEffect(() => {
     const trackAndRedirect = async () => {
       if (qrCode && shortCode) {
+        console.log('QR Redirect - Starting tracking and redirect...');
+        console.log('QR Redirect - Destination URL:', qrCode.destination_url);
+        
         // Track the scan
         try {
           // Increment scan count
@@ -46,11 +65,14 @@ export default function QRRedirect() {
             user_agent: navigator.userAgent,
             referrer: document.referrer || null,
           });
+          
+          console.log('QR Redirect - Tracking completed');
         } catch (error) {
-          console.error('Error tracking scan:', error);
+          console.error('QR Redirect - Error tracking scan:', error);
         }
 
         // Redirect to destination
+        console.log('QR Redirect - Redirecting to:', qrCode.destination_url);
         window.location.href = qrCode.destination_url;
       }
     };
@@ -72,6 +94,7 @@ export default function QRRedirect() {
   }
 
   if (error || !qrCode) {
+    console.error('QR Redirect - Error state:', { error, qrCode, shortCode });
     return (
       <Layout>
         <div className="container mx-auto px-4 py-20">
@@ -80,6 +103,11 @@ export default function QRRedirect() {
             <p className="text-lg text-muted-foreground">
               This QR code is invalid or has been disabled.
             </p>
+            {error && (
+              <p className="text-sm text-destructive">
+                Error: {error instanceof Error ? error.message : 'Unknown error'}
+              </p>
+            )}
             <button
               onClick={() => navigate('/')}
               className="mt-4 px-6 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
