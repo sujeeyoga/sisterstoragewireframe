@@ -28,14 +28,24 @@ const AdminSalesReports = () => {
   const { data: productSales } = useQuery({
     queryKey: ['product-sales', dateRangeValues],
     queryFn: async () => {
+      // Fetch from WooCommerce orders
       const { data: wooOrders } = await supabase
         .from('woocommerce_orders')
         .select('line_items, total')
         .gte('date_created', dateRangeValues.start.toISOString())
         .lte('date_created', dateRangeValues.end.toISOString());
 
+      // Fetch from Stripe orders
+      const { data: stripeOrders } = await supabase
+        .from('orders')
+        .select('items')
+        .gte('created_at', dateRangeValues.start.toISOString())
+        .lte('created_at', dateRangeValues.end.toISOString())
+        .eq('payment_status', 'paid');
+
       const productMap = new Map<string, { name: string; quantity: number; revenue: number }>();
 
+      // Process WooCommerce orders
       wooOrders?.forEach(order => {
         const items = order.line_items as any[];
         items?.forEach(item => {
@@ -44,6 +54,19 @@ const AdminSalesReports = () => {
             name: item.name,
             quantity: existing.quantity + item.quantity,
             revenue: existing.revenue + (item.total || 0)
+          });
+        });
+      });
+
+      // Process Stripe orders
+      stripeOrders?.forEach(order => {
+        const items = order.items as any[];
+        items?.forEach(item => {
+          const existing = productMap.get(item.name) || { name: item.name, quantity: 0, revenue: 0 };
+          productMap.set(item.name, {
+            name: item.name,
+            quantity: existing.quantity + (item.quantity || 1),
+            revenue: existing.revenue + (item.price * (item.quantity || 1))
           });
         });
       });
