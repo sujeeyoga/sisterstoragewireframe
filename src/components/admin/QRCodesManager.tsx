@@ -53,6 +53,7 @@ export const QRCodesManager = () => {
   const queryClient = useQueryClient();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [previewDialogOpen, setPreviewDialogOpen] = useState(false);
   const [selectedQR, setSelectedQR] = useState<QRCode | null>(null);
   const [formData, setFormData] = useState({
     name: '',
@@ -170,12 +171,40 @@ export const QRCodesManager = () => {
     toast.success('Short URL copied to clipboard!');
   };
 
-  const handleDownload = (qr: QRCode) => {
-    const url = buildShortUrl(qr.short_code);
-    const svg = document.querySelector(`#qr-${qr.id}`) as SVGSVGElement;
-    if (svg) {
-      downloadQRCodeImage(svg, qr.name, qr.short_code);
-    }
+  const handleDownload = (qr: QRCode, format: 'png' | 'jpg' = 'png') => {
+    const svg = document.getElementById(`preview-qr-${qr.id}`) as unknown as SVGSVGElement;
+    if (!svg) return;
+
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    canvas.width = 1024;
+    canvas.height = 1024;
+
+    const svgData = new XMLSerializer().serializeToString(svg);
+    const img = new Image();
+    
+    img.onload = () => {
+      if (format === 'jpg') {
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+      ctx.drawImage(img, 0, 0);
+      
+      const mimeType = format === 'jpg' ? 'image/jpeg' : 'image/png';
+      canvas.toBlob((blob) => {
+        if (!blob) return;
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `qr-${qr.short_code}-${qr.name.replace(/\s+/g, '-').toLowerCase()}.${format}`;
+        link.click();
+        URL.revokeObjectURL(url);
+      }, mimeType, 0.95);
+    };
+    
+    img.src = 'data:image/svg+xml;base64,' + btoa(svgData);
   };
 
   const totalScans = qrCodes?.reduce((sum, qr) => sum + qr.scan_count, 0) || 0;
@@ -265,7 +294,13 @@ export const QRCodesManager = () => {
                 qrCodes?.map((qr) => (
                   <TableRow key={qr.id}>
                     <TableCell>
-                      <div className="w-12 h-12">
+                      <div 
+                        className="w-12 h-12 cursor-pointer hover:ring-2 hover:ring-primary rounded transition-all"
+                        onClick={() => {
+                          setSelectedQR(qr);
+                          setPreviewDialogOpen(true);
+                        }}
+                      >
                         <QRCodeSVG
                           id={`qr-${qr.id}`}
                           value={buildShortUrl(qr.short_code)}
@@ -307,7 +342,14 @@ export const QRCodesManager = () => {
                         <Button variant="ghost" size="sm" onClick={() => handleEdit(qr)}>
                           <Edit className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="sm" onClick={() => handleDownload(qr)}>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={() => {
+                            setSelectedQR(qr);
+                            setPreviewDialogOpen(true);
+                          }}
+                        >
                           <Download className="h-4 w-4" />
                         </Button>
                         <Button
@@ -393,6 +435,56 @@ export const QRCodesManager = () => {
               {saveMutation.isPending ? 'Saving...' : selectedQR ? 'Update' : 'Create'}
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Preview & Download Dialog */}
+      <Dialog open={previewDialogOpen} onOpenChange={setPreviewDialogOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Download QR Code</DialogTitle>
+            <DialogDescription>
+              High-quality QR code for {selectedQR?.name}
+            </DialogDescription>
+          </DialogHeader>
+
+          {selectedQR && (
+            <div className="space-y-6">
+              <div className="flex justify-center p-8 bg-white rounded-lg">
+                <QRCodeSVG
+                  id={`preview-qr-${selectedQR.id}`}
+                  value={buildShortUrl(selectedQR.short_code)}
+                  size={300}
+                  level="H"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <p className="text-sm font-medium">Download Options</p>
+                <div className="grid grid-cols-2 gap-2">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => handleDownload(selectedQR, 'png')}
+                    className="w-full"
+                  >
+                    Download PNG
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => handleDownload(selectedQR, 'jpg')}
+                    className="w-full"
+                  >
+                    Download JPG
+                  </Button>
+                </div>
+              </div>
+
+              <div className="text-xs text-muted-foreground space-y-1">
+                <p>• PNG: Transparent background, best for web</p>
+                <p>• JPG: White background, smaller file size</p>
+              </div>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
 
