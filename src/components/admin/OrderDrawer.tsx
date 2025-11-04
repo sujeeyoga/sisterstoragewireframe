@@ -433,9 +433,12 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
               {shippingInfo.rateDetails && (
                 <div className="pt-3 border-t space-y-2">
                   <Label className="text-xs text-muted-foreground">Current Rate Method</Label>
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1 min-w-0 pr-2">
-                      <div className="font-medium break-words">
+                  <div className="grid grid-cols-[1fr_auto] items-start gap-4">
+                    <div className="min-w-0 pr-2">
+                      <div
+                        className="font-medium truncate"
+                        title={shippingInfo.rateDetails.methodName}
+                      >
                         {shippingInfo.rateDetails.methodName}
                       </div>
                       {shippingInfo.rateDetails.source && (
@@ -457,7 +460,11 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
                       {shippingInfo.rateDetails.isFree ? (
                         <span className="text-green-600 dark:text-green-400">FREE</span>
                       ) : (
-                        `$${shippingInfo.rateDetails.rateAmount.toFixed(2)}`
+                        (() => {
+                          const src = shippingInfo.rateDetails.source as string | undefined;
+                          const code = src === 'chitchats' ? 'USD' : src === 'stallion' ? 'CAD' : (order.currency || 'CAD');
+                          return `$${shippingInfo.rateDetails.rateAmount.toFixed(2)} ${code}`;
+                        })()
                       )}
                     </div>
                   </div>
