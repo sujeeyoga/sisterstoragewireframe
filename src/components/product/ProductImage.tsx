@@ -14,6 +14,10 @@ const ProductImage = ({ images, color, name }: ProductImageProps) => {
   const [loadedImages, setLoadedImages] = useState<Record<number, boolean>>({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   
+  React.useEffect(() => {
+    console.log('[ProductImage] selectedImage changed to', selectedImage);
+  }, [selectedImage]);
+  
   const handleImageLoad = (index: number) => {
     setLoadedImages(prev => ({ ...prev, [index]: true }));
   };
@@ -41,6 +45,7 @@ const ProductImage = ({ images, color, name }: ProductImageProps) => {
             <div className="absolute inset-0 bg-gray-200 animate-pulse" />
           )}
           <PerformanceImage 
+            key={images[selectedImage]}
             src={images[selectedImage]} 
             alt={`${name} - Image ${selectedImage + 1}`}
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
@@ -84,8 +89,8 @@ const ProductImage = ({ images, color, name }: ProductImageProps) => {
               {!loadedImages[index] && (
                 <div className="absolute inset-0 bg-gray-200 animate-pulse" />
               )}
-              <PerformanceImage 
-                src={image} 
+              <img 
+                src={image}
                 alt={`${name} - Thumbnail ${index + 1}`}
                 className="w-full h-full object-cover"
                 loading="lazy"
