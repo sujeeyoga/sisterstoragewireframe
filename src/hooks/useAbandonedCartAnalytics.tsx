@@ -13,16 +13,20 @@ interface AbandonedCartAnalytics {
 
 export const useAbandonedCartAnalytics = (dateRange: { start: Date; end: Date }) => {
   return useQuery({
-    queryKey: ['abandoned-cart-analytics', dateRange],
+    queryKey: ['abandoned-cart-analytics', dateRange.start.toISOString(), dateRange.end.toISOString()],
     queryFn: async (): Promise<AbandonedCartAnalytics> => {
-      const { data, error } = await supabase
-        .from('abandoned_carts')
-        .select('*')
-        .gte('created_at', startOfDay(dateRange.start).toISOString())
-        .lte('created_at', endOfDay(dateRange.end).toISOString())
-        .is('closed_at', null); // Exclude closed carts from analytics
+      console.log('[useAbandonedCartAnalytics] Starting query with range:', dateRange);
+      
+      try {
+        const { data, error } = await supabase
+          .from('abandoned_carts')
+          .select('*')
+          .gte('created_at', startOfDay(dateRange.start).toISOString())
+          .lte('created_at', endOfDay(dateRange.end).toISOString())
+          .is('closed_at', null); // Exclude closed carts from analytics
 
-      if (error) throw error;
+        console.log('[useAbandonedCartAnalytics] Query result:', { data, error });
+        if (error) throw error;
 
       const totalAbandoned = data?.length || 0;
       const totalValue = data?.reduce((sum, cart) => sum + Number(cart.subtotal || 0), 0) || 0;
@@ -33,7 +37,7 @@ export const useAbandonedCartAnalytics = (dateRange: { start: Date; end: Date })
         ?.filter(cart => !cart.recovered_at && !cart.closed_at)
         .reduce((sum, cart) => sum + Number(cart.subtotal || 0), 0) || 0;
 
-      return {
+      const result = {
         totalAbandoned,
         totalValue,
         recoveredCount,
@@ -41,6 +45,13 @@ export const useAbandonedCartAnalytics = (dateRange: { start: Date; end: Date })
         recoveryRate,
         pendingValue,
       };
+      
+      console.log('[useAbandonedCartAnalytics] Final result:', result);
+      return result;
+      } catch (error) {
+        console.error('[useAbandonedCartAnalytics] Error:', error);
+        throw error;
+      }
     },
   });
 };

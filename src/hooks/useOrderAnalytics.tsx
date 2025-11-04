@@ -19,26 +19,31 @@ export function useOrderAnalytics({ start, end }: DateRange) {
   return useQuery({
     queryKey: ['order-analytics', start.toISOString(), end.toISOString()],
     queryFn: async (): Promise<OrderAnalytics> => {
+      console.log('[useOrderAnalytics] Starting query with range:', { start, end });
       const startDate = startOfDay(start).toISOString();
       const endDate = endOfDay(end).toISOString();
+      console.log('[useOrderAnalytics] Date range:', { startDate, endDate });
 
-      // Fetch WooCommerce orders
-      const { data: wooOrders, error: wooError } = await supabase
-        .from('woocommerce_orders')
-        .select('total, status, date_created')
-        .gte('date_created', startDate)
-        .lte('date_created', endDate);
+      try {
+        // Fetch WooCommerce orders
+        const { data: wooOrders, error: wooError } = await supabase
+          .from('woocommerce_orders')
+          .select('total, status, date_created')
+          .gte('date_created', startDate)
+          .lte('date_created', endDate);
 
-      if (wooError) throw wooError;
+        console.log('[useOrderAnalytics] WooCommerce query result:', { wooOrders, wooError });
+        if (wooError) throw wooError;
 
-      // Fetch Stripe orders
-      const { data: stripeOrders, error: stripeError } = await supabase
-        .from('orders')
-        .select('total, status, created_at')
-        .gte('created_at', startDate)
-        .lte('created_at', endDate);
+        // Fetch Stripe orders
+        const { data: stripeOrders, error: stripeError } = await supabase
+          .from('orders')
+          .select('total, status, created_at')
+          .gte('created_at', startDate)
+          .lte('created_at', endDate);
 
-      if (stripeError) throw stripeError;
+        console.log('[useOrderAnalytics] Stripe query result:', { stripeOrders, stripeError });
+        if (stripeError) throw stripeError;
 
       // Combine and calculate metrics
       const allOrders = [
@@ -64,13 +69,20 @@ export function useOrderAnalytics({ start, end }: DateRange) {
         o.status === 'completed'
       ).length;
 
-      return {
+      const result = {
         totalRevenue,
         totalOrders,
         averageOrderValue,
         pendingOrders,
         fulfilledOrders
       };
+      
+      console.log('[useOrderAnalytics] Final result:', result);
+      return result;
+      } catch (error) {
+        console.error('[useOrderAnalytics] Error:', error);
+        throw error;
+      }
     },
     refetchInterval: 60000, // Refetch every minute
   });
