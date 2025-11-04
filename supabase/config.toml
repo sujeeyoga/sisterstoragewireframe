@@ -62,3 +62,6 @@ verify_jwt = true
 
 [functions.chitchats-shipping]
 verify_jwt = false
+
+[functions.add-first-sister-story]
+verify_jwt = false
