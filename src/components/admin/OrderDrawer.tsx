@@ -433,16 +433,27 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
               {shippingInfo.rateDetails && (
                 <div className="pt-3 border-t space-y-2">
                   <Label className="text-xs text-muted-foreground">Current Rate Method</Label>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="font-medium">{shippingInfo.rateDetails.methodName}</div>
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1 min-w-0 pr-2">
+                      <div className="font-medium break-words">
+                        {shippingInfo.rateDetails.methodName}
+                      </div>
                       {shippingInfo.rateDetails.source && (
                         <div className="text-xs text-muted-foreground mt-1">
-                          Source: {shippingInfo.rateDetails.source === 'stallion' ? 'Stallion API (CAD)' : 'Database'}
+                          Source: {shippingInfo.rateDetails.source === 'stallion'
+                            ? 'Stallion API (CAD)'
+                            : shippingInfo.rateDetails.source === 'chitchats'
+                              ? 'Chit Chats API (USD)'
+                              : 'Database'}
+                        </div>
+                      )}
+                      {((shippingInfo.rateDetails as any)?.delivery_estimate) && (
+                        <div className="text-xs text-muted-foreground mt-1">
+                          {(shippingInfo.rateDetails as any).delivery_estimate}
                         </div>
                       )}
                     </div>
-                    <div className="text-lg font-bold">
+                    <div className="text-lg font-bold shrink-0 text-right">
                       {shippingInfo.rateDetails.isFree ? (
                         <span className="text-green-600 dark:text-green-400">FREE</span>
                       ) : (
