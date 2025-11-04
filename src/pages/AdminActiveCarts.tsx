@@ -27,7 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ArrowLeft, Download, RefreshCw, ShoppingCart, DollarSign, Clock } from "lucide-react";
+import { ArrowLeft, Download, RefreshCw, ShoppingCart, DollarSign, Clock, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
 
@@ -58,6 +58,8 @@ const AdminActiveCarts = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [valueFilter, setValueFilter] = useState<string>("all");
   const [timeFilter, setTimeFilter] = useState<string>("all");
+  const [sortColumn, setSortColumn] = useState<string>("last_updated");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
 
   // Fetch active carts with visitor location data
   const { data: activeCarts = [], isLoading, refetch } = useQuery({
@@ -114,8 +116,55 @@ const AdminActiveCarts = () => {
     refetchInterval: 30000, // Refresh every 30 seconds
   });
 
+  // Sort carts
+  const sortedCarts = [...activeCarts].sort((a, b) => {
+    let aValue: any;
+    let bValue: any;
+
+    switch (sortColumn) {
+      case "email":
+        aValue = a.email || "";
+        bValue = b.email || "";
+        break;
+      case "items":
+        aValue = a.cart_items.length;
+        bValue = b.cart_items.length;
+        break;
+      case "subtotal":
+        aValue = Number(a.subtotal);
+        bValue = Number(b.subtotal);
+        break;
+      case "last_updated":
+        aValue = new Date(a.last_updated).getTime();
+        bValue = new Date(b.last_updated).getTime();
+        break;
+      default:
+        return 0;
+    }
+
+    if (aValue < bValue) return sortDirection === "asc" ? -1 : 1;
+    if (aValue > bValue) return sortDirection === "asc" ? 1 : -1;
+    return 0;
+  });
+
   const totalValue = activeCarts.reduce((sum, cart) => sum + Number(cart.subtotal), 0);
   const activeCount = activeCarts.length;
+
+  const handleSort = (column: string) => {
+    if (sortColumn === column) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      setSortColumn(column);
+      setSortDirection("asc");
+    }
+  };
+
+  const SortIcon = ({ column }: { column: string }) => {
+    if (sortColumn !== column) return <ArrowUpDown className="h-4 w-4 ml-1 opacity-50" />;
+    return sortDirection === "asc" 
+      ? <ArrowUp className="h-4 w-4 ml-1" />
+      : <ArrowDown className="h-4 w-4 ml-1" />;
+  };
 
   const handleExportCSV = () => {
     const headers = ["Email", "Items Count", "Subtotal", "Location", "Last Updated", "Created"];
@@ -261,16 +310,48 @@ const AdminActiveCarts = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Shopper</TableHead>
-                    <TableHead>Items</TableHead>
-                    <TableHead>Cart Value</TableHead>
+                    <TableHead 
+                      className="cursor-pointer select-none hover:bg-muted/50"
+                      onClick={() => handleSort("email")}
+                    >
+                      <div className="flex items-center">
+                        Shopper
+                        <SortIcon column="email" />
+                      </div>
+                    </TableHead>
+                    <TableHead 
+                      className="cursor-pointer select-none hover:bg-muted/50"
+                      onClick={() => handleSort("items")}
+                    >
+                      <div className="flex items-center">
+                        Items
+                        <SortIcon column="items" />
+                      </div>
+                    </TableHead>
+                    <TableHead 
+                      className="cursor-pointer select-none hover:bg-muted/50"
+                      onClick={() => handleSort("subtotal")}
+                    >
+                      <div className="flex items-center">
+                        Cart Value
+                        <SortIcon column="subtotal" />
+                      </div>
+                    </TableHead>
                     <TableHead>Location</TableHead>
-                    <TableHead>Last Activity</TableHead>
+                    <TableHead 
+                      className="cursor-pointer select-none hover:bg-muted/50"
+                      onClick={() => handleSort("last_updated")}
+                    >
+                      <div className="flex items-center">
+                        Last Activity
+                        <SortIcon column="last_updated" />
+                      </div>
+                    </TableHead>
                     <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {activeCarts.map((cart) => (
+                  {sortedCarts.map((cart) => (
                     <TableRow key={cart.id}>
                       <TableCell>
                         {cart.email || (
