@@ -56,7 +56,7 @@ const ProductImage = ({ images, color, name }: ProductImageProps) => {
       
       {/* Thumbnail Images */}
       {images.length > 1 && (
-        <div className="grid grid-cols-5 gap-2">
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2 sm:gap-3">
           {images.map((image, index) => (
             <button
               key={index}
@@ -64,9 +64,11 @@ const ProductImage = ({ images, color, name }: ProductImageProps) => {
                 console.log('[ProductImage] Thumbnail clicked:', index);
                 setSelectedImage(index);
               }}
-              className={`rounded-[1.5rem] overflow-hidden aspect-square border-2 transition-all relative cursor-pointer hover:scale-105 ${
+              type="button"
+              aria-label={`View image ${index + 1}`}
+              className={`rounded-[1.5rem] overflow-hidden aspect-square border-2 transition-all relative cursor-pointer active:scale-95 min-h-[72px] sm:min-h-[80px] ${
                 selectedImage === index 
-                  ? 'border-primary ring-2 ring-primary/20' 
+                  ? 'border-primary ring-2 ring-primary/20 scale-105' 
                   : 'border-transparent hover:border-gray-300'
               }`}
             >
