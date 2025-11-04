@@ -3,12 +3,13 @@ import { useAbandonedCartAnalytics } from '@/hooks/useAbandonedCartAnalytics';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { subDays } from 'date-fns';
+import { useMemo } from 'react';
 
 export function OrdersAnalyticsSummary() {
-  const dateRange = {
+  const dateRange = useMemo(() => ({
     start: subDays(new Date(), 30),
     end: new Date()
-  };
+  }), []);
 
   const { data: orderData, isLoading: orderLoading, error: orderError } = useOrderAnalytics(dateRange);
   const { data: cartData, isLoading: cartLoading, error: cartError } = useAbandonedCartAnalytics(dateRange);
