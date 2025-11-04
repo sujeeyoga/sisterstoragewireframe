@@ -134,6 +134,10 @@ const AdminActiveCarts = () => {
         aValue = Number(a.subtotal);
         bValue = Number(b.subtotal);
         break;
+      case "location":
+        aValue = a.city && a.country ? `${a.city}, ${a.country}` : a.country || "";
+        bValue = b.city && b.country ? `${b.city}, ${b.country}` : b.country || "";
+        break;
       case "last_updated":
         aValue = new Date(a.last_updated).getTime();
         bValue = new Date(b.last_updated).getTime();
@@ -337,7 +341,15 @@ const AdminActiveCarts = () => {
                         <SortIcon column="subtotal" />
                       </div>
                     </TableHead>
-                    <TableHead>Location</TableHead>
+                    <TableHead 
+                      className="cursor-pointer select-none hover:bg-muted/50"
+                      onClick={() => handleSort("location")}
+                    >
+                      <div className="flex items-center">
+                        Location
+                        <SortIcon column="location" />
+                      </div>
+                    </TableHead>
                     <TableHead 
                       className="cursor-pointer select-none hover:bg-muted/50"
                       onClick={() => handleSort("last_updated")}
