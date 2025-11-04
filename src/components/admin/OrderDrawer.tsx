@@ -314,7 +314,12 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
               </div>
               <div className="text-2xl font-bold text-primary">
                 {(() => {
-                  // Find the shipping item
+                  // Check if shipping is in a dedicated column (Stripe orders from orders table)
+                  if ((order as any).shipping !== undefined && (order as any).shipping !== null) {
+                    return `$${Number((order as any).shipping).toFixed(2)} ${order.currency || 'USD'}`;
+                  }
+                  
+                  // Otherwise, find shipping item in line_items (WooCommerce orders)
                   const shippingItem = order.line_items?.find((item: any) => 
                     item.name?.toLowerCase().includes('shipping') ||
                     item.name?.toLowerCase().includes('chit chats') ||
@@ -339,16 +344,22 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
               <div className="flex items-center justify-between">
                 <Label className="text-xs text-muted-foreground">Current Rate (for reference)</Label>
                 {(() => {
-                  // Find the shipping item
-                  const shippingItem = order.line_items?.find((item: any) => 
-                    item.name?.toLowerCase().includes('shipping') ||
-                    item.name?.toLowerCase().includes('chit chats') ||
-                    item.name?.toLowerCase().includes('stallion')
-                  );
+                  // Check if shipping is in a dedicated column (Stripe orders)
+                  let actualShipping = 0;
+                  if ((order as any).shipping !== undefined && (order as any).shipping !== null) {
+                    actualShipping = Number((order as any).shipping);
+                  } else {
+                    // Otherwise, find shipping item in line_items (WooCommerce orders)
+                    const shippingItem = order.line_items?.find((item: any) => 
+                      item.name?.toLowerCase().includes('shipping') ||
+                      item.name?.toLowerCase().includes('chit chats') ||
+                      item.name?.toLowerCase().includes('stallion')
+                    );
+                    actualShipping = shippingItem 
+                      ? (shippingItem.quantity * shippingItem.price)
+                      : 0;
+                  }
                   
-                  const actualShipping = shippingItem 
-                    ? (shippingItem.quantity * shippingItem.price)
-                    : 0;
                   const currentRate = shippingInfo.rateDetails?.rateAmount || 0;
                   const difference = Math.abs(currentRate - actualShipping);
                   
