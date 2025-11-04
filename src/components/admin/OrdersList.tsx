@@ -11,7 +11,8 @@ import { BulkFulfillmentDialog } from './BulkFulfillmentDialog';
 import { OrdersAnalyticsSummary } from './OrdersAnalyticsSummary';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
-import { Package, RotateCcw } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Package, RotateCcw, ArrowUpDown } from 'lucide-react';
 import {
   Pagination,
   PaginationContent,
@@ -504,7 +505,7 @@ export function OrdersList() {
         <OrdersAnalyticsSummary />
       </div>
       
-      <div className={`p-4 ${viewMode === 'list' ? 'grid grid-cols-1 gap-4' : 'grid grid-cols-1 md:grid-cols-2 gap-4'}`}>
+      <div className={`p-4 ${viewMode === 'list' ? '' : 'grid grid-cols-1 md:grid-cols-2 gap-4'}`}>
         {!orders?.orders || orders.orders.length === 0 ? (
           <div className="py-12 text-center space-y-4">
             <Package className="h-16 w-16 mx-auto text-muted-foreground/50" />
@@ -529,8 +530,101 @@ export function OrdersList() {
               </Button>
             )}
           </div>
+        ) : viewMode === 'list' ? (
+          <div className="border rounded-lg overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-muted/50 border-b">
+                  <tr>
+                    {selectionMode && (
+                      <th className="px-4 py-3 text-left w-12"></th>
+                    )}
+                    <th 
+                      className="px-4 py-3 text-left text-xs font-medium cursor-pointer hover:bg-muted/70 transition-colors"
+                      onClick={() => setFilters(f => ({ ...f, sortBy: f.sortBy === 'newest' ? 'oldest' : 'newest' }))}
+                    >
+                      <div className="flex items-center gap-2">
+                        Date
+                        <ArrowUpDown className="h-3 w-3" />
+                      </div>
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium">Order #</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium">Customer</th>
+                    <th 
+                      className="px-4 py-3 text-right text-xs font-medium cursor-pointer hover:bg-muted/70 transition-colors"
+                      onClick={() => setFilters(f => ({ ...f, sortBy: f.sortBy === 'amount_high' ? 'amount_low' : 'amount_high' }))}
+                    >
+                      <div className="flex items-center justify-end gap-2">
+                        Total
+                        <ArrowUpDown className="h-3 w-3" />
+                      </div>
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium">Status</th>
+                    <th className="px-4 py-3 text-right text-xs font-medium w-12"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {orders.orders.map((order) => (
+                    <tr 
+                      key={order.id} 
+                      className="border-b hover:bg-muted/30 transition-colors cursor-pointer"
+                      onClick={() => !selectionMode && setSelectedOrder(order)}
+                    >
+                      {selectionMode && (
+                        <td className="px-4 py-3">
+                          <input
+                            type="checkbox"
+                            checked={selectedOrderIds.has(order.id)}
+                            onChange={(e) => {
+                              e.stopPropagation();
+                              handleSelectOrder(order.id, e.target.checked);
+                            }}
+                            className="rounded"
+                          />
+                        </td>
+                      )}
+                      <td className="px-4 py-3 text-sm">
+                        {new Date(order.date_created).toLocaleDateString()}
+                      </td>
+                      <td className="px-4 py-3 text-sm font-medium">
+                        {order.order_number || `#${order.id}`}
+                      </td>
+                      <td className="px-4 py-3 text-sm">
+                        {order.billing?.first_name || order.billing?.email || 'Guest'}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-right font-medium">
+                        ${Number(order.total).toFixed(2)}
+                      </td>
+                      <td className="px-4 py-3">
+                        <Badge variant={
+                          order.status === 'completed' ? 'default' :
+                          order.status === 'processing' || order.status === 'pending' ? 'secondary' :
+                          order.status === 'refunded' ? 'outline' :
+                          'destructive'
+                        }>
+                          {order.status}
+                        </Badge>
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedOrder(order);
+                          }}
+                        >
+                          View
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         ) : (
-          orders.orders.map((order) => (
+          <>{orders.orders.map((order) => (
              <OrderCard
               key={order.id}
               order={order}
@@ -566,9 +660,9 @@ export function OrdersList() {
                     description: 'Tap cards to select more orders'
                   });
                 }
-              }}
+               }}
             />
-          ))
+          ))}</>
         )}
         
         {/* Pagination */}
