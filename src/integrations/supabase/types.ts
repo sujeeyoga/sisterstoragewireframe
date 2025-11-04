@@ -50,6 +50,42 @@ export type Database = {
         }
         Relationships: []
       }
+      active_carts: {
+        Row: {
+          cart_items: Json
+          converted_at: string | null
+          created_at: string
+          email: string | null
+          id: string
+          last_updated: string
+          session_id: string
+          subtotal: number
+          visitor_id: string | null
+        }
+        Insert: {
+          cart_items?: Json
+          converted_at?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          last_updated?: string
+          session_id: string
+          subtotal?: number
+          visitor_id?: string | null
+        }
+        Update: {
+          cart_items?: Json
+          converted_at?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          last_updated?: string
+          session_id?: string
+          subtotal?: number
+          visitor_id?: string | null
+        }
+        Relationships: []
+      }
       hero_images: {
         Row: {
           alt_text: string | null
@@ -1019,6 +1055,7 @@ export type Database = {
     }
     Functions: {
       add_admin_by_email: { Args: { user_email: string }; Returns: Json }
+      cleanup_old_active_carts: { Args: never; Returns: undefined }
       delete_old_visitor_analytics: { Args: never; Returns: undefined }
       get_admin_users: {
         Args: never

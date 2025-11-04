@@ -4,6 +4,7 @@ import BaseLayout from "@/components/layout/BaseLayout";
 import { Button } from "@/components/ui/button";
 import { CheckCircle } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
+import { supabase } from "@/integrations/supabase/client";
 
 const PaymentSuccess = () => {
   const navigate = useNavigate();
@@ -12,8 +13,27 @@ const PaymentSuccess = () => {
   const { clearCart } = useCart();
 
   useEffect(() => {
-    // Clear cart on successful payment
-    clearCart();
+    const markCartAsConverted = async () => {
+      // Get session ID from localStorage
+      const sessionId = localStorage.getItem("visitor_session_id");
+      
+      if (sessionId) {
+        // Mark the active cart as converted
+        try {
+          await supabase
+            .from("active_carts")
+            .update({ converted_at: new Date().toISOString() })
+            .eq("session_id", sessionId);
+        } catch (error) {
+          console.error("Error marking cart as converted:", error);
+        }
+      }
+      
+      // Clear cart after marking as converted
+      clearCart();
+    };
+    
+    markCartAsConverted();
   }, [clearCart]);
 
   return (

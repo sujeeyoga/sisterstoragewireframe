@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, TrendingUp, Package, Users, Calendar, Globe, Target } from 'lucide-react';
+import { ShoppingCart, TrendingUp, Package, Users, Calendar, Globe, Target, ShoppingBag } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -12,6 +12,7 @@ import { useAbandonedCartAnalytics } from '@/hooks/useAbandonedCartAnalytics';
 import { useOrderAnalytics } from '@/hooks/useOrderAnalytics';
 import { useOrderTimeSeriesAnalytics } from '@/hooks/useOrderTimeSeriesAnalytics';
 import { useAbandonedCartTimeSeriesAnalytics } from '@/hooks/useAbandonedCartTimeSeriesAnalytics';
+import { useActiveCartAnalytics } from '@/hooks/useActiveCartAnalytics';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Area, AreaChart, ComposedChart } from 'recharts';
 
 const AdminAnalytics = () => {
@@ -70,6 +71,7 @@ const AdminAnalytics = () => {
   const { data: orderData, isLoading: isLoadingOrders } = useOrderAnalytics(dateRangeValues);
   const { data: orderTimeSeries } = useOrderTimeSeriesAnalytics(revenueChartDateRange);
   const { data: abandonedCartTimeSeries } = useAbandonedCartTimeSeriesAnalytics(dateRangeValues);
+  const { data: activeCartData, isLoading: isLoadingActiveCarts } = useActiveCartAnalytics();
 
   const reportCards = [
     {
@@ -100,6 +102,17 @@ const AdminAnalytics = () => {
       link: '/admin/analytics/abandoned-checkouts',
       color: 'text-amber-500',
       bgColor: 'bg-amber-50',
+    },
+    {
+      title: 'Active Carts',
+      description: 'Real-time shoppers with items in cart',
+      icon: ShoppingBag,
+      stats: isLoadingActiveCarts 
+        ? 'Loading...' 
+        : `${activeCartData?.totalCarts || 0} shoppers | $${(activeCartData?.totalValue || 0).toFixed(2)} value`,
+      link: '/admin/analytics/active-carts',
+      color: 'text-pink-500',
+      bgColor: 'bg-pink-50',
     },
     {
       title: 'Sales Reports',

@@ -7,6 +7,7 @@ import Logo from '@/components/ui/Logo';
 import { useStoreDiscount } from '@/hooks/useStoreDiscount';
 import { useLocationDetection } from '@/hooks/useLocationDetection';
 import { useShippingZones } from '@/hooks/useShippingZones';
+import { useActiveCartTracking } from '@/hooks/useActiveCartTracking';
 
 const CartDrawer = () => {
   const { items, removeItem, updateQuantity, totalItems, subtotal, isOpen, setIsOpen } = useCart();
@@ -20,6 +21,9 @@ const CartDrawer = () => {
   const { calculateShipping } = useShippingZones();
   const [estimatedShipping, setEstimatedShipping] = useState<number | null>(null);
   const [shippingLoading, setShippingLoading] = useState(false);
+  
+  // Track active cart in real-time
+  useActiveCartTracking(items, subtotal);
   
   // Hide floating button when cart is open or on checkout page or admin pages
   const shouldHideFloatingButton = isOpen || location.pathname === '/checkout' || location.pathname.startsWith('/admin');
