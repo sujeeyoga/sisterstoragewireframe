@@ -171,6 +171,30 @@ export const SisterStoriesManager = () => {
     }
   };
 
+  const handleAddAsFirst = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('add-first-sister-story', {
+        body: { 
+          videoPath: '/lovable-uploads/sister-story-new.mp4',
+          title: 'New Sister Story',
+          author: '@shawtysin',
+          description: 'Latest sister story featuring our organization solutions'
+        }
+      });
+
+      if (error) throw error;
+
+      toast({ title: 'Video added as first sister story successfully' });
+      fetchStories();
+    } catch (error: any) {
+      toast({
+        title: 'Error adding story',
+        description: error.message,
+        variant: 'destructive',
+      });
+    }
+  };
+
   const resetForm = () => {
     setEditingStory(null);
     setFormData({
@@ -194,127 +218,135 @@ export const SisterStoriesManager = () => {
             Manage videos displayed in the Sister Stories carousel
           </p>
         </div>
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button onClick={() => resetForm()}>
-              <Plus className="h-4 w-4 mr-2" />
-              Add Story
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>
-                {editingStory ? 'Edit Story' : 'Add New Story'}
-              </DialogTitle>
-            </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <Label htmlFor="title">Title *</Label>
-                <Input
-                  id="title"
-                  value={formData.title}
-                  onChange={(e) =>
-                    setFormData({ ...formData, title: e.target.value })
-                  }
-                  required
-                />
-              </div>
+        <div className="flex gap-2">
+          <Button 
+            variant="outline"
+            onClick={handleAddAsFirst}
+          >
+            Add New Video as First
+          </Button>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button onClick={() => resetForm()}>
+                <Plus className="h-4 w-4 mr-2" />
+                Add Story
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>
+                  {editingStory ? 'Edit Story' : 'Add New Story'}
+                </DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <Label htmlFor="title">Title *</Label>
+                  <Input
+                    id="title"
+                    value={formData.title}
+                    onChange={(e) =>
+                      setFormData({ ...formData, title: e.target.value })
+                    }
+                    required
+                  />
+                </div>
 
-              <div>
-                <Label htmlFor="author">Author *</Label>
-                <Input
-                  id="author"
-                  value={formData.author}
-                  onChange={(e) =>
-                    setFormData({ ...formData, author: e.target.value })
-                  }
-                  placeholder="@username"
-                  required
-                />
-              </div>
+                <div>
+                  <Label htmlFor="author">Author *</Label>
+                  <Input
+                    id="author"
+                    value={formData.author}
+                    onChange={(e) =>
+                      setFormData({ ...formData, author: e.target.value })
+                    }
+                    placeholder="@username"
+                    required
+                  />
+                </div>
 
-              <div>
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  value={formData.description}
-                  onChange={(e) =>
-                    setFormData({ ...formData, description: e.target.value })
-                  }
-                  rows={3}
-                />
-              </div>
+                <div>
+                  <Label htmlFor="description">Description</Label>
+                  <Textarea
+                    id="description"
+                    value={formData.description}
+                    onChange={(e) =>
+                      setFormData({ ...formData, description: e.target.value })
+                    }
+                    rows={3}
+                  />
+                </div>
 
-              <div>
-                <Label htmlFor="video_url">Video URL *</Label>
-                <Input
-                  id="video_url"
-                  value={formData.video_url}
-                  onChange={(e) =>
-                    setFormData({ ...formData, video_url: e.target.value })
-                  }
-                  placeholder="https://..."
-                  required
-                />
-                <p className="text-xs text-muted-foreground mt-1">
-                  Use videos from the Videos library or sister storage bucket
-                </p>
-              </div>
+                <div>
+                  <Label htmlFor="video_url">Video URL *</Label>
+                  <Input
+                    id="video_url"
+                    value={formData.video_url}
+                    onChange={(e) =>
+                      setFormData({ ...formData, video_url: e.target.value })
+                    }
+                    placeholder="https://..."
+                    required
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Use videos from the Videos library or sister storage bucket
+                  </p>
+                </div>
 
-              <div>
-                <Label htmlFor="video_path">Video Path *</Label>
-                <Input
-                  id="video_path"
-                  value={formData.video_path}
-                  onChange={(e) =>
-                    setFormData({ ...formData, video_path: e.target.value })
-                  }
-                  placeholder="filename.mp4"
-                  required
-                />
-              </div>
+                <div>
+                  <Label htmlFor="video_path">Video Path *</Label>
+                  <Input
+                    id="video_path"
+                    value={formData.video_path}
+                    onChange={(e) =>
+                      setFormData({ ...formData, video_path: e.target.value })
+                    }
+                    placeholder="filename.mp4"
+                    required
+                  />
+                </div>
 
-              <div>
-                <Label htmlFor="display_order">Display Order</Label>
-                <Input
-                  id="display_order"
-                  type="number"
-                  value={formData.display_order}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      display_order: parseInt(e.target.value) || 0,
-                    })
-                  }
-                />
-              </div>
+                <div>
+                  <Label htmlFor="display_order">Display Order</Label>
+                  <Input
+                    id="display_order"
+                    type="number"
+                    value={formData.display_order}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        display_order: parseInt(e.target.value) || 0,
+                      })
+                    }
+                  />
+                </div>
 
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="is_active"
-                  checked={formData.is_active}
-                  onCheckedChange={(checked) =>
-                    setFormData({ ...formData, is_active: checked })
-                  }
-                />
-                <Label htmlFor="is_active">Active (visible on website)</Label>
-              </div>
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="is_active"
+                    checked={formData.is_active}
+                    onCheckedChange={(checked) =>
+                      setFormData({ ...formData, is_active: checked })
+                    }
+                  />
+                  <Label htmlFor="is_active">Active (visible on website)</Label>
+                </div>
 
-              <div className="flex gap-2 pt-4">
-                <Button type="submit" className="flex-1">
-                  {editingStory ? 'Update' : 'Create'} Story
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={resetForm}
-                >
-                  Cancel
-                </Button>
-              </div>
-            </form>
-          </DialogContent>
-        </Dialog>
+                <div className="flex gap-2 pt-4">
+                  <Button type="submit" className="flex-1">
+                    {editingStory ? 'Update' : 'Create'} Story
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={resetForm}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </form>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
       {/* Stories List */}
