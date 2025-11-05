@@ -25,8 +25,9 @@ export function OrdersAnalyticsSummary() {
 
   const awaitingFulfillment = (orderData?.pendingOrders || 0);
   
-  const REVENUE_TARGET = 100000; // $100k goal
   const currentRevenue = orderData?.totalRevenue || 0;
+  // Dynamic goal: $10k first, then $100k after hitting first goal
+  const REVENUE_TARGET = currentRevenue >= 10000 ? 100000 : 10000;
   const progressPercentage = Math.min((currentRevenue / REVENUE_TARGET) * 100, 100);
 
   if (orderLoading || cartLoading || activeCartLoading) {
