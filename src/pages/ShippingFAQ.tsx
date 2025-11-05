@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Package, Truck, Globe, MapPin, Clock, DollarSign, Shield, HelpCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { SEO } from '@/components/SEO';
 
 const ShippingFAQ = () => {
   const [activeCategory, setActiveCategory] = useState<string>('all');
@@ -99,8 +100,29 @@ const ShippingFAQ = () => {
     ? faqs 
     : faqs.filter(faq => faq.category === activeCategory);
 
+  const faqStructuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map(faq => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: faq.answer
+      }
+    }))
+  };
+
   return (
     <Layout>
+      <SEO
+        title="Shipping FAQ | Sister Storage – Canada, USA & UK Delivery Information"
+        description="Find answers to all your shipping questions. Sister Storage ships to Canada, USA, and UK with tracking. Free shipping over $50 CAD (GTA) or $200 CAD (International)."
+        keywords="sister storage shipping, canada shipping, usa shipping, uk shipping, international delivery, free shipping, bangle organizer delivery, jewelry box shipping rates"
+        url="/shipping-faq"
+        type="article"
+        structuredData={faqStructuredData}
+      />
       <div className="min-h-screen bg-gradient-to-b from-background to-background/95">
         {/* Header */}
         <div className="bg-primary/5 border-b">
