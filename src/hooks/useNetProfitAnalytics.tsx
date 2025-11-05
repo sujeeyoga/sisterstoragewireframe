@@ -38,8 +38,8 @@ export const useNetProfitAnalytics = (dateRange: DateRange) => {
       const { data: wooOrders, error: wooError } = await supabase
         .from("woocommerce_orders")
         .select("*")
-        .gte("created_at", startDate)
-        .lte("created_at", endDate);
+        .gte("date_created", startDate)
+        .lte("date_created", endDate);
 
       if (wooError) throw wooError;
 
