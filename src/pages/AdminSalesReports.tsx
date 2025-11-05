@@ -8,7 +8,8 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { subDays } from 'date-fns';
 import { useOrderAnalytics } from '@/hooks/useOrderAnalytics';
 import { useOrderTimeSeriesAnalytics } from '@/hooks/useOrderTimeSeriesAnalytics';
-import { ResponsiveContainer, ComposedChart, Line, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell } from 'recharts';
+import { useProductProfitAnalytics } from '@/hooks/useProductProfitAnalytics';
+import { ResponsiveContainer, ComposedChart, Line, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell, BarChart } from 'recharts';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -26,6 +27,7 @@ const AdminSalesReports = () => {
 
   const { data: orderData, isLoading: isLoadingOrders } = useOrderAnalytics(dateRangeValues);
   const { data: orderTimeSeries } = useOrderTimeSeriesAnalytics(dateRangeValues);
+  const { data: profitData, isLoading: isLoadingProfit } = useProductProfitAnalytics(dateRangeValues);
 
   // Fetch sales by product
   const { data: productSales } = useQuery({
@@ -153,6 +155,12 @@ const AdminSalesReports = () => {
     setIsCustomerDialogOpen(true);
   };
 
+  const getProfitMarginColor = (margin: number) => {
+    if (margin > 30) return 'text-green-600';
+    if (margin >= 15) return 'text-amber-600';
+    return 'text-red-600';
+  };
+
   const COLORS = ['hsl(var(--primary))', 'hsl(var(--secondary))', 'hsl(var(--accent))', '#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#00C49F', '#FFBB28', '#FF8042'];
 
   return (
@@ -245,6 +253,21 @@ const AdminSalesReports = () => {
             </p>
           </CardContent>
         </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Avg Profit Margin</CardTitle>
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className={`text-2xl font-bold ${isLoadingProfit ? '' : getProfitMarginColor(profitData?.averageProfitMargin || 0)}`}>
+              {isLoadingProfit ? '...' : `${(profitData?.averageProfitMargin || 0).toFixed(1)}%`}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Across all products
+            </p>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Charts */}
@@ -287,16 +310,16 @@ const AdminSalesReports = () => {
           </CardContent>
         </Card>
 
-        {/* Top Products by Revenue */}
+        {/* Top Products by Revenue with Profit Margin */}
         <Card>
           <CardHeader>
             <CardTitle>Top Products by Revenue</CardTitle>
-            <CardDescription>Best performing products</CardDescription>
+            <CardDescription>Best performing products with profit margins</CardDescription>
           </CardHeader>
           <CardContent>
-            {productSales && productSales.length > 0 ? (
+            {profitData && profitData.products.length > 0 ? (
               <div className="space-y-4">
-                {productSales.slice(0, 5).map((product, index) => (
+                {profitData.products.slice(0, 5).map((product, index) => (
                   <div 
                     key={index} 
                     className="flex items-center justify-between p-2 rounded-lg hover:bg-accent/50 cursor-pointer transition-colors"
@@ -304,15 +327,64 @@ const AdminSalesReports = () => {
                   >
                     <div className="flex-1">
                       <p className="font-medium text-sm truncate">{product.name}</p>
-                      <p className="text-xs text-muted-foreground">{product.quantity} units sold</p>
+                      <p className="text-xs text-muted-foreground">
+                        {product.quantity} units • <span className={getProfitMarginColor(product.profitMargin)}>{product.profitMargin.toFixed(1)}% margin</span>
+                      </p>
                     </div>
-                    <p className="font-bold">${product.revenue.toFixed(2)}</p>
+                    <div className="text-right">
+                      <p className="font-bold">${product.revenue.toFixed(2)}</p>
+                      <p className="text-xs text-muted-foreground">${product.profit.toFixed(2)} profit</p>
+                    </div>
                   </div>
                 ))}
               </div>
             ) : (
               <div className="h-[200px] flex items-center justify-center text-muted-foreground">
-                No product data
+                {isLoadingProfit ? 'Loading...' : 'No product data'}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Profit Margin by Product */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Profit Margin by Product</CardTitle>
+            <CardDescription>Top 5 products by margin percentage</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {profitData && profitData.products.length > 0 ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={profitData.products.slice(0, 5)}>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                  <XAxis 
+                    dataKey="name" 
+                    className="text-xs"
+                    angle={-45}
+                    textAnchor="end"
+                    height={100}
+                    tickFormatter={(value) => value.length > 15 ? value.substring(0, 15) + '...' : value}
+                  />
+                  <YAxis className="text-xs" label={{ value: 'Margin %', angle: -90, position: 'insideLeft' }} />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'hsl(var(--background))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '8px'
+                    }}
+                    formatter={(value: number) => `${value.toFixed(1)}%`}
+                  />
+                  <Bar 
+                    dataKey="profitMargin" 
+                    fill="hsl(var(--primary))" 
+                    name="Profit Margin"
+                    radius={[8, 8, 0, 0]}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="h-[300px] flex items-center justify-center text-muted-foreground">
+                {isLoadingProfit ? 'Loading...' : 'No data available'}
               </div>
             )}
           </CardContent>

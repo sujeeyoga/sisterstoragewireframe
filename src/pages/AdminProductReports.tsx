@@ -9,6 +9,7 @@ import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Toolti
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Badge } from '@/components/ui/badge';
+import { useProductProfitAnalytics } from '@/hooks/useProductProfitAnalytics';
 
 const AdminProductReports = () => {
   const navigate = useNavigate();
@@ -19,6 +20,14 @@ const AdminProductReports = () => {
     const days = dateRange === '7d' ? 7 : dateRange === '30d' ? 30 : dateRange === '90d' ? 90 : dateRange === '6m' ? 180 : 365;
     return { start: subDays(end, days), end };
   }, [dateRange]);
+
+  const { data: profitData, isLoading: isLoadingProfit } = useProductProfitAnalytics(dateRangeValues);
+
+  const getProfitMarginColor = (margin: number) => {
+    if (margin > 30) return 'text-green-600';
+    if (margin >= 15) return 'text-amber-600';
+    return 'text-red-600';
+  };
 
   // Fetch product performance data from both WooCommerce and Stripe orders
   const { data: productPerformance, isLoading: isLoadingProducts } = useQuery({
@@ -183,24 +192,45 @@ const AdminProductReports = () => {
             </p>
           </CardContent>
         </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Most Profitable</CardTitle>
+            <Star className="h-4 w-4 text-amber-500" />
+          </CardHeader>
+          <CardContent>
+            {isLoadingProfit ? (
+              <div className="text-2xl font-bold">...</div>
+            ) : profitData?.mostProfitable ? (
+              <>
+                <div className="text-2xl font-bold">${profitData.mostProfitable.profit.toFixed(2)}</div>
+                <p className="text-xs text-muted-foreground truncate">
+                  {profitData.mostProfitable.name}
+                </p>
+              </>
+            ) : (
+              <div className="text-2xl font-bold">$0.00</div>
+            )}
+          </CardContent>
+        </Card>
       </div>
 
       {/* Charts and Data */}
       <div className="grid gap-6 lg:grid-cols-2">
-        {/* Top Sellers */}
+        {/* Top Sellers with Profit */}
         <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle>Top Selling Products</CardTitle>
-            <CardDescription>Products by units sold</CardDescription>
+            <CardDescription>Products by units sold with profit analysis</CardDescription>
           </CardHeader>
           <CardContent>
-            {isLoadingProducts ? (
+            {isLoadingProfit ? (
               <div className="h-[350px] flex items-center justify-center text-muted-foreground">
                 Loading product data...
               </div>
-            ) : topProducts.length > 0 ? (
+            ) : profitData && profitData.products.length > 0 ? (
               <ResponsiveContainer width="100%" height={350}>
-                <BarChart data={topProducts} layout="vertical">
+                <BarChart data={profitData.products.slice(0, 10)} layout="vertical">
                   <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
                   <XAxis type="number" className="text-xs" />
                   <YAxis 
@@ -216,14 +246,11 @@ const AdminProductReports = () => {
                       border: '1px solid hsl(var(--border))',
                       borderRadius: '8px'
                     }}
-                    formatter={(value: number, name: string) => {
-                      if (name === 'Units Sold') return [value, name];
-                      return [value, name];
-                    }}
                   />
                   <Legend />
                   <Bar dataKey="revenue" fill="hsl(var(--primary) / 0.3)" name="Revenue ($)" />
-                  <Bar dataKey="quantity" fill="hsl(var(--primary))" name="Units Sold" />
+                  <Bar dataKey="quantity" fill="hsl(var(--secondary))" name="Units Sold" />
+                  <Bar dataKey="profit" fill="hsl(var(--primary))" name="Profit ($)" />
                 </BarChart>
               </ResponsiveContainer>
             ) : (
@@ -271,21 +298,21 @@ const AdminProductReports = () => {
           </CardContent>
         </Card>
 
-        {/* Slow Movers */}
+        {/* Slow Movers with Profit Margin */}
         <Card>
           <CardHeader>
             <CardTitle>Slow Moving Products</CardTitle>
-            <CardDescription>Products with low sales</CardDescription>
+            <CardDescription>Products with low sales and margins</CardDescription>
           </CardHeader>
           <CardContent>
-            {slowMovers.length > 0 ? (
+            {profitData && profitData.products.length > 0 ? (
               <div className="space-y-3">
-                {slowMovers.map((product, index) => (
+                {profitData.products.slice(-5).reverse().map((product, index) => (
                   <div key={index} className="flex items-center justify-between">
                     <div className="flex-1">
                       <p className="font-medium text-sm truncate">{product.name}</p>
                       <p className="text-xs text-muted-foreground">
-                        {product.quantity} units in {product.orders} orders
+                        {product.quantity} units • <span className={getProfitMarginColor(product.profitMargin)}>{product.profitMargin.toFixed(1)}% margin</span>
                       </p>
                     </div>
                     <Badge variant="secondary" className="text-xs">
@@ -296,7 +323,7 @@ const AdminProductReports = () => {
               </div>
             ) : (
               <div className="h-[200px] flex items-center justify-center text-muted-foreground">
-                No data available
+                {isLoadingProfit ? 'Loading...' : 'No data available'}
               </div>
             )}
           </CardContent>
