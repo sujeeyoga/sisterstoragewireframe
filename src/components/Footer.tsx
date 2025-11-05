@@ -72,6 +72,7 @@ const Footer = () => {
                 {name: 'US SISTERS', link: '/about'},
                 {name: 'BUY', link: '/shop'},
                 {name: 'GIFT', link: '/gift'},
+                {name: 'Shipping FAQ', link: '/shipping-faq'},
                 {name: 'CONTACT', link: '/contact'}
               ].map((link) => (
                 <li key={link.name}>

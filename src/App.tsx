@@ -21,6 +21,7 @@ import TermsOfService from "./pages/TermsOfService";
 import Accessibility from "./pages/Accessibility";
 import Contact from "./pages/Contact";
 import Gift from "./pages/Gift";
+import ShippingFAQ from "./pages/ShippingFAQ";
 import Checkout from "./pages/Checkout";
 import OpenBox from "./pages/OpenBox";
 import QRCodeGenerator from "./pages/QRCodeGenerator";
@@ -95,6 +96,7 @@ const App = () => {
               <Route path="/privacy-policy" element={<ProtectedRoutes><PageTransition><PrivacyPolicy /></PageTransition></ProtectedRoutes>} />
               <Route path="/terms-of-service" element={<ProtectedRoutes><PageTransition><TermsOfService /></PageTransition></ProtectedRoutes>} />
               <Route path="/accessibility" element={<ProtectedRoutes><PageTransition><Accessibility /></PageTransition></ProtectedRoutes>} />
+              <Route path="/shipping-faq" element={<ProtectedRoutes><PageTransition><ShippingFAQ /></PageTransition></ProtectedRoutes>} />
               
               {/* Catch-all route */}
               <Route path="*" element={<ProtectedRoutes><PageTransition><NotFound /></PageTransition></ProtectedRoutes>} />
