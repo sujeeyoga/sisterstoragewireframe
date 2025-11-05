@@ -10,6 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Shield, Users, Key, Database, Mail, Truck, Plus, X, RefreshCw } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { BackfillPaymentIntents } from './BackfillPaymentIntents';
+import { SearchEnginePing } from './SearchEnginePing';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -658,6 +659,8 @@ export function AdminSettings() {
               </div>
             </CardContent>
           </Card>
+
+          <SearchEnginePing />
 
           <BackfillPaymentIntents />
         </TabsContent>
