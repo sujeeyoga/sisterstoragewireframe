@@ -347,18 +347,22 @@ Deno.serve(async (req) => {
       let applicableRates = [];
       let rateSource = 'database';
 
-      // For US zones, try to get real-time ChitChats rates
+      // For US or UK zones, try to get real-time ChitChats rates
       const isUSZone = address.country?.toUpperCase() === 'US' || 
                        matchedRule.rule_value?.toUpperCase() === 'US';
+      const isUKZone = address.country?.toUpperCase() === 'GB' || 
+                       address.country?.toUpperCase() === 'UK' ||
+                       matchedRule.rule_value?.toUpperCase() === 'GB';
 
-      if (isUSZone) {
-        console.log('US zone detected, fetching ChitChats rates with package info:', packageInfo);
+      if (isUSZone || isUKZone) {
+        const zoneLabel = isUSZone ? 'US' : 'UK';
+        console.log(`${zoneLabel} zone detected, fetching ChitChats rates with package info:`, packageInfo);
         const chitchatsData = await getChitChatsRates(address, supabase, packageInfo);
         
         if (chitchatsData?.success) {
           applicableRates = transformChitChatsRates(chitchatsData, subtotal);
           rateSource = 'chitchats';
-          console.log('Using ChitChats rates:', applicableRates);
+          console.log(`Using ChitChats rates for ${zoneLabel}:`, applicableRates);
         }
       }
 
@@ -376,6 +380,18 @@ Deno.serve(async (req) => {
             display_order: 0,
           }];
           rateSource = 'us_safety_fallback';
+        } else if (isUKZone) {
+          // UK fallback: Use database rates if ChitChats fails
+          console.log('⚠️ ChitChats API failed for UK - using database rates');
+          applicableRates = matchedZone.rates.map(rate => ({
+            id: rate.id,
+            method_name: rate.method_name,
+            rate_amount: rate.rate_amount,
+            is_free: false,
+            free_threshold: rate.free_threshold,
+            display_order: rate.display_order,
+          }));
+          rateSource = 'database';
         } else {
           // Non-US: use database rates
           console.log('Using database rates for non-US zone');

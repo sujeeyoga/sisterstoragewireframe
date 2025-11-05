@@ -206,7 +206,7 @@ export function ChitChatsFulfillmentDialog({ order, open, onClose, onSuccess }: 
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Truck className="h-5 w-5" />
-            Fulfill with ChitChats (US Shipping)
+            Fulfill with ChitChats International
           </DialogTitle>
           <DialogDescription>
             Order #{order.id}
@@ -280,7 +280,7 @@ export function ChitChatsFulfillmentDialog({ order, open, onClose, onSuccess }: 
 
             <Button onClick={handleGetRates} disabled={isLoading} className="w-full">
               {isLoading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
-              Get US Shipping Rates
+              Get International Shipping Rates
             </Button>
           </div>
         )}
@@ -290,7 +290,7 @@ export function ChitChatsFulfillmentDialog({ order, open, onClose, onSuccess }: 
             <div className="space-y-2">
               <Label className="text-base font-semibold">Select Shipping Method</Label>
               <p className="text-sm text-muted-foreground">
-                Choose the best shipping option for this US order
+                Choose the best shipping option for this international order
               </p>
             </div>
 
@@ -351,7 +351,7 @@ export function ChitChatsFulfillmentDialog({ order, open, onClose, onSuccess }: 
             <div className="text-center space-y-2">
               <h3 className="text-lg font-semibold">Shipment Created Successfully!</h3>
               <p className="text-muted-foreground">
-                Your US shipping label is ready to print
+                Your international shipping label is ready to print
               </p>
             </div>
 
