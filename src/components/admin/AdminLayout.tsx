@@ -19,9 +19,8 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
             <SidebarTrigger className="mr-1">
               <Menu className="h-5 w-5" />
             </SidebarTrigger>
-            <Logo size="sm" />
-            <Link to="/admin" className="ml-2">
-              <h1 className="text-lg font-semibold hover:text-primary transition-colors cursor-pointer">Admin Dashboard</h1>
+            <Link to="/admin">
+              <Logo size="sm" />
             </Link>
           </header>
           <main className="flex-1 overflow-auto pt-14 md:pt-0">
