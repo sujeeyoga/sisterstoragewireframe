@@ -18,7 +18,7 @@ const AdminProfitAnalytics = () => {
     end: new Date(),
   };
 
-  const { data: analytics, isLoading } = useNetProfitAnalytics(dateRangeValues);
+  const { data: analytics, isLoading, error } = useNetProfitAnalytics(dateRangeValues);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-CA", {
@@ -30,6 +30,8 @@ const AdminProfitAnalytics = () => {
   const formatPercentage = (value: number) => {
     return `${value >= 0 ? '+' : ''}${value.toFixed(1)}%`;
   };
+
+  console.log('AdminProfitAnalytics render:', { isLoading, hasData: !!analytics, analytics });
 
   if (isLoading) {
     return (
@@ -49,7 +51,25 @@ const AdminProfitAnalytics = () => {
     );
   }
 
-  if (!analytics) return null;
+  if (error) {
+    return (
+      <AdminLayout>
+        <div className="p-6">
+          <p className="text-destructive">Error loading analytics: {error.message}</p>
+        </div>
+      </AdminLayout>
+    );
+  }
+
+  if (!analytics) {
+    return (
+      <AdminLayout>
+        <div className="p-6">
+          <p className="text-muted-foreground">No analytics data available</p>
+        </div>
+      </AdminLayout>
+    );
+  }
 
   return (
     <AdminLayout>
