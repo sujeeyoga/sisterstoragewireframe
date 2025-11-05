@@ -4,7 +4,6 @@ import { useVisitorPresence } from '@/hooks/useVisitorPresence';
 import { useActiveCartAnalytics } from '@/hooks/useActiveCartAnalytics';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Progress } from '@/components/ui/progress';
 import { subDays } from 'date-fns';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -69,7 +68,12 @@ export function OrdersAnalyticsSummary() {
             <p className="text-sm text-muted-foreground">{progressPercentage.toFixed(1)}% complete</p>
           </div>
         </div>
-        <Progress value={progressPercentage} className="h-3" />
+        <div className="relative h-3 w-full overflow-hidden rounded-full bg-white border border-gray-200">
+          <div 
+            className="h-full bg-gradient-to-r from-green-400 to-green-600 transition-all duration-500 ease-out"
+            style={{ width: `${progressPercentage}%` }}
+          />
+        </div>
         <div className="flex justify-between mt-2 text-xs text-muted-foreground">
           <span>$0</span>
           <span>${(REVENUE_TARGET / 2).toLocaleString()}</span>
