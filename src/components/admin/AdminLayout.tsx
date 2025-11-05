@@ -15,7 +15,7 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
       <div className="min-h-screen flex w-full">
         <AdminSidebar />
         <div className="flex-1 flex flex-col">
-          <header className="h-14 border-b bg-background flex items-center px-4 fixed top-0 left-0 right-0 z-50 gap-3 md:sticky md:z-10">
+          <header className="h-14 border-b bg-background flex items-center px-4 fixed top-0 left-0 right-0 z-50 md:sticky md:z-10">
             <SidebarTrigger className="mr-1">
               <Menu className="h-5 w-5" />
             </SidebarTrigger>
