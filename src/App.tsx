@@ -30,6 +30,7 @@ import { CartProvider } from "./contexts/CartContext";
 import { AdminEditModeProvider } from "./contexts/AdminEditModeContext";
 import { EditModeToggle } from "./components/admin/EditModeToggle";
 import CartDrawer from "../src/components/CartDrawer";
+import { ExitIntentPopup } from "./components/cart/ExitIntentPopup";
 import OurStory from "./pages/OurStory";
 import Admin from "./pages/Admin";
 import PageTransition from "./components/layout/PageTransition";
@@ -69,6 +70,7 @@ const App = () => {
               <BrowserRouter>
                 <EditModeToggle />
                 <CartDrawer />
+                <ExitIntentPopup />
             <Routes>
               {/* Public routes - always accessible */}
               <Route path="/admin-setup" element={<AdminSetup />} />
