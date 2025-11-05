@@ -74,6 +74,18 @@ export const useNetProfitAnalytics = (dateRange: DateRange) => {
       const orderCount = allOrders.length;
       const avgProfitPerOrder = orderCount > 0 ? netProfit / orderCount : 0;
 
+      console.log('Profit Analytics Debug:', {
+        stripeOrdersCount: stripeOrders?.length || 0,
+        wooOrdersCount: wooOrders?.length || 0,
+        totalOrders: orderCount,
+        grossRevenue,
+        shippingCosts,
+        refunds,
+        netProfit,
+        profitMargin,
+        sampleOrder: allOrders[0]
+      });
+
       return {
         grossRevenue,
         shippingCosts,
