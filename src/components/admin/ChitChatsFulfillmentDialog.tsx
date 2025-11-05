@@ -42,9 +42,11 @@ export function ChitChatsFulfillmentDialog({ order, open, onClose, onSuccess }: 
   
   const [step, setStep] = useState<'package' | 'rates' | 'confirm'>('package');
   const [weight, setWeight] = useState('170'); // Default to Travel box weight in grams
+  const [weightUnit, setWeightUnit] = useState<'g' | 'lb'>('g');
   const [length, setLength] = useState('25');
   const [width, setWidth] = useState('20');
   const [height, setHeight] = useState('10');
+  const [dimensionUnit, setDimensionUnit] = useState<'cm' | 'in'>('cm');
   const [packageValue, setPackageValue] = useState('75');
   const [rates, setRates] = useState<ShippingRate[]>([]);
   const [selectedRate, setSelectedRate] = useState<string>('');
@@ -87,9 +89,11 @@ export function ChitChatsFulfillmentDialog({ order, open, onClose, onSuccess }: 
         phone: shippingAddr.phone || '',
       }, {
         weight: parseFloat(weight),
+        weightUnit,
         length: parseFloat(length),
         width: parseFloat(width),
         height: parseFloat(height),
+        dimensionUnit,
         packageValue: parseFloat(packageValue),
       });
 
@@ -123,9 +127,11 @@ export function ChitChatsFulfillmentDialog({ order, open, onClose, onSuccess }: 
         },
         {
           weight: parseFloat(weight),
+          weightUnit,
           length: parseFloat(length),
           width: parseFloat(width),
           height: parseFloat(height),
+          dimensionUnit,
           packageValue: parseFloat(packageValue),
         },
         {
@@ -221,20 +227,37 @@ export function ChitChatsFulfillmentDialog({ order, open, onClose, onSuccess }: 
                 Package Details
               </Label>
               <p className="text-sm text-muted-foreground">
-                Enter dimensions in cm and weight in grams
+                Enter package dimensions and weight
               </p>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="weight">Weight (grams)</Label>
-                <Input
-                  id="weight"
-                  type="number"
-                  value={weight}
-                  onChange={(e) => setWeight(e.target.value)}
-                  placeholder="170"
-                />
+                <Label htmlFor="weight">Weight</Label>
+                <div className="flex gap-2">
+                  <Input
+                    id="weight"
+                    type="number"
+                    value={weight}
+                    onChange={(e) => setWeight(e.target.value)}
+                    placeholder={weightUnit === 'g' ? '170' : '0.37'}
+                    className="flex-1"
+                  />
+                  <RadioGroup
+                    value={weightUnit}
+                    onValueChange={(v) => setWeightUnit(v as 'g' | 'lb')}
+                    className="flex gap-2"
+                  >
+                    <div className="flex items-center space-x-1">
+                      <RadioGroupItem value="g" id="weight-g" />
+                      <Label htmlFor="weight-g" className="cursor-pointer text-sm">g</Label>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <RadioGroupItem value="lb" id="weight-lb" />
+                      <Label htmlFor="weight-lb" className="cursor-pointer text-sm">lb</Label>
+                    </div>
+                  </RadioGroup>
+                </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="packageValue">Package Value (USD)</Label>
@@ -246,35 +269,57 @@ export function ChitChatsFulfillmentDialog({ order, open, onClose, onSuccess }: 
                   placeholder="75"
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="length">Length (cm)</Label>
-                <Input
-                  id="length"
-                  type="number"
-                  value={length}
-                  onChange={(e) => setLength(e.target.value)}
-                  placeholder="25"
-                />
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label>Dimensions</Label>
+                <RadioGroup
+                  value={dimensionUnit}
+                  onValueChange={(v) => setDimensionUnit(v as 'cm' | 'in')}
+                  className="flex gap-2"
+                >
+                  <div className="flex items-center space-x-1">
+                    <RadioGroupItem value="cm" id="dim-cm" />
+                    <Label htmlFor="dim-cm" className="cursor-pointer text-sm">cm</Label>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <RadioGroupItem value="in" id="dim-in" />
+                    <Label htmlFor="dim-in" className="cursor-pointer text-sm">in</Label>
+                  </div>
+                </RadioGroup>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="width">Width (cm)</Label>
-                <Input
-                  id="width"
-                  type="number"
-                  value={width}
-                  onChange={(e) => setWidth(e.target.value)}
-                  placeholder="20"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="height">Height (cm)</Label>
-                <Input
-                  id="height"
-                  type="number"
-                  value={height}
-                  onChange={(e) => setHeight(e.target.value)}
-                  placeholder="10"
-                />
+              <div className="grid grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="length">Length</Label>
+                  <Input
+                    id="length"
+                    type="number"
+                    value={length}
+                    onChange={(e) => setLength(e.target.value)}
+                    placeholder={dimensionUnit === 'cm' ? '25' : '10'}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="width">Width</Label>
+                  <Input
+                    id="width"
+                    type="number"
+                    value={width}
+                    onChange={(e) => setWidth(e.target.value)}
+                    placeholder={dimensionUnit === 'cm' ? '20' : '8'}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="height">Height</Label>
+                  <Input
+                    id="height"
+                    type="number"
+                    value={height}
+                    onChange={(e) => setHeight(e.target.value)}
+                    placeholder={dimensionUnit === 'cm' ? '10' : '4'}
+                  />
+                </div>
               </div>
             </div>
 

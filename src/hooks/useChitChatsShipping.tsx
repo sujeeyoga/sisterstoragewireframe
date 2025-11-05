@@ -14,10 +14,12 @@ interface ShippingAddress {
 }
 
 interface PackageDimensions {
-  weight: number; // in grams
-  length?: number; // in cm
-  width?: number; // in cm
-  height?: number; // in cm
+  weight: number; // in grams or lbs (specify with weightUnit)
+  weightUnit?: 'g' | 'lb';
+  length?: number; // in cm or inches (specify with dimensionUnit)
+  width?: number; // in cm or inches
+  height?: number; // in cm or inches
+  dimensionUnit?: 'cm' | 'in';
   packageValue?: number; // for customs
 }
 
@@ -42,10 +44,36 @@ interface ShipmentRequest extends RateRequest {
 export const useChitChatsShipping = () => {
   const [isLoading, setIsLoading] = useState(false);
 
+  // Convert imperial to metric
+  const convertToMetric = (packageInfo: PackageDimensions) => {
+    const isImperial = packageInfo.weightUnit === 'lb' || packageInfo.dimensionUnit === 'in';
+    
+    return {
+      weight: packageInfo.weightUnit === 'lb' 
+        ? Math.round(packageInfo.weight * 453.592) // lbs to grams
+        : packageInfo.weight,
+      length: packageInfo.dimensionUnit === 'in' && packageInfo.length
+        ? Math.round(packageInfo.length * 2.54) // inches to cm
+        : packageInfo.length,
+      width: packageInfo.dimensionUnit === 'in' && packageInfo.width
+        ? Math.round(packageInfo.width * 2.54)
+        : packageInfo.width,
+      height: packageInfo.dimensionUnit === 'in' && packageInfo.height
+        ? Math.round(packageInfo.height * 2.54)
+        : packageInfo.height,
+      packageValue: packageInfo.packageValue,
+    };
+  };
+
   const getRates = async (address: ShippingAddress, packageInfo: PackageDimensions) => {
     setIsLoading(true);
     try {
-      console.log('Getting ChitChats rates:', { address, packageInfo });
+      const metricPackage = convertToMetric(packageInfo);
+      console.log('Getting ChitChats rates:', { 
+        address, 
+        original: packageInfo, 
+        converted: metricPackage 
+      });
 
       const { data, error } = await supabase.functions.invoke('chitchats-shipping', {
         body: {
@@ -54,11 +82,11 @@ export const useChitChatsShipping = () => {
           to_state: address.state,
           to_city: address.city,
           to_postal_code: address.postalCode,
-          weight: packageInfo.weight,
-          length: packageInfo.length,
-          width: packageInfo.width,
-          height: packageInfo.height,
-          package_value: packageInfo.packageValue,
+          weight: metricPackage.weight,
+          length: metricPackage.length,
+          width: metricPackage.width,
+          height: metricPackage.height,
+          package_value: metricPackage.packageValue,
         },
       });
 
@@ -88,7 +116,13 @@ export const useChitChatsShipping = () => {
   ) => {
     setIsLoading(true);
     try {
-      console.log('Creating ChitChats shipment:', { address, packageInfo, options });
+      const metricPackage = convertToMetric(packageInfo);
+      console.log('Creating ChitChats shipment:', { 
+        address, 
+        original: packageInfo, 
+        converted: metricPackage, 
+        options 
+      });
 
       const { data, error } = await supabase.functions.invoke('chitchats-shipping', {
         body: {
@@ -101,11 +135,11 @@ export const useChitChatsShipping = () => {
           to_postal_code: address.postalCode,
           to_country: address.country,
           to_phone: address.phone,
-          weight: packageInfo.weight,
-          length: packageInfo.length,
-          width: packageInfo.width,
-          height: packageInfo.height,
-          package_value: packageInfo.packageValue,
+          weight: metricPackage.weight,
+          length: metricPackage.length,
+          width: metricPackage.width,
+          height: metricPackage.height,
+          package_value: metricPackage.packageValue,
           carrier: options?.carrier,
           service_code: options?.serviceCode,
           order_id: options?.orderId,
