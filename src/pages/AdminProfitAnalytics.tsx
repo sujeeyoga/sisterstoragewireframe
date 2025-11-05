@@ -100,10 +100,10 @@ const AdminProfitAnalytics = () => {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Net Profit</CardTitle>
-              <TrendingUp className="h-4 w-4 text-green-600" />
+              <TrendingUp className="h-4 w-4 text-primary" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-green-600">
+              <div className="text-2xl font-bold text-primary">
                 {formatCurrency(analytics.netProfit)}
               </div>
               <p className="text-xs text-muted-foreground mt-1">
@@ -130,10 +130,10 @@ const AdminProfitAnalytics = () => {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Shipping Costs</CardTitle>
-              <Truck className="h-4 w-4 text-orange-600" />
+              <Truck className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-orange-600">
+              <div className="text-2xl font-bold text-foreground">
                 {formatCurrency(analytics.shippingCosts)}
               </div>
               <p className="text-xs text-muted-foreground mt-1">
@@ -145,10 +145,10 @@ const AdminProfitAnalytics = () => {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Refunds</CardTitle>
-              <RotateCcw className="h-4 w-4 text-red-600" />
+              <RotateCcw className="h-4 w-4 text-destructive" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-red-600">
+              <div className="text-2xl font-bold text-destructive">
                 {formatCurrency(analytics.refunds)}
               </div>
               <p className="text-xs text-muted-foreground mt-1">
@@ -171,11 +171,11 @@ const AdminProfitAnalytics = () => {
               <span className="text-muted-foreground">Gross Revenue</span>
               <span className="font-semibold">{formatCurrency(analytics.grossRevenue)}</span>
             </div>
-            <div className="flex justify-between items-center text-orange-600 pb-2 border-b">
+            <div className="flex justify-between items-center text-muted-foreground pb-2 border-b">
               <span>Less: Shipping Costs</span>
               <span className="font-semibold">- {formatCurrency(analytics.shippingCosts)}</span>
             </div>
-            <div className="flex justify-between items-center text-red-600 pb-2 border-b">
+            <div className="flex justify-between items-center text-destructive pb-2 border-b">
               <span>Less: Refunds</span>
               <span className="font-semibold">- {formatCurrency(analytics.refunds)}</span>
             </div>
@@ -185,7 +185,7 @@ const AdminProfitAnalytics = () => {
                 <span className="font-semibold">{formatCurrency(analytics.taxCollected)}</span>
               </div>
             )}
-            <div className="flex justify-between items-center text-lg font-bold text-green-600 pt-2">
+            <div className="flex justify-between items-center text-lg font-bold text-primary pt-2">
               <span>Net Profit</span>
               <span>{formatCurrency(analytics.netProfit)}</span>
             </div>
