@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useStoreDiscount } from "@/hooks/useStoreDiscount";
 import { useInventorySettings } from "@/hooks/useInventorySettings";
 import { useProduct, useProductsByCategory } from "@/hooks/useProducts";
+import { useProductSEO } from "@/hooks/useProductSEO";
 import ProductImage from "@/components/product/ProductImage";
 import ProductInfo from "@/components/product/ProductInfo";
 import Breadcrumbs from "@/components/product/Breadcrumbs";
@@ -34,6 +35,9 @@ const ProductDetail = () => {
   
   // Fetch related products from the same category
   const { data: categoryProducts = [], isLoading: isLoadingRelated } = useProductsByCategory(primaryCategory || "");
+  
+  // SEO setup for product page
+  useProductSEO(product, attributes);
   
   // Handle loading state
   if (isLoading) {

@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { getShopKeywords } from "@/config/seo-keywords";
 
 interface Product {
   id: string;
@@ -13,13 +14,22 @@ export const useShopSEO = (products: Product[]) => {
     document.title = "Shop Organizers & Bangle Boxes | Sister Storage";
     
     // Set meta description
-    let meta = document.querySelector('meta[name="description"]') as HTMLMetaElement | null;
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.name = "description";
-      document.head.appendChild(meta);
+    let metaDescription = document.querySelector('meta[name="description"]') as HTMLMetaElement | null;
+    if (!metaDescription) {
+      metaDescription = document.createElement("meta");
+      metaDescription.name = "description";
+      document.head.appendChild(metaDescription);
     }
-    meta.content = "Shop bangle boxes, bundles, and organizers. Filter by rod count, size, and use case to find your perfect storage solution.";
+    metaDescription.content = "Shop bangle boxes, bundles, and organizers. Filter by rod count, size, and use case to find your perfect storage solution.";
+
+    // Set meta keywords
+    let metaKeywords = document.querySelector('meta[name="keywords"]') as HTMLMetaElement | null;
+    if (!metaKeywords) {
+      metaKeywords = document.createElement("meta");
+      metaKeywords.name = "keywords";
+      document.head.appendChild(metaKeywords);
+    }
+    metaKeywords.content = getShopKeywords();
 
     // Set canonical URL
     let link = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;

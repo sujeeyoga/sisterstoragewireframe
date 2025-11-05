@@ -1,4 +1,5 @@
 import { Helmet } from 'react-helmet-async';
+import { getGlobalKeywords } from '@/config/seo-keywords';
 
 interface SEOProps {
   title?: string;
@@ -14,7 +15,7 @@ interface SEOProps {
 export const SEO = ({
   title = 'Sister Storage | Culture Without Clutter – Stylish Bangle & Keepsake Organizers',
   description = 'Sister Storage offers premium bangle and jewelry organizers including our stackable 4-rod dust-free storage box. Ship to Canada, USA, and UK. Culture Without Clutter.',
-  keywords = 'sister storage, sisterstorage, bangle organizer, jewelry storage, keepsake box, 4 rod bangle storage, stackable jewelry box, dust free organizer, south asian jewelry storage, canadian jewelry organizer',
+  keywords = getGlobalKeywords(),
   image = 'https://storage.googleapis.com/gpt-engineer-file-uploads/8uQERUCGS1TCaXnOFIRH4upfJG73/social-images/social-1760066089943-sister storage logo.jpg',
   url = 'https://www.sisterstorage.com',
   type = 'website',
