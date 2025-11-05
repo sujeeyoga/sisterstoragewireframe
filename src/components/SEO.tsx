@@ -35,7 +35,7 @@ export const SEO = ({
     logo: image,
     contactPoint: {
       '@type': 'ContactPoint',
-      email: 'hello@sisterstoragesolutions.com',
+      email: 'sisterstorageinc@gmail.com',
       contactType: 'Customer Service',
       areaServed: ['CA', 'US', 'GB']
     },

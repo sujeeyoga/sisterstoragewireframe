@@ -44,7 +44,7 @@ export const ProductQA = ({ productName, productType }: ProductQAProps) => {
     },
     {
       question: "Do you have a return policy?",
-      answer: "Yes, we offer 30-day returns on unused products in original packaging. Contact us at hello@sisterstoragesolutions.com for returns."
+      answer: "Yes, we offer 30-day returns on unused products in original packaging. Contact us at sisterstorageinc@gmail.com for returns and shipping inquiries."
     }
   ];
 

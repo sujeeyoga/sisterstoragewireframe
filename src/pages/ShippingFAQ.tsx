@@ -82,7 +82,7 @@ const ShippingFAQ = () => {
     {
       category: 'tracking',
       question: 'What if my package is lost or damaged?',
-      answer: 'All our shipments include tracking and insurance coverage. If your package is lost in transit or arrives damaged, please contact us immediately at hello@sisterstoragesolutions.com with your order number and photos (if damaged). We\'ll work quickly to resolve the issue, either by filing a claim or sending a replacement.'
+      answer: 'All our shipments include tracking and insurance coverage. If your package is lost in transit or arrives damaged, please contact us immediately at sisterstorageinc@gmail.com with your order number and photos (if damaged). We\'ll work quickly to resolve the issue, either by filing a claim or sending a replacement.'
     },
     {
       category: 'tracking',
@@ -92,7 +92,7 @@ const ShippingFAQ = () => {
     {
       category: 'tracking',
       question: 'Can I change my shipping address after placing an order?',
-      answer: 'If your order hasn\'t shipped yet, we can update your address. Please contact us immediately at hello@sisterstoragesolutions.com with your order number and new address. Once an order has shipped, we cannot change the delivery address.'
+      answer: 'If your order hasn\'t shipped yet, we can update your address. Please contact us immediately at sisterstorageinc@gmail.com with your order number and new address. Once an order has shipped, we cannot change the delivery address.'
     },
   ];
 

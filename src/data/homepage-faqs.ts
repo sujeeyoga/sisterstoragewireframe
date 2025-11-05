@@ -29,6 +29,6 @@ export const homepageFAQs = [
   },
   {
     question: "What if I need to return or exchange?",
-    answer: "We offer 30-day returns on unused products in original packaging. Contact hello@sisterstoragesolutions.com for assistance with returns or exchanges."
+    answer: "We offer 30-day returns on unused products in original packaging. Contact sisterstorageinc@gmail.com for assistance with returns, exchanges, or shipping inquiries."
   }
 ];
