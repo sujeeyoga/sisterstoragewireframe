@@ -4,10 +4,11 @@ import { useVisitorPresence } from '@/hooks/useVisitorPresence';
 import { useActiveCartAnalytics } from '@/hooks/useActiveCartAnalytics';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Progress } from '@/components/ui/progress';
 import { subDays } from 'date-fns';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Activity, DollarSign, ShoppingCart, Package, Clock, Users, TrendingUp, RotateCcw } from 'lucide-react';
+import { Activity, DollarSign, ShoppingCart, Package, Clock, Users, TrendingUp, RotateCcw, Target } from 'lucide-react';
 
 export function OrdersAnalyticsSummary() {
   const navigate = useNavigate();
@@ -23,23 +24,59 @@ export function OrdersAnalyticsSummary() {
   const { data: activeCartData, isLoading: activeCartLoading } = useActiveCartAnalytics();
 
   const awaitingFulfillment = (orderData?.pendingOrders || 0);
+  
+  const REVENUE_TARGET = 100000; // $100k goal
+  const currentRevenue = orderData?.totalRevenue || 0;
+  const progressPercentage = Math.min((currentRevenue / REVENUE_TARGET) * 100, 100);
 
   if (orderLoading || cartLoading || activeCartLoading) {
     return (
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-          <Card key={i} className="p-4">
-            <Skeleton className="h-4 w-24 mb-2" />
-            <Skeleton className="h-8 w-20 mb-1" />
-            <Skeleton className="h-3 w-32" />
-          </Card>
-        ))}
+      <div className="space-y-4 mb-6">
+        <Card className="p-6">
+          <Skeleton className="h-6 w-48 mb-4" />
+          <Skeleton className="h-3 w-full" />
+        </Card>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+            <Card key={i} className="p-4">
+              <Skeleton className="h-4 w-24 mb-2" />
+              <Skeleton className="h-8 w-20 mb-1" />
+              <Skeleton className="h-3 w-32" />
+            </Card>
+          ))}
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+    <div className="space-y-4 mb-6">
+      {/* Revenue Goal Thermometer */}
+      <Card className="p-6 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 cursor-pointer hover:shadow-lg transition-all" onClick={() => navigate('/admin/analytics/sales')}>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+              <Target className="h-5 w-5 text-primary" />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold">Revenue Goal Progress</h3>
+              <p className="text-sm text-muted-foreground">30-day target: ${REVENUE_TARGET.toLocaleString()}</p>
+            </div>
+          </div>
+          <div className="text-right">
+            <p className="text-2xl font-bold">${currentRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+            <p className="text-sm text-muted-foreground">{progressPercentage.toFixed(1)}% complete</p>
+          </div>
+        </div>
+        <Progress value={progressPercentage} className="h-3" />
+        <div className="flex justify-between mt-2 text-xs text-muted-foreground">
+          <span>$0</span>
+          <span>${(REVENUE_TARGET / 2).toLocaleString()}</span>
+          <span>${REVENUE_TARGET.toLocaleString()}</span>
+        </div>
+      </Card>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
       {/* Live Visitors */}
       <Card 
         className="p-4 cursor-pointer hover:shadow-lg transition-all group" 
@@ -180,6 +217,7 @@ export function OrdersAnalyticsSummary() {
           <RotateCcw className="h-5 w-5 text-primary/50 group-hover:text-primary transition-colors" />
         </div>
       </Card>
+      </div>
     </div>
   );
 }
