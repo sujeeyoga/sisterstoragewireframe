@@ -18,10 +18,10 @@ const Index = () => {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'Sister Storage',
-    url: 'https://attczdhexkpxpyqyasgz.lovable.app',
+    url: 'https://www.sisterstorage.com',
     potentialAction: {
       '@type': 'SearchAction',
-      target: 'https://attczdhexkpxpyqyasgz.lovable.app/shop?search={search_term_string}',
+      target: 'https://www.sisterstorage.com/shop?search={search_term_string}',
       'query-input': 'required name=search_term_string'
     }
   };

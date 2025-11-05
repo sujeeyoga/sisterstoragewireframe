@@ -16,12 +16,12 @@ export const SEO = ({
   description = 'Sister Storage offers premium bangle and jewelry organizers including our stackable 4-rod dust-free storage box. Ship to Canada, USA, and UK. Culture Without Clutter.',
   keywords = 'sister storage, bangle organizer, jewelry storage, keepsake box, 4 rod bangle storage, stackable jewelry box, dust free organizer, south asian jewelry storage, canadian jewelry organizer',
   image = 'https://storage.googleapis.com/gpt-engineer-file-uploads/8uQERUCGS1TCaXnOFIRH4upfJG73/social-images/social-1760066089943-sister storage logo.jpg',
-  url = 'https://attczdhexkpxpyqyasgz.lovable.app',
+  url = 'https://www.sisterstorage.com',
   type = 'website',
   noindex = false,
   structuredData
 }: SEOProps) => {
-  const siteUrl = 'https://attczdhexkpxpyqyasgz.lovable.app';
+  const siteUrl = 'https://www.sisterstorage.com';
   const fullUrl = url.startsWith('http') ? url : `${siteUrl}${url}`;
 
   // Base structured data for the organization
