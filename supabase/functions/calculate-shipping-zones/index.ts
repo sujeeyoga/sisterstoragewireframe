@@ -205,27 +205,28 @@ const transformChitChatsRates = (chitchatsData: any, subtotal: number): any[] =>
 
   return rates
     .map((rate: any, index: number) => {
-      const amount = parseFloat(rate.payment_amount || rate.postage_fee || '0');
-      const tariff = parseFloat(rate.tariff_fee || '0');
+      const postageFee = parseFloat(rate.postage_fee || '0');
+      const tariffFee = parseFloat(rate.tariff_fee || '0');
       const name = rate.postage_description || rate.postage_type || 'Shipping';
 
-      console.log(`ChitChats rate: ${name} - total $${amount.toFixed(2)} (postage ${rate.postage_fee} + tariff ${rate.tariff_fee})`);
+      console.log(`ChitChats rate: ${name} - postage $${postageFee.toFixed(2)} + duties $${tariffFee.toFixed(2)}`);
 
       return {
         id: `chitchats_${rate.postage_type || index}`,
         method_name: name,
-        rate_amount: parseFloat(amount.toFixed(2)),
+        rate_amount: parseFloat(postageFee.toFixed(2)), // Only postage, not duties
         is_free: false,
         free_threshold: null,
         display_order: index + 1,
         carrier: rate.postage_carrier_type,
         service_code: rate.postage_type,
         delivery_estimate: rate.delivery_time_description,
-        tariff_fee: tariff,
-        postage_fee: parseFloat(rate.postage_fee || '0'),
+        tariff_fee: parseFloat(tariffFee.toFixed(2)),
+        postage_fee: parseFloat(postageFee.toFixed(2)),
+        duties_included: false,
       };
     })
-    .sort((a, b) => a.rate_amount - b.rate_amount); // Sort by total cost
+    .sort((a, b) => a.rate_amount - b.rate_amount); // Sort by postage cost
 };
 
 Deno.serve(async (req) => {
@@ -243,12 +244,22 @@ Deno.serve(async (req) => {
 
     console.log('Calculating shipping for address:', address, 'subtotal:', subtotal, 'items:', items.length);
 
+    // Fetch packaging profiles from store settings
+    const { data: packagingProfilesData } = await supabase
+      .from('store_settings')
+      .select('setting_value')
+      .eq('setting_key', 'packaging_profiles')
+      .maybeSingle();
+
+    const packagingProfiles = packagingProfilesData?.setting_value || {
+      small: { length_in: 16, width_in: 12, height_in: 4, empty_weight_g: 200 },
+      large: { length_in: 16, width_in: 12, height_in: 12, empty_weight_g: 450 },
+    };
+
     // Calculate package info from cart items
-    let totalWeight = 0;
+    let totalProductWeight = 0;
     let totalValue = 0;
-    let maxLength = 0;
-    let maxWidth = 0;
-    let maxHeight = 0;
+    let has4RodBox = false;
 
     if (items && items.length > 0) {
       // Fetch product details for weight calculation
@@ -256,7 +267,7 @@ Deno.serve(async (req) => {
       
       const { data: products, error: productsError } = await supabase
         .from('woocommerce_products')
-        .select('id, weight, length, width, height, price')
+        .select('id, weight, price, name')
         .in('id', productIds);
 
       if (!productsError && products) {
@@ -267,36 +278,37 @@ Deno.serve(async (req) => {
           if (product) {
             // Weight is in grams, multiply by quantity
             const itemWeight = (product.weight || 500) * (item.quantity || 1);
-            totalWeight += itemWeight;
+            totalProductWeight += itemWeight;
             
-            // Track max dimensions for package size
-            maxLength = Math.max(maxLength, product.length || 25);
-            maxWidth = Math.max(maxWidth, product.width || 20);
-            maxHeight = Math.max(maxHeight, product.height || 10);
+            // Check if order contains 4-rod boxes (typically larger)
+            if (product.name?.toLowerCase().includes('4-rod') || 
+                product.name?.toLowerCase().includes('large') ||
+                product.weight > 600) {
+              has4RodBox = true;
+            }
             
             // Calculate total value for customs
             totalValue += (product.price || 50) * (item.quantity || 1);
           }
         });
-        
-        console.log('Calculated package info:', {
-          totalWeight,
-          maxLength,
-          maxWidth,
-          maxHeight,
-          totalValue,
-        });
       }
     }
 
-    // Use calculated values or defaults
+    // Select packaging profile: large if has 4-rod or total weight > 3kg, else small
+    const selectedProfile = (has4RodBox || totalProductWeight > 3000) 
+      ? packagingProfiles.large 
+      : packagingProfiles.small;
+
+    // Convert inches to cm and add empty box weight
     const packageInfo = {
-      weight: totalWeight || 500,
-      length: maxLength || 25,
-      width: maxWidth || 20,
-      height: maxHeight || 10,
+      weight: totalProductWeight + selectedProfile.empty_weight_g,
+      length: Math.round(selectedProfile.length_in * 2.54), // inches to cm
+      width: Math.round(selectedProfile.width_in * 2.54),
+      height: Math.round(selectedProfile.height_in * 2.54),
       value: totalValue || 50,
     };
+
+    console.log('Selected packaging profile:', has4RodBox ? 'large' : 'small', packageInfo);
 
     // Fetch all zones with rules and rates
     const { data: zonesData, error: zonesError } = await supabase

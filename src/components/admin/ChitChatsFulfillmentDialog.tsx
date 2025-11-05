@@ -11,6 +11,7 @@ import { Loader2, Package, Truck, Download } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface Order {
   id: string | number;
@@ -41,16 +42,32 @@ export function ChitChatsFulfillmentDialog({ order, open, onClose, onSuccess }: 
   const { isLoading, getRates, createShipment } = useChitChatsShipping();
   
   const [step, setStep] = useState<'package' | 'rates' | 'confirm'>('package');
+  const [packagingProfile, setPackagingProfile] = useState<'small' | 'large'>('small');
   const [weight, setWeight] = useState('170'); // Default to Travel box weight in grams
   const [weightUnit, setWeightUnit] = useState<'g' | 'lb'>('g');
-  const [length, setLength] = useState('25');
-  const [width, setWidth] = useState('20');
-  const [height, setHeight] = useState('10');
+  const [length, setLength] = useState('40'); // 16 inches in cm
+  const [width, setWidth] = useState('30'); // 12 inches in cm
+  const [height, setHeight] = useState('10'); // 4 inches in cm
   const [dimensionUnit, setDimensionUnit] = useState<'cm' | 'in'>('cm');
   const [packageValue, setPackageValue] = useState('75');
   const [rates, setRates] = useState<ShippingRate[]>([]);
   const [selectedRate, setSelectedRate] = useState<string>('');
   const [shipmentData, setShipmentData] = useState<any>(null);
+
+  // Packaging profiles (inches converted to cm)
+  const profiles = {
+    small: { length: 40, width: 30, height: 10, emptyWeight: 200 }, // 16×12×4 in
+    large: { length: 40, width: 30, height: 30, emptyWeight: 450 }, // 16×12×12 in
+  };
+
+  // Update dimensions when profile changes
+  const handleProfileChange = (profile: 'small' | 'large') => {
+    setPackagingProfile(profile);
+    const dims = profiles[profile];
+    setLength(String(dims.length));
+    setWidth(String(dims.width));
+    setHeight(String(dims.height));
+  };
 
   // Fetch fulfillment address from store settings
   const { data: fulfillmentAddress } = useQuery({
@@ -227,7 +244,23 @@ export function ChitChatsFulfillmentDialog({ order, open, onClose, onSuccess }: 
                 Package Details
               </Label>
               <p className="text-sm text-muted-foreground">
-                Enter package dimensions and weight
+                Select shipping box size and enter package weight
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="profile">Shipping Box Size</Label>
+              <Select value={packagingProfile} onValueChange={(v) => handleProfileChange(v as 'small' | 'large')}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="small">Small Box (16×12×4 inches / 40×30×10 cm)</SelectItem>
+                  <SelectItem value="large">Large Box (16×12×12 inches / 40×30×30 cm)</SelectItem>
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground">
+                Box dimensions are locked based on selection
               </p>
             </div>
 
@@ -271,56 +304,18 @@ export function ChitChatsFulfillmentDialog({ order, open, onClose, onSuccess }: 
               </div>
             </div>
 
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label>Dimensions</Label>
-                <RadioGroup
-                  value={dimensionUnit}
-                  onValueChange={(v) => setDimensionUnit(v as 'cm' | 'in')}
-                  className="flex gap-2"
-                >
-                  <div className="flex items-center space-x-1">
-                    <RadioGroupItem value="cm" id="dim-cm" />
-                    <Label htmlFor="dim-cm" className="cursor-pointer text-sm">cm</Label>
-                  </div>
-                  <div className="flex items-center space-x-1">
-                    <RadioGroupItem value="in" id="dim-in" />
-                    <Label htmlFor="dim-in" className="cursor-pointer text-sm">in</Label>
-                  </div>
-                </RadioGroup>
+            <div className="bg-muted/50 p-4 rounded-lg space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Box Dimensions:</span>
+                <span className="font-medium">{length} × {width} × {height} cm</span>
               </div>
-              <div className="grid grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="length">Length</Label>
-                  <Input
-                    id="length"
-                    type="number"
-                    value={length}
-                    onChange={(e) => setLength(e.target.value)}
-                    placeholder={dimensionUnit === 'cm' ? '25' : '10'}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="width">Width</Label>
-                  <Input
-                    id="width"
-                    type="number"
-                    value={width}
-                    onChange={(e) => setWidth(e.target.value)}
-                    placeholder={dimensionUnit === 'cm' ? '20' : '8'}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="height">Height</Label>
-                  <Input
-                    id="height"
-                    type="number"
-                    value={height}
-                    onChange={(e) => setHeight(e.target.value)}
-                    placeholder={dimensionUnit === 'cm' ? '10' : '4'}
-                  />
-                </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Empty Box Weight:</span>
+                <span className="font-medium">{profiles[packagingProfile].emptyWeight}g</span>
               </div>
+              <p className="text-xs text-muted-foreground mt-2">
+                Product weight + empty box weight will be used for shipping calculation
+              </p>
             </div>
 
             <Button onClick={handleGetRates} disabled={isLoading} className="w-full">
