@@ -5,6 +5,7 @@ import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carouse
 import { supabase } from '@/integrations/supabase/client';
 import { Play } from 'lucide-react';
 import Autoplay from 'embla-carousel-autoplay';
+import { useVideoPreloader } from '@/hooks/use-video-preloader';
 
 interface VideoStory {
   id: string;
@@ -26,6 +27,13 @@ export const SisterStoriesCarousel = () => {
   console.log('SisterStoriesCarousel: Rendering with', videoStories.length, 'videos, loading:', isLoading);
 
   // Fetch videos from database
+  // Preload first video only
+  const firstVideoUrl = videoStories.length > 0 ? videoStories[0].video : '';
+  const { isAllLoaded: isFirstVideoLoaded } = useVideoPreloader({ 
+    videos: firstVideoUrl ? [firstVideoUrl] : [],
+    onAllLoaded: () => console.log('First video preloaded')
+  });
+
   const fetchVideos = useCallback(async () => {
     try {
       console.log('SisterStoriesCarousel: Starting video fetch...');
@@ -183,10 +191,10 @@ export const SisterStoriesCarousel = () => {
                       src={story.video}
                       crossOrigin="anonymous"
                       muted={unmutedVideo !== story.id}
-                      autoPlay
+                      autoPlay={videoStories.indexOf(story) === 0}
                       loop
                       playsInline
-                      preload={videoStories.indexOf(story) === 0 ? "auto" : "none"}
+                      preload={videoStories.indexOf(story) === 0 ? "auto" : "metadata"}
                       controlsList="nodownload nofullscreen noremoteplayback"
                       disablePictureInPicture
                       style={{ 
