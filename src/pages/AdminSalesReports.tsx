@@ -1,9 +1,10 @@
 import { useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, DollarSign, TrendingUp, ShoppingCart, Package } from 'lucide-react';
+import { ArrowLeft, DollarSign, TrendingUp, ShoppingCart, Package, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { subDays } from 'date-fns';
 import { useOrderAnalytics } from '@/hooks/useOrderAnalytics';
 import { useOrderTimeSeriesAnalytics } from '@/hooks/useOrderTimeSeriesAnalytics';
@@ -14,6 +15,8 @@ import { supabase } from '@/integrations/supabase/client';
 const AdminSalesReports = () => {
   const navigate = useNavigate();
   const [dateRange, setDateRange] = useState<'7d' | '30d' | '90d' | '6m' | '12m'>('30d');
+  const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
+  const [isCustomerDialogOpen, setIsCustomerDialogOpen] = useState(false);
   
   const dateRangeValues = useMemo(() => {
     const end = new Date();
@@ -76,6 +79,79 @@ const AdminSalesReports = () => {
         .slice(0, 10);
     },
   });
+
+  // Fetch customers who bought the selected product
+  const { data: productCustomers, isLoading: isLoadingCustomers } = useQuery({
+    queryKey: ['product-customers', selectedProduct, dateRangeValues],
+    queryFn: async () => {
+      if (!selectedProduct) return [];
+
+      const customers = new Map<string, { email: string; name: string; quantity: number; revenue: number }>();
+
+      // Fetch from WooCommerce orders
+      const { data: wooOrders } = await supabase
+        .from('woocommerce_orders')
+        .select('line_items, billing, total')
+        .gte('date_created', dateRangeValues.start.toISOString())
+        .lte('date_created', dateRangeValues.end.toISOString());
+
+      wooOrders?.forEach(order => {
+        const items = order.line_items as any[];
+        const billing = order.billing as any;
+        const matchingItem = items?.find(item => item.name === selectedProduct);
+        
+        if (matchingItem && billing?.email) {
+          const existing = customers.get(billing.email) || { 
+            email: billing.email, 
+            name: `${billing.first_name || ''} ${billing.last_name || ''}`.trim() || billing.email,
+            quantity: 0, 
+            revenue: 0 
+          };
+          customers.set(billing.email, {
+            ...existing,
+            quantity: existing.quantity + matchingItem.quantity,
+            revenue: existing.revenue + (matchingItem.total || 0)
+          });
+        }
+      });
+
+      // Fetch from Stripe orders
+      const { data: stripeOrders } = await supabase
+        .from('orders')
+        .select('items, customer_email, customer_name')
+        .gte('created_at', dateRangeValues.start.toISOString())
+        .lte('created_at', dateRangeValues.end.toISOString())
+        .eq('payment_status', 'paid');
+
+      stripeOrders?.forEach(order => {
+        const items = order.items as any[];
+        const matchingItem = items?.find(item => item.name === selectedProduct);
+        
+        if (matchingItem && order.customer_email) {
+          const existing = customers.get(order.customer_email) || { 
+            email: order.customer_email, 
+            name: order.customer_name || order.customer_email,
+            quantity: 0, 
+            revenue: 0 
+          };
+          customers.set(order.customer_email, {
+            ...existing,
+            quantity: existing.quantity + (matchingItem.quantity || 1),
+            revenue: existing.revenue + (matchingItem.price * (matchingItem.quantity || 1))
+          });
+        }
+      });
+
+      return Array.from(customers.values())
+        .sort((a, b) => b.revenue - a.revenue);
+    },
+    enabled: !!selectedProduct,
+  });
+
+  const handleProductClick = (productName: string) => {
+    setSelectedProduct(productName);
+    setIsCustomerDialogOpen(true);
+  };
 
   const COLORS = ['hsl(var(--primary))', 'hsl(var(--secondary))', 'hsl(var(--accent))', '#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#00C49F', '#FFBB28', '#FF8042'];
 
@@ -221,7 +297,11 @@ const AdminSalesReports = () => {
             {productSales && productSales.length > 0 ? (
               <div className="space-y-4">
                 {productSales.slice(0, 5).map((product, index) => (
-                  <div key={index} className="flex items-center justify-between">
+                  <div 
+                    key={index} 
+                    className="flex items-center justify-between p-2 rounded-lg hover:bg-accent/50 cursor-pointer transition-colors"
+                    onClick={() => handleProductClick(product.name)}
+                  >
                     <div className="flex-1">
                       <p className="font-medium text-sm truncate">{product.name}</p>
                       <p className="text-xs text-muted-foreground">{product.quantity} units sold</p>
@@ -278,6 +358,52 @@ const AdminSalesReports = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Customer Dialog */}
+      <Dialog open={isCustomerDialogOpen} onOpenChange={setIsCustomerDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Customers who purchased {selectedProduct}</DialogTitle>
+            <DialogDescription>
+              Customer purchase history for this product in the selected date range
+            </DialogDescription>
+          </DialogHeader>
+          <div className="max-h-[500px] overflow-y-auto">
+            {isLoadingCustomers ? (
+              <div className="flex items-center justify-center py-8 text-muted-foreground">
+                Loading customers...
+              </div>
+            ) : productCustomers && productCustomers.length > 0 ? (
+              <div className="space-y-3">
+                {productCustomers.map((customer, index) => (
+                  <div 
+                    key={index}
+                    className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/30 transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                        <User className="h-5 w-5 text-primary" />
+                      </div>
+                      <div>
+                        <p className="font-medium">{customer.name}</p>
+                        <p className="text-sm text-muted-foreground">{customer.email}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-bold">${customer.revenue.toFixed(2)}</p>
+                      <p className="text-sm text-muted-foreground">{customer.quantity} units</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex items-center justify-center py-8 text-muted-foreground">
+                No customers found for this product
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
