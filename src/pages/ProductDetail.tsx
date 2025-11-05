@@ -11,6 +11,7 @@ import ProductImage from "@/components/product/ProductImage";
 import ProductInfo from "@/components/product/ProductInfo";
 import Breadcrumbs from "@/components/product/Breadcrumbs";
 import RelatedProducts from "@/components/product/RelatedProducts";
+import { ProductQA } from "@/components/product/ProductQA";
 import Layout from "@/components/layout/Layout";
 import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, Package } from "lucide-react";
@@ -164,6 +165,12 @@ const ProductDetail = () => {
               </div>
             </div>
           )}
+
+          {/* Product Q&A */}
+          <ProductQA 
+            productName={product.name}
+            productType={primaryCategory}
+          />
 
           {/* Related Products */}
           <RelatedProducts products={relatedProducts} />

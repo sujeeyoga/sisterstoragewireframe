@@ -5,6 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { categoryTree } from "@/data/catalog";
 import { findCategoryPathBySlug } from "@/lib/catalog";
+import { BreadcrumbSchema } from "@/components/seo/BreadcrumbSchema";
 
 interface BreadcrumbsProps {
   productName: string;
@@ -14,10 +15,23 @@ interface BreadcrumbsProps {
 const Breadcrumbs = ({ productName, primaryCategorySlug }: BreadcrumbsProps) => {
   const path = primaryCategorySlug ? findCategoryPathBySlug(categoryTree, primaryCategorySlug) ?? [] : [];
   const navigate = useNavigate();
+  
+  // Build breadcrumb items for schema
+  const breadcrumbItems = [
+    { name: "Home", url: "/" },
+    { name: "Shop", url: "/shop" },
+    ...path.map(node => ({
+      name: node.label,
+      url: `/shop?category=${encodeURIComponent(node.slug)}`
+    })),
+    { name: productName, url: window.location.pathname }
+  ];
 
   return (
-    <div className="mb-6">
-      <div className="flex items-center gap-4">
+    <>
+      <BreadcrumbSchema items={breadcrumbItems} />
+      <div className="mb-6">
+        <div className="flex items-center gap-4">
         <Button
           variant="ghost"
           size="sm"
@@ -49,8 +63,9 @@ const Breadcrumbs = ({ productName, primaryCategorySlug }: BreadcrumbsProps) => 
         <li className="text-foreground">{productName}</li>
           </ol>
         </nav>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
