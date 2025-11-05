@@ -66,6 +66,9 @@ export function OrdersAnalyticsSummary() {
           <div className="text-right">
             <p className="text-4xl font-bold text-black">${currentRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
             <p className="text-sm text-muted-foreground">{progressPercentage.toFixed(1)}% complete</p>
+            <p className="text-lg font-semibold text-orange-600 mt-1">
+              ${(REVENUE_TARGET - currentRevenue).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} remaining
+            </p>
           </div>
         </div>
         <div className="relative h-3 w-full overflow-hidden rounded-full bg-white border border-gray-200">
