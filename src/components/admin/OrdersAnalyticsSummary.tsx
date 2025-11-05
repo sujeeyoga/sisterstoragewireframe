@@ -2,6 +2,7 @@ import { useOrderAnalytics } from '@/hooks/useOrderAnalytics';
 import { useAbandonedCartAnalytics } from '@/hooks/useAbandonedCartAnalytics';
 import { useVisitorPresence } from '@/hooks/useVisitorPresence';
 import { useActiveCartAnalytics } from '@/hooks/useActiveCartAnalytics';
+import { useNetProfitAnalytics } from '@/hooks/useNetProfitAnalytics';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { subDays } from 'date-fns';
@@ -21,6 +22,7 @@ export function OrdersAnalyticsSummary() {
   const { data: cartData, isLoading: cartLoading } = useAbandonedCartAnalytics(dateRange);
   const { visitorCount } = useVisitorPresence();
   const { data: activeCartData, isLoading: activeCartLoading } = useActiveCartAnalytics();
+  const { data: profitData, isLoading: profitLoading } = useNetProfitAnalytics(dateRange);
 
   const awaitingFulfillment = (orderData?.pendingOrders || 0);
   
@@ -29,7 +31,7 @@ export function OrdersAnalyticsSummary() {
   const REVENUE_TARGET = currentRevenue >= 10000 ? 100000 : 10000;
   const progressPercentage = Math.min((currentRevenue / REVENUE_TARGET) * 100, 100);
 
-  if (orderLoading || cartLoading || activeCartLoading) {
+  if (orderLoading || cartLoading || activeCartLoading || profitLoading) {
     return (
       <div className="space-y-4 mb-6">
         <Card className="p-6">
@@ -100,20 +102,20 @@ export function OrdersAnalyticsSummary() {
         </div>
       </Card>
 
-      {/* Net Revenue */}
+      {/* Net Profit */}
       <Card 
         className="p-4 cursor-pointer hover:shadow-lg transition-all group" 
-        onClick={() => navigate('/admin/analytics/sales')}
+        onClick={() => navigate('/admin/analytics/profit')}
       >
         <div className="flex items-start justify-between">
           <div>
-            <p className="text-xs text-muted-foreground mb-1">Net Revenue</p>
-            <p className="text-2xl font-bold text-foreground">
-              ${orderData?.totalRevenue.toFixed(2) || '0.00'}
+            <p className="text-xs text-muted-foreground mb-1">Net Profit</p>
+            <p className="text-2xl font-bold text-green-600">
+              ${profitData?.netProfit.toFixed(2) || '0.00'}
             </p>
-            <p className="text-xs text-muted-foreground mt-1">After $0.00 in refunds</p>
+            <p className="text-xs text-muted-foreground mt-1">{profitData?.profitMargin.toFixed(1) || '0.0'}% margin</p>
           </div>
-          <DollarSign className="h-5 w-5 text-primary/50 group-hover:text-primary transition-colors" />
+          <TrendingUp className="h-5 w-5 text-green-600 group-hover:text-green-700 transition-colors" />
         </div>
       </Card>
 
