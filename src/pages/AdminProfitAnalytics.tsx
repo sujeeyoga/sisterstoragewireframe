@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -10,13 +10,14 @@ import { subDays, subMonths } from "date-fns";
 const AdminProfitAnalytics = () => {
   const [dateRange, setDateRange] = useState("30");
 
-  const dateRangeValues = {
-    start: dateRange === "7" ? subDays(new Date(), 7) :
-           dateRange === "30" ? subDays(new Date(), 30) :
-           dateRange === "90" ? subDays(new Date(), 90) :
-           subMonths(new Date(), 12),
-    end: new Date(),
-  };
+  const dateRangeValues = useMemo(() => {
+    const now = new Date();
+    const start = dateRange === "7" ? subDays(now, 7) :
+                 dateRange === "30" ? subDays(now, 30) :
+                 dateRange === "90" ? subDays(now, 90) :
+                 subMonths(now, 12);
+    return { start, end: now };
+  }, [dateRange]);
 
   const { data: analytics, isLoading, error } = useNetProfitAnalytics(dateRangeValues);
 

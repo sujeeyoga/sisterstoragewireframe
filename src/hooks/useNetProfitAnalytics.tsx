@@ -20,7 +20,7 @@ interface DateRange {
 
 export const useNetProfitAnalytics = (dateRange: DateRange) => {
   return useQuery({
-    queryKey: ["net-profit-analytics", dateRange.start, dateRange.end],
+    queryKey: ["net-profit-analytics", dateRange.start.toISOString(), dateRange.end.toISOString()],
     queryFn: async () => {
       const startDate = startOfDay(dateRange.start).toISOString();
       const endDate = endOfDay(dateRange.end).toISOString();
