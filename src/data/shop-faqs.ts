@@ -25,7 +25,7 @@ export const shopFAQs = [
   },
   {
     question: "How long does delivery take?",
-    answer: "Standard shipping takes 5-7 business days to Canada, USA, and UK. Free shipping on orders over $50."
+    answer: "Standard shipping takes 5-7 business days to Canada, USA, and UK."
   },
   {
     question: "Are your products in stock?",

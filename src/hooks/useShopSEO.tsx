@@ -21,7 +21,7 @@ export const useShopSEO = (products: Product[]) => {
       document.head.appendChild(metaDescription);
     }
     const descriptionText = products.length > 0
-      ? `Shop tangle-free, dust-proof bangle storage solutions. Browse ${products.length}+ premium organizers that protect your bangles and save space. Fast shipping across Canada, USA, and UK.`
+      ? `Shop tangle-free, dust-proof bangle storage solutions. Browse ${products.length}+ premium organizers that protect your bangles and save space. Ships to Canada, USA, and UK.`
       : "Shop tangle-free, dust-proof bangle storage from Sister Storage. Premium organizers designed with culture in mind.";
     metaDescription.content = descriptionText;
 

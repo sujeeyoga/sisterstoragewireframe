@@ -40,7 +40,7 @@ export const ProductQA = ({ productName, productType }: ProductQAProps) => {
     },
     {
       question: "What's your shipping policy?",
-      answer: "We offer free shipping on orders over $50 to Canada, USA, and UK. Standard delivery takes 5-7 business days."
+      answer: "We ship to Canada, USA, and UK. Standard delivery takes 5-7 business days."
     },
     {
       question: "Do you have a return policy?",
