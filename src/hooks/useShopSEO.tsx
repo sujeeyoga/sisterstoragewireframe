@@ -20,7 +20,10 @@ export const useShopSEO = (products: Product[]) => {
       metaDescription.name = "description";
       document.head.appendChild(metaDescription);
     }
-    metaDescription.content = "Shop bangle boxes, bundles, and organizers. Filter by rod count, size, and use case to find your perfect storage solution.";
+    const descriptionText = products.length > 0
+      ? `Shop tangle-free, dust-proof bangle storage solutions. Browse ${products.length}+ premium organizers that protect your bangles and save space. Fast shipping across Canada, USA, and UK.`
+      : "Shop tangle-free, dust-proof bangle storage from Sister Storage. Premium organizers designed with culture in mind.";
+    metaDescription.content = descriptionText;
 
     // Set meta keywords
     let metaKeywords = document.querySelector('meta[name="keywords"]') as HTMLMetaElement | null;
