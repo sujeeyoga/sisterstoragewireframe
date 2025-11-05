@@ -36,6 +36,7 @@ import Uploads from '@/pages/Uploads';
 import { BulkShippingRefundTool } from '@/components/admin/BulkShippingRefundTool';
 import AdminShippingAnalytics from '@/pages/AdminShippingAnalytics';
 import AdminProfitAnalytics from '@/pages/AdminProfitAnalytics';
+import AdminSEOAnalytics from '@/pages/AdminSEOAnalytics';
 
 const Admin = () => {
   // TODO: Re-enable admin role check when ready
@@ -68,6 +69,7 @@ const Admin = () => {
         <Route path="analytics/customers" element={<AdminCustomerReports />} />
         <Route path="analytics/shipping" element={<AdminShippingAnalytics />} />
         <Route path="analytics/profit" element={<AdminProfitAnalytics />} />
+        <Route path="analytics/seo" element={<AdminSEOAnalytics />} />
         <Route path="orders" element={<OrdersList />} />
         <Route path="products" element={<ProductsTable />} />
         <Route path="products/:id" element={<ProductForm />} />

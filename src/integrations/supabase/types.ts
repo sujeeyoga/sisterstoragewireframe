@@ -119,6 +119,39 @@ export type Database = {
         }
         Relationships: []
       }
+      keyword_rankings: {
+        Row: {
+          created_at: string | null
+          difficulty: number | null
+          id: string
+          keyword: string
+          page_path: string
+          position: number
+          search_volume: number | null
+          tracked_at: string
+        }
+        Insert: {
+          created_at?: string | null
+          difficulty?: number | null
+          id?: string
+          keyword: string
+          page_path: string
+          position: number
+          search_volume?: number | null
+          tracked_at?: string
+        }
+        Update: {
+          created_at?: string | null
+          difficulty?: number | null
+          id?: string
+          keyword?: string
+          page_path?: string
+          position?: number
+          search_volume?: number | null
+          tracked_at?: string
+        }
+        Relationships: []
+      }
       launch_cards: {
         Row: {
           blur_level: number | null
@@ -266,6 +299,51 @@ export type Database = {
         }
         Relationships: []
       }
+      page_performance: {
+        Row: {
+          accessibility_score: number | null
+          created_at: string | null
+          cumulative_layout_shift: number | null
+          first_contentful_paint_ms: number | null
+          id: string
+          largest_contentful_paint_ms: number | null
+          load_time_ms: number | null
+          page_path: string
+          performance_score: number | null
+          recorded_at: string
+          seo_score: number | null
+          time_to_interactive_ms: number | null
+        }
+        Insert: {
+          accessibility_score?: number | null
+          created_at?: string | null
+          cumulative_layout_shift?: number | null
+          first_contentful_paint_ms?: number | null
+          id?: string
+          largest_contentful_paint_ms?: number | null
+          load_time_ms?: number | null
+          page_path: string
+          performance_score?: number | null
+          recorded_at?: string
+          seo_score?: number | null
+          time_to_interactive_ms?: number | null
+        }
+        Update: {
+          accessibility_score?: number | null
+          created_at?: string | null
+          cumulative_layout_shift?: number | null
+          first_contentful_paint_ms?: number | null
+          id?: string
+          largest_contentful_paint_ms?: number | null
+          load_time_ms?: number | null
+          page_path?: string
+          performance_score?: number | null
+          recorded_at?: string
+          seo_score?: number | null
+          time_to_interactive_ms?: number | null
+        }
+        Relationships: []
+      }
       qr_codes: {
         Row: {
           created_at: string | null
@@ -383,6 +461,60 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      seo_analytics: {
+        Row: {
+          avg_position: number | null
+          clicks: number | null
+          country: string | null
+          created_at: string | null
+          ctr: number | null
+          device_type: string | null
+          id: string
+          impressions: number | null
+          keywords: string[] | null
+          meta_description: string | null
+          page_path: string
+          page_title: string | null
+          recorded_at: string
+          traffic_source: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          avg_position?: number | null
+          clicks?: number | null
+          country?: string | null
+          created_at?: string | null
+          ctr?: number | null
+          device_type?: string | null
+          id?: string
+          impressions?: number | null
+          keywords?: string[] | null
+          meta_description?: string | null
+          page_path: string
+          page_title?: string | null
+          recorded_at?: string
+          traffic_source?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          avg_position?: number | null
+          clicks?: number | null
+          country?: string | null
+          created_at?: string | null
+          ctr?: number | null
+          device_type?: string | null
+          id?: string
+          impressions?: number | null
+          keywords?: string[] | null
+          meta_description?: string | null
+          page_path?: string
+          page_title?: string | null
+          recorded_at?: string
+          traffic_source?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       shipping_fallback_settings: {
         Row: {
