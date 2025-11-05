@@ -41,7 +41,6 @@ export const ProductsTable = () => {
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [sortField, setSortField] = useState<SortField | null>(null);
   const [sortDirection, setSortDirection] = useState<SortDirection>(null);
-  const [showOnlyWebsiteProducts, setShowOnlyWebsiteProducts] = useState(true);
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -84,7 +83,12 @@ export const ProductsTable = () => {
   const { data: rawProducts, isLoading } = useQuery({
     queryKey: ['admin-products', search],
     queryFn: async () => {
-      let query = supabase.from('woocommerce_products').select('*').order('name');
+      let query = supabase
+        .from('woocommerce_products')
+        .select('*')
+        .eq('visible', true)
+        .eq('in_stock', true)
+        .order('name');
       
       if (search) {
         query = query.ilike('name', `%${search}%`);
@@ -96,12 +100,7 @@ export const ProductsTable = () => {
     },
   });
 
-  // Filter and sort products
-  const filteredProducts = rawProducts?.filter(product => 
-    !showOnlyWebsiteProducts || isOnShopPage(product.slug)
-  );
-
-  const products = filteredProducts ? [...filteredProducts].sort((a, b) => {
+  const products = rawProducts ? [...rawProducts].sort((a, b) => {
     if (!sortField || !sortDirection) return 0;
 
     let aValue: any;
@@ -181,7 +180,7 @@ export const ProductsTable = () => {
       <div className="mb-6 flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold mb-2">Products</h1>
-          <p className="text-muted-foreground">Manage your product catalog</p>
+          <p className="text-muted-foreground">Showing shop-visible products only (visible & in stock)</p>
         </div>
         <Button asChild>
           <Link to="/admin/products/new">
@@ -191,7 +190,7 @@ export const ProductsTable = () => {
         </Button>
       </div>
 
-      <div className="mb-6 flex gap-4 items-center">
+      <div className="mb-6">
         <div className="relative max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
@@ -201,13 +200,6 @@ export const ProductsTable = () => {
             className="pl-10"
           />
         </div>
-        <Button
-          variant={showOnlyWebsiteProducts ? "default" : "outline"}
-          onClick={() => setShowOnlyWebsiteProducts(!showOnlyWebsiteProducts)}
-          className="whitespace-nowrap"
-        >
-          {showOnlyWebsiteProducts ? "Website Products Only" : "Show All Products"}
-        </Button>
       </div>
 
       <div className="border rounded-lg">
