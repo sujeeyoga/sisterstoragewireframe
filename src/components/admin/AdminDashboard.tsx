@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
 import { OrderDrawer } from './OrderDrawer';
+import { CheckoutFlowTester } from './CheckoutFlowTester';
 
 type DateRangePreset = 'today' | '7d' | '30d' | '90d' | 'custom';
 
@@ -900,6 +901,9 @@ export const AdminDashboard = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Checkout Flow Tester */}
+      <CheckoutFlowTester />
 
       {/* Product Stats */}
       <Card>
