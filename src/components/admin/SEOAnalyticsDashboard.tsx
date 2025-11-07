@@ -17,6 +17,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { SEODataSync } from "./SEODataSync";
 
 const SEOAnalyticsDashboard = () => {
   const [dateRange, setDateRange] = useState({
@@ -33,6 +34,9 @@ const SEOAnalyticsDashboard = () => {
 
   return (
     <div className="space-y-6">
+      {/* SEO Data Sync Tool */}
+      <SEODataSync />
+
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
