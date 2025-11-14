@@ -278,14 +278,16 @@ const getStallionRates = async (address: Address, supabase: any, packageInfo: an
             postal_code: address.postalCode || '',
             country_code: 'CA',
           },
-          parcel: {
-            length: packageInfo.length || 25,
-            width: packageInfo.width || 20,
-            height: packageInfo.height || 10,
-            weight: (packageInfo.weight || 500) / 1000, // Convert g to kg
-            description: 'Bangle Storage Box',
-            value: packageInfo.value || 50,
-          },
+          // Stallion API expects flat structure at root level
+          weight: (packageInfo.weight || 500) / 1000, // Convert g to kg
+          weight_unit: 'kg',
+          length: packageInfo.length || 25,
+          width: packageInfo.width || 20,
+          height: packageInfo.height || 10,
+          size_unit: 'cm',
+          package_contents: 'merchandise',
+          value: packageInfo.value || 50,
+          currency: 'CAD',
         },
       },
     });
