@@ -16,7 +16,6 @@ import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
 import { OrderDrawer } from './OrderDrawer';
 import { CheckoutFlowTester } from './CheckoutFlowTester';
-import { FixChitChatsOrders } from './FixChitChatsOrders';
 import { ShippingZoneTester } from './ShippingZoneTester';
 import { ShippingAudit } from './ShippingAudit';
 
@@ -907,9 +906,6 @@ export const AdminDashboard = () => {
 
       {/* Checkout Flow Tester */}
       <CheckoutFlowTester />
-
-      {/* Fix ChitChats Orders */}
-      <FixChitChatsOrders />
 
       {/* Shipping Zone Tester */}
       <ShippingZoneTester />
