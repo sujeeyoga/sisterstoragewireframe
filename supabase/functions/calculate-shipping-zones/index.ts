@@ -246,6 +246,101 @@ const transformChitChatsRates = (chitchatsData: any, subtotal: number): any[] =>
     .sort((a, b) => a.rate_amount - b.rate_amount); // Sort by postage cost
 };
 
+/**
+ * Calls Stallion API to get real-time Canadian shipping rates
+ */
+const getStallionRates = async (address: Address, supabase: any, packageInfo: any = {}): Promise<any> => {
+  try {
+    console.log('🇨🇦 Fetching Stallion rates for Canadian address:', {
+      city: address.city,
+      province: address.province,
+      postalCode: address.postalCode,
+      packageWeight: packageInfo.weight,
+      packageDimensions: `${packageInfo.length}x${packageInfo.width}x${packageInfo.height}`,
+    });
+    
+    const { data, error } = await supabase.functions.invoke('stallion-express', {
+      body: {
+        action: 'get-rates',
+        data: {
+          from_address: {
+            company: 'Sister Storage',
+            address_line_1: '123 Main St',
+            city: 'Toronto',
+            province_code: 'ON',
+            postal_code: 'M4C1B5',
+            country_code: 'CA',
+          },
+          to_address: {
+            address_line_1: '123 Customer St',
+            city: address.city || 'Unknown',
+            province_code: address.province || 'ON',
+            postal_code: address.postalCode || '',
+            country_code: 'CA',
+          },
+          parcel: {
+            length: packageInfo.length || 25,
+            width: packageInfo.width || 20,
+            height: packageInfo.height || 10,
+            weight: (packageInfo.weight || 500) / 1000, // Convert g to kg
+            description: 'Bangle Storage Box',
+            value: packageInfo.value || 50,
+          },
+        },
+      },
+    });
+
+    if (error) {
+      console.error('❌ Stallion API error:', error);
+      return null;
+    }
+
+    console.log('✅ Stallion API response:', data);
+    return data;
+  } catch (error) {
+    console.error('❌ Error calling Stallion API:', error);
+    return null;
+  }
+};
+
+/**
+ * Transforms Stallion rates to our rate format
+ */
+const transformStallionRates = (stallionData: any, subtotal: number): any[] => {
+  // Stallion returns: { success: true, data: { rates: [...] } }
+  const rates = stallionData?.data?.rates || stallionData?.rates || [];
+
+  if (!Array.isArray(rates) || rates.length === 0) {
+    console.log('⚠️ No rates in Stallion response');
+    return [];
+  }
+
+  console.log(`📦 Processing ${rates.length} Stallion rates`);
+
+  return rates
+    .map((rate: any, index: number) => {
+      const postageFee = parseFloat(rate.postage_fee || rate.rate || '0');
+      const carrierCost = parseFloat(rate.carrier_cost || rate.postage_fee || rate.rate || '0');
+      const name = rate.service_name || rate.postage_description || rate.carrier || 'Standard Shipping';
+
+      console.log(`Stallion rate: ${name} - $${carrierCost.toFixed(2)}`);
+
+      return {
+        id: `stallion_${rate.service_code || rate.carrier || index}`,
+        method_name: name,
+        rate_amount: parseFloat(carrierCost.toFixed(2)),
+        carrier_cost: parseFloat(carrierCost.toFixed(2)),
+        is_free: false,
+        free_threshold: null,
+        display_order: index + 1,
+        carrier: rate.carrier || 'Stallion Express',
+        service_code: rate.service_code || rate.postage_type || 'STANDARD',
+        delivery_estimate: rate.delivery_estimate || rate.delivery_time || 'Business days',
+      };
+    })
+    .sort((a, b) => a.rate_amount - b.rate_amount); // Sort by cost
+};
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -400,14 +495,53 @@ Deno.serve(async (req) => {
       let applicableRates = [];
       let rateSource = 'database';
 
-      // For US or UK zones, try to get real-time ChitChats rates
+      // Detect zone types
       const isUSZone = address.country?.toUpperCase() === 'US' || 
                        matchedRule.rule_value?.toUpperCase() === 'US';
       const isUKZone = address.country?.toUpperCase() === 'GB' || 
                        address.country?.toUpperCase() === 'UK' ||
                        matchedRule.rule_value?.toUpperCase() === 'GB';
+      const isCADomestic = address.country?.toUpperCase() === 'CA' && 
+                           matchedRule.rule_value?.toUpperCase() !== 'US' &&
+                           matchedRule.rule_value?.toUpperCase() !== 'GB';
 
-      if (isUSZone || isUKZone) {
+      // For Canadian domestic orders, try to get real-time Stallion rates
+      if (isCADomestic) {
+        console.log('🇨🇦 Canadian domestic order detected - fetching Stallion API rates');
+        const stallionData = await getStallionRates(address, supabase, packageInfo);
+        
+        if (stallionData?.success) {
+          const stallionRates = transformStallionRates(stallionData, subtotal);
+          
+          if (stallionRates.length > 0) {
+            // Apply free threshold logic to Stallion rates if zone has thresholds
+            applicableRates = stallionRates.map(stallionRate => {
+              // Check if this zone has free shipping thresholds
+              const zoneRateWithThreshold = matchedZone.rates.find(r => r.free_threshold);
+              
+              if (zoneRateWithThreshold?.free_threshold && subtotal >= zoneRateWithThreshold.free_threshold) {
+                console.log(`✅ Free shipping applied (subtotal $${subtotal} >= threshold $${zoneRateWithThreshold.free_threshold})`);
+                return {
+                  ...stallionRate,
+                  rate_amount: 0, // Customer pays $0
+                  is_free: true,
+                  free_threshold: zoneRateWithThreshold.free_threshold,
+                  // Keep carrier_cost for backend tracking
+                };
+              }
+              
+              return stallionRate;
+            });
+            
+            rateSource = 'stallion';
+            console.log(`✅ Using Stallion rates for Canadian domestic:`, applicableRates);
+          }
+        } else {
+          console.log('⚠️ Stallion API failed - will use database fallback');
+        }
+      }
+      // For US or UK zones, try to get real-time ChitChats rates
+      else if (isUSZone || isUKZone) {
         const zoneLabel = isUSZone ? 'US' : 'UK';
         console.log(`${zoneLabel} zone detected, fetching ChitChats rates with package info:`, packageInfo);
         const chitchatsData = await getChitChatsRates(address, supabase, packageInfo);
@@ -419,7 +553,7 @@ Deno.serve(async (req) => {
         }
       }
 
-      // Fall back to appropriate rates if ChitChats failed
+      // Fall back to database rates if API calls failed
       if (applicableRates.length === 0) {
         if (isUSZone) {
           // US fallback: Higher safety rate if ChitChats completely fails
@@ -445,9 +579,24 @@ Deno.serve(async (req) => {
             display_order: rate.display_order,
           }));
           rateSource = 'database';
+        } else if (isCADomestic) {
+          // Canadian fallback: Use database rates if Stallion fails
+          console.log('⚠️ Stallion API failed - using database fallback rates');
+          applicableRates = matchedZone.rates.map(rate => {
+            const isFree = rate.free_threshold && subtotal >= rate.free_threshold;
+            return {
+              id: rate.id,
+              method_name: rate.method_name,
+              rate_amount: isFree ? 0 : rate.rate_amount,
+              is_free: isFree,
+              free_threshold: rate.free_threshold,
+              display_order: rate.display_order,
+            };
+          });
+          rateSource = 'database_fallback';
         } else {
-          // Non-US/UK: use database rates with free threshold logic
-          console.log('Using database rates for non-US zone');
+          // Other zones: use database rates with free threshold logic
+          console.log('Using database rates for zone:', matchedZone.name);
           
           applicableRates = matchedZone.rates.map(rate => {
             const isFree = 
