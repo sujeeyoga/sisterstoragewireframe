@@ -30,6 +30,7 @@ interface Order {
   fulfillment_status?: string;
   tracking_number?: string;
   archived_at?: string;
+  stallion_cost?: number;
 }
 
 interface OrderCardProps {
@@ -107,16 +108,17 @@ export function OrderCard({ order, onView, isSelected, onSelect, selectionMode, 
         ? order.total - order.subtotal - order.tax
         : undefined;
   
-  const subtotal = order.subtotal !== undefined
-    ? order.subtotal
-    : regularItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const location = order.shipping?.city || 'Unknown';
+  const countryCode = order.shipping?.country || 'Unknown';
+  const flag = getCountryFlag(countryCode);
   
-  const total = `${order.currency || 'USD'} $${Number(order.total || 0).toFixed(2)}`;
   const relativeTime = getRelativeTime(order.date_created);
+  const isArchived = !!order.archived_at;
   
-  // Extract shipping carrier info
-  const isChitChats = shippingItem?.name?.toLowerCase().includes('chit chats');
-  const isStallion = shippingItem?.name?.toLowerCase().includes('stallion');
+  const carrierCost = order.stallion_cost;
+  const shippingMargin = shipping !== undefined && carrierCost !== undefined 
+    ? shipping - carrierCost 
+    : undefined;
   
   const getFulfillmentInfo = () => {
     if (order.tracking_number) {
