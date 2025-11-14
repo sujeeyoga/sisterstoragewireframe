@@ -75,6 +75,15 @@ export default function AdminShippingAnalytics() {
 
   const hasStallionData = analytics.ordersWithStallionCost > 0;
   const isProfit = analytics.shippingProfit >= 0;
+  
+  const costTrackingRate = analytics.totalOrders > 0
+    ? Math.round((analytics.ordersWithStallionCost / analytics.totalOrders) * 100)
+    : 0;
+  
+  // Calculate data completeness
+  const costTrackingRate = analytics.totalOrders > 0
+    ? Math.round((analytics.ordersWithStallionCost / analytics.totalOrders) * 100)
+    : 0;
 
   return (
     <div className="space-y-6">

@@ -60,6 +60,7 @@ interface OrderDrawerProps {
     customer_email?: string;
     stripe_payment_intent_id?: string;
     refund_amount?: number;
+    stallion_cost?: number;
   };
   open: boolean;
   onClose: () => void;

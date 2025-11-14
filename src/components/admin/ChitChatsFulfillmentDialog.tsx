@@ -161,6 +161,10 @@ export function ChitChatsFulfillmentDialog({ order, open, onClose, onSuccess }: 
 
       setShipmentData(shipment);
 
+      // Extract actual carrier cost from ChitChats response
+      const actualCost = parseFloat(shipment.postage_fee || shipment.rate || '0');
+      console.log('ChitChats carrier cost:', actualCost);
+
       // Update order in the correct database table
       const tableName = order.source === 'stripe' ? 'orders' : 'woocommerce_orders';
       await supabase
@@ -170,6 +174,7 @@ export function ChitChatsFulfillmentDialog({ order, open, onClose, onSuccess }: 
           tracking_number: shipment.tracking_number || shipment.id,
           shipping_label_url: shipment.label_url || shipment.postage_label_url,
           fulfilled_at: new Date().toISOString(),
+          stallion_cost: actualCost,
           status: order.source === 'stripe' ? 'processing' : 'completed'
         })
         .eq('id', String(order.id));
