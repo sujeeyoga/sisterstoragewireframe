@@ -8,6 +8,7 @@ import { useStoreDiscount } from '@/hooks/useStoreDiscount';
 import { useLocationDetection } from '@/hooks/useLocationDetection';
 import { useShippingZones } from '@/hooks/useShippingZones';
 import { useActiveCartTracking } from '@/hooks/useActiveCartTracking';
+import FreeShippingThresholdBar from '@/components/cart/FreeShippingThresholdBar';
 
 const CartDrawer = () => {
   const { items, removeItem, updateQuantity, totalItems, subtotal, isOpen, setIsOpen } = useCart();
@@ -145,6 +146,18 @@ const CartDrawer = () => {
               <ShoppingBag className="mr-2 h-5 w-5 text-[hsl(var(--brand-pink))]" />
               Shopping Cart ({totalItems})
             </h2>
+            
+            {/* Free Shipping Threshold Bar */}
+            {items.length > 0 && (
+              <div className="mt-3">
+                <FreeShippingThresholdBar
+                  cartSubtotal={discountedSubtotal}
+                  isGTA={isGTA}
+                  country={country || 'CA'}
+                  isLoading={locationLoading}
+                />
+              </div>
+            )}
           </div>
           
           {/* Two Column Layout - Mobile: stacked, Desktop: side-by-side */}

@@ -23,6 +23,9 @@ import { Textarea } from '@/components/ui/textarea';
 import Logo from '@/components/ui/Logo';
 import SaleBanner from '@/components/SaleBanner';
 import { ArrowLeft, ShoppingBag, CreditCard, Truck, Trash2, Tag, Loader2, Package, Gift, Mail, MapPin, Plus, Minus } from 'lucide-react';
+import { PaymentForm } from '@/components/checkout/PaymentForm';
+import ReadOnlyAddressField from '@/components/checkout/ReadOnlyAddressField';
+import FreeShippingThresholdBar from '@/components/cart/FreeShippingThresholdBar';
 
 // Province mapping and validation
 const PROVINCE_MAP: Record<string, string> = {
@@ -133,6 +136,28 @@ const formatPostalCode = (code: string, country: string = 'CA'): string => {
   }
   
   return cleaned;
+};
+
+// Check if the city/province is in GTA
+const checkIsGTA = (city?: string, province?: string): boolean => {
+  if (!city || !province) return false;
+
+  const cityLower = city.toLowerCase();
+  const provinceLower = province.toLowerCase();
+
+  // Must be in Ontario
+  if (!provinceLower.includes('on') && !provinceLower.includes('ontario')) return false;
+
+  // GTA cities
+  const gtaCities = [
+    'toronto', 'north york', 'scarborough', 'etobicoke', 'york',
+    'mississauga', 'brampton', 'markham', 'vaughan', 'richmond hill',
+    'oakville', 'burlington', 'milton', 'pickering', 'ajax',
+    'whitby', 'oshawa', 'aurora', 'newmarket', 'king city',
+    'caledon', 'georgina', 'halton hills', 'orangeville'
+  ];
+
+  return gtaCities.some(gtaCity => cityLower.includes(gtaCity));
 };
 
 const Checkout = () => {
@@ -989,6 +1014,14 @@ const Checkout = () => {
                 <CardTitle>Order Summary</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
+                {/* Free Shipping Threshold Bar */}
+                <FreeShippingThresholdBar
+                  cartSubtotal={discountedSubtotal}
+                  isGTA={checkIsGTA(formData.city, formData.province)}
+                  country={formData.country}
+                  isLoading={false}
+                />
+                
                 {/* Cart Items */}
                 <div className="space-y-4 max-h-80 overflow-y-auto">
                   {items.map((item) => (
