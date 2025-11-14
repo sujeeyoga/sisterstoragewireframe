@@ -42,7 +42,7 @@ export const OrderNotificationPopup = ({
           animate={{ x: 0, opacity: 1 }}
           exit={{ x: 400, opacity: 0 }}
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          className="fixed bottom-6 right-6 z-50 w-80 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow-2xl border border-blue-400/50 overflow-hidden"
+          className="fixed bottom-24 right-6 z-[10000] w-80 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow-2xl border border-blue-400/50 overflow-hidden"
         >
           {/* MSN-style header */}
           <div className="bg-blue-600/80 px-4 py-2 flex items-center justify-between border-b border-blue-400/30">
