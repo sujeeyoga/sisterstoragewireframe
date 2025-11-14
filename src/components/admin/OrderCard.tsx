@@ -314,6 +314,17 @@ export function OrderCard({ order, onView, isSelected, onSelect, selectionMode, 
                 <span className="text-xs">${shipping.toFixed(2)}</span>
               </span>
             )}
+            {order.stallion_cost !== null && order.stallion_cost !== undefined && (
+              <span className="ml-2 inline-flex items-center gap-1">
+                <Badge variant="outline" className="text-[10px] px-1.5 py-0">Carrier</Badge>
+                <span className="text-xs">${Number(order.stallion_cost).toFixed(2)}</span>
+                {shipping > 0 && (
+                  <span className={`text-xs font-medium ${shipping - Number(order.stallion_cost) >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                    ({shipping - Number(order.stallion_cost) >= 0 ? '+' : ''}{(shipping - Number(order.stallion_cost)).toFixed(2)})
+                  </span>
+                )}
+              </span>
+            )}
           </div>
           
           <div className="text-[13px] text-muted-foreground flex items-center gap-1">

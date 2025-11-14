@@ -151,8 +151,17 @@ export const useChitChatsShipping = () => {
       if (!data?.success) throw new Error(data?.error || 'Failed to create shipment');
 
       console.log('ChitChats shipment created:', data.data);
+      
+      // Extract carrier cost from response
+      const carrierCost = data.data?.postage_cost || data.data?.rate || null;
+      const carrierCurrency = 'CAD'; // ChitChats uses CAD
+      
       toast.success('Shipping label created successfully');
-      return data.data;
+      return {
+        ...data.data,
+        carrier_cost: carrierCost,
+        carrier_currency: carrierCurrency
+      };
     } catch (error: any) {
       console.error('Error creating ChitChats shipment:', error);
       toast.error(`Failed to create shipment: ${error.message}`);

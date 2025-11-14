@@ -223,7 +223,16 @@ export const useStallionShipping = () => {
         description: 'Shipment created successfully',
       });
 
-      return data.data;
+      // Extract carrier cost from response
+      const carrierCost = data.data?.charges?.total || data.data?.postage_fee || null;
+      const carrierCurrency = data.data?.charges?.currency || 'CAD';
+      console.log('Stallion carrier cost:', carrierCost, carrierCurrency);
+
+      return {
+        ...data.data,
+        carrier_cost: carrierCost,
+        carrier_currency: carrierCurrency
+      };
     } catch (error: any) {
       console.error('Error creating shipment:', error);
       toast({
