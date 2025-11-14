@@ -61,6 +61,8 @@ interface OrderDrawerProps {
     stripe_payment_intent_id?: string;
     refund_amount?: number;
     stallion_cost?: number;
+    carrier_name?: string;
+    carrier_cost_currency?: string;
   };
   open: boolean;
   onClose: () => void;
@@ -511,6 +513,80 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
             <Alert>
               <AlertDescription>
                 No shipping zone matched. Fallback rate may have been applied at checkout.
+              </AlertDescription>
+            </Alert>
+          )}
+          
+          {/* Carrier Cost & Margin Tracking */}
+          {order.stallion_cost && (
+            <div className="rounded-lg border-2 border-accent/20 bg-accent/5 p-4 space-y-3">
+              <Label className="text-sm font-semibold text-accent-foreground">Carrier Cost Tracking</Label>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-xs text-muted-foreground">Carrier</Label>
+                  <div className="font-medium">{order.carrier_name || 'Unknown'}</div>
+                </div>
+                <div>
+                  <Label className="text-xs text-muted-foreground">Carrier Cost</Label>
+                  <div className="font-medium">${Number(order.stallion_cost).toFixed(2)} {order.carrier_cost_currency || 'CAD'}</div>
+                </div>
+              </div>
+              
+              {(() => {
+                // Calculate shipping margin
+                let actualShipping = 0;
+                const shippingCostVal = (order as any).shipping_cost;
+                if (
+                  (typeof shippingCostVal === 'number' && Number.isFinite(shippingCostVal)) ||
+                  (typeof shippingCostVal === 'string' && !isNaN(parseFloat(shippingCostVal)))
+                ) {
+                  actualShipping = typeof shippingCostVal === 'number' ? shippingCostVal : parseFloat(shippingCostVal);
+                } else {
+                  const shippingValue = (order as any).shipping;
+                  if (
+                    (typeof shippingValue === 'number' && Number.isFinite(shippingValue)) ||
+                    (typeof shippingValue === 'string' && !isNaN(parseFloat(shippingValue)))
+                  ) {
+                    actualShipping = typeof shippingValue === 'number' ? shippingValue : parseFloat(shippingValue);
+                  } else {
+                    const shippingItem = order.line_items?.find((item: any) => 
+                      item.name?.toLowerCase().includes('shipping') ||
+                      item.name?.toLowerCase().includes('chit chats') ||
+                      item.name?.toLowerCase().includes('stallion')
+                    );
+                    actualShipping = shippingItem 
+                      ? (Number(shippingItem.quantity) * Number(shippingItem.price))
+                      : 0;
+                  }
+                }
+                
+                const carrierCost = Number(order.stallion_cost);
+                const margin = actualShipping - carrierCost;
+                const isNegative = margin < 0;
+                
+                return (
+                  <div className="pt-3 border-t border-accent/10">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label className="text-xs text-muted-foreground">Shipping Margin</Label>
+                        <div className="text-xs text-muted-foreground">Charged (${actualShipping.toFixed(2)}) - Cost (${carrierCost.toFixed(2)})</div>
+                      </div>
+                      <div className={`text-xl font-bold ${isNegative ? 'text-destructive' : 'text-green-600 dark:text-green-400'}`}>
+                        {isNegative ? '-' : '+'}${Math.abs(margin).toFixed(2)}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+            </div>
+          )}
+          
+          {!order.stallion_cost && order.fulfillment_status === 'fulfilled' && (
+            <Alert>
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                Carrier cost not tracked for this order. Use Stallion or ChitChats fulfillment to track costs.
               </AlertDescription>
             </Alert>
           )}

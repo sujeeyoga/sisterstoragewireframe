@@ -167,7 +167,7 @@ export function ChitChatsFulfillmentDialog({ order, open, onClose, onSuccess }: 
 
       // Update order in the correct database table
       const tableName = order.source === 'stripe' ? 'orders' : 'woocommerce_orders';
-      await supabase
+      const { error: updateError } = await supabase
         .from(tableName)
         .update({
           fulfillment_status: 'fulfilled',
@@ -175,6 +175,8 @@ export function ChitChatsFulfillmentDialog({ order, open, onClose, onSuccess }: 
           shipping_label_url: shipment.label_url || shipment.postage_label_url,
           fulfilled_at: new Date().toISOString(),
           stallion_cost: actualCost,
+          carrier_name: 'ChitChats',
+          carrier_cost_currency: 'CAD',
           status: order.source === 'stripe' ? 'processing' : 'completed'
         })
         .eq('id', String(order.id));
