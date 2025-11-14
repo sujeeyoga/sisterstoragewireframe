@@ -11,13 +11,14 @@ export const ResendConfirmationEmails = () => {
   const [resendingIds, setResendingIds] = useState<Set<string>>(new Set());
 
   const { data: orders, isLoading, refetch } = useQuery({
-    queryKey: ["recent-orders"],
+    queryKey: ["unfulfilled-orders"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("orders")
         .select("*")
+        .eq("fulfillment_status", "unfulfilled")
         .order("created_at", { ascending: false })
-        .limit(50);
+        .limit(100);
 
       if (error) throw error;
       return data;
@@ -54,9 +55,9 @@ export const ResendConfirmationEmails = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Resend Order Confirmation Emails</CardTitle>
+        <CardTitle>Resend Confirmation Emails - Unfulfilled Orders</CardTitle>
         <CardDescription>
-          Send confirmation emails to customers who may not have received them
+          Send confirmation emails to customers with unfulfilled orders ({orders?.length || 0} orders)
         </CardDescription>
       </CardHeader>
       <CardContent>
