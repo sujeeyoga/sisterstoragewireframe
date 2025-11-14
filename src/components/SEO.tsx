@@ -14,7 +14,7 @@ interface SEOProps {
 
 export const SEO = ({
   title = 'Sister Storage | Culture Without Clutter – Stylish Bangle & Keepsake Organizers',
-  description = 'Sister Storage offers premium bangle and jewelry organizers including our stackable 4-rod dust-free storage box. Ship to Canada, USA, and UK. Culture Without Clutter.',
+  description = 'Sister Storage offers premium bangle and jewelry organizers including our stackable 4-rod dust-free storage box. Ship to Canada and USA. UK shipping coming soon!',
   keywords = getGlobalKeywords(),
   image = 'https://storage.googleapis.com/gpt-engineer-file-uploads/8uQERUCGS1TCaXnOFIRH4upfJG73/social-images/social-1760066089943-sister storage logo.jpg',
   url = 'https://www.sisterstorage.com',

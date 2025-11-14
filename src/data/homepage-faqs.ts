@@ -9,7 +9,7 @@ export const homepageFAQs = [
   },
   {
     question: "Where do you ship?",
-    answer: "We ship to Canada, USA, and UK. Standard delivery takes 5-7 business days."
+    answer: "We ship to Canada and USA. UK shipping coming soon! Standard delivery takes 5-7 business days."
   },
   {
     question: "Are your organizers suitable for gold bangles?",
