@@ -1,14 +1,16 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { toast } from "sonner";
-import { Mail, RefreshCw } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
+import { Mail, RefreshCw, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 export const ResendConfirmationEmails = () => {
   const [resendingIds, setResendingIds] = useState<Set<string>>(new Set());
+  const [dismissedIds, setDismissedIds] = useState<Set<string>>(new Set());
+  const queryClient = useQueryClient();
 
   const { data: orders, isLoading, refetch } = useQuery({
     queryKey: ["unfulfilled-orders"],
@@ -35,10 +37,20 @@ export const ResendConfirmationEmails = () => {
 
       if (error) throw error;
 
-      toast.success(`Confirmation email resent to ${email}`);
+      toast({
+        title: "Email sent",
+        description: `Confirmation email resent to ${email}`,
+      });
+
+      // Dismiss the order after successful send
+      setDismissedIds(prev => new Set(prev).add(orderId));
     } catch (error: any) {
       console.error("Error resending email:", error);
-      toast.error(`Failed to resend email: ${error.message}`);
+      toast({
+        title: "Failed to send email",
+        description: error.message,
+        variant: "destructive",
+      });
     } finally {
       setResendingIds(prev => {
         const newSet = new Set(prev);
@@ -47,6 +59,17 @@ export const ResendConfirmationEmails = () => {
       });
     }
   };
+
+  const handleDismiss = (orderId: string) => {
+    setDismissedIds(prev => new Set(prev).add(orderId));
+    toast({
+      title: "Order dismissed",
+      description: "Order removed from the list",
+    });
+  };
+
+  // Filter out dismissed orders
+  const visibleOrders = orders?.filter(order => !dismissedIds.has(order.id));
 
   if (isLoading) {
     return <div>Loading orders...</div>;
@@ -57,12 +80,17 @@ export const ResendConfirmationEmails = () => {
       <CardHeader>
         <CardTitle>Resend Confirmation Emails - Unfulfilled Orders</CardTitle>
         <CardDescription>
-          Send confirmation emails to customers with unfulfilled orders ({orders?.length || 0} orders)
+          Send confirmation emails to customers with unfulfilled orders ({visibleOrders?.length || 0} orders)
         </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {orders?.map((order) => (
+          {visibleOrders?.length === 0 && (
+            <p className="text-center text-muted-foreground py-8">
+              No unfulfilled orders to display
+            </p>
+          )}
+          {visibleOrders?.map((order) => (
             <div
               key={order.id}
               className="flex items-center justify-between p-4 border rounded-lg"
@@ -81,24 +109,34 @@ export const ResendConfirmationEmails = () => {
                   </div>
                 </div>
               </div>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => handleResendEmail(order.id, order.customer_email, order.order_number)}
-                disabled={resendingIds.has(order.id)}
-              >
-                {resendingIds.has(order.id) ? (
-                  <>
-                    <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                    Sending...
-                  </>
-                ) : (
-                  <>
-                    <Mail className="w-4 h-4 mr-2" />
-                    Resend Email
-                  </>
-                )}
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => handleResendEmail(order.id, order.customer_email, order.order_number)}
+                  disabled={resendingIds.has(order.id)}
+                >
+                  {resendingIds.has(order.id) ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <Mail className="w-4 h-4 mr-2" />
+                      Resend Email
+                    </>
+                  )}
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => handleDismiss(order.id)}
+                  disabled={resendingIds.has(order.id)}
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
             </div>
           ))}
         </div>
