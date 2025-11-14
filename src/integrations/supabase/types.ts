@@ -1048,7 +1048,7 @@ export type Database = {
           shipping: Json | null
           total_spent: number | null
           updated_at: string | null
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           billing?: Json | null
@@ -1061,7 +1061,7 @@ export type Database = {
           shipping?: Json | null
           total_spent?: number | null
           updated_at?: string | null
-          user_id?: string | null
+          user_id: string
         }
         Update: {
           billing?: Json | null
@@ -1074,7 +1074,7 @@ export type Database = {
           shipping?: Json | null
           total_spent?: number | null
           updated_at?: string | null
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: []
       }

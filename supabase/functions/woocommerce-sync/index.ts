@@ -167,7 +167,29 @@ Deno.serve(async (req: Request) => {
 
     // ===== SYNC CUSTOMERS =====
     console.log("Starting customer sync...");
+    
+    // First, fetch all auth.users to match emails to user_ids
+    console.log("Fetching auth users for email matching...");
+    const { data: { users: authUsers }, error: authError } = await supabase.auth.admin.listUsers();
+    
+    if (authError) {
+      console.error("Failed to fetch auth users:", authError);
+    }
+    
+    // Create email -> user_id map (case-insensitive)
+    const emailToUserId = new Map<string, string>();
+    if (authUsers) {
+      authUsers.forEach(user => {
+        if (user.email) {
+          emailToUserId.set(user.email.toLowerCase(), user.id);
+        }
+      });
+      console.log(`Mapped ${emailToUserId.size} auth users by email`);
+    }
+    
     page = 1;
+    let skippedCustomers = 0;
+    
     while (true) {
       const customersUrl = `${apiBase}/wp-json/wc/v3/customers?per_page=${PER_PAGE}&page=${page}&consumer_key=${encodeURIComponent(consumerKey)}&consumer_secret=${encodeURIComponent(consumerSecret)}`;
 
@@ -182,9 +204,10 @@ Deno.serve(async (req: Request) => {
 
       if (!Array.isArray(data) || data.length === 0) break;
 
-      // Map to DB rows
+      // Map to DB rows with user_id matching
       const rows = data.map((c) => ({
         id: c.id,
+        user_id: emailToUserId.get(c.email.toLowerCase()) ?? null,
         email: c.email,
         first_name: c.first_name ?? null,
         last_name: c.last_name ?? null,
@@ -194,19 +217,35 @@ Deno.serve(async (req: Request) => {
         total_spent: c.total_spent ? Number(c.total_spent) : 0,
       }));
 
-      const { error: upsertError } = await supabase
-        .from("woocommerce_customers")
-        .upsert(rows, { onConflict: "id" });
+      // Filter out rows without user_id (required by NOT NULL constraint)
+      const validRows = rows.filter(r => r.user_id !== null);
+      const invalidCount = rows.length - validRows.length;
+      
+      if (invalidCount > 0) {
+        console.warn(`⚠️ Skipped ${invalidCount} customers without matching auth users on page ${page}`);
+        skippedCustomers += invalidCount;
+      }
 
-      if (upsertError) {
-        console.error("Customer upsert error:", upsertError);
-        // Continue anyway
-      } else {
-        customersProcessed += rows.length;
+      if (validRows.length > 0) {
+        const { error: upsertError } = await supabase
+          .from("woocommerce_customers")
+          .upsert(validRows, { onConflict: "id" });
+
+        if (upsertError) {
+          console.error("Customer upsert error:", upsertError);
+          // Continue anyway
+        } else {
+          customersProcessed += validRows.length;
+        }
       }
 
       if (data.length < PER_PAGE) break;
       page += 1;
+    }
+    
+    console.log(`✅ Synced ${customersProcessed} customers`);
+    if (skippedCustomers > 0) {
+      console.log(`⚠️ Skipped ${skippedCustomers} customers without matching auth accounts (use admin linking tool to resolve)`);
     }
     console.log(`Synced ${customersProcessed} customers`);
 
