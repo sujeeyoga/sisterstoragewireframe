@@ -42,12 +42,12 @@ const ShippingFAQ = () => {
     {
       category: 'international',
       question: 'Do you ship to the United Kingdom?',
-      answer: 'Absolutely! We ship to the UK with full tracking. Delivery typically takes 10-14 business days, though our carrier quotes 7-27 business days to account for customs processing. Shipping costs start from $11 CAD for individual items, with heavier bundles ranging from $26-$102 CAD.'
+      answer: 'UK shipping is coming soon! We are currently setting up our UK shipping logistics to ensure reliable delivery with tracking. Sign up for our newsletter to be notified when UK shipping launches.'
     },
     {
       category: 'international',
       question: 'Do you ship to other countries?',
-      answer: 'Currently, we ship to Canada, the United States, and the United Kingdom. We\'re working on expanding to additional countries. If you\'re located elsewhere, please contact us and we\'ll do our best to accommodate your order.'
+      answer: 'Currently, we ship to Canada and the United States. UK shipping is coming soon! We are working on expanding to additional countries. If you are located elsewhere, please contact us and we will do our best to accommodate your order.'
     },
     {
       category: 'international',
@@ -62,7 +62,7 @@ const ShippingFAQ = () => {
     {
       category: 'costs',
       question: 'Can I get free shipping on international orders?',
-      answer: 'Yes! International orders over $200 CAD qualify for free shipping to the US and UK. This is a great way to save on larger orders or when purchasing multiple items.'
+      answer: 'Yes! International orders over $200 CAD qualify for free shipping to the US. This is a great way to save on larger orders or when purchasing multiple items.'
     },
     {
       category: 'costs',
@@ -116,9 +116,9 @@ const ShippingFAQ = () => {
   return (
     <Layout>
       <SEO
-        title="Shipping FAQ | Sister Storage – Canada, USA & UK Delivery Information"
-        description="Find answers to all your shipping questions. Sister Storage ships to Canada, USA, and UK with tracking. Free shipping over $50 CAD (GTA) or $200 CAD (International)."
-        keywords="sister storage shipping, canada shipping, usa shipping, uk shipping, international delivery, free shipping, bangle organizer delivery, jewelry box shipping rates"
+        title="Shipping FAQ | Sister Storage – Canada & USA Delivery Information"
+        description="Find answers to all your shipping questions. Sister Storage ships to Canada and USA with tracking. UK shipping coming soon! Free shipping over $50 CAD (GTA) or $200 CAD (International)."
+        keywords="sister storage shipping, canada shipping, usa shipping, international delivery, free shipping, bangle organizer delivery, jewelry box shipping rates"
         url="/shipping-faq"
         type="article"
         structuredData={faqStructuredData}

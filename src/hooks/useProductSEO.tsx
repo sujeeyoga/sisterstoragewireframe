@@ -40,7 +40,7 @@ export const useProductSEO = (
     
     const descriptionText = product.description 
       ? `${product.description.substring(0, 140)}...` 
-      : `Shop ${product.name} - Tangle-free, dust-proof bangle storage from Sister Storage. Premium organizers that protect your bangles. Ships to Canada, USA, and UK.`;
+      : `Shop ${product.name} - Tangle-free, dust-proof bangle storage from Sister Storage. Premium organizers that protect your bangles. Ships to Canada and USA.`;
     metaDescription.content = descriptionText;
 
     // Set meta keywords

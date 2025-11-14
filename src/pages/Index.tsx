@@ -61,7 +61,7 @@ const Index = () => {
     <BaseLayout variant="standard" spacing="none" showFooter={true}>
       <SEO
         title="Sister Storage | Culture Without Clutter – Premium Bangle & Jewelry Organizers"
-        description="Sister Storage offers premium stackable bangle and jewelry organizers. Shop our 4-rod dust-free storage boxes. Ship to Canada, USA & UK. Culture Without Clutter."
+        description="Sister Storage offers premium stackable bangle and jewelry organizers. Shop our 4-rod dust-free storage boxes. Ship to Canada & USA. UK shipping coming soon!"
         keywords="sister storage, bangle organizer, jewelry storage box, 4 rod bangle storage, stackable jewelry organizer, south asian jewelry, cultural keepsakes, canadian jewelry storage, dust free organizer, bangle box"
         url="/"
         structuredData={structuredData}

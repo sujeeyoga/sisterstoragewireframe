@@ -25,7 +25,7 @@ export const shopFAQs = [
   },
   {
     question: "How long does delivery take?",
-    answer: "Standard shipping takes 5-7 business days to Canada, USA, and UK."
+    answer: "Standard shipping takes 5-7 business days to Canada and USA. UK shipping coming soon!"
   },
   {
     question: "Are your products in stock?",
