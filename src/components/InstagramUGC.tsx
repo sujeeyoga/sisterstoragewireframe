@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Instagram, Heart, MessageCircle, Share, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { burstPreloadVideos } from '@/lib/burstImagePreloader';
 
 const instagramPosts = [
   {
@@ -48,6 +49,17 @@ const InstagramUGC = () => {
   const [isAutoScrolling, setIsAutoScrolling] = useState(true);
   const reelRefs = useRef<(HTMLDivElement | null)[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Burst preload all videos on mount
+  useEffect(() => {
+    const videoUrls = instagramPosts
+      .filter(post => post.isVideo && post.video)
+      .map(post => post.video);
+    
+    burstPreloadVideos(videoUrls).then(() => {
+      console.log('🎥 All Instagram videos ready for instant playback');
+    });
+  }, []);
 
   // Auto-scroll through reels with improved timing
   useEffect(() => {
@@ -122,7 +134,7 @@ const InstagramUGC = () => {
                     muted
                     loop
                     playsInline
-                    preload="none"
+                    preload="auto"
                     title={`Sister Storage styled by @${post.username}`}
                   />
                 ) : (
