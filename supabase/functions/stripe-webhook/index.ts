@@ -18,7 +18,7 @@ function identifyLineItemType(itemName: string): 'product' | 'shipping' | 'tax' 
   // Common shipping provider and method keywords
   const providerKeywords = [
     'shipping', 'delivery', 'intelcom', 'canada post', 'canadapost', 'purolator',
-    'ups', 'fedex', 'dhl', 'stallion'
+    'ups', 'fedex', 'dhl', 'stallion', 'chit chats', 'chitchats'
   ];
   const methodKeywords = ['standard', 'express', 'expedited', 'priority'];
 
