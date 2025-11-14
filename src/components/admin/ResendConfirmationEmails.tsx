@@ -15,10 +15,15 @@ export const ResendConfirmationEmails = () => {
   const { data: orders, isLoading, refetch } = useQuery({
     queryKey: ["unfulfilled-orders"],
     queryFn: async () => {
+      // Only show unfulfilled orders from the last 7 days
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
       const { data, error } = await supabase
         .from("orders")
         .select("*")
         .eq("fulfillment_status", "unfulfilled")
+        .gte("created_at", sevenDaysAgo.toISOString())
         .order("created_at", { ascending: false })
         .limit(100);
 
@@ -80,7 +85,8 @@ export const ResendConfirmationEmails = () => {
       <CardHeader>
         <CardTitle>Resend Confirmation Emails - Unfulfilled Orders</CardTitle>
         <CardDescription>
-          Send confirmation emails to customers with unfulfilled orders ({visibleOrders?.length || 0} orders)
+          Recent unfulfilled orders from the last 7 days ({visibleOrders?.length || 0} orders). 
+          Orders automatically hide after email is sent.
         </CardDescription>
       </CardHeader>
       <CardContent>
