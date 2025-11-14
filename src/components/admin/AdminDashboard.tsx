@@ -17,6 +17,8 @@ import { toast } from 'sonner';
 import { OrderDrawer } from './OrderDrawer';
 import { CheckoutFlowTester } from './CheckoutFlowTester';
 import { FixChitChatsOrders } from './FixChitChatsOrders';
+import { ShippingZoneTester } from './ShippingZoneTester';
+import { ShippingAudit } from './ShippingAudit';
 
 type DateRangePreset = 'today' | '7d' | '30d' | '90d' | 'custom';
 
@@ -908,6 +910,12 @@ export const AdminDashboard = () => {
 
       {/* Fix ChitChats Orders */}
       <FixChitChatsOrders />
+
+      {/* Shipping Zone Tester */}
+      <ShippingZoneTester />
+
+      {/* Shipping Audit Report */}
+      <ShippingAudit />
 
       {/* Product Stats */}
       <Card>
