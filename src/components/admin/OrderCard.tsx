@@ -120,6 +120,15 @@ export function OrderCard({ order, onView, isSelected, onSelect, selectionMode, 
     ? shipping - carrierCost 
     : undefined;
   
+  const subtotal = order.subtotal !== undefined
+    ? order.subtotal
+    : regularItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  
+  const total = `${order.currency || 'USD'} $${Number(order.total || 0).toFixed(2)}`;
+  
+  const isChitChats = shippingItem?.name?.toLowerCase().includes('chit chats');
+  const isStallion = shippingItem?.name?.toLowerCase().includes('stallion');
+  
   const getFulfillmentInfo = () => {
     if (order.tracking_number) {
       return {
