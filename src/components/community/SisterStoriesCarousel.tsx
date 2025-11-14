@@ -5,7 +5,7 @@ import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carouse
 import { supabase } from '@/integrations/supabase/client';
 import { Play } from 'lucide-react';
 import Autoplay from 'embla-carousel-autoplay';
-import { useVideoPreloader } from '@/hooks/use-video-preloader';
+import { burstPreloadVideos } from '@/lib/burstImagePreloader';
 
 interface VideoStory {
   id: string;
@@ -25,14 +25,6 @@ export const SisterStoriesCarousel = () => {
   const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({});
 
   console.log('SisterStoriesCarousel: Rendering with', videoStories.length, 'videos, loading:', isLoading);
-
-  // Fetch videos from database
-  // Preload first video only
-  const firstVideoUrl = videoStories.length > 0 ? videoStories[0].video : '';
-  const { isAllLoaded: isFirstVideoLoaded } = useVideoPreloader({ 
-    videos: firstVideoUrl ? [firstVideoUrl] : [],
-    onAllLoaded: () => console.log('First video preloaded')
-  });
 
   const fetchVideos = useCallback(async () => {
     try {
@@ -88,6 +80,16 @@ export const SisterStoriesCarousel = () => {
   useEffect(() => {
     fetchVideos();
   }, [fetchVideos]);
+
+  // Burst preload ALL videos on mount
+  useEffect(() => {
+    if (videoStories.length === 0) return;
+    
+    const videoUrls = videoStories.map(story => story.video);
+    burstPreloadVideos(videoUrls).then(() => {
+      console.log('✅ All Sister Stories videos burst loaded');
+    });
+  }, [videoStories]);
 
   // Set up Intersection Observer for lazy loading
   useEffect(() => {
@@ -194,7 +196,7 @@ export const SisterStoriesCarousel = () => {
                       autoPlay={videoStories.indexOf(story) === 0}
                       loop
                       playsInline
-                      preload={videoStories.indexOf(story) === 0 ? "auto" : "metadata"}
+                      preload="auto"
                       controlsList="nodownload nofullscreen noremoteplayback"
                       disablePictureInPicture
                       style={{ 

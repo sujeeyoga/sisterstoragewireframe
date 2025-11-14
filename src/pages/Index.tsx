@@ -9,7 +9,7 @@ import { SEO } from "@/components/SEO";
 import { FAQSchema } from "@/components/seo/FAQSchema";
 import { homepageFAQs } from "@/data/homepage-faqs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { burstPreloadImages } from "@/lib/burstImagePreloader";
+import { burstPreloadImages, burstPreloadVideos } from "@/lib/burstImagePreloader";
 
 const Index = () => {
   // Ensure body scroll is enabled and burst load all homepage images
@@ -33,15 +33,24 @@ const Index = () => {
       'https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-13-scaled.jpg',
     ];
     
-    burstPreloadImages({
-      images: homepageImages,
-      priority: 'high',
-      onProgress: (loaded, total) => {
-        console.log(`📸 Loaded ${loaded}/${total} images`);
-      },
-      onComplete: () => {
-        console.log('✅ All homepage images burst loaded');
-      }
+    // Burst load homepage videos in parallel with images
+    const homepageVideos = [
+      '/lovable-uploads/sister-story-new.mp4',
+      '/lovable-uploads/sister-story-brown-girls-bangles.mp4'
+    ];
+    
+    // Load images and videos in parallel for fastest load time
+    Promise.all([
+      burstPreloadImages({
+        images: homepageImages,
+        priority: 'high',
+        onProgress: (loaded, total) => {
+          console.log(`📸 Loaded ${loaded}/${total} images`);
+        }
+      }),
+      burstPreloadVideos(homepageVideos)
+    ]).then(() => {
+      console.log('✅ All homepage media burst loaded (images + videos)');
     });
   }, []);
 
