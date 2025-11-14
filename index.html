@@ -22,10 +22,30 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
+    <!-- Preconnect to video CDN for burst loading -->
+    <link rel="preconnect" href="https://sisterstorage.com">
+    <link rel="preconnect" href="https://dl.snapcdn.app">
+    <link rel="dns-prefetch" href="https://dl.snapcdn.app">
+    
     <!-- Critical assets - highest priority for instant display -->
     <link rel="preload" href="/src/assets/sister-storage-logo-new.jpg" as="image" fetchpriority="high">
     <link rel="preload" href="/src/assets/hero-bg-main.jpg" as="image" fetchpriority="high">
     <link rel="preload" href="/src/assets/optimized/shop-hero.jpg" as="image" fetchpriority="high">
+    
+    <!-- Burst load: Organization Gallery images -->
+    <link rel="preload" href="/lovable-uploads/e1ae51b5-7916-4137-825e-7f197dff06a3.png" as="image">
+    <link rel="preload" href="/lovable-uploads/2a4c457a-7695-47d3-9912-ab2900c6ea25.png" as="image">
+    <link rel="preload" href="/lovable-uploads/0e5fe1c0-12f8-439f-94d5-ec1da8ca09c8.png" as="image">
+    
+    <!-- Burst load: Best Seller bundle images -->
+    <link rel="preload" href="/src/assets/optimized/starter-set.jpg" as="image">
+    <link rel="preload" href="/src/assets/optimized/sister-staples.jpg" as="image">
+    <link rel="preload" href="/src/assets/optimized/family-set.jpg" as="image">
+    
+    <!-- Burst load: Instagram post images -->
+    <link rel="preload" href="https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-23-scaled.jpg" as="image">
+    <link rel="preload" href="https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-31-scaled.jpg" as="image">
+    
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Dancing+Script:wght@400;500;600;700&display=swap" as="style">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Dancing+Script:wght@400;500;600;700&display=swap" rel="stylesheet">
     
