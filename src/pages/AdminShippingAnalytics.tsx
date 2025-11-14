@@ -79,11 +79,6 @@ export default function AdminShippingAnalytics() {
   const costTrackingRate = analytics.totalOrders > 0
     ? Math.round((analytics.ordersWithStallionCost / analytics.totalOrders) * 100)
     : 0;
-  
-  // Calculate data completeness
-  const costTrackingRate = analytics.totalOrders > 0
-    ? Math.round((analytics.ordersWithStallionCost / analytics.totalOrders) * 100)
-    : 0;
 
   return (
     <div className="space-y-6">
@@ -131,14 +126,23 @@ export default function AdminShippingAnalytics() {
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6 mt-6">
-          {!hasStallionData && (
-            <Alert>
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>
-                Stallion cost tracking is not yet configured. The profit/loss metrics will show once you start tracking actual Stallion shipping costs in order records.
-              </AlertDescription>
-            </Alert>
-          )}
+      {!hasStallionData && (
+        <Alert>
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            Carrier cost data not available. Enable Stallion/ChitChats fulfillment to track shipping costs.
+          </AlertDescription>
+        </Alert>
+      )}
+      
+      {hasStallionData && costTrackingRate < 100 && (
+        <Alert>
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            <strong>{costTrackingRate}% cost tracking</strong> - {analytics.totalOrders - analytics.ordersWithStallionCost} orders missing carrier cost data.
+          </AlertDescription>
+        </Alert>
+      )}
 
           {/* Key Metrics */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-6">
@@ -154,7 +158,7 @@ export default function AdminShippingAnalytics() {
               ${analytics.totalShippingRevenue.toFixed(2)}
             </div>
             <p className="text-xs text-muted-foreground mt-1">
-              From {analytics.totalOrders} orders
+              From {analytics.totalOrders} orders ({costTrackingRate}% cost tracked)
             </p>
           </CardContent>
         </Card>
@@ -171,7 +175,7 @@ export default function AdminShippingAnalytics() {
               ${analytics.averageShippingCost.toFixed(2)}
             </div>
             <p className="text-xs text-muted-foreground mt-1">
-              Per order average
+              {hasStallionData ? `Based on ${analytics.ordersWithStallionCost} tracked` : 'Per order average'}
             </p>
           </CardContent>
         </Card>
