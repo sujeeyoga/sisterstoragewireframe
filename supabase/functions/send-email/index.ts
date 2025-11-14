@@ -41,6 +41,8 @@ interface OrderConfirmationData {
     postal_code: string;
     country: string;
   };
+  carrierCost?: number;
+  tariffFees?: number;
 }
 
 interface ShippingNotificationData {
