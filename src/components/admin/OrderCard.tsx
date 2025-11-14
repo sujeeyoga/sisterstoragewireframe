@@ -31,6 +31,8 @@ interface Order {
   tracking_number?: string;
   archived_at?: string;
   stallion_cost?: number;
+  carrier_name?: string;
+  carrier_cost_currency?: string;
 }
 
 interface OrderCardProps {
@@ -119,6 +121,10 @@ export function OrderCard({ order, onView, isSelected, onSelect, selectionMode, 
   const shippingMargin = shipping !== undefined && carrierCost !== undefined 
     ? shipping - carrierCost 
     : undefined;
+  
+  const carrierInfo = order.carrier_name 
+    ? `${order.carrier_name} (${order.carrier_cost_currency || 'CAD'})`
+    : null;
   
   const subtotal = order.subtotal !== undefined
     ? order.subtotal

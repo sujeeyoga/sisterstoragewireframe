@@ -242,6 +242,8 @@ export function BulkFulfillmentDialog({ orderIds, open, onClose, onSuccess, onRe
             shipping_label_url: label.url,
             fulfilled_at: new Date().toISOString(),
             stallion_cost: actualStallionCost,
+            carrier_name: 'Stallion Express',
+            carrier_cost_currency: 'CAD',
             status: order.source === 'stripe' ? 'processing' : 'completed'
           })
           .eq('id', String(order.id));
