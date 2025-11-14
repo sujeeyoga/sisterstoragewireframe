@@ -42,31 +42,50 @@ function identifyLineItemType(itemName: string): 'product' | 'shipping' | 'tax' 
 }
 
 serve(async (req) => {
+  console.log("=== STRIPE WEBHOOK INVOKED ===");
+  console.log("Request method:", req.method);
+  console.log("Request URL:", req.url);
+  
   const signature = req.headers.get("stripe-signature");
   const webhookSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET");
 
-  if (!signature || !webhookSecret) {
-    return new Response("Missing signature or webhook secret", { status: 400 });
+  console.log("Signature present:", !!signature);
+  console.log("Webhook secret configured:", !!webhookSecret);
+
+  if (!signature) {
+    console.error("ERROR: Missing Stripe signature header");
+    return new Response("Missing Stripe signature", { status: 400 });
+  }
+
+  if (!webhookSecret) {
+    console.error("ERROR: STRIPE_WEBHOOK_SECRET not configured in edge function secrets");
+    return new Response("Webhook secret not configured", { status: 500 });
   }
 
   try {
     const body = await req.text();
+    console.log("Body length:", body.length);
+    
     const event = await stripe.webhooks.constructEventAsync(body, signature, webhookSecret);
 
-    console.log(`Webhook event received: ${event.type}`);
+    console.log(`✅ Webhook verified successfully: ${event.type}`);
 
     // Handle successful payment
     if (event.type === "checkout.session.completed") {
       const session = event.data.object as Stripe.Checkout.Session;
       
-      console.log("Processing checkout session:", session.id);
+      console.log("✅ Processing checkout session:", session.id);
+      console.log("Payment status:", session.payment_status);
+      console.log("Amount total:", session.amount_total);
 
       // Get customer details
       const customerEmail = session.customer_email || session.customer_details?.email;
       if (!customerEmail) {
-        console.error("No customer email found in session");
+        console.error("❌ ERROR: No customer email found in session");
         return new Response("No customer email", { status: 400 });
       }
+      
+      console.log("Customer email:", customerEmail);
 
       // Parse shipping address from metadata
       const shippingAddress = session.metadata?.shippingAddress 
@@ -191,6 +210,7 @@ serve(async (req) => {
 
       // Send order confirmation email asynchronously
       // Don't await this so webhook returns quickly
+      console.log("📧 Sending order confirmation email to:", customerEmail);
       supabase.functions.invoke(
         'send-email',
         {
@@ -202,12 +222,13 @@ serve(async (req) => {
         }
       ).then(({ data: emailResult, error: emailError }) => {
         if (emailError) {
-          console.error("Error sending email:", emailError);
+          console.error("❌ ERROR: Failed to send order confirmation email:", emailError);
         } else {
-          console.log("Order confirmation email sent successfully:", emailResult);
+          console.log("✅ SUCCESS: Order confirmation email sent successfully");
+          console.log("Email service response:", emailResult);
         }
       }).catch((error) => {
-        console.error("Failed to send order confirmation email:", error);
+        console.error("❌ CRITICAL: Exception while invoking send-email function:", error);
       });
 
       // Extract payment intent ID safely
@@ -226,6 +247,7 @@ serve(async (req) => {
       });
 
       // Check if order already exists (webhook idempotency)
+      console.log("🔍 Checking for duplicate orders with session:", session.id);
       const { data: existingOrder, error: checkError } = await supabase
         .from('orders')
         .select('id, order_number')
@@ -234,18 +256,25 @@ serve(async (req) => {
 
       if (checkError && checkError.code !== 'PGRST116') {
         // PGRST116 = no rows found, which is expected for new orders
-        console.error("Error checking for existing order:", checkError);
+        console.error("❌ ERROR checking for existing order:", checkError);
       }
 
       if (existingOrder) {
-        console.log(`Order already exists for session ${session.id}, skipping insert (order: ${existingOrder.order_number})`);
+        console.log(`⚠️ DUPLICATE: Order already exists for session ${session.id} (order: ${existingOrder.order_number})`);
         return new Response(JSON.stringify({ received: true, duplicate: true, order_number: existingOrder.order_number }), {
           headers: { "Content-Type": "application/json" },
           status: 200,
         });
       }
+      
+      console.log("✅ No duplicate found, proceeding with order creation");
 
       // Store order in database for admin tracking
+      console.log("📦 Creating order in database...");
+      console.log("Order number:", emailData.orderNumber);
+      console.log("Order total:", emailData.total);
+      console.log("Needs review:", needsReview);
+      
       const { error: orderError } = await supabase
         .from('orders')
         .insert({
@@ -265,11 +294,19 @@ serve(async (req) => {
         });
 
       if (orderError) {
-        console.error("Error storing order:", orderError);
+        console.error("❌ CRITICAL: Failed to store order in database:", orderError);
+        console.error("Order data:", JSON.stringify({ 
+          order_number: emailData.orderNumber, 
+          customer_email: customerEmail,
+          total: emailData.total 
+        }));
+        throw orderError; // Re-throw to trigger webhook retry
       } else {
-        console.log("Order stored successfully");
+        console.log("✅ SUCCESS: Order created in database");
+        console.log("Order number:", emailData.orderNumber);
         
         // Mark any abandoned carts as recovered
+        console.log("🛒 Checking for abandoned carts to mark as recovered...");
         const { data: abandonedCarts, error: cartFetchError } = await supabase
           .from('abandoned_carts')
           .select('id')
@@ -277,8 +314,9 @@ serve(async (req) => {
           .is('recovered_at', null);
         
         if (cartFetchError) {
-          console.error("Error fetching abandoned carts:", cartFetchError);
+          console.error("❌ Error fetching abandoned carts:", cartFetchError);
         } else if (abandonedCarts && abandonedCarts.length > 0) {
+          console.log(`Found ${abandonedCarts.length} abandoned cart(s) to recover`);
           const cartIds = abandonedCarts.map(cart => cart.id);
           const { error: updateError } = await supabase
             .from('abandoned_carts')
@@ -286,22 +324,39 @@ serve(async (req) => {
             .in('id', cartIds);
           
           if (updateError) {
-            console.error("Error updating abandoned carts:", updateError);
+            console.error("❌ Error marking abandoned carts as recovered:", updateError);
           } else {
-            console.log(`Marked ${abandonedCarts.length} abandoned cart(s) as recovered for ${customerEmail}`);
+            console.log(`✅ Marked ${abandonedCarts.length} abandoned cart(s) as recovered`);
           }
+        } else {
+          console.log("No abandoned carts found for this customer");
         }
       }
     }
 
+    console.log("=== WEBHOOK PROCESSED SUCCESSFULLY ===");
     return new Response(JSON.stringify({ received: true }), {
       headers: { "Content-Type": "application/json" },
       status: 200,
     });
-  } catch (error) {
-    console.error("Webhook error:", error);
+  } catch (error: any) {
+    console.error("❌❌❌ WEBHOOK PROCESSING FAILED ❌❌❌");
+    console.error("Error type:", error.constructor.name);
+    console.error("Error message:", error.message);
+    console.error("Error stack:", error.stack);
+    
+    // Check for specific error types
+    if (error.type === 'StripeSignatureVerificationError') {
+      console.error("⚠️ SIGNATURE VERIFICATION FAILED");
+      console.error("This usually means the webhook secret in Supabase doesn't match the one in Stripe");
+      console.error("Check: https://dashboard.stripe.com/webhooks");
+    }
+    
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        error: error.message,
+        type: error.type || error.constructor.name 
+      }),
       {
         headers: { "Content-Type": "application/json" },
         status: 400,
