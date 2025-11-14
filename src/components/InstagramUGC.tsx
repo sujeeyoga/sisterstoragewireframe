@@ -135,6 +135,7 @@ const InstagramUGC = () => {
                     loop
                     playsInline
                     preload="auto"
+                    crossOrigin="anonymous"
                     title={`Sister Storage styled by @${post.username}`}
                   />
                 ) : (

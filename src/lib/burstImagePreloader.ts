@@ -56,14 +56,23 @@ export const burstPreloadVideos = async (videoUrls: string[]) => {
       const video = document.createElement('video');
       video.preload = 'auto';
       video.muted = true;
+      video.crossOrigin = 'anonymous';
+      
+      // Add timeout for slow videos
+      const timeout = setTimeout(() => {
+        console.warn(`⚠️ Video timeout: ${src.substring(0, 50)}...`);
+        resolve();
+      }, 10000); // 10 second timeout
       
       video.addEventListener('canplaythrough', () => {
+        clearTimeout(timeout);
         console.log(`✅ Video ready: ${src.substring(0, 50)}...`);
         resolve();
       });
       
-      video.addEventListener('error', () => {
-        console.warn(`⚠️ Video preload failed: ${src.substring(0, 50)}...`);
+      video.addEventListener('error', (e) => {
+        clearTimeout(timeout);
+        console.error(`⚠️ Video preload failed: ${src.substring(0, 50)}...`, e);
         resolve();
       });
       
