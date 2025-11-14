@@ -13,6 +13,9 @@ serve(async (req) => {
   }
 
   try {
+    const requestBody = await req.json();
+    console.log('Raw checkout request body:', JSON.stringify(requestBody, null, 2));
+
     const { 
       items, 
       customerEmail, 
@@ -26,29 +29,37 @@ serve(async (req) => {
       subtotal,
       giftWrapping,
       subscribeNewsletter
-    } = await req.json();
+    } = requestBody;
     
-    console.log('Checkout request:', { 
-      items, 
+    console.log('Parsed checkout request:', { 
+      items: items?.length, 
       customerEmail, 
       customerPhone,
-      shippingAddress, 
+      hasShippingAddress: !!shippingAddress,
       shippingCost, 
       shippingMethod, 
       taxAmount, 
       taxRate, 
       province,
       subtotal,
-      giftWrapping,
+      hasGiftWrapping: !!giftWrapping,
       subscribeNewsletter
     });
     
-    if (!items || items.length === 0) {
-      throw new Error("Cart items are required");
+    // Validate required fields
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      console.error('Invalid items:', items);
+      throw new Error("Cart items are required and must be a non-empty array");
     }
 
-    if (!customerEmail) {
-      throw new Error("Customer email is required");
+    if (!customerEmail || typeof customerEmail !== 'string' || !customerEmail.trim()) {
+      console.error('Invalid customerEmail:', customerEmail);
+      throw new Error("Customer email is required and must be a valid string");
+    }
+
+    if (!shippingAddress || typeof shippingAddress !== 'object') {
+      console.error('Invalid shippingAddress:', shippingAddress);
+      throw new Error("Shipping address is required and must be an object");
     }
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
@@ -309,11 +320,22 @@ serve(async (req) => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Checkout error:", error);
-    return new Response(JSON.stringify({ error: error.message }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
+    console.error("Error details:", {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
     });
+    return new Response(
+      JSON.stringify({ 
+        error: error.message || 'Failed to create checkout',
+        errorType: error.name
+      }),
+      {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: error.message?.includes('required') || error.message?.includes('must be') ? 400 : 500,
+      }
+    );
   }
 });

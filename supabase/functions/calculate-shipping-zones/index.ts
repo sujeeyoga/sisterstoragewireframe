@@ -257,7 +257,31 @@ Deno.serve(async (req) => {
       Deno.env.get('SUPABASE_ANON_KEY') ?? ''
     );
 
-    const { address, subtotal, items = [] } = await req.json();
+    const requestBody = await req.json();
+    const { address, subtotal, items = [] } = requestBody;
+
+    // Validate required inputs
+    if (!address || typeof address !== 'object') {
+      console.error('Invalid address:', address);
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: 'Address is required and must be an object' 
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+      );
+    }
+
+    if (!address.country) {
+      console.error('Missing country in address:', address);
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: 'Country is required in shipping address' 
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+      );
+    }
 
     console.log('Calculating shipping for address:', address, 'subtotal:', subtotal, 'items:', items.length);
 
@@ -516,11 +540,23 @@ Deno.serve(async (req) => {
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error calculating shipping:', error);
+    console.error('Error details:', {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    });
     return new Response(
-      JSON.stringify({ success: false, error: error.message }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+      JSON.stringify({ 
+        success: false, 
+        error: error.message || 'Failed to calculate shipping',
+        errorType: error.name
+      }),
+      { 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }, 
+        status: error.message?.includes('required') ? 400 : 500 
+      }
     );
   }
 });
