@@ -71,9 +71,6 @@ const getZoneCountries = (zone: ShippingZone): string[] => {
     .map(r => r.rule_value.toUpperCase().trim());
 };
 
-// GTA zone ID - identifies the zone that should get free shipping over $50
-const GTA_ZONE_ID = 'aa000000-0000-0000-0000-000000000001';
-
 const matchesRule = (address: Address, rule: ShippingZoneRule): boolean => {
   const normalizedValue = rule.rule_value.toUpperCase().trim();
   
@@ -112,13 +109,11 @@ const matchAddressToZone = (
     }
     
     // CRITICAL: Country pre-validation to prevent cross-border city name collisions
-    // Before checking any rules, validate that the address country matches zone requirements
     const zoneCountries = getZoneCountries(zone);
     if (zoneCountries.length > 0 && !zoneCountries.includes('*')) {
       const addressCountry = address.country?.toUpperCase().trim();
       
       if (!addressCountry || !zoneCountries.includes(addressCountry)) {
-        // Country mismatch - skip this zone entirely to prevent false matches
         console.log(`🚫 Zone "${zone.name}" rejected - country mismatch:`, {
           zoneCountries,
           addressCountry,
@@ -128,7 +123,7 @@ const matchAddressToZone = (
             postalCode: address.postalCode
           }
         });
-        continue; // Skip to next zone
+        continue;
       }
       
       console.log(`✅ Zone "${zone.name}" country validated:`, {
@@ -137,16 +132,38 @@ const matchAddressToZone = (
       });
     }
     
-    // Country is valid (or zone has no country restriction), proceed with rule matching
+    // Find the best matching rule for this zone
+    let bestRuleMatch: { rule: ShippingZoneRule; priority: number } | null = null;
+    const hasNonCountryRules = zone.rules.some(r => r.rule_type !== 'country');
+    
     for (const rule of zone.rules) {
       if (matchesRule(address, rule)) {
         const rulePriority = getRulePriority(rule.rule_type);
-        const totalPriority = zone.priority + rulePriority;
         
-        if (!bestMatch || totalPriority > bestMatch.priority) {
-          bestMatch = { zone, matchedRule: rule, priority: totalPriority };
+        // Track the best rule match for this zone
+        if (!bestRuleMatch || rulePriority > bestRuleMatch.priority) {
+          bestRuleMatch = { rule, priority: rulePriority };
         }
-        break;
+      }
+    }
+    
+    // If zone has non-country rules but only matched on country, skip it
+    if (bestRuleMatch && hasNonCountryRules && bestRuleMatch.rule.rule_type === 'country') {
+      console.log(`⚠️ Zone "${zone.name}" skipped - country-only match when specific rules exist`);
+      continue;
+    }
+    
+    // Update best overall match if this zone is better
+    if (bestRuleMatch) {
+      const totalPriority = zone.priority + bestRuleMatch.priority;
+      
+      if (!bestMatch || totalPriority > bestMatch.priority) {
+        bestMatch = { 
+          zone, 
+          matchedRule: bestRuleMatch.rule, 
+          priority: totalPriority 
+        };
+        console.log(`✅ New best match: "${zone.name}" (rule: ${bestRuleMatch.rule.rule_type}, priority: ${totalPriority})`);
       }
     }
   }
@@ -405,25 +422,13 @@ Deno.serve(async (req) => {
           }));
           rateSource = 'database';
         } else {
-          // Non-US: use database rates
+          // Non-US/UK: use database rates with free threshold logic
           console.log('Using database rates for non-US zone');
           
-          // Check if this is the GTA zone and free shipping applies
-          const isGTAZone = matchedZone.id === GTA_ZONE_ID;
-          const gtaFreeShipping = isGTAZone && subtotal >= 50;
-          
-          if (gtaFreeShipping) {
-            console.log('🎉 GTA Free Shipping unlocked! (subtotal >= $50, matched to GTA zone)');
-          }
-          
           applicableRates = matchedZone.rates.map(rate => {
-            // Check database free threshold first
-            const meetsDatabaseThreshold = 
+            const isFree = 
               rate.free_threshold !== null && 
               subtotal >= rate.free_threshold;
-            
-            // Apply GTA free shipping or database threshold
-            const isFree = gtaFreeShipping || meetsDatabaseThreshold;
             
             return {
               id: rate.id,
@@ -432,10 +437,9 @@ Deno.serve(async (req) => {
               is_free: isFree,
               free_threshold: rate.free_threshold,
               display_order: rate.display_order,
-              gta_free_shipping_applied: gtaFreeShipping,
             };
           });
-          rateSource = gtaFreeShipping ? 'gta_free_shipping' : 'database';
+          rateSource = 'database';
         }
       }
 
