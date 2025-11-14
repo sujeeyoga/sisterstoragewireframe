@@ -622,13 +622,19 @@ Deno.serve(async (req) => {
 
       // Apply $145 free shipping threshold for non-GTA Canada and US
       const FREE_SHIPPING_THRESHOLD = 145;
+      const GTA_ZONE_IDS = [
+        '11111111-1111-1111-1111-111111111111', // Toronto & GTA
+        'aa000000-0000-0000-0000-000000000001'  // Toronto/GTA
+      ];
+      
+      const isGTAZone = GTA_ZONE_IDS.includes(matchedZone.id);
       const isCanadaNonGTA = 
         address.country?.toUpperCase() === 'CA' && 
-        matchedRule.rule_value !== 'GTA';
+        !isGTAZone;
       const isUS = address.country?.toUpperCase() === 'US';
 
       if ((isCanadaNonGTA || isUS) && subtotal >= FREE_SHIPPING_THRESHOLD) {
-        console.log(`🎉 Free shipping unlocked! Cart $${subtotal} ≥ $${FREE_SHIPPING_THRESHOLD}`);
+        console.log(`🎉 Free shipping unlocked! Cart $${subtotal} ≥ $${FREE_SHIPPING_THRESHOLD} (Zone: ${matchedZone.name})`);
         
         // Set rate to $0 but preserve carrier_cost for profit tracking
         applicableRates = applicableRates.map(rate => ({
@@ -637,6 +643,8 @@ Deno.serve(async (req) => {
           is_free: true,
           free_threshold: FREE_SHIPPING_THRESHOLD,
         }));
+      } else if (isGTAZone) {
+        console.log(`📍 GTA zone - using zone's own free shipping threshold (not $145)`);
       }
 
       return new Response(
