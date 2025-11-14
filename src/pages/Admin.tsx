@@ -2,6 +2,8 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { AdminDashboard } from '@/components/admin/AdminDashboard';
 import AdminAnalytics from '@/pages/AdminAnalytics';
+import { useOrderNotifications } from '@/hooks/useOrderNotifications';
+import { OrderNotificationPopup } from '@/components/admin/OrderNotificationPopup';
 import AdminConversionAnalytics from '@/pages/AdminConversionAnalytics';
 import AdminVisitorAnalytics from '@/pages/AdminVisitorAnalytics';
 import AdminAbandonedCheckouts from '@/pages/AdminAbandonedCheckouts';
@@ -40,6 +42,8 @@ import AdminSEOAnalytics from '@/pages/AdminSEOAnalytics';
 import { ResendConfirmationEmails } from '@/components/admin/ResendConfirmationEmails';
 
 const Admin = () => {
+  const { notification, clearNotification } = useOrderNotifications();
+  
   // TODO: Re-enable admin role check when ready
   // const { data: hasAdminRole, isLoading } = useQuery({
   //   queryKey: ['user-role'],
@@ -57,8 +61,9 @@ const Admin = () => {
   // });
 
   return (
-    <AdminLayout>
-      <Routes>
+    <>
+      <AdminLayout>
+        <Routes>
         <Route index element={<AdminDashboard />} />
         <Route path="analytics" element={<AdminAnalytics />} />
         <Route path="analytics/conversion" element={<AdminConversionAnalytics />} />
@@ -100,6 +105,18 @@ const Admin = () => {
         <Route path="*" element={<Navigate to="/admin" replace />} />
       </Routes>
     </AdminLayout>
+
+    {/* Order Notification Popup */}
+    {notification && (
+      <OrderNotificationPopup
+        orderNumber={notification.orderNumber}
+        customerName={notification.customerName}
+        total={notification.total}
+        itemCount={notification.itemCount}
+        onClose={clearNotification}
+      />
+    )}
+  </>
   );
 };
 
