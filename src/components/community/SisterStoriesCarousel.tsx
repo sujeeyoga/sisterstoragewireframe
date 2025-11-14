@@ -6,6 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Play } from 'lucide-react';
 import Autoplay from 'embla-carousel-autoplay';
 import { burstPreloadVideos } from '@/lib/burstImagePreloader';
+import { StoriesCarouselSkeleton } from '@/components/skeletons/StoriesCarouselSkeleton';
 
 interface VideoStory {
   id: string;
@@ -133,21 +134,7 @@ export const SisterStoriesCarousel = () => {
   };
 
   if (isLoading) {
-    return (
-      <div className="w-full">
-        <div className="container-custom">
-          <div className="mb-8">
-            <h3 className="text-2xl md:text-3xl font-bold mb-2">Sister Stories</h3>
-            <p className="text-muted-foreground">Loading sister stories...</p>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[1, 2, 3].map(i => (
-              <Skeleton key={i} className="aspect-[9/16] w-full" />
-            ))}
-          </div>
-        </div>
-      </div>
-    );
+    return <StoriesCarouselSkeleton />;
   }
 
   if (videoStories.length === 0) {
