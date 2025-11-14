@@ -34,6 +34,8 @@ interface OrderConfirmationEmailProps {
     postal_code: string;
     country: string;
   };
+  carrierCost?: number;
+  tariffFees?: number;
 }
 
 export const OrderConfirmationEmail = ({
@@ -46,7 +48,14 @@ export const OrderConfirmationEmail = ({
   tax,
   total,
   shippingAddress,
-}: OrderConfirmationEmailProps) => (
+  carrierCost,
+  tariffFees,
+}: OrderConfirmationEmailProps) => {
+  const isInternational = shippingAddress.country !== 'CA' && shippingAddress.country !== 'Canada';
+  const baseShippingRate = tariffFees ? shipping - tariffFees : shipping;
+  const showShippingBreakdown = tariffFees && tariffFees > 0;
+
+  return (
   <Html>
     <Head />
     <Preview>Your Sister Storage order #{orderNumber} has been confirmed</Preview>
@@ -104,14 +113,45 @@ export const OrderConfirmationEmail = ({
               <Text style={totalValue}>${subtotal.toFixed(2)}</Text>
             </Column>
           </Row>
-          <Row>
-            <Column>
-              <Text style={totalLabel}>Shipping:</Text>
-            </Column>
-            <Column style={alignRight}>
-              <Text style={totalValue}>${shipping.toFixed(2)}</Text>
-            </Column>
-          </Row>
+          
+          {showShippingBreakdown ? (
+            <>
+              <Row>
+                <Column>
+                  <Text style={totalLabel}>Base Shipping Rate:</Text>
+                </Column>
+                <Column style={alignRight}>
+                  <Text style={totalValue}>${baseShippingRate.toFixed(2)}</Text>
+                </Column>
+              </Row>
+              <Row>
+                <Column>
+                  <Text style={{...totalLabel, color: '#ea580c'}}>Tariff & Customs Fees:</Text>
+                </Column>
+                <Column style={alignRight}>
+                  <Text style={{...totalValue, color: '#ea580c'}}>+${tariffFees.toFixed(2)}</Text>
+                </Column>
+              </Row>
+              <Row>
+                <Column>
+                  <Text style={totalLabel}>Total Shipping:</Text>
+                </Column>
+                <Column style={alignRight}>
+                  <Text style={totalValue}>${shipping.toFixed(2)}</Text>
+                </Column>
+              </Row>
+            </>
+          ) : (
+            <Row>
+              <Column>
+                <Text style={totalLabel}>Shipping:</Text>
+              </Column>
+              <Column style={alignRight}>
+                <Text style={totalValue}>${shipping.toFixed(2)}</Text>
+              </Column>
+            </Row>
+          )}
+          
           <Row>
             <Column>
               <Text style={totalLabel}>Tax:</Text>
@@ -129,6 +169,34 @@ export const OrderConfirmationEmail = ({
             </Column>
           </Row>
         </Section>
+
+        {showShippingBreakdown && (
+          <>
+            <Section style={tariffNotice}>
+              <Text style={tariffNoticeText}>
+                <strong>About Your Shipping Costs</strong>
+              </Text>
+              <Text style={tariffNoticeText}>
+                Your order is being shipped internationally to {shippingAddress.country}. 
+                Due to current international trade policies and tariff regulations, 
+                additional customs and tariff fees of ${tariffFees.toFixed(2)} have been 
+                applied to your shipping cost.
+              </Text>
+              <Text style={tariffNoticeText}>
+                The total shipping cost of ${shipping.toFixed(2)} includes:
+              </Text>
+              <Text style={tariffNoticeText}>
+                • Base carrier shipping rate: ${baseShippingRate.toFixed(2)}<br />
+                • Tariff & customs fees: ${tariffFees.toFixed(2)}
+              </Text>
+              <Text style={tariffNoticeText}>
+                These rates are calculated based on live carrier pricing at the time of your order 
+                and include all applicable international fees. We're committed to transparency in 
+                our pricing and showing you exactly what you're paying for.
+              </Text>
+            </Section>
+          </>
+        )}
 
         <Hr style={hr} />
 
@@ -148,7 +216,8 @@ export const OrderConfirmationEmail = ({
       </Container>
     </Body>
   </Html>
-);
+  );
+};
 
 export default OrderConfirmationEmail;
 
@@ -266,4 +335,22 @@ const footer = {
   lineHeight: "22px",
   marginTop: "30px",
   textAlign: "center" as const,
+};
+
+const tariffNotice = {
+  backgroundColor: "#fff7ed",
+  border: "1px solid #fed7aa",
+  borderRadius: "6px",
+  padding: "16px",
+  marginTop: "16px",
+  marginBottom: "16px",
+};
+
+const tariffNoticeText = {
+  color: "#9a3412",
+  fontFamily:
+    "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
+  fontSize: "13px",
+  lineHeight: "20px",
+  margin: "8px 0",
 };
