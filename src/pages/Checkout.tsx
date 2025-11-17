@@ -300,9 +300,16 @@ const Checkout = () => {
     setSelectedShippingRate('');
   };
 
-  // Check if manual address entry is complete for "Calculate Shipping" button
+  // Check if manual address entry is complete and valid for "Calculate Shipping" button
   const isManualAddressComplete = Boolean(
-    formData.address && formData.city && formData.province && formData.postalCode
+    formData.address && 
+    formData.city && 
+    formData.province && 
+    formData.postalCode &&
+    !validationErrors.address &&
+    !validationErrors.city &&
+    !validationErrors.province &&
+    !validationErrors.postalCode
   );
 
 
