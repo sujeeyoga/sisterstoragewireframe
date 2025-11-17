@@ -310,83 +310,44 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
           
           {/* Actual Charged Shipping */}
           <div className="rounded-lg border-2 border-primary/20 bg-primary/5 p-4">
-            {shippingInfo?.rateDetails ? (
-              <div className="space-y-3">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1">
-                    <Label className="text-sm font-semibold text-primary">Actual Charged Shipping</Label>
-                    <div className="text-xs text-muted-foreground mt-1">Amount customer paid at checkout</div>
-                  </div>
-                  <div className="text-2xl font-bold text-primary shrink-0">
-                    {(() => {
-                      const src = shippingInfo.rateDetails.source as string | undefined;
-                      const code = src === 'chitchats' ? 'USD' : src === 'stallion' ? 'CAD' : (order.currency || 'CAD');
-                      return `$${shippingInfo.rateDetails.rateAmount.toFixed(2)} ${code}`;
-                    })()}
-                  </div>
-                </div>
-                <div className="pt-2 border-t border-primary/10">
-                  <div className="font-medium text-sm">{shippingInfo.rateDetails.methodName}</div>
-                  {shippingInfo.rateDetails.source && (
-                    <div className="text-xs text-muted-foreground mt-1">
-                      Source: {shippingInfo.rateDetails.source === 'stallion'
-                        ? 'Stallion API (CAD)'
-                        : shippingInfo.rateDetails.source === 'chitchats'
-                          ? 'Chit Chats API (USD)'
-                          : 'Database'}
-                    </div>
-                  )}
-                  {((shippingInfo.rateDetails as any)?.delivery_estimate) && (
-                    <div className="text-xs text-muted-foreground mt-1">
-                      {(shippingInfo.rateDetails as any).delivery_estimate}
-                    </div>
-                  )}
-                </div>
-              </div>
-            ) : (
-              <div className="flex items-center justify-between">
-                <div>
+            <div className="space-y-3">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1">
                   <Label className="text-sm font-semibold text-primary">Actual Charged Shipping</Label>
                   <div className="text-xs text-muted-foreground mt-1">Amount customer paid at checkout</div>
                 </div>
-                <div className="text-2xl font-bold text-primary">
+                <div className="text-2xl font-bold text-primary shrink-0">
                   {(() => {
-                    // Prefer explicit shipping cost if provided by the caller mapping
-                    const shippingCostVal = (order as any).shipping_cost;
-                    if (
-                      (typeof shippingCostVal === 'number' && Number.isFinite(shippingCostVal)) ||
-                      (typeof shippingCostVal === 'string' && !isNaN(parseFloat(shippingCostVal)))
-                    ) {
-                      const amt = typeof shippingCostVal === 'number' ? shippingCostVal : parseFloat(shippingCostVal);
-                      return `$${amt.toFixed(2)} ${order.currency || 'USD'}`;
-                    }
-
-                    // Next, check if there's a dedicated shipping amount field named `shipping`
-                    const shippingValue = (order as any).shipping;
-                    if (
-                      (typeof shippingValue === 'number' && Number.isFinite(shippingValue)) ||
-                      (typeof shippingValue === 'string' && !isNaN(parseFloat(shippingValue)))
-                    ) {
-                      const amt = typeof shippingValue === 'number' ? shippingValue : parseFloat(shippingValue);
-                      return `$${amt.toFixed(2)} ${order.currency || 'USD'}`;
-                    }
-                    
-                    // Otherwise, find shipping item in line_items (WooCommerce orders)
-                    const shippingItem = order.line_items?.find((item: any) => 
-                      item.name?.toLowerCase().includes('shipping') ||
-                      item.name?.toLowerCase().includes('chit chats') ||
-                      item.name?.toLowerCase().includes('stallion')
-                    );
-                    
-                    const actualShipping = shippingItem 
-                      ? (Number(shippingItem.quantity) * Number(shippingItem.price))
-                      : 0;
-                      
-                    return `$${actualShipping.toFixed(2)} ${order.currency || 'USD'}`;
+                    // Always show the actual charged amount from database
+                    const shippingValue = (order as any).shipping ?? 0;
+                    const amt = typeof shippingValue === 'number' ? shippingValue : parseFloat(shippingValue || '0');
+                    return `$${amt.toFixed(2)} ${order.currency || 'CAD'}`;
                   })()}
                 </div>
               </div>
-            )}
+              
+              {/* Show current zone calculation as comparison if different from actual */}
+              {shippingInfo?.rateDetails && (() => {
+                const actualCharged = (order as any).shipping ?? 0;
+                const currentZoneRate = shippingInfo.rateDetails.rateAmount;
+                const isDifferent = Math.abs(actualCharged - currentZoneRate) > 0.01;
+                
+                return isDifferent ? (
+                  <div className="pt-2 border-t border-primary/10">
+                    <div className="text-xs font-medium text-amber-600">
+                      ⚠️ Note: Current zone config would charge ${currentZoneRate.toFixed(2)}
+                    </div>
+                    <div className="text-xs text-muted-foreground mt-1">
+                      {shippingInfo.rateDetails.methodName} • Source: {shippingInfo.rateDetails.source === 'stallion'
+                        ? 'Stallion'
+                        : shippingInfo.rateDetails.source === 'chitchats'
+                          ? 'ChitChats'
+                          : 'Database'}
+                    </div>
+                  </div>
+                ) : null;
+              })()}
+            </div>
           </div>
 
           {/* Current Rate Information */}
