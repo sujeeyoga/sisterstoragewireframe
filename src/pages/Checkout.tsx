@@ -933,7 +933,11 @@ const Checkout = () => {
                   <CardContent>
                     <RadioGroup value={selectedShippingRate} onValueChange={setSelectedShippingRate}>
                       <div className="grid grid-cols-1 gap-3">
-                        {shippingRates.map((rate: any) => (
+                        {(() => {
+                          // If all rates are free, show only the first one
+                          const allFree = shippingRates.every((rate: any) => rate.is_free || rate.rate_amount === 0);
+                          const displayRates = allFree ? [shippingRates[0]] : shippingRates;
+                          return displayRates.map((rate: any) => (
                           <div key={rate.id} className={`flex items-center space-x-2 border-2 rounded-lg p-4 transition-colors hover:border-primary ${
                             selectedShippingRate === rate.id 
                               ? 'bg-primary/10 border-primary shadow-md' 
@@ -977,7 +981,8 @@ const Checkout = () => {
                               </div>
                             </Label>
                           </div>
-                        ))}
+                        ));
+                        })()}
                       </div>
                     </RadioGroup>
                   </CardContent>
