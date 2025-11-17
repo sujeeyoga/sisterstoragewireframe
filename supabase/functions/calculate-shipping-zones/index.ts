@@ -542,9 +542,10 @@ Deno.serve(async (req) => {
           console.log('⚠️ Stallion API failed - will use database fallback');
         }
       }
-      // For US or UK zones, try to get real-time ChitChats rates
-      else if (isUSZone || isUKZone) {
-        const zoneLabel = isUSZone ? 'US' : 'UK';
+      // For UK zones, try to get real-time ChitChats rates
+      // US zones now use database rates only (flat $30)
+      else if (isUKZone) {
+        const zoneLabel = 'UK';
         console.log(`${zoneLabel} zone detected, fetching ChitChats rates with package info:`, packageInfo);
         const chitchatsData = await getChitChatsRates(address, supabase, packageInfo);
         
@@ -553,22 +554,26 @@ Deno.serve(async (req) => {
           rateSource = 'chitchats';
           console.log(`Using ChitChats rates for ${zoneLabel}:`, applicableRates);
         }
+      } else if (isUSZone) {
+        console.log('US zone detected - using database flat rate');
       }
 
       // Fall back to database rates if API calls failed
       if (applicableRates.length === 0) {
         if (isUSZone) {
-          // US fallback: Higher safety rate if ChitChats completely fails
-          console.log('⚠️ ChitChats API failed - using US safety fallback: $35');
-          applicableRates = [{
-            id: 'us_safety_fallback',
-            method_name: 'Standard Shipping (Estimated)',
-            rate_amount: 35,
-            is_free: false,
-            free_threshold: null,
-            display_order: 0,
-          }];
-          rateSource = 'us_safety_fallback';
+          // US: Use database rates (flat $30)
+          console.log('Using database rates for US zone');
+          applicableRates = matchedZone.rates
+            .filter(r => r.enabled)
+            .map(rate => ({
+              id: rate.id,
+              method_name: rate.method_name,
+              rate_amount: rate.rate_amount,
+              is_free: false,
+              free_threshold: rate.free_threshold,
+              display_order: rate.display_order,
+            }));
+          rateSource = 'database';
         } else if (isUKZone) {
           // UK fallback: Use database rates if ChitChats fails
           console.log('⚠️ ChitChats API failed for UK - using database rates');
@@ -620,7 +625,7 @@ Deno.serve(async (req) => {
 
       console.log('Matched zone:', matchedZone.name, 'rates:', applicableRates, 'source:', rateSource);
 
-      // Apply $145 free shipping threshold for non-GTA Canada and US
+      // Apply $145 free shipping threshold for non-GTA Canada only (US uses database rates)
       const FREE_SHIPPING_THRESHOLD = 145;
       const GTA_ZONE_IDS = [
         '11111111-1111-1111-1111-111111111111', // Toronto & GTA
@@ -631,9 +636,8 @@ Deno.serve(async (req) => {
       const isCanadaNonGTA = 
         address.country?.toUpperCase() === 'CA' && 
         !isGTAZone;
-      const isUS = address.country?.toUpperCase() === 'US';
 
-      if ((isCanadaNonGTA || isUS) && subtotal >= FREE_SHIPPING_THRESHOLD) {
+      if (isCanadaNonGTA && subtotal >= FREE_SHIPPING_THRESHOLD) {
         console.log(`🎉 Free shipping unlocked! Cart $${subtotal} ≥ $${FREE_SHIPPING_THRESHOLD} (Zone: ${matchedZone.name})`);
         
         // Set rate to $0 but preserve carrier_cost for profit tracking
