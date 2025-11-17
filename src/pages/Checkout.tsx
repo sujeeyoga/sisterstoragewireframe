@@ -934,9 +934,9 @@ const Checkout = () => {
                     <RadioGroup value={selectedShippingRate} onValueChange={setSelectedShippingRate}>
                       <div className="grid grid-cols-1 gap-3">
                         {(() => {
-                          // If all rates are free, show only the first one
+                          // If all rates are free, show only the first one; otherwise show max 3 options
                           const allFree = shippingRates.every((rate: any) => rate.is_free || rate.rate_amount === 0);
-                          const displayRates = allFree ? [shippingRates[0]] : shippingRates;
+                          const displayRates = allFree ? [shippingRates[0]] : shippingRates.slice(0, 3);
                           return displayRates.map((rate: any) => (
                           <div key={rate.id} className={`flex items-center space-x-2 border-2 rounded-lg p-4 transition-colors hover:border-primary ${
                             selectedShippingRate === rate.id 
