@@ -68,3 +68,6 @@ verify_jwt = false
 
 [functions.add-first-sister-story]
 verify_jwt = false
+
+[functions.fix-product-images]
+verify_jwt = false
