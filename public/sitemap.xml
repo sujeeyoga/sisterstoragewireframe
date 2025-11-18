@@ -164,6 +164,38 @@
     <priority>0.8</priority>
   </url>
 
+  <!-- SEO Guides -->
+  <url>
+    <loc>https://www.sisterstorage.com/guides/jewelry-organizers-south-asian-women</loc>
+    <lastmod>2025-01-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.sisterstorage.com/guides/bangle-storage-ideas</loc>
+    <lastmod>2025-01-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.sisterstorage.com/guides/bangle-box-buyers-guide</loc>
+    <lastmod>2025-01-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.sisterstorage.com/guides/indian-jewelry-storage-solutions</loc>
+    <lastmod>2025-01-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.sisterstorage.com/guides/cultural-storage-solutions-south-asian-homes</loc>
+    <lastmod>2025-01-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
   <!-- Legal Pages -->
   <url>
     <loc>https://www.sisterstorage.com/privacy-policy</loc>
