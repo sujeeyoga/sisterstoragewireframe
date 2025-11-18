@@ -6,6 +6,8 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
 import EnhancedLogo from '@/components/ui/enhanced-logo';
+import FreeShippingCartIndicator from '@/components/cart/FreeShippingCartIndicator';
+import { useLocationDetection } from '@/hooks/useLocationDetection';
 
 interface NavbarProps {
   position?: number;
@@ -14,9 +16,10 @@ interface NavbarProps {
 const Navbar = ({ position = 0 }: NavbarProps) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isMobile = useIsMobile();
-  const { totalItems, isOpen: isCartOpen, setIsOpen: setCartOpen } = useCart();
+  const { totalItems, subtotal, isOpen: isCartOpen, setIsOpen: setCartOpen } = useCart();
   const navigate = useNavigate();
   const location = useLocation();
+  const { isGTA, country, isLoading: locationLoading } = useLocationDetection();
   
   // Hide cart icon on checkout page or when cart is open
   const shouldHideCart = location.pathname === '/checkout' || isCartOpen;
@@ -82,23 +85,31 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
         {/* Right: Cart and Menu */}
         <div className="justify-self-end shrink-0 flex items-center gap-2">
           {!shouldHideCart && (
-            <button
-              onClick={() => {
-                setCartOpen(true);
-                setMobileMenuOpen(false);
-              }}
-              className="p-2 text-black hover:bg-black/10 rounded relative focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] min-h-[40px] min-w-[40px] flex items-center justify-center"
-              aria-label="Open cart"
-            >
-              <ShoppingBag className="h-5 w-5" />
-              {totalItems > 0 && (
-                <span 
-                  className="absolute -top-1 -right-1 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center font-semibold bg-[hsl(var(--brand-pink))]"
-                >
-                  {totalItems}
-                </span>
-              )}
-            </button>
+            <div className="flex items-center gap-2">
+              <FreeShippingCartIndicator
+                cartSubtotal={subtotal}
+                isGTA={isGTA}
+                country={country}
+                isLoading={locationLoading}
+              />
+              <button
+                onClick={() => {
+                  setCartOpen(true);
+                  setMobileMenuOpen(false);
+                }}
+                className="p-2 text-black hover:bg-black/10 rounded relative focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] min-h-[40px] min-w-[40px] flex items-center justify-center"
+                aria-label="Open cart"
+              >
+                <ShoppingBag className="h-5 w-5" />
+                {totalItems > 0 && (
+                  <span 
+                    className="absolute -top-1 -right-1 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center font-semibold bg-[hsl(var(--brand-pink))]"
+                  >
+                    {totalItems}
+                  </span>
+                )}
+              </button>
+            </div>
           )}
           <button 
             className="lg:hidden p-2.5 text-black focus:outline-none hover:bg-[hsl(var(--brand-pink)/0.1)] rounded-full min-h-[40px] min-w-[40px] flex items-center justify-center focus:ring-2 focus:ring-[hsl(var(--brand-pink))]"
