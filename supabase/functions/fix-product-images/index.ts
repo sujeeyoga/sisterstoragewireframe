@@ -48,6 +48,36 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Fix Bundle 2 - broken sisterstorage.com URL
+    await supabaseClient
+      .from('woocommerce_products')
+      .update({
+        images: [{ 
+          src: 'https://shop.sisterstorage.com/wp-content/uploads/2024/11/bundle2.jpg' 
+        }]
+      })
+      .eq('id', 25814128)
+
+    // Fix Bundle 3 - broken sisterstorage.com URL
+    await supabaseClient
+      .from('woocommerce_products')
+      .update({
+        images: [{ 
+          src: 'https://shop.sisterstorage.com/wp-content/uploads/2024/11/bunfle3.jpg' 
+        }]
+      })
+      .eq('id', 25814130)
+
+    // Fix Bridesmaid bundle - broken sisterstorage.com URL
+    await supabaseClient
+      .from('woocommerce_products')
+      .update({
+        images: [{ 
+          src: 'https://shop.sisterstorage.com/wp-content/uploads/2025/06/Product-Catalog-Website-1.png' 
+        }]
+      })
+      .eq('id', 25814951)
+
     return new Response(
       JSON.stringify({ success: true, message: 'Product images fixed successfully' }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
