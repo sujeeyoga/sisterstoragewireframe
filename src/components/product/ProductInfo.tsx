@@ -122,10 +122,13 @@ const ProductInfo = ({ product, quantity, setQuantity, selectedSleeve, setSelect
       
       {/* Quantity & Stock Section */}
       <div className="space-y-2">
-        <SleeveSelector
-          selectedSleeve={selectedSleeve}
-          setSelectedSleeve={setSelectedSleeve}
-        />
+        {/* Show sleeve selector only for single rod products */}
+        {rodCount === "1" && (
+          <SleeveSelector
+            selectedSleeve={selectedSleeve}
+            setSelectedSleeve={setSelectedSleeve}
+          />
+        )}
         
         <QuantitySelector 
           quantity={quantity}
