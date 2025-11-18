@@ -85,37 +85,35 @@ const QuickAddProducts = () => {
         {recommendedProducts.map((product) => {
           const isAdded = addedItems.has(product.id);
           
-          // Debug: Log the raw image data
-          console.log('Product:', product.name);
-          console.log('Raw images:', product.images);
-          console.log('First image type:', typeof product.images?.[0]);
-          console.log('First image value:', product.images?.[0]);
-          
           let imageUrl = '';
           const firstImage = product.images?.[0];
           
           if (typeof firstImage === 'string') {
             imageUrl = firstImage;
           } else if (firstImage && typeof firstImage === 'object') {
-            // Try different object properties
             const imgObj = firstImage as any;
             imageUrl = imgObj.src || imgObj.thumbnail || imgObj.url || '';
           }
           
-          console.log('Extracted imageUrl:', imageUrl);
-          
           return (
             <div key={product.id} className="flex flex-col gap-2">
-              {imageUrl && (
-                <div className="relative aspect-square rounded-lg overflow-hidden bg-muted">
+              <div className="relative aspect-square rounded-lg overflow-hidden bg-muted flex items-center justify-center">
+                {imageUrl ? (
                   <img 
                     src={imageUrl} 
                     alt={product.name}
                     className="w-full h-full object-cover"
                     loading="lazy"
+                    onError={(e) => {
+                      console.error('Image failed to load:', imageUrl, 'for product:', product.name);
+                      // Hide broken image, show fallback background
+                      e.currentTarget.style.display = 'none';
+                    }}
                   />
-                </div>
-              )}
+                ) : (
+                  <div className="text-muted-foreground text-xs">No image</div>
+                )}
+              </div>
               <Button
                 size="sm"
                 variant={isAdded ? "secondary" : "default"}
