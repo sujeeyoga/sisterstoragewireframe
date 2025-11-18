@@ -40,6 +40,7 @@ import AdminShippingAnalytics from '@/pages/AdminShippingAnalytics';
 import AdminProfitAnalytics from '@/pages/AdminProfitAnalytics';
 import AdminSEOAnalytics from '@/pages/AdminSEOAnalytics';
 import { ResendConfirmationEmails } from '@/components/admin/ResendConfirmationEmails';
+import LocationDebugPanel from '@/components/admin/LocationDebugPanel';
 
 const Admin = () => {
   const { notification, clearNotification } = useOrderNotifications();
@@ -102,6 +103,7 @@ const Admin = () => {
           <Route path="qr-codes" element={<QRCodesManager />} />
           <Route path="waitlist-signups" element={<WaitlistSignups />} />
           <Route path="uploads" element={<Uploads />} />
+          <Route path="location-debug" element={<LocationDebugPanel />} />
         <Route path="*" element={<Navigate to="/admin" replace />} />
       </Routes>
     </AdminLayout>
