@@ -26,6 +26,7 @@ import { ArrowLeft, ShoppingBag, CreditCard, Truck, Trash2, Tag, Loader2, Packag
 import { PaymentForm } from '@/components/checkout/PaymentForm';
 import ReadOnlyAddressField from '@/components/checkout/ReadOnlyAddressField';
 import FreeShippingThresholdBar from '@/components/cart/FreeShippingThresholdBar';
+import QuickAddProducts from '@/components/checkout/QuickAddProducts';
 
 // Province mapping and validation
 const PROVINCE_MAP: Record<string, string> = {
@@ -995,6 +996,8 @@ const Checkout = () => {
                   </CardContent>
                 </Card>
               )}
+
+              <QuickAddProducts />
 
               <div className="mt-8 mb-6">
                 <Button 
