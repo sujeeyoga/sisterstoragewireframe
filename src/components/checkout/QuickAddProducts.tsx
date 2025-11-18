@@ -12,9 +12,9 @@ const QuickAddProducts = () => {
 
   if (isLoading || !products) return null;
 
-  // Filter available products that aren't in cart and have images
+  // Filter available products that aren't in cart, have images, and are visible in shop
   const availableProducts = products
-    .filter(p => p.inStock)
+    .filter(p => p.inStock && p.visible)
     .filter(p => !cartItems.some(item => item.id === p.id))
     .filter(p => p.images && p.images.length > 0);
 
