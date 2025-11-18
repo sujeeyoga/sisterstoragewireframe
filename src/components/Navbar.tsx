@@ -16,10 +16,10 @@ interface NavbarProps {
 const Navbar = ({ position = 0 }: NavbarProps) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isMobile = useIsMobile();
-  const { totalItems, subtotal, isOpen: isCartOpen, setIsOpen: setCartOpen } = useCart();
+  const { totalItems, subtotal, isOpen: isCartOpen, setIsOpen: setCartOpen, items } = useCart();
   const navigate = useNavigate();
   const location = useLocation();
-  const { isGTA, country, isLoading: locationLoading } = useLocationDetection();
+  const { isGTA, country, isLoading: locationLoading, city, region, postalCode } = useLocationDetection();
   
   // Hide cart icon on checkout page or when cart is open
   const shouldHideCart = location.pathname === '/checkout' || isCartOpen;
@@ -86,12 +86,16 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
         <div className="justify-self-end shrink-0 flex items-center gap-2">
           {!shouldHideCart && (
             <div className="flex items-center gap-2">
-              <FreeShippingCartIndicator
-                cartSubtotal={subtotal}
-                isGTA={isGTA}
-                country={country}
-                isLoading={locationLoading}
-              />
+            <FreeShippingCartIndicator 
+              cartSubtotal={subtotal} 
+              isGTA={isGTA} 
+              country={country} 
+              isLoading={locationLoading}
+              cartItems={items}
+              city={city}
+              region={region}
+              postalCode={postalCode}
+            />
               <button
                 onClick={() => {
                   setCartOpen(true);
