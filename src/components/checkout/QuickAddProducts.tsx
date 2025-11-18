@@ -84,9 +84,25 @@ const QuickAddProducts = () => {
       <div className="grid grid-cols-3 md:grid-cols-3 gap-3">
         {recommendedProducts.map((product) => {
           const isAdded = addedItems.has(product.id);
-          const imageUrl = typeof product.images?.[0] === 'string' 
-            ? product.images[0] 
-            : (product.images?.[0] as any)?.src || (product.images?.[0] as any)?.thumbnail || '';
+          
+          // Debug: Log the raw image data
+          console.log('Product:', product.name);
+          console.log('Raw images:', product.images);
+          console.log('First image type:', typeof product.images?.[0]);
+          console.log('First image value:', product.images?.[0]);
+          
+          let imageUrl = '';
+          const firstImage = product.images?.[0];
+          
+          if (typeof firstImage === 'string') {
+            imageUrl = firstImage;
+          } else if (firstImage && typeof firstImage === 'object') {
+            // Try different object properties
+            const imgObj = firstImage as any;
+            imageUrl = imgObj.src || imgObj.thumbnail || imgObj.url || '';
+          }
+          
+          console.log('Extracted imageUrl:', imageUrl);
           
           return (
             <div key={product.id} className="flex flex-col gap-2">
