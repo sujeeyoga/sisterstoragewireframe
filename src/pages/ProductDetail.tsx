@@ -30,7 +30,7 @@ const ProductDetail = () => {
   
   // Fetch product from Supabase (supports both ID and slug)
   const { data: product, isLoading } = useProduct(productId || "");
-  const taxonomy = product ? productTaxonomyMap[product.id] : undefined;
+  const taxonomy = product ? productTaxonomyMap[product.slug || product.id] : undefined;
   const attributes = taxonomy?.attributes;
   const primaryCategorySlug = taxonomy?.categorySlugs?.[0];
   const primaryCategory = product?.categories?.[0];
