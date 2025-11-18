@@ -590,6 +590,11 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
                 ).map((item: any, index: number) => (
                   <div key={item.id || index} className="py-2 border-b last:border-b-0">
                     <div className="font-semibold">{item.name}</div>
+                    {item.sleeve && item.sleeve !== 'none' && (
+                      <div className="text-xs text-primary font-medium mt-0.5 capitalize">
+                        Sleeve: {item.sleeve}
+                      </div>
+                    )}
                     <div className="text-sm text-muted-foreground">
                       {item.quantity} x ${item.price} = ${(item.quantity * item.price).toFixed(2)}
                     </div>
