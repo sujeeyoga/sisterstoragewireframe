@@ -15,10 +15,10 @@ const FreeShippingCartIndicator = ({
   isLoading
 }: FreeShippingCartIndicatorProps) => {
   const threshold = useMemo(() => {
-    if (isGTA) return 50;
-    if (country === 'CA' || country === 'US') return 145;
+    if (country === 'CA') return 145;
+    if (country === 'US') return 199;
     return null;
-  }, [isGTA, country]);
+  }, [country]);
 
   const remaining = useMemo(() => {
     if (threshold === null) return null;
