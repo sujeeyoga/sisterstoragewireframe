@@ -14,12 +14,12 @@ const FreeShippingThresholdBar = ({
   country,
   isLoading,
 }: FreeShippingThresholdBarProps) => {
-  const THRESHOLD = 145;
+  const THRESHOLD = country === 'US' ? 199 : 145;
   const [prevSubtotal, setPrevSubtotal] = useState(cartSubtotal);
   const [showConfetti, setShowConfetti] = useState(false);
 
-  // Only show for non-GTA Canada or US customers
-  const shouldShowBar = !isGTA && (country === 'CA' || country === 'US');
+  // Only show for Canada or US customers
+  const shouldShowBar = country === 'CA' || country === 'US';
 
   const remaining = Math.max(0, THRESHOLD - cartSubtotal);
   const progressPercent = Math.min(100, (cartSubtotal / THRESHOLD) * 100);
