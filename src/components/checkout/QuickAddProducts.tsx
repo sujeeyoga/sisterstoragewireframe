@@ -12,19 +12,33 @@ const QuickAddProducts = () => {
 
   if (isLoading || !products) return null;
 
-  // Get 6 products that aren't already in cart
-  const recommendedProducts = products
+  // Filter available products that aren't in cart
+  const availableProducts = products
     .filter(p => p.inStock)
-    .filter(p => !cartItems.some(item => item.id === p.id))
-    .sort((a, b) => {
-      // Prioritize bundles and best sellers
-      const aIsBundle = a.categories?.some(cat => cat.toLowerCase().includes('bundle'));
-      const bIsBundle = b.categories?.some(cat => cat.toLowerCase().includes('bundle'));
-      if (aIsBundle && !bIsBundle) return -1;
-      if (!aIsBundle && bIsBundle) return 1;
-      return (b.price || 0) - (a.price || 0); // Then by price
+    .filter(p => !cartItems.some(item => item.id === p.id));
+
+  // Top 3: High-value items (bundles or expensive items) sorted by price descending
+  const highValueProducts = availableProducts
+    .filter(p => {
+      const isBundle = p.categories?.some(cat => cat.toLowerCase().includes('bundle'));
+      const isHighValue = (p.price || 0) >= 30;
+      return isBundle || isHighValue;
     })
-    .slice(0, 6);
+    .sort((a, b) => (b.price || 0) - (a.price || 0))
+    .slice(0, 3);
+
+  // Bottom 3: Low-value single items sorted by price ascending (cheapest first)
+  const lowValueProducts = availableProducts
+    .filter(p => {
+      const isBundle = p.categories?.some(cat => cat.toLowerCase().includes('bundle'));
+      const isLowValue = (p.price || 0) < 30;
+      return !isBundle && isLowValue;
+    })
+    .sort((a, b) => (a.price || 0) - (b.price || 0))
+    .slice(0, 3);
+
+  // Combine: top row = expensive items, bottom row = cheaper items
+  const recommendedProducts = [...highValueProducts, ...lowValueProducts];
 
   if (recommendedProducts.length === 0) return null;
 
