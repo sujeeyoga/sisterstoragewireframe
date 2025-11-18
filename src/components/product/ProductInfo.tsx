@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ShoppingBag, CreditCard } from "lucide-react";
 import ProductFeatures from "./ProductFeatures";
 import QuantitySelector from "./QuantitySelector";
+import SleeveSelector from "./SleeveSelector";
 import BundleContentsList from "./BundleContentsList";
 import OpenBoxIncluded from "./OpenBoxIncluded";
 
@@ -27,11 +28,13 @@ interface ProductInfoProps {
   };
   quantity: number;
   setQuantity: (quantity: number) => void;
+  selectedSleeve: string;
+  setSelectedSleeve: (sleeve: string) => void;
   onAddToCart: () => void;
   onBuyNow: () => void;
 }
 
-const ProductInfo = ({ product, quantity, setQuantity, onAddToCart, onBuyNow }: ProductInfoProps) => {
+const ProductInfo = ({ product, quantity, setQuantity, selectedSleeve, setSelectedSleeve, onAddToCart, onBuyNow }: ProductInfoProps) => {
   // Extract rod count for individual products
   const rodCount = product.attributes?.rodCount?.[0];
   const showRodCount = rodCount && product.category !== 'bundles';
@@ -119,6 +122,11 @@ const ProductInfo = ({ product, quantity, setQuantity, onAddToCart, onBuyNow }: 
       
       {/* Quantity & Stock Section */}
       <div className="space-y-2">
+        <SleeveSelector
+          selectedSleeve={selectedSleeve}
+          setSelectedSleeve={setSelectedSleeve}
+        />
+        
         <QuantitySelector 
           quantity={quantity}
           setQuantity={setQuantity}
