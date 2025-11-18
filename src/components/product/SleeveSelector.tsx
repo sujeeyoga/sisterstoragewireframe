@@ -10,7 +10,7 @@ interface SleeveSelectorProps {
 }
 
 const sleeveOptions = [
-  { value: "none", label: "No Sleeve", image: null },
+  { value: "none", label: "Your Choice", image: null },
   { value: "eid", label: "Eid", image: eidSleeve },
   { value: "wedding", label: "Wedding", image: weddingSleeve },
   { value: "pregnancy", label: "Pregnancy", image: pregnancySleeve },
@@ -20,7 +20,7 @@ const sleeveOptions = [
 const SleeveSelector = ({ selectedSleeve, setSelectedSleeve }: SleeveSelectorProps) => {
   return (
     <div className="mb-4">
-      <h3 className="text-xs font-semibold mb-2">Sleeve Design:</h3>
+      <h3 className="text-xs font-semibold mb-2">Choose Your Sleeve:</h3>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
         {sleeveOptions.map((option) => (
           <button
