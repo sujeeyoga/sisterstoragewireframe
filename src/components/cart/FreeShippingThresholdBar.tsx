@@ -34,7 +34,9 @@ const FreeShippingThresholdBar = ({
     setPrevSubtotal(cartSubtotal);
   }, [cartSubtotal, hasReachedThreshold, prevSubtotal, THRESHOLD]);
 
-  if (!shouldShowBar || isLoading) return null;
+  // Don't show bar if not applicable or still loading location
+  if (isLoading) return null;
+  if (!shouldShowBar) return null;
 
   return (
     <div className="mb-4 p-4 bg-gradient-to-r from-background to-secondary/20 rounded-lg border border-border/50">
