@@ -88,6 +88,16 @@ Deno.serve(async (req) => {
       })
       .eq('id', 25814951)
 
+    // Fix Jewelry Bag Organizer - broken sisterstorage.com URL
+    await supabaseClient
+      .from('woocommerce_products')
+      .update({
+        images: [{ 
+          src: 'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/product-images/jewelry-bag-organizer.jpg' 
+        }]
+      })
+      .eq('id', 25814008)
+
     return new Response(
       JSON.stringify({ success: true, message: 'Product images fixed successfully' }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
