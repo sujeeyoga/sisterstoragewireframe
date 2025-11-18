@@ -53,12 +53,16 @@ const QuickAddProducts = () => {
   if (recommendedProducts.length === 0) return null;
 
   const handleAddToCart = (product: typeof recommendedProducts[0]) => {
-    addItem({
-      id: product.id,
-      name: product.name,
-      price: product.price || 0,
-      image: product.images?.[0] || '',
-    });
+      const imageUrl = typeof product.images?.[0] === 'string' 
+        ? product.images[0] 
+        : (product.images?.[0] as any)?.src || (product.images?.[0] as any)?.thumbnail || '';
+      
+      addItem({
+        id: product.id,
+        name: product.name,
+        price: product.price || 0,
+        image: imageUrl,
+      });
     
     setAddedItems(prev => new Set(prev).add(product.id));
     
@@ -80,14 +84,16 @@ const QuickAddProducts = () => {
       <div className="grid grid-cols-3 md:grid-cols-3 gap-3">
         {recommendedProducts.map((product) => {
           const isAdded = addedItems.has(product.id);
-          const image = product.images?.[0];
+          const imageUrl = typeof product.images?.[0] === 'string' 
+            ? product.images[0] 
+            : (product.images?.[0] as any)?.src || (product.images?.[0] as any)?.thumbnail || '';
           
           return (
             <div key={product.id} className="flex flex-col gap-2">
-              {image && (
+              {imageUrl && (
                 <div className="relative aspect-square rounded-lg overflow-hidden bg-muted">
                   <img 
-                    src={image} 
+                    src={imageUrl} 
                     alt={product.name}
                     className="w-full h-full object-cover"
                     loading="lazy"
