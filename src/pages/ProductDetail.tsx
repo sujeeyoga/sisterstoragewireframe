@@ -97,7 +97,8 @@ const ProductDetail = () => {
       id: product.id,
       name: product.name,
       price: discountedPrice,
-      image: product.images?.[0] || product.color
+      image: product.images?.[0] || product.color,
+      sleeve: selectedSleeve !== "none" ? selectedSleeve : undefined
     });
     
   toast({
@@ -113,7 +114,8 @@ const ProductDetail = () => {
       id: product.id,
       name: product.name,
       price: discountedPrice,
-      image: product.images?.[0] || product.color
+      image: product.images?.[0] || product.color,
+      sleeve: selectedSleeve !== "none" ? selectedSleeve : undefined
     });
     
     toast({

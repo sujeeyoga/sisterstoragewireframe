@@ -8,13 +8,14 @@ export type CartItem = {
   image: string;
   quantity: number;
   description?: string;
+  sleeve?: string;
 };
 
 type CartContextType = {
   items: CartItem[];
   addItem: (item: Omit<CartItem, 'quantity'>) => void;
-  removeItem: (itemId: string) => void;
-  updateQuantity: (itemId: string, quantity: number) => void;
+  removeItem: (itemId: string, sleeve?: string) => void;
+  updateQuantity: (itemId: string, quantity: number, sleeve?: string) => void;
   clearCart: () => void;
   totalItems: number;
   subtotal: number;
@@ -58,15 +59,17 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const addItem = (newItem: Omit<CartItem, 'quantity'>) => {
     try {
       setItems(currentItems => {
-        const existingItemIndex = currentItems.findIndex(item => item.id === newItem.id);
+        const existingItemIndex = currentItems.findIndex(item => 
+          item.id === newItem.id && item.sleeve === newItem.sleeve
+        );
         
         if (existingItemIndex > -1) {
-          // Item exists, update quantity
+          // Item exists with same sleeve, update quantity
           const updatedItems = [...currentItems];
           updatedItems[existingItemIndex].quantity += 1;
           return updatedItems;
         } else {
-          // Item doesn't exist, add it
+          // Item doesn't exist or has different sleeve, add it
           const newCartItem = { ...newItem, quantity: 1 };
           return [...currentItems, newCartItem];
         }
@@ -79,19 +82,21 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
   
-  const removeItem = (itemId: string) => {
-    setItems(currentItems => currentItems.filter(item => item.id !== itemId));
+  const removeItem = (itemId: string, sleeve?: string) => {
+    setItems(currentItems => currentItems.filter(item => 
+      !(item.id === itemId && item.sleeve === sleeve)
+    ));
   };
   
-  const updateQuantity = (itemId: string, quantity: number) => {
+  const updateQuantity = (itemId: string, quantity: number, sleeve?: string) => {
     if (quantity < 1) {
-      removeItem(itemId);
+      removeItem(itemId, sleeve);
       return;
     }
     
     setItems(currentItems => 
       currentItems.map(item => 
-        item.id === itemId ? { ...item, quantity } : item
+        (item.id === itemId && item.sleeve === sleeve) ? { ...item, quantity } : item
       )
     );
   };
