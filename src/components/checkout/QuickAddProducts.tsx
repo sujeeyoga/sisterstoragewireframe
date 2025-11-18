@@ -16,7 +16,13 @@ const QuickAddProducts = () => {
   const availableProducts = products
     .filter(p => p.inStock)
     .filter(p => !cartItems.some(item => item.id === p.id))
-    .filter(p => p.images && p.images.length > 0);
+    .filter(p => {
+      const hasImages = p.images && p.images.length > 0;
+      if (hasImages) {
+        console.log('Product images:', p.name, p.images);
+      }
+      return hasImages;
+    });
 
   // Top 3: High-value items (bundles or expensive items) sorted by price descending
   const highValueProducts = availableProducts
@@ -87,6 +93,8 @@ const QuickAddProducts = () => {
           const imageUrl = typeof product.images?.[0] === 'string' 
             ? product.images[0] 
             : (product.images?.[0] as any)?.src || (product.images?.[0] as any)?.thumbnail || '';
+          
+          console.log('Rendering product:', product.name, 'imageUrl:', imageUrl, 'raw images:', product.images);
           
           return (
             <div key={product.id} className="flex flex-col gap-2">
