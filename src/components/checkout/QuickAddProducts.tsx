@@ -12,44 +12,66 @@ const QuickAddProducts = () => {
 
   if (isLoading || !products) return null;
 
-  // Filter available products that aren't in cart, have images, and are visible in shop
+  // Get all available products (not in cart, in stock, visible, with images)
   const availableProducts = products
     .filter(p => p.inStock && p.visible)
     .filter(p => !cartItems.some(item => item.id === p.id))
     .filter(p => p.images && p.images.length > 0);
 
-  // Top 3: Bundles only (unique, no duplicates)
-  const bundleProducts = availableProducts
-    .filter(p => p.categories?.some(cat => cat.toLowerCase().includes('bundle')))
-    .sort((a, b) => (b.price || 0) - (a.price || 0))
-    .slice(0, 3);
-
-  // Bottom 3: Specific single items (organizer, single rod, large box)
-  const specificSingleItems = availableProducts
-    .filter(p => {
-      const isBundle = p.categories?.some(cat => cat.toLowerCase().includes('bundle'));
-      const name = p.name.toLowerCase();
-      const isOrganizer = name.includes('organizer') || name.includes('multipurpose');
-      const isSingleRod = name.includes('travel') && name.includes('1');
-      const isLargeBox = name.includes('large') && name.includes('4') && !isBundle;
-      return !isBundle && (isOrganizer || isSingleRod || isLargeBox);
-    })
-    .slice(0, 3);
-
-  // Combine and ensure no duplicates
   const usedIds = new Set<string>();
-  const recommendedProducts = [...bundleProducts, ...specificSingleItems]
-    .filter(p => {
-      if (usedIds.has(p.id)) return false;
-      usedIds.add(p.id);
-      return true;
-    });
+  const recommendedProducts: typeof availableProducts = [];
 
-  // If we don't have 6 products, fill with remaining single items
+  // First 3: Get unique bundles
+  const bundles = availableProducts
+    .filter(p => p.categories?.some(cat => cat.toLowerCase().includes('bundle')))
+    .sort((a, b) => (b.price || 0) - (a.price || 0));
+  
+  for (const bundle of bundles) {
+    if (recommendedProducts.length >= 3) break;
+    if (!usedIds.has(bundle.id)) {
+      recommendedProducts.push(bundle);
+      usedIds.add(bundle.id);
+    }
+  }
+
+  // Last 3: Get specific single items (organizer, single rod, large box)
+  const singleItems = availableProducts
+    .filter(p => !p.categories?.some(cat => cat.toLowerCase().includes('bundle')));
+
+  // Find organizer
+  const organizer = singleItems.find(p => {
+    const name = p.name.toLowerCase();
+    return !usedIds.has(p.id) && (name.includes('organizer') || name.includes('multipurpose'));
+  });
+  if (organizer) {
+    recommendedProducts.push(organizer);
+    usedIds.add(organizer.id);
+  }
+
+  // Find single rod (travel size)
+  const singleRod = singleItems.find(p => {
+    const name = p.name.toLowerCase();
+    return !usedIds.has(p.id) && name.includes('travel') && (name.includes('1') || name.includes('one'));
+  });
+  if (singleRod) {
+    recommendedProducts.push(singleRod);
+    usedIds.add(singleRod.id);
+  }
+
+  // Find large box (4 rod)
+  const largeBox = singleItems.find(p => {
+    const name = p.name.toLowerCase();
+    return !usedIds.has(p.id) && name.includes('large') && name.includes('4');
+  });
+  if (largeBox) {
+    recommendedProducts.push(largeBox);
+    usedIds.add(largeBox.id);
+  }
+
+  // Fill remaining slots with any other single items
   if (recommendedProducts.length < 6) {
-    const remaining = availableProducts
+    const remaining = singleItems
       .filter(p => !usedIds.has(p.id))
-      .filter(p => !p.categories?.some(cat => cat.toLowerCase().includes('bundle')))
       .slice(0, 6 - recommendedProducts.length);
     recommendedProducts.push(...remaining);
   }
