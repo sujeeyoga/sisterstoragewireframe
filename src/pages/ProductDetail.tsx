@@ -21,6 +21,7 @@ import { productTaxonomyMap } from "@/data/product-taxonomy";
 const ProductDetail = () => {
   const { productId } = useParams<{ productId: string }>();
   const [quantity, setQuantity] = useState(1);
+  const [selectedSleeve, setSelectedSleeve] = useState("none");
   const { addItem, setIsOpen } = useCart();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -134,6 +135,8 @@ const ProductDetail = () => {
               product={{ ...product, price: discountedPrice }}
               quantity={quantity}
               setQuantity={setQuantity}
+              selectedSleeve={selectedSleeve}
+              setSelectedSleeve={setSelectedSleeve}
               onAddToCart={handleAddToCart}
               onBuyNow={handleBuyNow}
             />
