@@ -53,54 +53,43 @@ const QuickAddProducts = () => {
       <h3 className="text-sm font-semibold text-foreground mb-3">
         You might also like
       </h3>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <div className="grid grid-cols-3 md:grid-cols-3 gap-3">
         {recommendedProducts.map((product) => {
           const isAdded = addedItems.has(product.id);
           const image = product.images?.[0];
           
           return (
-            <Card 
-              key={product.id} 
-              className="p-3 hover:shadow-md transition-shadow"
-            >
-              <div className="flex flex-col gap-3">
-                {image && (
+            <div key={product.id} className="flex flex-col gap-2">
+              {image && (
+                <div className="relative aspect-square rounded-lg overflow-hidden bg-muted">
                   <img 
                     src={image} 
                     alt={product.name}
-                    className="w-full aspect-square object-cover rounded"
+                    className="w-full h-full object-cover"
                     loading="lazy"
                   />
-                )}
-                <div className="flex flex-col gap-2">
-                  <h4 className="text-sm font-medium text-foreground line-clamp-2">
-                    {product.name}
-                  </h4>
-                  <p className="text-sm font-semibold text-primary">
-                    ${product.price?.toFixed(2)}
-                  </p>
-                  <Button
-                    size="sm"
-                    variant={isAdded ? "secondary" : "default"}
-                    className="w-full h-8 text-xs gap-1"
-                    onClick={() => handleAddToCart(product)}
-                    disabled={isAdded}
-                  >
-                    {isAdded ? (
-                      <>
-                        <Check className="w-3 h-3" />
-                        Added
-                      </>
-                    ) : (
-                      <>
-                        <Plus className="w-3 h-3" />
-                        Add
-                      </>
-                    )}
-                  </Button>
                 </div>
-              </div>
-            </Card>
+              )}
+              <Button
+                size="sm"
+                variant={isAdded ? "secondary" : "default"}
+                className="w-full h-9 text-xs gap-1.5"
+                onClick={() => handleAddToCart(product)}
+                disabled={isAdded}
+              >
+                {isAdded ? (
+                  <>
+                    <Check className="w-3.5 h-3.5" />
+                    Added
+                  </>
+                ) : (
+                  <>
+                    <Plus className="w-3.5 h-3.5" />
+                    Add
+                  </>
+                )}
+              </Button>
+            </div>
           );
         })}
       </div>
