@@ -63,26 +63,26 @@ const QuickAddProducts = () => {
               key={product.id} 
               className="p-3 hover:shadow-md transition-shadow"
             >
-              <div className="flex items-start gap-3">
+              <div className="flex flex-col gap-3">
                 {image && (
                   <img 
                     src={image} 
                     alt={product.name}
-                    className="w-16 h-16 object-cover rounded flex-shrink-0"
+                    className="w-full aspect-square object-cover rounded"
                     loading="lazy"
                   />
                 )}
-                <div className="flex-1 min-w-0">
-                  <h4 className="text-sm font-medium text-foreground line-clamp-2 mb-1">
+                <div className="flex flex-col gap-2">
+                  <h4 className="text-sm font-medium text-foreground line-clamp-2">
                     {product.name}
                   </h4>
-                  <p className="text-sm font-semibold text-primary mb-2">
+                  <p className="text-sm font-semibold text-primary">
                     ${product.price?.toFixed(2)}
                   </p>
                   <Button
                     size="sm"
                     variant={isAdded ? "secondary" : "default"}
-                    className="h-7 text-xs gap-1"
+                    className="w-full h-8 text-xs gap-1"
                     onClick={() => handleAddToCart(product)}
                     disabled={isAdded}
                   >
