@@ -35,6 +35,13 @@ const ProductDetail = () => {
   const primaryCategorySlug = taxonomy?.categorySlugs?.[0];
   const primaryCategory = product?.categories?.[0];
   
+  // Normalize attributes for ProductInfo (ensure arrays)
+  const normalizedAttributes = attributes ? {
+    ...attributes,
+    rodCount: Array.isArray(attributes.rodCount) ? attributes.rodCount : attributes.rodCount ? [attributes.rodCount] : undefined,
+    size: Array.isArray(attributes.size) ? attributes.size : attributes.size ? [attributes.size] : undefined,
+  } : undefined;
+  
   // Fetch related products from the same category
   const { data: categoryProducts = [], isLoading: isLoadingRelated } = useProductsByCategory(primaryCategory || "");
   
@@ -132,7 +139,7 @@ const ProductDetail = () => {
               name={product.name}
             />
             <ProductInfo 
-              product={{ ...product, price: discountedPrice }}
+              product={{ ...product, price: discountedPrice, attributes: normalizedAttributes }}
               quantity={quantity}
               setQuantity={setQuantity}
               selectedSleeve={selectedSleeve}
