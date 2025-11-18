@@ -18,36 +18,40 @@ const QuickAddProducts = () => {
     .filter(p => !cartItems.some(item => item.id === p.id))
     .filter(p => p.images && p.images.length > 0);
 
-  // Top 3: High-value items (bundles or expensive items) sorted by price descending
-  const highValueProducts = availableProducts
-    .filter(p => {
-      const isBundle = p.categories?.some(cat => cat.toLowerCase().includes('bundle'));
-      const isHighValue = (p.price || 0) >= 30;
-      return isBundle || isHighValue;
-    })
+  // Top 3: Bundles only (unique, no duplicates)
+  const bundleProducts = availableProducts
+    .filter(p => p.categories?.some(cat => cat.toLowerCase().includes('bundle')))
     .sort((a, b) => (b.price || 0) - (a.price || 0))
     .slice(0, 3);
 
-  // Bottom 3: Low-value single items sorted by price ascending (cheapest first)
-  const lowValueProducts = availableProducts
+  // Bottom 3: Specific single items (organizer, single rod, large box)
+  const specificSingleItems = availableProducts
     .filter(p => {
       const isBundle = p.categories?.some(cat => cat.toLowerCase().includes('bundle'));
-      const isLowValue = (p.price || 0) < 30;
-      return !isBundle && isLowValue;
+      const name = p.name.toLowerCase();
+      const isOrganizer = name.includes('organizer') || name.includes('multipurpose');
+      const isSingleRod = name.includes('travel') && name.includes('1');
+      const isLargeBox = name.includes('large') && name.includes('4') && !isBundle;
+      return !isBundle && (isOrganizer || isSingleRod || isLargeBox);
     })
-    .sort((a, b) => (a.price || 0) - (b.price || 0))
     .slice(0, 3);
 
-  // Combine and ensure we have 6 products total
-  let recommendedProducts = [...highValueProducts, ...lowValueProducts];
-  
-  // If we don't have 6 products, fill with remaining available products
+  // Combine and ensure no duplicates
+  const usedIds = new Set<string>();
+  const recommendedProducts = [...bundleProducts, ...specificSingleItems]
+    .filter(p => {
+      if (usedIds.has(p.id)) return false;
+      usedIds.add(p.id);
+      return true;
+    });
+
+  // If we don't have 6 products, fill with remaining single items
   if (recommendedProducts.length < 6) {
-    const usedIds = new Set(recommendedProducts.map(p => p.id));
     const remaining = availableProducts
       .filter(p => !usedIds.has(p.id))
+      .filter(p => !p.categories?.some(cat => cat.toLowerCase().includes('bundle')))
       .slice(0, 6 - recommendedProducts.length);
-    recommendedProducts = [...recommendedProducts, ...remaining];
+    recommendedProducts.push(...remaining);
   }
 
   if (recommendedProducts.length === 0) return null;
