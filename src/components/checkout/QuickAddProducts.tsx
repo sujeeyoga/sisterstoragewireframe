@@ -12,7 +12,7 @@ const QuickAddProducts = () => {
 
   if (isLoading || !products) return null;
 
-  // Get 3 products that aren't already in cart or are bundles
+  // Get 6 products that aren't already in cart
   const recommendedProducts = products
     .filter(p => p.inStock)
     .filter(p => !cartItems.some(item => item.id === p.id))
@@ -24,7 +24,7 @@ const QuickAddProducts = () => {
       if (!aIsBundle && bIsBundle) return 1;
       return (b.price || 0) - (a.price || 0); // Then by price
     })
-    .slice(0, 3);
+    .slice(0, 6);
 
   if (recommendedProducts.length === 0) return null;
 
@@ -89,6 +89,9 @@ const QuickAddProducts = () => {
                   </>
                 )}
               </Button>
+              <p className="text-xs font-semibold text-primary text-center">
+                ${product.price?.toFixed(2)}
+              </p>
             </div>
           );
         })}
