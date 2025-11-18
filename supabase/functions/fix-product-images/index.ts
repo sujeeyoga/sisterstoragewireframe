@@ -58,7 +58,7 @@ Deno.serve(async (req) => {
       })
       .eq('id', 25814128)
 
-    // Fix Bundle 3 - broken sisterstorage.com URL
+    // Fix Bundle 3 - broken sisterstorage.com URL (Position 2)
     await supabaseClient
       .from('woocommerce_products')
       .update({
@@ -67,6 +67,16 @@ Deno.serve(async (req) => {
         }]
       })
       .eq('id', 25814130)
+
+    // Fix Props Box - wrong image (Position 6)
+    await supabaseClient
+      .from('woocommerce_products')
+      .update({
+        images: [{ 
+          src: 'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/product-images/The-Godh-Bharai-Box.jpg' 
+        }]
+      })
+      .eq('id', 25814394)
 
     // Fix Bridesmaid bundle - broken sisterstorage.com URL
     await supabaseClient
