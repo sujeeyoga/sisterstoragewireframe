@@ -12,10 +12,11 @@ const QuickAddProducts = () => {
 
   if (isLoading || !products) return null;
 
-  // Filter available products that aren't in cart
+  // Filter available products that aren't in cart and have images
   const availableProducts = products
     .filter(p => p.inStock)
-    .filter(p => !cartItems.some(item => item.id === p.id));
+    .filter(p => !cartItems.some(item => item.id === p.id))
+    .filter(p => p.images && p.images.length > 0);
 
   // Top 3: High-value items (bundles or expensive items) sorted by price descending
   const highValueProducts = availableProducts
@@ -37,8 +38,17 @@ const QuickAddProducts = () => {
     .sort((a, b) => (a.price || 0) - (b.price || 0))
     .slice(0, 3);
 
-  // Combine: top row = expensive items, bottom row = cheaper items
-  const recommendedProducts = [...highValueProducts, ...lowValueProducts];
+  // Combine and ensure we have 6 products total
+  let recommendedProducts = [...highValueProducts, ...lowValueProducts];
+  
+  // If we don't have 6 products, fill with remaining available products
+  if (recommendedProducts.length < 6) {
+    const usedIds = new Set(recommendedProducts.map(p => p.id));
+    const remaining = availableProducts
+      .filter(p => !usedIds.has(p.id))
+      .slice(0, 6 - recommendedProducts.length);
+    recommendedProducts = [...recommendedProducts, ...remaining];
+  }
 
   if (recommendedProducts.length === 0) return null;
 
