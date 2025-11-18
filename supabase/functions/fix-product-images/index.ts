@@ -78,7 +78,7 @@ Deno.serve(async (req) => {
       })
       .eq('id', 25814394)
 
-    // Fix Bridesmaid bundle - broken sisterstorage.com URL
+    // Fix Bridesmaid bundle - broken sisterstorage.com URL (shop.)
     await supabaseClient
       .from('woocommerce_products')
       .update({
@@ -88,7 +88,7 @@ Deno.serve(async (req) => {
       })
       .eq('id', 25814951)
 
-    // Fix Jewelry Bag Organizer - broken sisterstorage.com URL
+    // Fix Jewelry Bag Organizer (ID: 25814008) - broken sisterstorage.com URL
     await supabaseClient
       .from('woocommerce_products')
       .update({
@@ -97,6 +97,66 @@ Deno.serve(async (req) => {
         }]
       })
       .eq('id', 25814008)
+
+    // Fix Jewelry Bag Organizer (ID: 25814779) - broken sisterstorage.com URL
+    await supabaseClient
+      .from('woocommerce_products')
+      .update({
+        images: [{ 
+          src: 'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/product-images/jewelry-bag-organizer.jpg' 
+        }]
+      })
+      .eq('id', 25814779)
+
+    // Fix Travel Size Bangle Box - broken sisterstorage.com URL
+    await supabaseClient
+      .from('woocommerce_products')
+      .update({
+        images: [{ 
+          src: 'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/Sister%20Storage%20Assets/travel%20size/1759979156639-wffbli.jpg' 
+        }]
+      })
+      .eq('id', 25813973)
+
+    // Fix Bundle1: 2 Large, 1 Medium, 1 Travel - broken sisterstorage.com URL
+    await supabaseClient
+      .from('woocommerce_products')
+      .update({
+        images: [{ 
+          src: 'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/Bundle1-2-Large-1-Medium-1-Travel/1759980843887-mw0bfh.jpg' 
+        }]
+      })
+      .eq('id', 25814123)
+
+    // Fix Large Bangle Box (4 Rods) - broken sisterstorage.com URL
+    await supabaseClient
+      .from('woocommerce_products')
+      .update({
+        images: [{ 
+          src: 'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/images/Sister%20Storage%20Assets/Open%20Box/Open%20Box%20-%20large%20bangle%20box%204%20rod/1759979255078-wwwgnj.jpg' 
+        }]
+      })
+      .eq('id', 25814777)
+
+    // Fix Props Travel Bangle Box - broken sisterstorage.com URL
+    await supabaseClient
+      .from('woocommerce_products')
+      .update({
+        images: [{ 
+          src: 'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/product-images/The-Godh-Bharai-Box.jpg' 
+        }]
+      })
+      .eq('id', 25814947)
+
+    // Fix Bridesmaid Travel Bangle Box - broken sisterstorage.com URL
+    await supabaseClient
+      .from('woocommerce_products')
+      .update({
+        images: [{ 
+          src: 'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/product-images/bridesmaid-box.jpg' 
+        }]
+      })
+      .eq('id', 25814950)
 
     return new Response(
       JSON.stringify({ success: true, message: 'Product images fixed successfully' }),
