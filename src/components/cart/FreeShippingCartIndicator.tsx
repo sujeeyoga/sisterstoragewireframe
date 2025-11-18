@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { Truck } from 'lucide-react';
+import { useAnimatedNumber } from '@/hooks/useAnimatedNumber';
 
 interface FreeShippingCartIndicatorProps {
   cartSubtotal: number;
@@ -25,24 +26,29 @@ const FreeShippingCartIndicator = ({
     return Math.max(0, threshold - cartSubtotal);
   }, [threshold, cartSubtotal]);
 
+  const animatedRemaining = useAnimatedNumber(remaining || 0, 400);
+
   // Don't show if loading, empty cart, or not eligible
   if (isLoading || cartSubtotal === 0 || threshold === null) {
     return null;
   }
 
   return (
-    <div className="hidden md:flex items-center gap-1 text-xs font-semibold animate-fade-in">
+    <div className="hidden md:flex items-center gap-2 animate-fade-in">
       {remaining > 0 ? (
         <>
-          <span className="text-emerald-600 dark:text-emerald-400">
-            ${remaining.toFixed(2)} to
-          </span>
-          <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-0.5">
-            FREE SHIPPING <Truck className="w-3 h-3" />
-          </span>
+          <div className="flex flex-col items-end">
+            <span className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 tabular-nums tracking-tight">
+              ${animatedRemaining.toFixed(2)}
+            </span>
+            <span className="text-[10px] font-medium text-emerald-600/70 dark:text-emerald-400/70 -mt-1">
+              to FREE SHIPPING
+            </span>
+          </div>
+          <Truck className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
         </>
       ) : (
-        <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1 font-bold">
+        <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1 font-bold text-sm">
           FREE SHIPPING! 🎉
         </span>
       )}
