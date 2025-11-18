@@ -60,6 +60,7 @@ export interface Product {
   stock: number;
   stockQuantity?: number;
   inStock: boolean;
+  visible?: boolean;
   sku?: string;
   slug: string;
   images: string[];
@@ -114,6 +115,7 @@ export function transformProduct(dbProduct: any): Product {
     stock: dbProduct.stock_quantity || 0,
     stockQuantity: dbProduct.stock_quantity || undefined,
     inStock: dbProduct.in_stock,
+    visible: dbProduct.visible !== false,
     sku: metaData.sku,
     slug: dbProduct.slug,
     images: images.map((img: any) => img.src),
