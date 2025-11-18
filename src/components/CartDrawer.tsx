@@ -185,7 +185,7 @@ const CartDrawer = () => {
                     const itemTotal = item.price * item.quantity;
                     
                     return (
-                      <div key={item.id} className="flex gap-4 pb-4 border-b border-gray-100">
+                      <div key={`${item.id}-${item.sleeve || 'none'}`} className="flex gap-4 pb-4 border-b border-gray-100">
                         {/* Product Image */}
                         <div className="flex-shrink-0">
                           {item.image.startsWith('http') ? (
@@ -204,11 +204,24 @@ const CartDrawer = () => {
                           )}
                         </div>
 
-                        {/* Product Info */}
+                         {/* Product Info */}
                         <div className="flex-grow min-w-0">
                           <h3 className="font-medium text-sm text-gray-900 mb-1 line-clamp-2">
                             {item.name}
                           </h3>
+                          
+                          {/* Sleeve Selection Display */}
+                          {item.sleeve && (
+                            <Link 
+                              to={`/shop/${item.id}`}
+                              className="text-xs text-muted-foreground hover:text-primary mb-1 flex items-center gap-1"
+                              onClick={() => setIsOpen(false)}
+                            >
+                              <span className="capitalize">Sleeve: {item.sleeve}</span>
+                              <span className="text-primary">• Change</span>
+                            </Link>
+                          )}
+                          
                           <p className="text-[hsl(var(--brand-pink))] font-semibold text-sm mb-2">
                             ${item.price.toFixed(2)} each
                           </p>
@@ -218,7 +231,7 @@ const CartDrawer = () => {
                             <div className="flex items-center border border-gray-300 rounded-md">
                               <button 
                                 className="w-8 h-8 flex items-center justify-center hover:bg-gray-100 transition-colors"
-                                onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                                onClick={() => updateQuantity(item.id, item.quantity - 1, item.sleeve)}
                                 aria-label="Decrease quantity"
                               >
                                 <Minus className="h-3 w-3" />
@@ -228,7 +241,7 @@ const CartDrawer = () => {
                               </span>
                               <button 
                                 className="w-8 h-8 flex items-center justify-center hover:bg-gray-100 transition-colors"
-                                onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                                onClick={() => updateQuantity(item.id, item.quantity + 1, item.sleeve)}
                                 aria-label="Increase quantity"
                               >
                                 <Plus className="h-3 w-3" />
@@ -243,7 +256,7 @@ const CartDrawer = () => {
 
                         {/* Remove Button */}
                         <button 
-                          onClick={() => removeItem(item.id)}
+                          onClick={() => removeItem(item.id, item.sleeve)}
                           className="flex-shrink-0 text-gray-400 hover:text-red-500 transition-colors p-1"
                           aria-label="Remove item"
                         >
