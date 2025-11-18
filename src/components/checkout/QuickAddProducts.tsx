@@ -133,9 +133,14 @@ const QuickAddProducts = () => {
                   </>
                 )}
               </Button>
-              <p className="text-xs font-semibold text-primary text-center">
-                ${product.price?.toFixed(2)}
-              </p>
+              <div className="text-center space-y-1">
+                <p className="text-xs font-medium text-foreground line-clamp-2">
+                  {product.name}
+                </p>
+                <p className="text-xs font-semibold text-primary">
+                  ${product.price?.toFixed(2)}
+                </p>
+              </div>
             </div>
           );
         })}
