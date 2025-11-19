@@ -32,13 +32,30 @@ const QuickAddProducts = () => {
 
   if (!products) return null;
 
-  // Get only bundle products
-  const recommendedProducts = products
+  // Get specific bundles in priority order
+  const allBundles = products
     .filter(p => p.inStock && p.visible)
     .filter(p => !cartItems.some(item => item.id === p.id))
     .filter(p => p.images && p.images.length > 0)
-    .filter(p => p.name.toLowerCase().includes('bundle'))
-    .slice(0, 3);
+    .filter(p => p.name.toLowerCase().includes('bundle'));
+
+  // Priority order: Starter Set, Together Bundle, Complete Family Set
+  const recommendedProducts: typeof allBundles = [];
+  
+  const starterSet = allBundles.find(p => 
+    p.name.toLowerCase().includes('starter')
+  );
+  if (starterSet) recommendedProducts.push(starterSet);
+  
+  const togetherBundle = allBundles.find(p => 
+    p.name.toLowerCase().includes('together')
+  );
+  if (togetherBundle) recommendedProducts.push(togetherBundle);
+  
+  const familySet = allBundles.find(p => 
+    p.name.toLowerCase().includes('family') || p.name.toLowerCase().includes('complete')
+  );
+  if (familySet) recommendedProducts.push(familySet);
 
   // Show nothing if no bundles available
   if (recommendedProducts.length === 0) return null;
