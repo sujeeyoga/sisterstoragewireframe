@@ -183,19 +183,26 @@ const CartDrawer = () => {
             {/* Left Panel - Cart Items (Scrollable) */}
             <div ref={drawerContentRef} className="flex-1 md:w-[60%] overflow-y-auto py-4 px-4">
               {items.length === 0 ? (
-                <div className="text-center py-12">
-                  <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                    <ShoppingBag className="h-8 w-8 text-gray-400" />
+                <div>
+                  <div className="text-center py-12">
+                    <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                      <ShoppingBag className="h-8 w-8 text-gray-400" />
+                    </div>
+                    <p className="text-gray-600 mb-2 font-medium">Your cart is empty</p>
+                    <p className="text-gray-500 text-sm mb-6">Add items to get started</p>
+                    <Button
+                      onClick={() => setIsOpen(false)}
+                      variant="default"
+                      className="bg-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))]/90"
+                    >
+                      Continue Shopping
+                    </Button>
                   </div>
-                  <p className="text-gray-600 mb-2 font-medium">Your cart is empty</p>
-                  <p className="text-gray-500 text-sm mb-6">Add items to get started</p>
-                  <Button
-                    onClick={() => setIsOpen(false)}
-                    variant="default"
-                    className="bg-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))]/90"
-                  >
-                    Continue Shopping
-                  </Button>
+                  
+                  {/* Quick Add Products for Empty Cart */}
+                  <div className="mt-6">
+                    <QuickAddProducts />
+                  </div>
                 </div>
               ) : (
                 <div className="space-y-4">
