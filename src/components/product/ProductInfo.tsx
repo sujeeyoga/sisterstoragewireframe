@@ -71,7 +71,7 @@ const ProductInfo = ({ product, quantity, setQuantity, selectedSleeve, setSelect
           <div className="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-4 py-3 rounded-lg">
             <div className="text-center">
               <span className="text-xs font-bold uppercase tracking-wider block mb-1">Rods</span>
-              <span className="text-3xl font-thin">{rodCount}</span>
+              <span className="text-3xl font-normal">{rodCount}</span>
             </div>
           </div>
         </div>
