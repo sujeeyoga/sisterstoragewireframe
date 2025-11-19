@@ -172,6 +172,11 @@ const Checkout = () => {
   const { calculateShipping } = useShippingZones();
   const { promotion, qualifiesForGift } = useFreeGiftPromotion();
   
+  // Scroll to top smoothly on mount
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+  
   const [isProcessing, setIsProcessing] = useState(false);
   const [isLoadingRates, setIsLoadingRates] = useState(false);
   const [shippingRates, setShippingRates] = useState<any[]>([]);
