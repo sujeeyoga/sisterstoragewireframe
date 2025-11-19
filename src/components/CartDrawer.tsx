@@ -315,12 +315,12 @@ const CartDrawer = () => {
 
             {/* Right Panel - Cart Summary (Sticky on Desktop) */}
             {items.length > 0 && (
-              <div className="flex-shrink-0 md:w-[40%] border-t md:border-t-0 md:border-l border-gray-200 p-4 bg-gray-50 md:overflow-y-auto">
+              <div className="flex-shrink-0 md:w-[40%] border-t md:border-t-0 md:border-l border-gray-200 p-3 bg-gray-50 md:overflow-y-auto">
                 <div className="md:sticky md:top-4">
-                  <h3 className="text-lg font-semibold mb-4">Order Summary</h3>
+                  <h3 className="text-base font-semibold mb-3">Order Summary</h3>
                   
                   {/* Itemized Breakdown */}
-                  <div className="space-y-2 mb-4">
+                  <div className="space-y-1.5 mb-3">
                     <div className="flex justify-between text-sm text-gray-600">
                       <span>Subtotal ({totalItems} items)</span>
                       <span className="font-medium text-gray-900">${subtotal.toFixed(2)}</span>
@@ -339,14 +339,14 @@ const CartDrawer = () => {
 
                   {/* US Shipping Notice - Only for US customers */}
                   {country === 'US' && (
-                    <div className="bg-amber-50 border border-amber-400 rounded-lg p-3 mb-4">
+                    <div className="bg-amber-50 border border-amber-400 rounded-lg p-2 mb-3">
                       <div className="flex items-start gap-2">
-                        <Truck className="h-4 w-4 text-amber-700 mt-0.5 flex-shrink-0" />
+                        <Truck className="h-3.5 w-3.5 text-amber-700 mt-0.5 flex-shrink-0" />
                         <div className="flex-1">
-                          <p className="text-xs font-semibold text-amber-900 mb-1">
+                          <p className="text-[11px] font-semibold text-amber-900 mb-0.5">
                             US Shipping Notice
                           </p>
-                          <p className="text-xs text-amber-800">
+                          <p className="text-[10px] text-amber-800">
                             Ships from Canada. Current rates include cross-border tariffs and customs fees.
                           </p>
                         </div>
@@ -358,38 +358,38 @@ const CartDrawer = () => {
                   {isGTA && (
                     <>
                       {discountedSubtotal < 50 ? (
-                        <div className="bg-gradient-to-r from-pink-50 to-purple-50 border border-[hsl(var(--brand-pink))]/20 rounded-lg p-3 mb-4">
+                        <div className="bg-gradient-to-r from-pink-50 to-purple-50 border border-[hsl(var(--brand-pink))]/20 rounded-lg p-2 mb-3">
                           <div className="flex items-start gap-2">
-                            <Truck className="h-4 w-4 text-[hsl(var(--brand-pink))] mt-0.5 flex-shrink-0" />
+                            <Truck className="h-3.5 w-3.5 text-[hsl(var(--brand-pink))] mt-0.5 flex-shrink-0" />
                             <div className="flex-1">
-                              <p className="text-xs font-semibold text-[hsl(var(--brand-pink))] mb-1">
+                              <p className="text-[11px] font-semibold text-[hsl(var(--brand-pink))] mb-0.5">
                                 Toronto/GTA Free Shipping
                               </p>
-                              <p className="text-xs text-gray-700">
+                              <p className="text-[10px] text-gray-700">
                                 Spend <span className="font-bold text-[hsl(var(--brand-pink))]">
                                   ${(50 - discountedSubtotal).toFixed(2)} more
                                 </span> to unlock FREE shipping!
                               </p>
                             </div>
                           </div>
-                          <div className="mt-2 w-full bg-gray-200 rounded-full h-2">
+                          <div className="mt-1.5 w-full bg-gray-200 rounded-full h-1.5">
                             <div 
-                              className="bg-gradient-to-r from-[hsl(var(--brand-pink))] to-purple-400 h-2 rounded-full transition-all duration-300"
+                              className="bg-gradient-to-r from-[hsl(var(--brand-pink))] to-purple-400 h-1.5 rounded-full transition-all duration-300"
                               style={{ width: `${Math.min((discountedSubtotal / 50) * 100, 100)}%` }}
                             />
                           </div>
                         </div>
                       ) : estimatedShipping === 0 ? (
-                        <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-500/30 rounded-lg p-3 mb-4">
+                        <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-500/30 rounded-lg p-2 mb-3">
                           <div className="flex items-center gap-2">
-                            <div className="flex-shrink-0 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                              <span className="text-white text-xs">✓</span>
+                            <div className="flex-shrink-0 w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
+                              <span className="text-white text-[10px]">✓</span>
                             </div>
                             <div className="flex-1">
-                              <p className="text-xs font-bold text-green-700">
+                              <p className="text-[11px] font-bold text-green-700">
                                 🎉 FREE Shipping Unlocked!
                               </p>
-                              <p className="text-xs text-green-600">
+                              <p className="text-[10px] text-green-600">
                                 For Toronto/GTA orders over $50
                               </p>
                             </div>
@@ -399,55 +399,55 @@ const CartDrawer = () => {
                     </>
                   )}
 
-                  <div className="space-y-2">
+                  <div className="space-y-1.5">
                     <div className="flex justify-between text-sm text-gray-600">
                       <span>Estimated Tax</span>
                       <span className="font-medium text-gray-900">${taxAmount.toFixed(2)}</span>
                     </div>
                     
                     {/* Estimated Shipping with Location */}
-                    <div className="flex justify-between text-sm border-t border-gray-200 pt-2 mt-2">
+                    <div className="flex justify-between text-sm border-t border-gray-200 pt-1.5 mt-1.5">
                       <div className="flex flex-col gap-0.5">
                         <div className="flex items-center gap-1">
                           <Truck className="h-3.5 w-3.5 text-gray-600" />
                           <span className="text-gray-600 font-medium">Shipping</span>
                         </div>
                         {city && country && (
-                          <div className="flex items-center gap-1 text-xs text-gray-500 ml-4">
-                            <MapPin className="h-3 w-3" />
+                          <div className="flex items-center gap-1 text-[10px] text-gray-500 ml-4">
+                            <MapPin className="h-2.5 w-2.5" />
                             <span>{city}, {country}</span>
                           </div>
                         )}
                       </div>
                       <div className="text-right">
                         {locationLoading || shippingLoading ? (
-                          <span className="text-gray-400 animate-pulse">Calculating...</span>
+                          <span className="text-gray-400 animate-pulse text-xs">Calculating...</span>
                         ) : discountedSubtotal >= 289 ? (
                           <div className="flex flex-col items-end gap-0.5">
-                            <div className="flex items-center gap-2">
-                              <span className="text-sm line-through text-muted-foreground">${(fallbackSettings?.fallback_rate ?? 9.99).toFixed(2)}</span>
-                              <span className="text-sm font-bold text-green-600 dark:text-green-400">FREE! 🎉</span>
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-xs line-through text-muted-foreground">${(fallbackSettings?.fallback_rate ?? 9.99).toFixed(2)}</span>
+                              <span className="text-xs font-bold text-green-600 dark:text-green-400">FREE! 🎉</span>
                             </div>
-                            <span className="text-xs text-muted-foreground">Calculated at checkout</span>
+                            <span className="text-[10px] text-muted-foreground">Calculated at checkout</span>
                           </div>
                         ) : estimatedShipping === 0 && originalShippingCost && originalShippingCost > 0 ? (
                           <div className="flex flex-col items-end gap-0.5">
-                            <div className="flex items-center gap-2">
-                              <span className="text-sm line-through text-muted-foreground">${originalShippingCost.toFixed(2)}</span>
-                              <span className="text-sm font-bold text-green-600 dark:text-green-400">FREE! 🎉</span>
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-xs line-through text-muted-foreground">${originalShippingCost.toFixed(2)}</span>
+                              <span className="text-xs font-bold text-green-600 dark:text-green-400">FREE! 🎉</span>
                             </div>
                           </div>
                         ) : estimatedShipping === 0 ? (
-                          <span className="text-green-600 font-bold">FREE</span>
+                          <span className="text-green-600 font-bold text-sm">FREE</span>
                         ) : (
-                          <span className="text-gray-900">${(estimatedShipping ?? fallbackSettings?.fallback_rate ?? 9.99).toFixed(2)}</span>
+                          <span className="text-gray-900 text-sm">${(estimatedShipping ?? fallbackSettings?.fallback_rate ?? 9.99).toFixed(2)}</span>
                         )}
                       </div>
                     </div>
                   </div>
 
                   {/* Total */}
-                  <div className="flex justify-between text-lg font-bold mb-4 pt-3 border-t border-gray-300">
+                  <div className="flex justify-between text-base font-bold mb-3 pt-2 border-t border-gray-300">
                     <span>
                       {estimatedShipping !== null ? 'Est. Total' : 'Total'}
                     </span>
