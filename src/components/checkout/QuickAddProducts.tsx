@@ -18,58 +18,34 @@ const QuickAddProducts = () => {
     .filter(p => !cartItems.some(item => item.id === p.id))
     .filter(p => p.images && p.images.length > 0);
 
-  const usedIds = new Set<string>();
   const recommendedProducts: typeof availableProducts = [];
 
-  // Get top 3 bundles by price
-  const bundles = availableProducts
-    .filter(p => p.categories?.some(cat => cat.toLowerCase().includes('bundle')))
-    .sort((a, b) => (b.price || 0) - (a.price || 0));
-  
-  for (const bundle of bundles) {
+  // Specific products to recommend in order
+  const targetProducts = [
+    'multipurpose',
+    'jewelry bag',
+    'travel'
+  ];
+
+  for (const target of targetProducts) {
     if (recommendedProducts.length >= 3) break;
-    if (!usedIds.has(bundle.id)) {
-      recommendedProducts.push(bundle);
-      usedIds.add(bundle.id);
+    
+    const product = availableProducts.find(p => {
+      const name = p.name.toLowerCase();
+      return !recommendedProducts.some(rp => rp.id === p.id) && name.includes(target);
+    });
+    
+    if (product) {
+      recommendedProducts.push(product);
     }
   }
 
-  // If we don't have 3 bundles, fill with specific single items
+  // Fill remaining slots with any available products if needed
   if (recommendedProducts.length < 3) {
-    const singleItems = availableProducts
-      .filter(p => !p.categories?.some(cat => cat.toLowerCase().includes('bundle')));
-
-    // Priority: organizer, single rod, large box
-    const priorityItems = [
-      singleItems.find(p => {
-        const name = p.name.toLowerCase();
-        return !usedIds.has(p.id) && (name.includes('organizer') || name.includes('multipurpose'));
-      }),
-      singleItems.find(p => {
-        const name = p.name.toLowerCase();
-        return !usedIds.has(p.id) && name.includes('travel') && (name.includes('1') || name.includes('one'));
-      }),
-      singleItems.find(p => {
-        const name = p.name.toLowerCase();
-        return !usedIds.has(p.id) && name.includes('large') && name.includes('4');
-      })
-    ].filter(Boolean);
-
-    for (const item of priorityItems) {
-      if (recommendedProducts.length >= 3) break;
-      if (item && !usedIds.has(item.id)) {
-        recommendedProducts.push(item);
-        usedIds.add(item.id);
-      }
-    }
-
-    // Fill any remaining slots
-    if (recommendedProducts.length < 3) {
-      const remaining = singleItems
-        .filter(p => !usedIds.has(p.id))
-        .slice(0, 3 - recommendedProducts.length);
-      recommendedProducts.push(...remaining);
-    }
+    const remaining = availableProducts
+      .filter(p => !recommendedProducts.some(rp => rp.id === p.id))
+      .slice(0, 3 - recommendedProducts.length);
+    recommendedProducts.push(...remaining);
   }
 
   if (recommendedProducts.length === 0) return null;
