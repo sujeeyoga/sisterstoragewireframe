@@ -38,40 +38,8 @@ const QuickAddProducts = () => {
     .filter(p => !cartItems.some(item => item.id === p.id))
     .filter(p => p.images && p.images.length > 0);
 
-  const recommendedProducts: typeof availableProducts = [];
-
-  // Exact product matches in priority order
-  const targetProducts = [
-    { keywords: ['multipurpose box'], priority: 1 },
-    { keywords: ['jewelry bag organizer'], priority: 2 },
-    { keywords: ['travel'], priority: 3 }, // Made more flexible - just needs "travel"
-  ];
-
-  for (const target of targetProducts) {
-    if (recommendedProducts.length >= 3) break;
-    
-    const product = availableProducts.find(p => {
-      const name = p.name.toLowerCase();
-      const alreadyAdded = recommendedProducts.some(rp => rp.id === p.id);
-      
-      // Check if all keywords match
-      const allKeywordsMatch = target.keywords.every(keyword => name.includes(keyword));
-      
-      return !alreadyAdded && allKeywordsMatch;
-    });
-    
-    if (product) {
-      recommendedProducts.push(product);
-    }
-  }
-
-  // Fill remaining slots with any available products if needed
-  if (recommendedProducts.length < 3) {
-    const remaining = availableProducts
-      .filter(p => !recommendedProducts.some(rp => rp.id === p.id))
-      .slice(0, 3 - recommendedProducts.length);
-    recommendedProducts.push(...remaining);
-  }
+  // Simply take the first 3 available products - no complex keyword matching
+  const recommendedProducts = availableProducts.slice(0, 3);
 
   // Show nothing if truly no products available
   if (recommendedProducts.length === 0) return null;
