@@ -25,7 +25,7 @@ const FreeShippingThresholdBar = ({
   postalCode
 }: FreeShippingThresholdBarProps) => {
   const { calculateShipping } = useShippingZones();
-  const THRESHOLD = country === 'US' ? 199 : 145;
+  const THRESHOLD = 289;
   const [prevSubtotal, setPrevSubtotal] = useState(cartSubtotal);
   const [showConfetti, setShowConfetti] = useState(false);
   const [estimatedShipping, setEstimatedShipping] = useState<number | null>(null);

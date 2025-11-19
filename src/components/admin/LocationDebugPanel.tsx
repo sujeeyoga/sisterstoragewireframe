@@ -83,7 +83,7 @@ const LocationDebugPanel = () => {
               </div>
             ) : (
               <div>
-                Non-GTA: Free shipping over $145
+                Non-GTA: Free shipping over $289
               </div>
             )}
           </div>

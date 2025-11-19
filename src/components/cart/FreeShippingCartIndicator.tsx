@@ -29,8 +29,8 @@ const FreeShippingCartIndicator = ({
   const [estimatedShipping, setEstimatedShipping] = useState<number | null>(null);
   const [isCalculating, setIsCalculating] = useState(false);
   const threshold = useMemo(() => {
-    if (country === 'CA') return 145;
-    if (country === 'US') return 199;
+    if (country === 'CA') return 289;
+    if (country === 'US') return 289;
     return null;
   }, [country]);
 
