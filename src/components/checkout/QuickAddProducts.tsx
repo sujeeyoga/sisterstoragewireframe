@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Plus, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -9,6 +9,7 @@ const QuickAddProducts = () => {
   const { addItem, items: cartItems } = useCart();
   const { data: products, isLoading } = useProducts();
   const [addedItems, setAddedItems] = useState<Set<string>>(new Set());
+  const [showBundles, setShowBundles] = useState(false);
 
   // Show loading state instead of returning null
   if (isLoading) {
@@ -30,37 +31,54 @@ const QuickAddProducts = () => {
     );
   }
 
+  // Alternate between bundles and individual products every 5 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setShowBundles(prev => !prev);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   if (!products) return null;
 
-  // Get all available products (not in cart, in stock, visible, with images, exclude bundles)
-  const availableProducts = products
+  // Get individual rod products (not bundles)
+  const individualProducts = products
     .filter(p => p.inStock && p.visible)
     .filter(p => !cartItems.some(item => item.id === p.id))
     .filter(p => p.images && p.images.length > 0)
     .filter(p => !p.name.toLowerCase().includes('bundle'));
 
-  // Priority products: Single Rod, Double Rod (2 Rod), and Three Rod (3 Rod)
-  const recommendedProducts: typeof availableProducts = [];
+  // Priority individual products: Travel, Medium, Large
+  const individualRecommended: typeof individualProducts = [];
   
-  // Look for single rod or travel product
-  const singleRod = availableProducts.find(p => 
+  const travel = individualProducts.find(p => 
     p.name.toLowerCase().includes('travel') && p.name.toLowerCase().includes('bangle')
   );
-  if (singleRod) recommendedProducts.push(singleRod);
+  if (travel) individualRecommended.push(travel);
   
-  // Look for double rod (2 rod) product
-  const doubleRod = availableProducts.find(p => 
+  const medium = individualProducts.find(p => 
     p.name.toLowerCase().includes('medium') && p.name.toLowerCase().includes('bangle')
   );
-  if (doubleRod) recommendedProducts.push(doubleRod);
+  if (medium) individualRecommended.push(medium);
   
-  // Look for three or four rod product
-  const threeRod = availableProducts.find(p => 
+  const large = individualProducts.find(p => 
     p.name.toLowerCase().includes('large') && p.name.toLowerCase().includes('bangle')
   );
-  if (threeRod) recommendedProducts.push(threeRod);
+  if (large) individualRecommended.push(large);
 
-  // Show nothing if truly no products available
+  // Get bundle products
+  const bundleProducts = products
+    .filter(p => p.inStock && p.visible)
+    .filter(p => !cartItems.some(item => item.id === p.id))
+    .filter(p => p.images && p.images.length > 0)
+    .filter(p => p.name.toLowerCase().includes('bundle'))
+    .slice(0, 3);
+
+  // Choose which set to display
+  const recommendedProducts = showBundles ? bundleProducts : individualRecommended;
+
+  // Show nothing if no products available
   if (recommendedProducts.length === 0) return null;
 
   const handleAddToCart = (product: typeof recommendedProducts[0]) => {
@@ -90,9 +108,9 @@ const QuickAddProducts = () => {
   return (
     <div className="mt-6 mb-4">
       <h3 className="text-sm font-semibold text-foreground mb-3">
-        You might also like
+        {showBundles ? 'Bundle Deals' : 'You might also like'}
       </h3>
-      <div className="grid grid-cols-3 md:grid-cols-3 gap-3">
+      <div className="grid grid-cols-3 md:grid-cols-3 gap-3 animate-fade-in" key={showBundles ? 'bundles' : 'individual'}>
         {recommendedProducts.map((product) => {
           const isAdded = addedItems.has(product.id);
           
