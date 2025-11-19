@@ -134,7 +134,7 @@ const BundleCard = ({ product, isBundle = false }: BundleCardProps) => {
                               {label}
                             </span>
                           </span>
-                          <span className="text-gray-600 text-2xl">
+                          <span className="text-gray-600 text-2xl font-semibold">
                             ({rodsEach} rod{rodsEach > 1 ? 's' : ''} each)
                           </span>
                         </div>

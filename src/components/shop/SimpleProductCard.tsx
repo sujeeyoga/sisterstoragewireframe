@@ -150,7 +150,7 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
                           {openBoxDetails.label}
                         </span>
                       </span>
-                      <span className="text-gray-600 text-2xl">
+                      <span className="text-gray-600 text-2xl font-semibold">
                         with {openBoxDetails.rodsEach} Rods
                       </span>
                     </div>

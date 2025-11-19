@@ -72,7 +72,7 @@ const BundleContentsList = ({ contents, variant = "full", showTotals = false }: 
                       {item.size}
                     </span>
                   </span>
-                  <span className="text-gray-600 text-2xl">
+                  <span className="text-gray-600 text-2xl font-semibold">
                     {item.rods} rod{item.rods > 1 ? 's' : ''} each
                   </span>
                 </div>
@@ -103,7 +103,7 @@ const BundleContentsList = ({ contents, variant = "full", showTotals = false }: 
                     {item.size}
                   </span>
                 </span>
-                <span className="text-gray-600 text-sm">
+                <span className="text-gray-600 text-sm font-semibold">
                   {item.rods} rod{item.rods > 1 ? 's' : ''}{item.quantity > 1 ? ' each' : ''}
                 </span>
               </div>
