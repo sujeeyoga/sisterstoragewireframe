@@ -83,38 +83,38 @@ const FreeShippingThresholdBar = ({
   if (!shouldShowBar) return null;
 
   return (
-    <div className="mb-4 p-4 bg-gradient-to-r from-background to-secondary/20 rounded-lg border border-border/50">
+    <div className="mb-3 p-2 bg-gradient-to-r from-background to-secondary/20 rounded-lg border border-border/50">
       {hasReachedThreshold ? (
-        <div className="space-y-2">
-          <div className="flex flex-col items-center gap-1 animate-fade-in">
+        <div className="space-y-1.5">
+          <div className="flex flex-col items-center gap-0.5 animate-fade-in">
             {estimatedShipping !== null && !isCalculating ? (
               <>
-                <span className="text-xs font-medium text-muted-foreground">Shipping</span>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm line-through text-muted-foreground">${estimatedShipping.toFixed(2)}</span>
-                  <span className="text-sm font-bold text-green-600 dark:text-green-400">FREE! 🎉</span>
+                <span className="text-[10px] font-medium text-muted-foreground">Shipping</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xs line-through text-muted-foreground">${estimatedShipping.toFixed(2)}</span>
+                  <span className="text-xs font-bold text-green-600 dark:text-green-400">FREE! 🎉</span>
                 </div>
               </>
             ) : (
-              <span className="text-sm font-semibold text-green-600 dark:text-green-400">
+              <span className="text-xs font-semibold text-green-600 dark:text-green-400">
                 You unlocked FREE SHIPPING! 🎉
               </span>
             )}
           </div>
-          <Progress value={100} className="h-2 [&>div]:bg-green-500 dark:[&>div]:bg-green-400" />
+          <Progress value={100} className="h-1.5 [&>div]:bg-green-500 dark:[&>div]:bg-green-400" />
         </div>
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-foreground">
-              Spend ${remaining.toFixed(2)} more to unlock FREE SHIPPING 🚚✨
+            <span className="text-xs font-semibold text-foreground">
+              Spend ${remaining.toFixed(2)} more for FREE SHIPPING 🚚
             </span>
           </div>
           <Progress 
             value={progressPercent} 
-            className="h-2 [&>div]:bg-primary transition-all duration-500"
+            className="h-1.5 [&>div]:bg-primary transition-all duration-500"
           />
-          <p className="text-xs text-muted-foreground text-right">
+          <p className="text-[10px] text-muted-foreground text-right">
             {progressPercent.toFixed(0)}% to free shipping
           </p>
         </div>
