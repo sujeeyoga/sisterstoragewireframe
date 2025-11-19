@@ -38,8 +38,37 @@ const QuickAddProducts = () => {
     .filter(p => !cartItems.some(item => item.id === p.id))
     .filter(p => p.images && p.images.length > 0);
 
-  // Simply take the first 3 available products - no complex keyword matching
-  const recommendedProducts = availableProducts.slice(0, 3);
+  // Priority products: Single Rod, Double Rod (2 Rod), and Three Rod (3 Rod or 4 Rod)
+  const recommendedProducts: typeof availableProducts = [];
+  
+  // Look for single rod product
+  const singleRod = availableProducts.find(p => 
+    p.name.toLowerCase().includes('1 rod') || 
+    p.name.toLowerCase().includes('travel')
+  );
+  if (singleRod) recommendedProducts.push(singleRod);
+  
+  // Look for double rod product (2 rod)
+  const doubleRod = availableProducts.find(p => 
+    p.name.toLowerCase().includes('2 rod') && 
+    !recommendedProducts.some(rp => rp.id === p.id)
+  );
+  if (doubleRod) recommendedProducts.push(doubleRod);
+  
+  // Look for three/four rod product
+  const threeRod = availableProducts.find(p => 
+    (p.name.toLowerCase().includes('3 rod') || p.name.toLowerCase().includes('4 rod')) &&
+    !recommendedProducts.some(rp => rp.id === p.id)
+  );
+  if (threeRod) recommendedProducts.push(threeRod);
+  
+  // Fill remaining slots with any available products if we don't have 3 yet
+  if (recommendedProducts.length < 3) {
+    const remaining = availableProducts
+      .filter(p => !recommendedProducts.some(rp => rp.id === p.id))
+      .slice(0, 3 - recommendedProducts.length);
+    recommendedProducts.push(...remaining);
+  }
 
   // Show nothing if truly no products available
   if (recommendedProducts.length === 0) return null;
