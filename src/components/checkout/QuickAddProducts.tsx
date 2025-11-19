@@ -10,7 +10,27 @@ const QuickAddProducts = () => {
   const { data: products, isLoading } = useProducts();
   const [addedItems, setAddedItems] = useState<Set<string>>(new Set());
 
-  if (isLoading || !products) return null;
+  // Show loading state instead of returning null
+  if (isLoading) {
+    return (
+      <div className="mt-6 mb-4">
+        <h3 className="text-sm font-semibold text-foreground mb-3">
+          You might also like
+        </h3>
+        <div className="grid grid-cols-3 gap-3">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="flex flex-col gap-2 animate-pulse">
+              <div className="aspect-square rounded-lg bg-muted" />
+              <div className="h-4 bg-muted rounded" />
+              <div className="h-3 bg-muted rounded w-2/3" />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (!products) return null;
 
   // Get all available products (not in cart, in stock, visible, with images)
   const availableProducts = products
@@ -24,7 +44,7 @@ const QuickAddProducts = () => {
   const targetProducts = [
     { keywords: ['multipurpose box'], priority: 1 },
     { keywords: ['jewelry bag organizer'], priority: 2 },
-    { keywords: ['travel', '1'], priority: 3 }
+    { keywords: ['travel'], priority: 3 }, // Made more flexible - just needs "travel"
   ];
 
   for (const target of targetProducts) {
@@ -53,6 +73,7 @@ const QuickAddProducts = () => {
     recommendedProducts.push(...remaining);
   }
 
+  // Show nothing if truly no products available
   if (recommendedProducts.length === 0) return null;
 
   const handleAddToCart = (product: typeof recommendedProducts[0]) => {
