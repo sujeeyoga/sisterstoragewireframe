@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Plus, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -9,16 +9,6 @@ const QuickAddProducts = () => {
   const { addItem, items: cartItems } = useCart();
   const { data: products, isLoading } = useProducts();
   const [addedItems, setAddedItems] = useState<Set<string>>(new Set());
-  const [showBundles, setShowBundles] = useState(false);
-
-  // Alternate between bundles and individual products every 5 seconds
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setShowBundles(prev => !prev);
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, []);
 
   // Show loading state instead of returning null
   if (isLoading) {
@@ -42,43 +32,15 @@ const QuickAddProducts = () => {
 
   if (!products) return null;
 
-  // Get individual rod products (not bundles)
-  const individualProducts = products
-    .filter(p => p.inStock && p.visible)
-    .filter(p => !cartItems.some(item => item.id === p.id))
-    .filter(p => p.images && p.images.length > 0)
-    .filter(p => !p.name.toLowerCase().includes('bundle'));
-
-  // Priority individual products: Travel, Medium, Large
-  const individualRecommended: typeof individualProducts = [];
-  
-  const travel = individualProducts.find(p => 
-    p.name.toLowerCase().includes('travel') && p.name.toLowerCase().includes('bangle')
-  );
-  if (travel) individualRecommended.push(travel);
-  
-  const medium = individualProducts.find(p => 
-    p.name.toLowerCase().includes('medium') && p.name.toLowerCase().includes('bangle')
-  );
-  if (medium) individualRecommended.push(medium);
-  
-  const large = individualProducts.find(p => 
-    p.name.toLowerCase().includes('large') && p.name.toLowerCase().includes('bangle')
-  );
-  if (large) individualRecommended.push(large);
-
-  // Get bundle products
-  const bundleProducts = products
+  // Get only bundle products
+  const recommendedProducts = products
     .filter(p => p.inStock && p.visible)
     .filter(p => !cartItems.some(item => item.id === p.id))
     .filter(p => p.images && p.images.length > 0)
     .filter(p => p.name.toLowerCase().includes('bundle'))
     .slice(0, 3);
 
-  // Choose which set to display
-  const recommendedProducts = showBundles ? bundleProducts : individualRecommended;
-
-  // Show nothing if no products available
+  // Show nothing if no bundles available
   if (recommendedProducts.length === 0) return null;
 
   const handleAddToCart = (product: typeof recommendedProducts[0]) => {
@@ -108,9 +70,9 @@ const QuickAddProducts = () => {
   return (
     <div className="mt-6 mb-4">
       <h3 className="text-sm font-semibold text-foreground mb-3">
-        {showBundles ? 'Bundle Deals' : 'You might also like'}
+        Bundle Deals
       </h3>
-      <div className="grid grid-cols-3 md:grid-cols-3 gap-3 animate-fade-in" key={showBundles ? 'bundles' : 'individual'}>
+      <div className="grid grid-cols-3 md:grid-cols-3 gap-3">
         {recommendedProducts.map((product) => {
           const isAdded = addedItems.has(product.id);
           
