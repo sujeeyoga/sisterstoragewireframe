@@ -116,7 +116,7 @@ const CartDrawer = () => {
       {!shouldHideFloatingButton && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-24 right-6 z-50 w-[60px] h-[60px] bg-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))]/90 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110"
+          className="fixed bottom-24 right-6 z-[100] w-[60px] h-[60px] bg-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))]/90 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110"
           aria-label="Open shopping cart"
         >
           <ShoppingBag className="h-7 w-7" />
