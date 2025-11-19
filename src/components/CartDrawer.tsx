@@ -19,7 +19,7 @@ const CartDrawer = () => {
   
   // Location detection and shipping estimation
   const { city, region, country, postalCode, isGTA, isLoading: locationLoading } = useLocationDetection();
-  const { calculateShipping } = useShippingZones();
+  const { calculateShipping, fallbackSettings } = useShippingZones();
   const [estimatedShipping, setEstimatedShipping] = useState<number | null>(null);
   const [shippingLoading, setShippingLoading] = useState(false);
   
@@ -79,12 +79,12 @@ const CartDrawer = () => {
             setEstimatedShipping(result.appliedRate.rate_amount);
             console.log('[CartDrawer] Shipping estimate set to:', result.appliedRate.rate_amount);
           } else {
-            console.warn('[CartDrawer] No shipping rate found in result');
-            setEstimatedShipping(null);
+            console.warn('[CartDrawer] No shipping rate found, using fallback');
+            setEstimatedShipping(fallbackSettings?.fallback_rate ?? 9.99);
           }
         } catch (error) {
           console.error('[CartDrawer] Failed to estimate shipping:', error);
-          setEstimatedShipping(null);
+          setEstimatedShipping(fallbackSettings?.fallback_rate ?? 9.99);
         } finally {
           setShippingLoading(false);
         }
@@ -387,14 +387,10 @@ const CartDrawer = () => {
                       <span className="font-semibold text-gray-900 text-base">
                         {locationLoading || shippingLoading ? (
                           <span className="text-gray-400 animate-pulse">Calculating...</span>
-                        ) : estimatedShipping !== null ? (
-                          estimatedShipping === 0 ? (
-                            <span className="text-green-600 font-bold">FREE</span>
-                          ) : (
-                            <span className="text-gray-900">${estimatedShipping.toFixed(2)}</span>
-                          )
+                        ) : estimatedShipping === 0 ? (
+                          <span className="text-green-600 font-bold">FREE</span>
                         ) : (
-                          <span className="text-gray-500 text-sm">Calculated at checkout</span>
+                          <span className="text-gray-900">${(estimatedShipping ?? fallbackSettings?.fallback_rate ?? 9.99).toFixed(2)}</span>
                         )}
                       </span>
                     </div>
