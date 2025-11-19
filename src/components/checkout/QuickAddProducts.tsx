@@ -37,35 +37,31 @@ const QuickAddProducts = () => {
     .filter(p => p.inStock && p.visible)
     .filter(p => !cartItems.some(item => item.id === p.id))
     .filter(p => p.images && p.images.length > 0)
-    .filter(p => p.name.toLowerCase().includes('bundle'));
+    .filter(p => p.name.toLowerCase().includes('bundle') || p.name.toLowerCase().includes('set'));
 
-  // Priority order: Starter Set, Together Bundle, Complete Family Set
+  // Specific order: Starter Set, Together Bundle, Complete Family Set
   const recommendedProducts: typeof allBundles = [];
   
+  // Find Starter Set
   const starterSet = allBundles.find(p => 
-    p.name.toLowerCase().includes('starter')
+    p.name.toLowerCase().includes('starter') && p.name.toLowerCase().includes('set')
   );
   if (starterSet) recommendedProducts.push(starterSet);
   
+  // Find Together Bundle
   const togetherBundle = allBundles.find(p => 
-    p.name.toLowerCase().includes('together')
+    p.name.toLowerCase().includes('together') && p.name.toLowerCase().includes('bundle')
   );
   if (togetherBundle) recommendedProducts.push(togetherBundle);
   
+  // Find Complete Family Set
   const familySet = allBundles.find(p => 
-    p.name.toLowerCase().includes('family') || p.name.toLowerCase().includes('complete')
+    (p.name.toLowerCase().includes('complete') || p.name.toLowerCase().includes('family')) && 
+    p.name.toLowerCase().includes('set')
   );
   if (familySet) recommendedProducts.push(familySet);
 
-  // Fill remaining slots with any other bundles
-  if (recommendedProducts.length < 3) {
-    const remainingBundles = allBundles
-      .filter(b => !recommendedProducts.some(r => r.id === b.id))
-      .slice(0, 3 - recommendedProducts.length);
-    recommendedProducts.push(...remainingBundles);
-  }
-
-  // Show nothing if no bundles available
+  // Only show if we have at least one bundle
   if (recommendedProducts.length === 0) return null;
 
   const handleAddToCart = (product: typeof recommendedProducts[0]) => {
