@@ -176,6 +176,7 @@ const Checkout = () => {
   const [isLoadingRates, setIsLoadingRates] = useState(false);
   const [shippingRates, setShippingRates] = useState<any[]>([]);
   const [selectedShippingRate, setSelectedShippingRate] = useState<string>('');
+  const [originalShippingCost, setOriginalShippingCost] = useState<number>(0);
   const [matchedZone, setMatchedZone] = useState<{ id: string; name: string } | null>(null);
   
   // Form stage management
@@ -254,6 +255,13 @@ const Checkout = () => {
   // Get shipping cost from selected rate (zone-based)
   const selectedRate = shippingRates.find(rate => rate.id === selectedShippingRate);
   let shippingCost = selectedRate ? selectedRate.rate_amount : 0;
+  
+  // Track original shipping cost before free threshold
+  useEffect(() => {
+    if (selectedRate) {
+      setOriginalShippingCost(selectedRate.original_rate_amount || selectedRate.rate_amount);
+    }
+  }, [selectedRate]);
   
   const total = discountedSubtotal + giftWrappingFee + taxAmount + shippingCost;
 
@@ -1177,7 +1185,15 @@ const Checkout = () => {
                         <span className="text-sm text-gray-400 italic">Input address to Calculate</span>
                       ) : selectedShippingRate ? (
                         <>
-                          {shippingCost === 0 ? (
+                          {shippingCost === 0 && originalShippingCost > 0 ? (
+                            <div className="flex flex-col items-end gap-1">
+                              <div className="flex items-center gap-2">
+                                <span className="text-sm line-through text-muted-foreground">${originalShippingCost.toFixed(2)}</span>
+                                <span className="text-sm font-bold text-green-600 dark:text-green-400">FREE! 🎉</span>
+                              </div>
+                              <span className="text-xs text-gray-500">{selectedRate?.method_name}</span>
+                            </div>
+                          ) : shippingCost === 0 ? (
                             <div className="flex flex-col items-end">
                               <span className="text-green-600 font-bold text-base">FREE</span>
                               <span className="text-xs text-gray-500">{selectedRate?.method_name}</span>

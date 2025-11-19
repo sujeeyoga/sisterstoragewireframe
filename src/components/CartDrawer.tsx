@@ -21,6 +21,7 @@ const CartDrawer = () => {
   const { city, region, country, postalCode, isGTA, isLoading: locationLoading } = useLocationDetection();
   const { calculateShipping, fallbackSettings } = useShippingZones();
   const [estimatedShipping, setEstimatedShipping] = useState<number | null>(null);
+  const [originalShippingCost, setOriginalShippingCost] = useState<number | null>(null);
   const [shippingLoading, setShippingLoading] = useState(false);
   
   // Track active cart in real-time
@@ -77,10 +78,13 @@ const CartDrawer = () => {
           
           if (result?.appliedRate?.rate_amount !== undefined) {
             setEstimatedShipping(result.appliedRate.rate_amount);
+            // Store original cost before free threshold for display
+            setOriginalShippingCost(result.appliedRate.original_rate_amount || result.appliedRate.rate_amount);
             console.log('[CartDrawer] Shipping estimate set to:', result.appliedRate.rate_amount);
           } else {
             console.warn('[CartDrawer] No shipping rate found, using fallback');
             setEstimatedShipping(fallbackSettings?.fallback_rate ?? 9.99);
+            setOriginalShippingCost(fallbackSettings?.fallback_rate ?? 9.99);
           }
         } catch (error) {
           console.error('[CartDrawer] Failed to estimate shipping:', error);
@@ -388,15 +392,22 @@ const CartDrawer = () => {
                           </div>
                         )}
                       </div>
-                      <span className="font-semibold text-gray-900 text-base">
+                      <div className="text-right">
                         {locationLoading || shippingLoading ? (
                           <span className="text-gray-400 animate-pulse">Calculating...</span>
+                        ) : estimatedShipping === 0 && originalShippingCost && originalShippingCost > 0 ? (
+                          <div className="flex flex-col items-end gap-0.5">
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm line-through text-muted-foreground">${originalShippingCost.toFixed(2)}</span>
+                              <span className="text-sm font-bold text-green-600 dark:text-green-400">FREE! 🎉</span>
+                            </div>
+                          </div>
                         ) : estimatedShipping === 0 ? (
                           <span className="text-green-600 font-bold">FREE</span>
                         ) : (
                           <span className="text-gray-900">${(estimatedShipping ?? fallbackSettings?.fallback_rate ?? 9.99).toFixed(2)}</span>
                         )}
-                      </span>
+                      </div>
                     </div>
                   </div>
 
