@@ -16,7 +16,7 @@ export const ProductQA = ({ productName, productType }: ProductQAProps) => {
   const commonQA: QAItem[] = [
     {
       question: `What material is the ${productName} made of?`,
-      answer: "Our bangle organizers are made from premium clear acrylic material that is durable, scratch-resistant, and provides dust-proof protection for your bangles."
+      answer: "Our bangle organizers are made from premium clear plastic material that is durable, scratch-resistant, and provides dust-proof protection for your bangles."
     },
     {
       question: `How many bangles can the ${productName} hold?`,
@@ -36,7 +36,7 @@ export const ProductQA = ({ productName, productType }: ProductQAProps) => {
     },
     {
       question: "How do I clean the organizer?",
-      answer: "Simply wipe with a soft, damp cloth. The clear acrylic surface is easy to clean and maintain. Avoid harsh chemicals."
+      answer: "Simply wipe with a soft, damp cloth. The clear plastic surface is easy to clean and maintain. Avoid harsh chemicals."
     },
     {
       question: "What's your shipping policy?",

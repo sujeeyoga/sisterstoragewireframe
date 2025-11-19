@@ -5,7 +5,7 @@ export const shopFAQs = [
   },
   {
     question: "What's the difference between 2-rod, 4-rod, and 6-rod organizers?",
-    answer: "Rod count determines capacity: 2-rod (15-20 bangles), 4-rod (30-50 bangles), 6-rod (60-80 bangles). All feature the same premium acrylic construction and stackable design."
+    answer: "Rod count determines capacity: 2-rod (15-20 bangles), 4-rod (30-50 bangles), 6-rod (60-80 bangles). All feature the same premium plastic construction and stackable design."
   },
   {
     question: "Are these organizers travel-friendly?",
