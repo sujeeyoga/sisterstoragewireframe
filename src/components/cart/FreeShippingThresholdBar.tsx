@@ -1,11 +1,17 @@
 import { useEffect, useState } from 'react';
 import { Progress } from '@/components/ui/progress';
+import { useShippingZones } from '@/hooks/useShippingZones';
+import { CartItem } from '@/contexts/CartContext';
 
 interface FreeShippingThresholdBarProps {
   cartSubtotal: number;
   isGTA: boolean;
   country: string;
   isLoading: boolean;
+  cartItems: CartItem[];
+  city: string;
+  region: string;
+  postalCode: string;
 }
 
 const FreeShippingThresholdBar = ({
@@ -13,10 +19,17 @@ const FreeShippingThresholdBar = ({
   isGTA,
   country,
   isLoading,
+  cartItems,
+  city,
+  region,
+  postalCode
 }: FreeShippingThresholdBarProps) => {
+  const { calculateShipping } = useShippingZones();
   const THRESHOLD = country === 'US' ? 199 : 145;
   const [prevSubtotal, setPrevSubtotal] = useState(cartSubtotal);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [estimatedShipping, setEstimatedShipping] = useState<number | null>(null);
+  const [isCalculating, setIsCalculating] = useState(false);
 
   // Only show for Canada or US customers
   const shouldShowBar = country === 'CA' || country === 'US';
@@ -24,6 +37,37 @@ const FreeShippingThresholdBar = ({
   const remaining = Math.max(0, THRESHOLD - cartSubtotal);
   const progressPercent = Math.min(100, (cartSubtotal / THRESHOLD) * 100);
   const hasReachedThreshold = cartSubtotal >= THRESHOLD;
+
+  // Calculate shipping estimate
+  useEffect(() => {
+    if (!city || !region || !country || cartItems.length === 0) {
+      setEstimatedShipping(null);
+      return;
+    }
+
+    const calculate = async () => {
+      setIsCalculating(true);
+      try {
+        const result = await calculateShipping(
+          { city, province: region, country, postalCode },
+          cartSubtotal,
+          cartItems
+        );
+        
+        if (result?.appliedRate) {
+          setEstimatedShipping(result.appliedRate.rate_amount);
+        }
+      } catch (error) {
+        console.error('Failed to calculate shipping:', error);
+        setEstimatedShipping(null);
+      } finally {
+        setIsCalculating(false);
+      }
+    };
+
+    const debounceTimer = setTimeout(calculate, 500);
+    return () => clearTimeout(debounceTimer);
+  }, [cartSubtotal, cartItems, city, region, country, postalCode, calculateShipping]);
 
   useEffect(() => {
     // Trigger confetti animation when threshold is crossed
@@ -44,7 +88,14 @@ const FreeShippingThresholdBar = ({
         <div className="space-y-2">
           <div className="flex items-center justify-center gap-2">
             <span className="text-sm font-semibold text-green-600 dark:text-green-400 animate-fade-in">
-              You unlocked FREE SHIPPING! 🎉
+              {estimatedShipping !== null && !isCalculating ? (
+                <>
+                  <span className="line-through text-muted-foreground mr-2">${estimatedShipping.toFixed(2)}</span>
+                  FREE SHIPPING! 🎉
+                </>
+              ) : (
+                'You unlocked FREE SHIPPING! 🎉'
+              )}
             </span>
           </div>
           <Progress value={100} className="h-2 [&>div]:bg-green-500 dark:[&>div]:bg-green-400" />

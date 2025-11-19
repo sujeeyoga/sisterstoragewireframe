@@ -1035,6 +1035,10 @@ const Checkout = () => {
                   isGTA={checkIsGTA(formData.city, formData.province)}
                   country={formData.country}
                   isLoading={false}
+                  cartItems={items}
+                  city={formData.city}
+                  region={formData.province}
+                  postalCode={formData.postalCode}
                 />
                 
                 {/* Cart Items */}
