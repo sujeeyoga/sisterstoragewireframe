@@ -3,6 +3,7 @@ import eidSleeve from "@/assets/sleeves/eid-sleeve.png";
 import weddingSleeve from "@/assets/sleeves/wedding-sleeve.png";
 import pregnancySleeve from "@/assets/sleeves/pregnancy-sleeve.png";
 import bangleSleeve from "@/assets/sleeves/bangle-sleeve.png";
+import standardSleeve from "@/assets/sleeves/standard-sleeve.png";
 
 interface SleeveSelectorProps {
   selectedSleeve: string;
@@ -10,7 +11,7 @@ interface SleeveSelectorProps {
 }
 
 const sleeveOptions = [
-  { value: "none", label: "Your Choice", image: null },
+  { value: "none", label: "Your Choice", image: standardSleeve },
   { value: "eid", label: "Eid", image: eidSleeve },
   { value: "wedding", label: "Wedding", image: weddingSleeve },
   { value: "pregnancy", label: "Pregnancy", image: pregnancySleeve },
@@ -32,22 +33,16 @@ const SleeveSelector = ({ selectedSleeve, setSelectedSleeve }: SleeveSelectorPro
                 : 'border-border hover:border-primary/50'
             }`}
           >
-            {option.image ? (
-              <div className="aspect-square">
-                <img 
-                  src={option.image} 
-                  alt={option.label}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-1.5">
-                  <span className="text-white text-xs font-semibold">{option.label}</span>
-                </div>
+            <div className="aspect-square">
+              <img 
+                src={option.image} 
+                alt={option.label}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-1.5">
+                <span className="text-white text-xs font-semibold">{option.label}</span>
               </div>
-            ) : (
-              <div className="aspect-square flex items-center justify-center bg-muted">
-                <span className="text-xs font-semibold text-muted-foreground">{option.label}</span>
-              </div>
-            )}
+            </div>
           </button>
         ))}
       </div>
