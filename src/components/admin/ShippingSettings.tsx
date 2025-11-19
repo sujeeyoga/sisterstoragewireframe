@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Loader2, MapPin, Truck, DollarSign, Package, Save } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { ShippingThresholdsDisplay } from './ShippingThresholdsDisplay';
 
 interface ShippingRule {
   location: string;
@@ -121,6 +122,9 @@ const ShippingSettings = () => {
           Configure shipping rates and rules for your store
         </p>
       </div>
+
+      {/* Display Active Thresholds */}
+      <ShippingThresholdsDisplay />
 
       {/* Toronto Flat Rate */}
       <Card>
