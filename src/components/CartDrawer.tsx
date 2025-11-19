@@ -40,6 +40,15 @@ const CartDrawer = () => {
   // Hide floating button when cart is open or on checkout page or admin pages
   const shouldHideFloatingButton = isOpen || location.pathname === '/checkout' || location.pathname.startsWith('/admin');
 
+  // Debug log for button visibility
+  useEffect(() => {
+    console.log("[CartDrawer] Button visibility:", { 
+      isOpen,
+      shouldHideFloatingButton,
+      pathname: location.pathname
+    });
+  }, [isOpen, shouldHideFloatingButton, location.pathname]);
+
   // Scroll viewport to show drawer when it opens
   useEffect(() => {
     if (isOpen && drawerRef.current) {
@@ -115,8 +124,13 @@ const CartDrawer = () => {
       {/* Floating Cart Button - Hidden when drawer is open or on checkout page */}
       {!shouldHideFloatingButton && (
         <button
-          onClick={() => setIsOpen(true)}
-          className="fixed bottom-24 right-6 z-[100] w-[60px] h-[60px] bg-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))]/90 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('[CartDrawer] Floating button clicked, opening cart');
+            setIsOpen(true);
+          }}
+          className="fixed bottom-24 right-6 z-[100] w-[60px] h-[60px] bg-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))]/90 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 cursor-pointer"
           aria-label="Open shopping cart"
         >
           <ShoppingBag className="h-7 w-7" />
