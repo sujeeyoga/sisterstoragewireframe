@@ -86,17 +86,20 @@ const FreeShippingThresholdBar = ({
     <div className="mb-4 p-4 bg-gradient-to-r from-background to-secondary/20 rounded-lg border border-border/50">
       {hasReachedThreshold ? (
         <div className="space-y-2">
-          <div className="flex items-center justify-center gap-2">
-            <span className="text-sm font-semibold text-green-600 dark:text-green-400 animate-fade-in">
-              {estimatedShipping !== null && !isCalculating ? (
-                <>
-                  <span className="line-through text-muted-foreground mr-2">${estimatedShipping.toFixed(2)}</span>
-                  FREE SHIPPING! 🎉
-                </>
-              ) : (
-                'You unlocked FREE SHIPPING! 🎉'
-              )}
-            </span>
+          <div className="flex flex-col items-center gap-1 animate-fade-in">
+            {estimatedShipping !== null && !isCalculating ? (
+              <>
+                <span className="text-xs font-medium text-muted-foreground">Shipping</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm line-through text-muted-foreground">${estimatedShipping.toFixed(2)}</span>
+                  <span className="text-sm font-bold text-green-600 dark:text-green-400">FREE! 🎉</span>
+                </div>
+              </>
+            ) : (
+              <span className="text-sm font-semibold text-green-600 dark:text-green-400">
+                You unlocked FREE SHIPPING! 🎉
+              </span>
+            )}
           </div>
           <Progress value={100} className="h-2 [&>div]:bg-green-500 dark:[&>div]:bg-green-400" />
         </div>
