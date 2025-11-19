@@ -27,7 +27,7 @@ const OpenBoxIncluded: React.FC<OpenBoxIncludedProps> = ({ product }) => {
                     Large Bangle Box
                   </span>
                 </span>
-                <span className="text-gray-600 text-2xl">with 4 Rods Each</span>
+                <span className="text-gray-600 text-2xl font-semibold">with 4 Rods Each</span>
               </div>
               <p className="text-gray-600 text-sm ml-12">
                 38cm (L) × 25cm (W) × 9cm (H) | ~348 bangles each
@@ -43,7 +43,7 @@ const OpenBoxIncluded: React.FC<OpenBoxIncludedProps> = ({ product }) => {
                     Medium Bangle Box
                   </span>
                 </span>
-                <span className="text-gray-600 text-2xl">with 2 Rods</span>
+                <span className="text-gray-600 text-2xl font-semibold">with 2 Rods</span>
               </div>
               <p className="text-gray-600 text-sm ml-12">
                 38cm (L) × 25cm (W) × 5.5cm (H) | ~174 bangles
@@ -59,7 +59,7 @@ const OpenBoxIncluded: React.FC<OpenBoxIncludedProps> = ({ product }) => {
                     Travel Box
                   </span>
                 </span>
-                <span className="text-gray-600 text-2xl">with 1 Rod</span>
+                <span className="text-gray-600 text-2xl font-semibold">with 1 Rod</span>
               </div>
               <p className="text-gray-600 text-sm ml-12">
                 25cm (L) × 20cm (W) × 6cm (H) | ~87 bangles
@@ -88,7 +88,7 @@ const OpenBoxIncluded: React.FC<OpenBoxIncludedProps> = ({ product }) => {
                     Travel Box
                   </span>
                 </span>
-                <span className="text-gray-600 text-2xl">with 1 Rod</span>
+                <span className="text-gray-600 text-2xl font-semibold">with 1 Rod</span>
               </div>
               <p className="text-gray-600 text-sm">
                 <span className="font-semibold">Dimensions:</span> 25cm (L) × 20cm (W) × 6cm (H)
@@ -123,7 +123,7 @@ const OpenBoxIncluded: React.FC<OpenBoxIncludedProps> = ({ product }) => {
                     Large Bangle Box
                   </span>
                 </span>
-                <span className="text-gray-600 text-2xl">with 4 Rods</span>
+                <span className="text-gray-600 text-2xl font-semibold">with 4 Rods</span>
               </div>
               <p className="text-gray-600 text-sm">
                 <span className="font-semibold">Dimensions:</span> 38cm (L) × 25cm (W) × 9cm (H)
@@ -175,7 +175,7 @@ const OpenBoxIncluded: React.FC<OpenBoxIncludedProps> = ({ product }) => {
                 </span>
               </span>
               {typeof rodsEach === 'number' && (
-                <span className="text-gray-600 text-2xl">with {rodsEach} Rods</span>
+                <span className="text-gray-600 text-2xl font-semibold">with {rodsEach} Rods</span>
               )}
             </div>
             {dimensions && (
