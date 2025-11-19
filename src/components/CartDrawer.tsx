@@ -395,6 +395,14 @@ const CartDrawer = () => {
                       <div className="text-right">
                         {locationLoading || shippingLoading ? (
                           <span className="text-gray-400 animate-pulse">Calculating...</span>
+                        ) : discountedSubtotal >= 289 ? (
+                          <div className="flex flex-col items-end gap-0.5">
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm line-through text-muted-foreground">${(fallbackSettings?.fallback_rate ?? 9.99).toFixed(2)}</span>
+                              <span className="text-sm font-bold text-green-600 dark:text-green-400">FREE! 🎉</span>
+                            </div>
+                            <span className="text-xs text-muted-foreground">Calculated at checkout</span>
+                          </div>
                         ) : estimatedShipping === 0 && originalShippingCost && originalShippingCost > 0 ? (
                           <div className="flex flex-col items-end gap-0.5">
                             <div className="flex items-center gap-2">
