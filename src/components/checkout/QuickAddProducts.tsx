@@ -20,11 +20,11 @@ const QuickAddProducts = () => {
 
   const recommendedProducts: typeof availableProducts = [];
 
-  // Specific products to recommend in order
+  // Exact product matches in priority order
   const targetProducts = [
-    'multipurpose',
-    'jewelry bag',
-    'travel'
+    { keywords: ['multipurpose box'], priority: 1 },
+    { keywords: ['jewelry bag organizer'], priority: 2 },
+    { keywords: ['travel', '1'], priority: 3 }
   ];
 
   for (const target of targetProducts) {
@@ -32,7 +32,12 @@ const QuickAddProducts = () => {
     
     const product = availableProducts.find(p => {
       const name = p.name.toLowerCase();
-      return !recommendedProducts.some(rp => rp.id === p.id) && name.includes(target);
+      const alreadyAdded = recommendedProducts.some(rp => rp.id === p.id);
+      
+      // Check if all keywords match
+      const allKeywordsMatch = target.keywords.every(keyword => name.includes(keyword));
+      
+      return !alreadyAdded && allKeywordsMatch;
     });
     
     if (product) {
