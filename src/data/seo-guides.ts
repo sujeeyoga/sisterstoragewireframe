@@ -152,7 +152,7 @@ export const seoGuides: SEOGuide[] = [
       },
       {
         question: "What size jewelry organizer do I need for 50+ bangles?",
-        answer: "For 50+ bangles, you'll need at least two 4-rod stackable boxes or one larger 6-rod system. Sister Storage's stackable boxes hold approximately 40 bangles each and can be stacked to grow with your collection."
+        answer: "For 50+ bangles, you'll need at least two 4-rod stackable boxes. Sister Storage's stackable boxes hold approximately 40 bangles each and can be stacked to grow with your collection."
       },
       {
         question: "Are stackable jewelry organizers worth it?",
@@ -379,7 +379,7 @@ export const seoGuides: SEOGuide[] = [
       <h2>1. Number of Rods (The Most Important Feature)</h2>
       <p>This is the deal-breaker. Rods are horizontal bars that bangles slide onto, and the number of rods determines your capacity and organization options.</p>
 
-      <p>A 2-rod box holds roughly 20 bangles max. That's fine if you're just starting out or have a minimal collection. A 4-rod box holds about 40 bangles - this is the sweet spot for most people. A 6-rod box holds 60+ bangles and is for serious collectors or anyone with extensive wedding/festival sets.</p>
+      <p>A 1-rod box holds roughly 10 bangles max - perfect for travel. A 2-rod box holds about 20 bangles and is great if you're just starting out or have a minimal collection. A 4-rod box holds about 40 bangles - this is the sweet spot for most people and our largest single box option. For serious collectors or anyone with extensive wedding/festival sets, stack multiple 4-rod boxes.</p>
 
       <p>Here's the math: each rod comfortably holds 8-10 bangles depending on width. More rods = more capacity, but also a taller box. Consider your drawer or shelf height before going for maximum rods.</p>
 
@@ -504,7 +504,7 @@ export const seoGuides: SEOGuide[] = [
     faqs: [
       {
         question: "How many rods do I need in a bangle box?",
-        answer: "For collections under 20 bangles, a 2-rod box works. For 20-40 bangles (most people), a 4-rod box is ideal. For 40+ bangles or extensive collections, consider a 6-rod box or multiple stackable 4-rod boxes. Each rod holds approximately 8-10 bangles."
+        answer: "For collections under 10 bangles or travel, a 1-rod box works. For 10-20 bangles, a 2-rod box is perfect. For 20-40 bangles (most people), a 4-rod box is ideal. For 40+ bangles or extensive collections, use multiple stackable 4-rod boxes. Each rod holds approximately 8-10 bangles."
       },
       {
         question: "Are stackable bangle boxes better than single boxes?",
