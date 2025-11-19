@@ -25,7 +25,7 @@ export const homepageFAQs = [
   },
   {
     question: "How do I choose the right size?",
-    answer: "We offer Small (2 rods), Medium (4 rods), and Large (6 rods) options. Consider your collection size and available space. Most customers start with a Medium 4-rod organizer."
+    answer: "We offer Travel (1 rod), Medium (2 rods), and Large (4 rods) options. Consider your collection size and available space. Most customers start with a Medium 2-rod or Large 4-rod organizer."
   },
   {
     question: "What if I need to return or exchange?",
