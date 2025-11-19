@@ -63,6 +63,7 @@ const CartDrawer = () => {
   useEffect(() => {
     const estimateShipping = async () => {
       if (!locationLoading && city && country && discountedSubtotal > 0) {
+        console.log('[CartDrawer] Calculating shipping for:', { city, region, country, postalCode, subtotal: discountedSubtotal });
         setShippingLoading(true);
         try {
           const result = await calculateShipping({
@@ -72,20 +73,28 @@ const CartDrawer = () => {
             postalCode
           }, discountedSubtotal, items);
           
+          console.log('[CartDrawer] Shipping calculation result:', result);
+          
           if (result?.appliedRate?.rate_amount !== undefined) {
             setEstimatedShipping(result.appliedRate.rate_amount);
+            console.log('[CartDrawer] Shipping estimate set to:', result.appliedRate.rate_amount);
+          } else {
+            console.warn('[CartDrawer] No shipping rate found in result');
+            setEstimatedShipping(null);
           }
         } catch (error) {
-          console.error('Failed to estimate shipping:', error);
+          console.error('[CartDrawer] Failed to estimate shipping:', error);
           setEstimatedShipping(null);
         } finally {
           setShippingLoading(false);
         }
+      } else {
+        console.log('[CartDrawer] Skipping shipping calculation:', { locationLoading, city, country, subtotal: discountedSubtotal });
       }
     };
     
     estimateShipping();
-  }, [city, region, country, postalCode, discountedSubtotal, locationLoading]);
+  }, [city, region, country, postalCode, discountedSubtotal, locationLoading, items, calculateShipping]);
 
   // Calculate tax on discounted subtotal (8.5%)
   const taxRate = 0.085;
@@ -362,27 +371,30 @@ const CartDrawer = () => {
                     </div>
                     
                     {/* Estimated Shipping with Location */}
-                    <div className="flex justify-between text-sm">
-                      <div className="flex items-center gap-1">
-                        <span className="text-gray-600">Shipping</span>
+                    <div className="flex justify-between text-sm border-t border-gray-200 pt-2 mt-2">
+                      <div className="flex flex-col gap-0.5">
+                        <div className="flex items-center gap-1">
+                          <Truck className="h-3.5 w-3.5 text-gray-600" />
+                          <span className="text-gray-600 font-medium">Shipping</span>
+                        </div>
                         {city && country && (
-                          <div className="flex items-center gap-1 text-xs text-gray-500">
+                          <div className="flex items-center gap-1 text-xs text-gray-500 ml-4">
                             <MapPin className="h-3 w-3" />
                             <span>{city}, {country}</span>
                           </div>
                         )}
                       </div>
-                      <span className="font-medium text-gray-900">
+                      <span className="font-semibold text-gray-900 text-base">
                         {locationLoading || shippingLoading ? (
-                          <span className="text-gray-400">Estimating...</span>
+                          <span className="text-gray-400 animate-pulse">Calculating...</span>
                         ) : estimatedShipping !== null ? (
                           estimatedShipping === 0 ? (
-                            <span className="text-green-600 font-semibold">FREE</span>
+                            <span className="text-green-600 font-bold">FREE</span>
                           ) : (
-                            `~$${estimatedShipping.toFixed(2)}`
+                            <span className="text-gray-900">${estimatedShipping.toFixed(2)}</span>
                           )
                         ) : (
-                          <span className="text-gray-400">At checkout</span>
+                          <span className="text-gray-500 text-sm">Calculated at checkout</span>
                         )}
                       </span>
                     </div>
