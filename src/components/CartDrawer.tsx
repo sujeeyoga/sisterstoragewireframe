@@ -9,6 +9,7 @@ import { useLocationDetection } from '@/hooks/useLocationDetection';
 import { useShippingZones } from '@/hooks/useShippingZones';
 import { useActiveCartTracking } from '@/hooks/useActiveCartTracking';
 import FreeShippingThresholdBar from '@/components/cart/FreeShippingThresholdBar';
+import QuickAddProducts from '@/components/checkout/QuickAddProducts';
 
 const CartDrawer = () => {
   const { items, removeItem, updateQuantity, totalItems, subtotal, isOpen, setIsOpen } = useCart();
@@ -282,6 +283,11 @@ const CartDrawer = () => {
                       </div>
                     );
                   })}
+                  
+                  {/* Quick Add Products */}
+                  <div className="mt-6">
+                    <QuickAddProducts />
+                  </div>
                 </div>
               )}
             </div>
