@@ -164,6 +164,10 @@ const CartDrawer = () => {
                   isGTA={isGTA}
                   country={country || 'CA'}
                   isLoading={locationLoading}
+                  cartItems={items}
+                  city={city}
+                  region={region}
+                  postalCode={postalCode}
                 />
               </div>
             )}
