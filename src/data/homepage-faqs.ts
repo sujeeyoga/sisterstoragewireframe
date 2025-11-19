@@ -5,7 +5,7 @@ export const homepageFAQs = [
   },
   {
     question: "What makes your bangle organizers special?",
-    answer: "Our organizers feature 4-rod designs, clear acrylic construction for visibility, removable rods for easy access, stackable design for space-saving, and dust-proof protection to keep your jewelry pristine."
+    answer: "Our organizers feature 4-rod designs, clear plastic construction for visibility, removable rods for easy access, stackable design for space-saving, and dust-proof protection to keep your jewelry pristine."
   },
   {
     question: "Where do you ship?",
