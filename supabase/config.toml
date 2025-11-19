@@ -71,3 +71,7 @@ verify_jwt = false
 
 [functions.fix-product-images]
 verify_jwt = false
+
+[functions.reorder-sister-story]
+verify_jwt = false
+
