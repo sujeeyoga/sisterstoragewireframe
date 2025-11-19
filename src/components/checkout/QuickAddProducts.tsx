@@ -11,6 +11,15 @@ const QuickAddProducts = () => {
   const [addedItems, setAddedItems] = useState<Set<string>>(new Set());
   const [showBundles, setShowBundles] = useState(false);
 
+  // Alternate between bundles and individual products every 5 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setShowBundles(prev => !prev);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   // Show loading state instead of returning null
   if (isLoading) {
     return (
@@ -30,15 +39,6 @@ const QuickAddProducts = () => {
       </div>
     );
   }
-
-  // Alternate between bundles and individual products every 5 seconds
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setShowBundles(prev => !prev);
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, []);
 
   if (!products) return null;
 
