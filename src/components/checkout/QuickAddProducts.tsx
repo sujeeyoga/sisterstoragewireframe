@@ -21,7 +21,7 @@ const QuickAddProducts = () => {
   const usedIds = new Set<string>();
   const recommendedProducts: typeof availableProducts = [];
 
-  // First 3: Get unique bundles
+  // Get top 3 bundles by price
   const bundles = availableProducts
     .filter(p => p.categories?.some(cat => cat.toLowerCase().includes('bundle')))
     .sort((a, b) => (b.price || 0) - (a.price || 0));
@@ -34,46 +34,42 @@ const QuickAddProducts = () => {
     }
   }
 
-  // Last 3: Get specific single items (organizer, single rod, large box)
-  const singleItems = availableProducts
-    .filter(p => !p.categories?.some(cat => cat.toLowerCase().includes('bundle')));
+  // If we don't have 3 bundles, fill with specific single items
+  if (recommendedProducts.length < 3) {
+    const singleItems = availableProducts
+      .filter(p => !p.categories?.some(cat => cat.toLowerCase().includes('bundle')));
 
-  // Find organizer
-  const organizer = singleItems.find(p => {
-    const name = p.name.toLowerCase();
-    return !usedIds.has(p.id) && (name.includes('organizer') || name.includes('multipurpose'));
-  });
-  if (organizer) {
-    recommendedProducts.push(organizer);
-    usedIds.add(organizer.id);
-  }
+    // Priority: organizer, single rod, large box
+    const priorityItems = [
+      singleItems.find(p => {
+        const name = p.name.toLowerCase();
+        return !usedIds.has(p.id) && (name.includes('organizer') || name.includes('multipurpose'));
+      }),
+      singleItems.find(p => {
+        const name = p.name.toLowerCase();
+        return !usedIds.has(p.id) && name.includes('travel') && (name.includes('1') || name.includes('one'));
+      }),
+      singleItems.find(p => {
+        const name = p.name.toLowerCase();
+        return !usedIds.has(p.id) && name.includes('large') && name.includes('4');
+      })
+    ].filter(Boolean);
 
-  // Find single rod (travel size)
-  const singleRod = singleItems.find(p => {
-    const name = p.name.toLowerCase();
-    return !usedIds.has(p.id) && name.includes('travel') && (name.includes('1') || name.includes('one'));
-  });
-  if (singleRod) {
-    recommendedProducts.push(singleRod);
-    usedIds.add(singleRod.id);
-  }
+    for (const item of priorityItems) {
+      if (recommendedProducts.length >= 3) break;
+      if (item && !usedIds.has(item.id)) {
+        recommendedProducts.push(item);
+        usedIds.add(item.id);
+      }
+    }
 
-  // Find large box (4 rod)
-  const largeBox = singleItems.find(p => {
-    const name = p.name.toLowerCase();
-    return !usedIds.has(p.id) && name.includes('large') && name.includes('4');
-  });
-  if (largeBox) {
-    recommendedProducts.push(largeBox);
-    usedIds.add(largeBox.id);
-  }
-
-  // Fill remaining slots with any other single items
-  if (recommendedProducts.length < 6) {
-    const remaining = singleItems
-      .filter(p => !usedIds.has(p.id))
-      .slice(0, 6 - recommendedProducts.length);
-    recommendedProducts.push(...remaining);
+    // Fill any remaining slots
+    if (recommendedProducts.length < 3) {
+      const remaining = singleItems
+        .filter(p => !usedIds.has(p.id))
+        .slice(0, 3 - recommendedProducts.length);
+      recommendedProducts.push(...remaining);
+    }
   }
 
   if (recommendedProducts.length === 0) return null;
