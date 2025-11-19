@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
 import { useStoreDiscount } from '@/hooks/useStoreDiscount';
@@ -326,9 +326,8 @@ const Checkout = () => {
     !validationErrors.postalCode
   );
 
-
   // Calculate shipping using zone-based system
-  const calculateShippingZones = async () => {
+  const calculateShippingZones = useCallback(async () => {
     // Check if required fields are filled
     if (!formData.address || !formData.city || !formData.province || !formData.postalCode) {
       return;
@@ -375,7 +374,14 @@ const Checkout = () => {
     } finally {
       setIsLoadingRates(false);
     }
-  };
+  }, [formData.address, formData.city, formData.province, formData.postalCode, formData.country, calculateShipping, subtotal, items, toast]);
+
+  // Auto-calculate shipping when address is complete
+  useEffect(() => {
+    if (isManualAddressComplete && shippingRates.length === 0 && !isLoadingRates) {
+      calculateShippingZones();
+    }
+  }, [isManualAddressComplete, calculateShippingZones, shippingRates.length, isLoadingRates]);
 
   // Check if customer qualifies for free gift
   const giftQualified = qualifiesForGift(formData.country, subtotal);
@@ -848,25 +854,16 @@ const Checkout = () => {
                         />
                       </div>
                       
-                      {/* Calculate Shipping Button */}
-                      {isManualAddressComplete && shippingRates.length === 0 && !isLoadingRates && (
-                        <div className="bg-yellow-50 border-2 border-yellow-300 rounded-lg p-4 animate-fade-in">
-                          <div className="flex items-start gap-3 mb-3">
-                            <Package className="h-5 w-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+                      {/* Auto-calculating shipping - show loading indicator */}
+                      {isLoadingRates && (
+                        <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-4 animate-fade-in">
+                          <div className="flex items-center gap-3">
+                            <Loader2 className="h-5 w-5 text-blue-600 animate-spin" />
                             <div>
-                              <p className="font-semibold text-yellow-900 text-sm">Ready to Calculate Shipping</p>
-                              <p className="text-xs text-yellow-700 mt-1">Click below to see available shipping options</p>
+                              <p className="font-semibold text-blue-900 text-sm">Calculating Shipping Rates</p>
+                              <p className="text-xs text-blue-700 mt-1">Please wait while we find the best shipping options...</p>
                             </div>
                           </div>
-                          <Button
-                            type="button"
-                            onClick={calculateShippingZones}
-                            className="w-full"
-                            size="lg"
-                          >
-                            <Package className="h-4 w-4 mr-2" />
-                            Calculate Shipping Rates
-                          </Button>
                         </div>
                       )}
                     </div>
