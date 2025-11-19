@@ -32,43 +32,33 @@ const QuickAddProducts = () => {
 
   if (!products) return null;
 
-  // Get all available products (not in cart, in stock, visible, with images)
+  // Get all available products (not in cart, in stock, visible, with images, exclude bundles)
   const availableProducts = products
     .filter(p => p.inStock && p.visible)
     .filter(p => !cartItems.some(item => item.id === p.id))
-    .filter(p => p.images && p.images.length > 0);
+    .filter(p => p.images && p.images.length > 0)
+    .filter(p => !p.name.toLowerCase().includes('bundle'));
 
-  // Priority products: Single Rod, Double Rod (2 Rod), and Three Rod (3 Rod or 4 Rod)
+  // Priority products: Single Rod, Double Rod (2 Rod), and Three Rod (3 Rod)
   const recommendedProducts: typeof availableProducts = [];
   
-  // Look for single rod product
+  // Look for single rod or travel product
   const singleRod = availableProducts.find(p => 
-    p.name.toLowerCase().includes('1 rod') || 
-    p.name.toLowerCase().includes('travel')
+    p.name.toLowerCase().includes('travel') && p.name.toLowerCase().includes('bangle')
   );
   if (singleRod) recommendedProducts.push(singleRod);
   
-  // Look for double rod product (2 rod)
+  // Look for double rod (2 rod) product
   const doubleRod = availableProducts.find(p => 
-    p.name.toLowerCase().includes('2 rod') && 
-    !recommendedProducts.some(rp => rp.id === p.id)
+    p.name.toLowerCase().includes('medium') && p.name.toLowerCase().includes('bangle')
   );
   if (doubleRod) recommendedProducts.push(doubleRod);
   
-  // Look for three/four rod product
+  // Look for three or four rod product
   const threeRod = availableProducts.find(p => 
-    (p.name.toLowerCase().includes('3 rod') || p.name.toLowerCase().includes('4 rod')) &&
-    !recommendedProducts.some(rp => rp.id === p.id)
+    p.name.toLowerCase().includes('large') && p.name.toLowerCase().includes('bangle')
   );
   if (threeRod) recommendedProducts.push(threeRod);
-  
-  // Fill remaining slots with any available products if we don't have 3 yet
-  if (recommendedProducts.length < 3) {
-    const remaining = availableProducts
-      .filter(p => !recommendedProducts.some(rp => rp.id === p.id))
-      .slice(0, 3 - recommendedProducts.length);
-    recommendedProducts.push(...remaining);
-  }
 
   // Show nothing if truly no products available
   if (recommendedProducts.length === 0) return null;
