@@ -3,8 +3,20 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
 import { Resend } from 'npm:resend@4.0.0';
 import { renderAsync } from 'npm:@react-email/components@0.0.22';
 import React from 'npm:react@18.3.1';
-import { PromotionalEmail } from '../send-email/_templates/promotional.tsx';
-import { AnnouncementEmail } from '../send-email/_templates/announcement.tsx';
+import {
+  Body,
+  Button,
+  Container,
+  Head,
+  Heading,
+  Hr,
+  Html,
+  Img,
+  Link,
+  Preview,
+  Section,
+  Text,
+} from 'npm:@react-email/components@0.0.22';
 
 const resend = new Resend(Deno.env.get('RESEND_API_KEY') as string);
 
@@ -23,8 +35,104 @@ interface BulkEmailRequest {
   templateData: any;
 }
 
+// Promotional Email Template
+const PromotionalEmail = ({ customerName, subject, previewText, heroImage, headline, subheadline, bodyText, ctaText, ctaLink, productCards, footerText }: any) => {
+  const main = { backgroundColor: '#ffffff', fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif' };
+  const container = { margin: '0 auto', padding: '20px 0 48px', maxWidth: '600px' };
+  const greeting = { fontSize: '16px', lineHeight: '26px', color: '#333', marginBottom: '20px' };
+  const heroSection = { marginBottom: '32px' };
+  const heroImg = { width: '100%', height: 'auto', borderRadius: '8px' };
+  const h1 = { color: '#333', fontSize: '32px', fontWeight: 'bold', margin: '30px 0', padding: '0', lineHeight: '42px', textAlign: 'center' as const };
+  const subheading = { color: '#666', fontSize: '18px', lineHeight: '28px', textAlign: 'center' as const, margin: '0 0 30px' };
+  const bodyTextStyle = { color: '#333', fontSize: '16px', lineHeight: '26px', margin: '0 0 30px' };
+  const ctaSection = { textAlign: 'center' as const, margin: '32px 0' };
+  const button = { backgroundColor: '#FF69B4', borderRadius: '8px', color: '#fff', fontSize: '16px', fontWeight: 'bold', textDecoration: 'none', textAlign: 'center' as const, display: 'inline-block', padding: '14px 32px' };
+  const hr = { borderColor: '#e6e6e6', margin: '40px 0' };
+  const footer = { color: '#666', fontSize: '14px', lineHeight: '24px', textAlign: 'center' as const };
+  const link = { color: '#FF69B4', textDecoration: 'underline' };
+  const unsubscribe = { color: '#999', fontSize: '12px', lineHeight: '20px', textAlign: 'center' as const, marginTop: '32px' };
+
+  return React.createElement(Html, null,
+    React.createElement(Head),
+    React.createElement(Preview, null, previewText || subject),
+    React.createElement(Body, { style: main },
+      React.createElement(Container, { style: container },
+        customerName && React.createElement(Text, { style: greeting }, `Hi ${customerName},`),
+        heroImage && React.createElement(Section, { style: heroSection },
+          React.createElement(Img, { src: heroImage, alt: headline, style: heroImg })
+        ),
+        React.createElement(Heading, { style: h1 }, headline),
+        subheadline && React.createElement(Text, { style: subheading }, subheadline),
+        React.createElement(Text, { style: bodyTextStyle }, bodyText),
+        React.createElement(Section, { style: ctaSection },
+          React.createElement(Button, { style: button, href: ctaLink }, ctaText)
+        ),
+        React.createElement(Hr, { style: hr }),
+        React.createElement(Text, { style: footer }, footerText || 'Thank you for being a valued customer at Sister Storage.'),
+        React.createElement(Text, { style: footer },
+          React.createElement(Link, { href: 'https://sisterstorage.ca', style: link }, 'Visit our website'),
+          ' • ',
+          React.createElement(Link, { href: 'https://instagram.com/sisterstorage', style: link }, 'Follow us on Instagram')
+        ),
+        React.createElement(Text, { style: unsubscribe },
+          'Don\'t want to receive these emails? ',
+          React.createElement(Link, { href: '#', style: link }, 'Unsubscribe')
+        )
+      )
+    )
+  );
+};
+
+// Announcement Email Template
+const AnnouncementEmail = ({ customerName, subject, previewText, image, headline, bodyText, ctaText, ctaLink, footerText }: any) => {
+  const main = { backgroundColor: '#f6f6f6', fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif' };
+  const container = { margin: '0 auto', padding: '40px 20px', maxWidth: '600px' };
+  const greeting = { fontSize: '16px', lineHeight: '26px', color: '#333', marginBottom: '30px' };
+  const announcementBox = { backgroundColor: '#ffffff', borderRadius: '12px', padding: '40px', marginBottom: '32px', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' };
+  const h1 = { color: '#333', fontSize: '36px', fontWeight: 'bold', margin: '0 0 30px', padding: '0', lineHeight: '44px', textAlign: 'center' as const };
+  const imageSection = { margin: '30px 0' };
+  const img = { width: '100%', height: 'auto', borderRadius: '8px' };
+  const bodyTextStyle = { color: '#333', fontSize: '18px', lineHeight: '28px', margin: '0 0 30px', textAlign: 'center' as const };
+  const ctaSection = { textAlign: 'center' as const, margin: '32px 0 0' };
+  const button = { backgroundColor: '#FF69B4', borderRadius: '8px', color: '#fff', fontSize: '18px', fontWeight: 'bold', textDecoration: 'none', textAlign: 'center' as const, display: 'inline-block', padding: '16px 40px' };
+  const hr = { borderColor: '#e6e6e6', margin: '32px 0' };
+  const footer = { color: '#666', fontSize: '14px', lineHeight: '24px', textAlign: 'center' as const };
+  const link = { color: '#FF69B4', textDecoration: 'underline' };
+  const unsubscribe = { color: '#999', fontSize: '12px', lineHeight: '20px', textAlign: 'center' as const, marginTop: '32px' };
+
+  return React.createElement(Html, null,
+    React.createElement(Head),
+    React.createElement(Preview, null, previewText || subject),
+    React.createElement(Body, { style: main },
+      React.createElement(Container, { style: container },
+        customerName && React.createElement(Text, { style: greeting }, `Hi ${customerName},`),
+        React.createElement(Section, { style: announcementBox },
+          React.createElement(Heading, { style: h1 }, headline),
+          image && React.createElement(Section, { style: imageSection },
+            React.createElement(Img, { src: image, alt: headline, style: img })
+          ),
+          React.createElement(Text, { style: bodyTextStyle }, bodyText),
+          ctaText && ctaLink && React.createElement(Section, { style: ctaSection },
+            React.createElement(Button, { style: button, href: ctaLink }, ctaText)
+          )
+        ),
+        React.createElement(Hr, { style: hr }),
+        React.createElement(Text, { style: footer }, footerText || 'Thank you for being part of the Sister Storage community.'),
+        React.createElement(Text, { style: footer },
+          React.createElement(Link, { href: 'https://sisterstorage.ca', style: link }, 'Visit our website'),
+          ' • ',
+          React.createElement(Link, { href: 'https://instagram.com/sisterstorage', style: link }, 'Follow us on Instagram')
+        ),
+        React.createElement(Text, { style: unsubscribe },
+          'Don\'t want to receive these emails? ',
+          React.createElement(Link, { href: '#', style: link }, 'Unsubscribe')
+        )
+      )
+    )
+  );
+};
+
 const handler = async (req: Request): Promise<Response> => {
-  // Handle CORS
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -38,7 +146,6 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log(`Starting bulk email send for campaign ${campaignId} to ${recipients.length} recipients`);
 
-    // Update campaign status to sending
     await supabase
       .from('email_campaigns')
       .update({ 
@@ -51,15 +158,12 @@ const handler = async (req: Request): Promise<Response> => {
     let failedCount = 0;
     const BATCH_SIZE = 50;
 
-    // Process in batches
     for (let i = 0; i < recipients.length; i += BATCH_SIZE) {
       const batch = recipients.slice(i, i + BATCH_SIZE);
       
-      // Send emails in batch
       const results = await Promise.allSettled(
         batch.map(async (recipient) => {
           try {
-            // Render email template
             let html: string;
             
             if (emailType === 'promotional') {
@@ -80,7 +184,6 @@ const handler = async (req: Request): Promise<Response> => {
               throw new Error(`Unknown email type: ${emailType}`);
             }
 
-            // Send email
             const { data, error } = await resend.emails.send({
               from: 'Sister Storage <hello@sisterstorage.ca>',
               to: [recipient.email],
@@ -92,7 +195,6 @@ const handler = async (req: Request): Promise<Response> => {
               throw error;
             }
 
-            // Log successful send
             await supabase.from('email_logs').insert({
               campaign_id: campaignId,
               recipient_email: recipient.email,
@@ -106,7 +208,6 @@ const handler = async (req: Request): Promise<Response> => {
           } catch (error) {
             console.error(`Failed to send to ${recipient.email}:`, error);
             
-            // Log failed send
             await supabase.from('email_logs').insert({
               campaign_id: campaignId,
               recipient_email: recipient.email,
@@ -122,7 +223,6 @@ const handler = async (req: Request): Promise<Response> => {
         })
       );
 
-      // Count successes and failures
       results.forEach((result) => {
         if (result.status === 'fulfilled' && result.value.success) {
           sentCount++;
@@ -131,7 +231,6 @@ const handler = async (req: Request): Promise<Response> => {
         }
       });
 
-      // Update campaign progress
       await supabase
         .from('email_campaigns')
         .update({ 
@@ -140,13 +239,11 @@ const handler = async (req: Request): Promise<Response> => {
         })
         .eq('id', campaignId);
 
-      // Small delay between batches to avoid rate limiting
       if (i + BATCH_SIZE < recipients.length) {
         await new Promise(resolve => setTimeout(resolve, 1000));
       }
     }
 
-    // Update campaign status to sent
     await supabase
       .from('email_campaigns')
       .update({ 
