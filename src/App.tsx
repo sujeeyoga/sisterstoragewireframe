@@ -40,6 +40,7 @@ import AdminSetup from "./pages/AdminSetup";
 import PasswordReset from "./pages/PasswordReset";
 import { ProtectedRoutes } from "./components/auth/ProtectedRoutes";
 import { AdminProtectedRoute } from "./components/auth/AdminProtectedRoute";
+import AdminEmails from "./pages/AdminEmails";
 
 const queryClient = new QueryClient();
 
@@ -91,6 +92,7 @@ const App = () => {
               <Route path="/hero-gallery-demo" element={<ProtectedRoutes><PageTransition><HeroGalleryDemo /></PageTransition></ProtectedRoutes>} />
               <Route path="/our-story" element={<ProtectedRoutes><PageTransition><OurStory /></PageTransition></ProtectedRoutes>} />
               <Route path="/admin/*" element={<AdminProtectedRoute><Admin /></AdminProtectedRoute>} />
+              <Route path="/admin/emails" element={<AdminProtectedRoute><AdminEmails /></AdminProtectedRoute>} />
               <Route path="/contact" element={<ProtectedRoutes><PageTransition><Contact /></PageTransition></ProtectedRoutes>} />
               <Route path="/gift" element={<ProtectedRoutes><PageTransition><Gift /></PageTransition></ProtectedRoutes>} />
               <Route path="/qr-generator" element={<ProtectedRoutes><PageTransition><QRCodeGenerator /></PageTransition></ProtectedRoutes>} />

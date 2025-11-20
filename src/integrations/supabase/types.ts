@@ -86,8 +86,57 @@ export type Database = {
         }
         Relationships: []
       }
+      email_campaigns: {
+        Row: {
+          campaign_name: string
+          created_at: string | null
+          created_by: string | null
+          email_type: string
+          failed_count: number | null
+          id: string
+          preview_text: string | null
+          recipient_count: number | null
+          sent_at: string | null
+          sent_count: number | null
+          status: string | null
+          subject: string
+          template_data: Json
+        }
+        Insert: {
+          campaign_name: string
+          created_at?: string | null
+          created_by?: string | null
+          email_type: string
+          failed_count?: number | null
+          id?: string
+          preview_text?: string | null
+          recipient_count?: number | null
+          sent_at?: string | null
+          sent_count?: number | null
+          status?: string | null
+          subject: string
+          template_data?: Json
+        }
+        Update: {
+          campaign_name?: string
+          created_at?: string | null
+          created_by?: string | null
+          email_type?: string
+          failed_count?: number | null
+          id?: string
+          preview_text?: string | null
+          recipient_count?: number | null
+          sent_at?: string | null
+          sent_count?: number | null
+          status?: string | null
+          subject?: string
+          template_data?: Json
+        }
+        Relationships: []
+      }
       email_logs: {
         Row: {
+          campaign_id: string | null
           created_at: string | null
           email_data: Json | null
           email_type: string
@@ -100,6 +149,7 @@ export type Database = {
           subject: string | null
         }
         Insert: {
+          campaign_id?: string | null
           created_at?: string | null
           email_data?: Json | null
           email_type: string
@@ -112,6 +162,7 @@ export type Database = {
           subject?: string | null
         }
         Update: {
+          campaign_id?: string | null
           created_at?: string | null
           email_data?: Json | null
           email_type?: string
@@ -124,6 +175,13 @@ export type Database = {
           subject?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "email_logs_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "email_campaigns"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "email_logs_order_id_fkey"
             columns: ["order_id"]
@@ -1313,7 +1371,17 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      customer_list: {
+        Row: {
+          customer_email: string | null
+          customer_name: string | null
+          first_order_date: string | null
+          last_order_date: string | null
+          order_count: number | null
+          total_spent: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       add_admin_by_email: { Args: { user_email: string }; Returns: Json }
