@@ -36,6 +36,7 @@ interface OrderConfirmationEmailProps {
   };
   carrierCost?: number;
   tariffFees?: number;
+  customMessage?: string;
 }
 
 export const OrderConfirmationEmail = ({
@@ -50,6 +51,7 @@ export const OrderConfirmationEmail = ({
   shippingAddress,
   carrierCost,
   tariffFees,
+  customMessage,
 }: OrderConfirmationEmailProps) => {
   const isInternational = shippingAddress.country !== 'CA' && shippingAddress.country !== 'Canada';
   const baseShippingRate = tariffFees ? shipping - tariffFees : shipping;
@@ -64,6 +66,12 @@ export const OrderConfirmationEmail = ({
         <Heading style={h1}>Thank You for Your Order!</Heading>
         
         <Text style={text}>Hi {customerName},</Text>
+        
+        {customMessage && (
+          <Section style={customMessageBox}>
+            <Text style={customMessageText}>{customMessage}</Text>
+          </Section>
+        )}
         
         <Text style={text}>
           We've received your order and we're getting it ready. We'll send you a shipping
@@ -353,4 +361,20 @@ const tariffNoticeText = {
   fontSize: "13px",
   lineHeight: "20px",
   margin: "8px 0",
+};
+
+const customMessageBox = {
+  backgroundColor: "#f0f9ff",
+  border: "2px solid #0ea5e9",
+  borderRadius: "6px",
+  padding: "16px",
+  margin: "20px 0",
+};
+
+const customMessageText = {
+  color: "#0c4a6e",
+  fontSize: "14px",
+  lineHeight: "22px",
+  margin: "0",
+  whiteSpace: "pre-wrap" as const,
 };

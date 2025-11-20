@@ -86,6 +86,53 @@ export type Database = {
         }
         Relationships: []
       }
+      email_logs: {
+        Row: {
+          created_at: string | null
+          email_data: Json | null
+          email_type: string
+          error_message: string | null
+          id: string
+          order_id: string | null
+          recipient_email: string
+          sent_by: string | null
+          sent_successfully: boolean | null
+          subject: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email_data?: Json | null
+          email_type: string
+          error_message?: string | null
+          id?: string
+          order_id?: string | null
+          recipient_email: string
+          sent_by?: string | null
+          sent_successfully?: boolean | null
+          subject?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email_data?: Json | null
+          email_type?: string
+          error_message?: string | null
+          id?: string
+          order_id?: string | null
+          recipient_email?: string
+          sent_by?: string | null
+          sent_successfully?: boolean | null
+          subject?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "email_logs_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       hero_images: {
         Row: {
           alt_text: string | null
