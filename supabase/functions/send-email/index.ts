@@ -22,6 +22,7 @@ interface EmailRequest {
 }
 
 interface OrderConfirmationData {
+  orderId?: string;
   customerName: string;
   orderNumber: string;
   orderDate: string;
@@ -156,12 +157,15 @@ const handler = async (req: Request): Promise<Response> => {
         await supabaseAdmin
           .from("email_logs")
           .insert({
+            order_id: orderData.orderId || null,
             recipient_email: to,
             email_type: type,
             subject: subject,
             sent_successfully: true,
             email_data: data,
           });
+        
+        console.log("Email log created successfully" + (orderData.orderId ? ` with order_id: ${orderData.orderId}` : ''));
       } catch (logError) {
         console.error("Failed to log email:", logError);
         // Don't fail the request if logging fails
@@ -183,20 +187,23 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Log failed email attempt
     try {
-      const { type, to } = await req.json();
+      const { type, to, data } = await req.json();
       if (type === "order_confirmation") {
         const supabaseAdmin = createClient(
           Deno.env.get("SUPABASE_URL") ?? "",
           Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
         );
 
+        const orderData = data as OrderConfirmationData;
         await supabaseAdmin
           .from("email_logs")
           .insert({
+            order_id: orderData?.orderId || null,
             recipient_email: to,
             email_type: type,
             sent_successfully: false,
             error_message: error.message,
+            email_data: data,
           });
       }
     } catch (logError) {

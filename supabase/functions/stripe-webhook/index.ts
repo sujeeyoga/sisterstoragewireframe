@@ -206,31 +206,6 @@ serve(async (req) => {
         } : null,
       };
 
-      console.log("Sending order confirmation email to:", customerEmail);
-
-      // Send order confirmation email asynchronously
-      // Don't await this so webhook returns quickly
-      console.log("📧 Sending order confirmation email to:", customerEmail);
-      supabase.functions.invoke(
-        'send-email',
-        {
-          body: {
-            type: 'order_confirmation',
-            to: customerEmail,
-            data: emailData,
-          },
-        }
-      ).then(({ data: emailResult, error: emailError }) => {
-        if (emailError) {
-          console.error("❌ ERROR: Failed to send order confirmation email:", emailError);
-        } else {
-          console.log("✅ SUCCESS: Order confirmation email sent successfully");
-          console.log("Email service response:", emailResult);
-        }
-      }).catch((error) => {
-        console.error("❌ CRITICAL: Exception while invoking send-email function:", error);
-      });
-
       // Extract payment intent ID safely
       let paymentIntentId: string | null = null;
       if (session.payment_intent) {
@@ -275,7 +250,7 @@ serve(async (req) => {
       console.log("Order total:", emailData.total);
       console.log("Needs review:", needsReview);
       
-      const { error: orderError } = await supabase
+      const { data: newOrder, error: orderError } = await supabase
         .from('orders')
         .insert({
           stripe_session_id: session.id,
@@ -291,7 +266,9 @@ serve(async (req) => {
           shipping_address: emailData.shippingAddress,
           status: needsReview ? 'pending_review' : 'pending',
           payment_status: 'paid',
-        });
+        })
+        .select('id')
+        .single();
 
       if (orderError) {
         console.error("❌ CRITICAL: Failed to store order in database:", orderError);
@@ -304,6 +281,32 @@ serve(async (req) => {
       } else {
         console.log("✅ SUCCESS: Order created in database");
         console.log("Order number:", emailData.orderNumber);
+        console.log("Order ID:", newOrder.id);
+        
+        // Send order confirmation email AFTER order is created
+        console.log("📧 Sending order confirmation email to:", customerEmail);
+        supabase.functions.invoke(
+          'send-email',
+          {
+            body: {
+              type: 'order_confirmation',
+              to: customerEmail,
+              data: {
+                ...emailData,
+                orderId: newOrder.id, // Include order ID for logging
+              },
+            },
+          }
+        ).then(({ data: emailResult, error: emailError }) => {
+          if (emailError) {
+            console.error("❌ ERROR: Failed to send order confirmation email:", emailError);
+          } else {
+            console.log("✅ SUCCESS: Order confirmation email sent successfully");
+            console.log("Email service response:", emailResult);
+          }
+        }).catch((error) => {
+          console.error("❌ CRITICAL: Exception while invoking send-email function:", error);
+        });
         
         // Mark any abandoned carts as recovered
         console.log("🛒 Checking for abandoned carts to mark as recovered...");
