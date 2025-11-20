@@ -1,5 +1,8 @@
 project_id = "attczdhexkpxpyqyasgz"
 
+[functions.ping-search-engines]
+verify_jwt = false
+
 [functions.link-woocommerce-customer]
 verify_jwt = true
 
