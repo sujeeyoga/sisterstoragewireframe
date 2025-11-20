@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const { orderId } = await req.json();
+    const { orderId, subject, customMessage, customerName } = await req.json();
 
     if (!orderId) {
       throw new Error("Order ID is required");
@@ -51,7 +51,7 @@ serve(async (req) => {
       type: "order_confirmation",
       to: order.customer_email,
       data: {
-        customerName: order.customer_name || shippingAddress.name || "Valued Customer",
+        customerName: customerName || order.customer_name || shippingAddress.name || "Valued Customer",
         orderNumber: order.order_number,
         orderDate: new Date(order.created_at).toLocaleDateString('en-US', {
           year: 'numeric',
@@ -67,7 +67,9 @@ serve(async (req) => {
         shipping: (order.shipping_cost || 0) / 100,
         tax: (order.tax || 0) / 100,
         total: (order.total || 0) / 100,
-        shippingAddress: shippingAddress
+        shippingAddress: shippingAddress,
+        customSubject: subject,
+        customMessage: customMessage
       }
     };
 
@@ -88,6 +90,23 @@ serve(async (req) => {
 
     console.log("Email sent successfully:", emailResult);
 
+    // Log the email send to email_logs table
+    const { error: logError } = await supabaseAdmin
+      .from("email_logs")
+      .insert({
+        order_id: orderId,
+        recipient_email: order.customer_email,
+        email_type: "order_confirmation",
+        subject: subject || `Your Sister Storage Order #${order.order_number}`,
+        sent_successfully: true,
+        email_data: emailData,
+      });
+
+    if (logError) {
+      console.error("Failed to log email:", logError);
+      // Don't fail the request if logging fails
+    }
+
     return new Response(
       JSON.stringify({ 
         success: true, 
@@ -101,6 +120,28 @@ serve(async (req) => {
     );
   } catch (error: any) {
     console.error("Error in resend-order-confirmation:", error);
+
+    // Log the failed email attempt
+    try {
+      const { orderId } = await req.json();
+      const supabaseAdmin = createClient(
+        Deno.env.get("SUPABASE_URL") ?? "",
+        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+      );
+
+      await supabaseAdmin
+        .from("email_logs")
+        .insert({
+          order_id: orderId,
+          recipient_email: "",
+          email_type: "order_confirmation",
+          sent_successfully: false,
+          error_message: error.message,
+        });
+    } catch (logError) {
+      console.error("Failed to log error:", logError);
+    }
+
     return new Response(
       JSON.stringify({ error: error.message }),
       {

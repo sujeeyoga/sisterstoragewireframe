@@ -2,6 +2,7 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@4.0.0";
 import React from "npm:react@18.3.1";
 import { renderAsync } from "npm:@react-email/components@0.0.22";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { OrderConfirmationEmail } from "./_templates/order-confirmation.tsx";
 import { ShippingNotificationEmail } from "./_templates/shipping-notification.tsx";
 import { AdminWelcomeEmail } from "./_templates/admin-welcome.tsx";
@@ -43,6 +44,8 @@ interface OrderConfirmationData {
   };
   carrierCost?: number;
   tariffFees?: number;
+  customSubject?: string;
+  customMessage?: string;
 }
 
 interface ShippingNotificationData {
@@ -94,9 +97,12 @@ const handler = async (req: Request): Promise<Response> => {
       case "order_confirmation":
         const orderData = data as OrderConfirmationData;
         html = await renderAsync(
-          React.createElement(OrderConfirmationEmail, orderData)
+          React.createElement(OrderConfirmationEmail, {
+            ...orderData,
+            customMessage: orderData.customMessage,
+          })
         );
-        subject = `Order Confirmation - Order #${orderData.orderNumber}`;
+        subject = orderData.customSubject || `Your Sister Storage Order #${orderData.orderNumber}`;
         break;
 
       case "shipping_notification":
@@ -138,6 +144,30 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Email sent successfully:", emailResponse);
 
+    // Log the email send to email_logs table (only for order confirmations)
+    if (type === "order_confirmation") {
+      try {
+        const supabaseAdmin = createClient(
+          Deno.env.get("SUPABASE_URL") ?? "",
+          Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+        );
+
+        const orderData = data as OrderConfirmationData;
+        await supabaseAdmin
+          .from("email_logs")
+          .insert({
+            recipient_email: to,
+            email_type: type,
+            subject: subject,
+            sent_successfully: true,
+            email_data: data,
+          });
+      } catch (logError) {
+        console.error("Failed to log email:", logError);
+        // Don't fail the request if logging fails
+      }
+    }
+
     return new Response(
       JSON.stringify({ success: true, id: emailResponse.data?.id }),
       {
@@ -150,6 +180,29 @@ const handler = async (req: Request): Promise<Response> => {
     );
   } catch (error: any) {
     console.error("Error in send-email function:", error);
+
+    // Log failed email attempt
+    try {
+      const { type, to } = await req.json();
+      if (type === "order_confirmation") {
+        const supabaseAdmin = createClient(
+          Deno.env.get("SUPABASE_URL") ?? "",
+          Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+        );
+
+        await supabaseAdmin
+          .from("email_logs")
+          .insert({
+            recipient_email: to,
+            email_type: type,
+            sent_successfully: false,
+            error_message: error.message,
+          });
+      }
+    } catch (logError) {
+      console.error("Failed to log error:", logError);
+    }
+
     return new Response(
       JSON.stringify({ error: error.message }),
       {
