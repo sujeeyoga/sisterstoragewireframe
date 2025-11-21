@@ -38,10 +38,38 @@ const QuickAddProducts = () => {
   // Priority order: Individual organizers first, then bundles
   const allRecommendations = [
     // Individual Organizers (Priority 1-4)
-    products.find(p => p.id === 'jewelry-bag-organizer' && p.inStock),
-    products.find(p => p.id === 'large-bangle-box' && p.inStock),
-    products.find(p => p.id === 'medium-bangle-box' && p.inStock),
-    products.find(p => p.id === 'travel-size-bangle-box' && p.inStock),
+    products.find(p => 
+      p.name.toLowerCase().includes('jewelry') && 
+      p.name.toLowerCase().includes('bag') &&
+      p.inStock && 
+      p.visible
+    ),
+    products.find(p => 
+      p.name.toLowerCase().includes('large') && 
+      p.name.toLowerCase().includes('bangle') &&
+      p.name.toLowerCase().includes('box') &&
+      !p.name.toLowerCase().includes('set') &&
+      !p.name.toLowerCase().includes('bundle') &&
+      p.inStock && 
+      p.visible
+    ),
+    products.find(p => 
+      p.name.toLowerCase().includes('medium') && 
+      p.name.toLowerCase().includes('bangle') &&
+      p.name.toLowerCase().includes('box') &&
+      !p.name.toLowerCase().includes('set') &&
+      !p.name.toLowerCase().includes('bundle') &&
+      p.inStock && 
+      p.visible
+    ),
+    products.find(p => 
+      p.name.toLowerCase().includes('travel') && 
+      p.name.toLowerCase().includes('bangle') &&
+      !p.name.toLowerCase().includes('set') &&
+      !p.name.toLowerCase().includes('bundle') &&
+      p.inStock && 
+      p.visible
+    ),
     
     // Bundles (Priority 5-7)
     products.find(p => 
