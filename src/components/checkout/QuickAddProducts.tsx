@@ -32,37 +32,18 @@ const QuickAddProducts = () => {
 
   if (!products) return null;
 
-  // Get all bundles
-  const allBundles = products
-    .filter(p => p.inStock && p.visible)
-    .filter(p => !cartItems.some(item => item.id === p.id))
-    .filter(p => p.images && p.images.length > 0)
-    .filter(p => p.name.toLowerCase().includes('bundle') || p.name.toLowerCase().includes('set'));
+  // Find jewelry bag organizer
+  const jewelryBag = products.find(p => 
+    p.id === 'jewelry-bag-organizer' && 
+    p.inStock && 
+    p.visible &&
+    !cartItems.some(item => item.id === p.id)
+  );
 
-  // Specific order: Starter Set, Together Bundle, Complete Family Set
-  const recommendedProducts: typeof allBundles = [];
-  
-  // Find Starter Set
-  const starterSet = allBundles.find(p => 
-    p.name.toLowerCase().includes('starter') && p.name.toLowerCase().includes('set')
-  );
-  if (starterSet) recommendedProducts.push(starterSet);
-  
-  // Find Together Bundle
-  const togetherBundle = allBundles.find(p => 
-    p.name.toLowerCase().includes('together') && p.name.toLowerCase().includes('bundle')
-  );
-  if (togetherBundle) recommendedProducts.push(togetherBundle);
-  
-  // Find Complete Family Set
-  const familySet = allBundles.find(p => 
-    (p.name.toLowerCase().includes('complete') || p.name.toLowerCase().includes('family')) && 
-    p.name.toLowerCase().includes('set')
-  );
-  if (familySet) recommendedProducts.push(familySet);
+  // Only show if jewelry bag is available
+  if (!jewelryBag) return null;
 
-  // Only show if we have at least one bundle
-  if (recommendedProducts.length === 0) return null;
+  const recommendedProducts = [jewelryBag];
 
   const handleAddToCart = (product: typeof recommendedProducts[0]) => {
       const imageUrl = typeof product.images?.[0] === 'string' 
@@ -91,9 +72,9 @@ const QuickAddProducts = () => {
   return (
     <div className="mt-6 mb-4">
       <h3 className="text-sm font-semibold text-foreground mb-3">
-        Bundle Deals
+        You might also like
       </h3>
-      <div className="grid grid-cols-3 md:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 gap-3">
         {recommendedProducts.map((product) => {
           const isAdded = addedItems.has(product.id);
           
@@ -108,8 +89,8 @@ const QuickAddProducts = () => {
           }
           
           return (
-            <div key={product.id} className="flex flex-col gap-2">
-              <div className="relative aspect-square rounded-lg overflow-hidden bg-muted flex items-center justify-center">
+            <div key={product.id} className="flex gap-3 items-center bg-gradient-to-r from-background to-secondary/20 p-3 rounded-lg border border-border">
+              <div className="relative w-20 h-20 rounded-lg overflow-hidden bg-muted flex items-center justify-center flex-shrink-0">
                 {imageUrl ? (
                   <img 
                     src={imageUrl} 
@@ -126,10 +107,18 @@ const QuickAddProducts = () => {
                   <div className="text-muted-foreground text-xs">No image</div>
                 )}
               </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-foreground line-clamp-2 mb-1">
+                  {product.name}
+                </p>
+                <p className="text-sm font-semibold text-[hsl(var(--brand-pink))]">
+                  ${product.price?.toFixed(2)}
+                </p>
+              </div>
               <Button
                 size="sm"
                 variant={isAdded ? "secondary" : "default"}
-                className="w-full h-9 text-xs gap-1.5"
+                className="h-9 px-4 gap-1.5 flex-shrink-0 bg-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))]/90"
                 onClick={() => handleAddToCart(product)}
                 disabled={isAdded}
               >
@@ -145,14 +134,6 @@ const QuickAddProducts = () => {
                   </>
                 )}
               </Button>
-              <div className="text-center space-y-1">
-                <p className="text-xs font-medium text-foreground line-clamp-2">
-                  {product.name}
-                </p>
-                <p className="text-xs font-semibold text-primary">
-                  ${product.price?.toFixed(2)}
-                </p>
-              </div>
             </div>
           );
         })}
