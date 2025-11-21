@@ -41,6 +41,7 @@ import AdminProfitAnalytics from '@/pages/AdminProfitAnalytics';
 import AdminSEOAnalytics from '@/pages/AdminSEOAnalytics';
 import { ResendConfirmationEmails } from '@/components/admin/ResendConfirmationEmails';
 import { BulkShippingNotificationTool } from '@/components/admin/BulkShippingNotificationTool';
+import { ManualCarrierCostEntry } from '@/components/admin/ManualCarrierCostEntry';
 import LocationDebugPanel from '@/components/admin/LocationDebugPanel';
 
 const Admin = () => {
@@ -79,8 +80,9 @@ const Admin = () => {
         <Route path="analytics/profit" element={<AdminProfitAnalytics />} />
         <Route path="analytics/seo" element={<AdminSEOAnalytics />} />
         <Route path="orders" element={<OrdersList />} />
-        <Route path="orders/resend-emails" element={<ResendConfirmationEmails />} />
-        <Route path="orders/shipping-notifications" element={<BulkShippingNotificationTool />} />
+        <Route path="orders/resend-emails" element={<AdminLayout><ResendConfirmationEmails /></AdminLayout>} />
+        <Route path="orders/shipping-notifications" element={<AdminLayout><BulkShippingNotificationTool /></AdminLayout>} />
+        <Route path="orders/carrier-costs" element={<AdminLayout><ManualCarrierCostEntry /></AdminLayout>} />
         <Route path="products" element={<ProductsTable />} />
         <Route path="products/:id" element={<ProductForm />} />
         <Route path="customers" element={<CustomersTable />} />
