@@ -25,6 +25,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { AlertCircle, TrendingDown, TrendingUp, Package, DollarSign, Info, Gift } from "lucide-react";
 import { format } from "date-fns";
+import { ShippingReasonBadge } from "./ShippingReasonBadge";
 
 interface ShippingLossTrackerProps {
   startDate: Date;
@@ -287,6 +288,7 @@ export const ShippingLossTracker = ({ startDate, endDate }: ShippingLossTrackerP
                   <TableHead>Details</TableHead>
                   <TableHead>Location</TableHead>
                   <TableHead>Zone</TableHead>
+                  <TableHead>Reason</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead className="text-right">Actual Cost</TableHead>
                   <TableHead className="text-right">Charged</TableHead>
@@ -356,6 +358,13 @@ export const ShippingLossTracker = ({ startDate, endDate }: ShippingLossTrackerP
                             </div>
                           </TableCell>
                           <TableCell className="text-sm">{order.zone}</TableCell>
+                          <TableCell>
+                            <ShippingReasonBadge 
+                              metadata={(order as any).shippingMetadata}
+                              charged={order.charged}
+                              className="text-xs"
+                            />
+                          </TableCell>
                           <TableCell>
                             <Badge 
                               variant={order.fulfillmentStatus === "fulfilled" ? "default" : "outline"}

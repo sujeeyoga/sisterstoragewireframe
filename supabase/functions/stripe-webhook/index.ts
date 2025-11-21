@@ -91,6 +91,11 @@ serve(async (req) => {
       const shippingAddress = session.metadata?.shippingAddress 
         ? JSON.parse(session.metadata.shippingAddress)
         : session.shipping_details?.address;
+      
+      // Parse shipping metadata from session
+      const shippingMetadata = session.metadata?.shippingMetadata 
+        ? JSON.parse(session.metadata.shippingMetadata)
+        : null;
 
       // Get line items to build order details
       const lineItems = await stripe.checkout.sessions.listLineItems(session.id, {
@@ -261,6 +266,7 @@ serve(async (req) => {
           items: emailData.items,
           subtotal: finalSubtotal,
           shipping: emailData.shipping,
+          shipping_metadata: shippingMetadata,
           tax: emailData.tax,
           total: emailData.total,
           shipping_address: emailData.shippingAddress,

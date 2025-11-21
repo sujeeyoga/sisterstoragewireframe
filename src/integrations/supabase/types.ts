@@ -338,6 +338,7 @@ export type Database = {
           shipping: number | null
           shipping_address: Json | null
           shipping_label_url: string | null
+          shipping_metadata: Json | null
           shipping_notification_sent_at: string | null
           stallion_cost: number | null
           stallion_shipment_id: string | null
@@ -367,6 +368,7 @@ export type Database = {
           shipping?: number | null
           shipping_address?: Json | null
           shipping_label_url?: string | null
+          shipping_metadata?: Json | null
           shipping_notification_sent_at?: string | null
           stallion_cost?: number | null
           stallion_shipment_id?: string | null
@@ -396,6 +398,7 @@ export type Database = {
           shipping?: number | null
           shipping_address?: Json | null
           shipping_label_url?: string | null
+          shipping_metadata?: Json | null
           shipping_notification_sent_at?: string | null
           stallion_cost?: number | null
           stallion_shipment_id?: string | null
@@ -1200,6 +1203,7 @@ export type Database = {
           refund_amount: number | null
           shipping: Json | null
           shipping_label_url: string | null
+          shipping_metadata: Json | null
           shipping_notification_sent_at: string | null
           stallion_cost: number | null
           stallion_shipment_id: string | null
@@ -1225,6 +1229,7 @@ export type Database = {
           refund_amount?: number | null
           shipping?: Json | null
           shipping_label_url?: string | null
+          shipping_metadata?: Json | null
           shipping_notification_sent_at?: string | null
           stallion_cost?: number | null
           stallion_shipment_id?: string | null
@@ -1250,6 +1255,7 @@ export type Database = {
           refund_amount?: number | null
           shipping?: Json | null
           shipping_label_url?: string | null
+          shipping_metadata?: Json | null
           shipping_notification_sent_at?: string | null
           stallion_cost?: number | null
           stallion_shipment_id?: string | null

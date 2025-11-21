@@ -35,6 +35,7 @@ import { format } from 'date-fns';
 import { Package, DollarSign, User, MapPin, CreditCard, Truck, ExternalLink, AlertTriangle, RefreshCw, AlertCircle } from 'lucide-react';
 import { StallionFulfillmentDialog } from './StallionFulfillmentDialog';
 import { ChitChatsFulfillmentDialog } from './ChitChatsFulfillmentDialog';
+import { ShippingReasonBadge } from './ShippingReasonBadge';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useOrderShippingInfo } from '@/hooks/useOrderShippingInfo';
@@ -63,6 +64,7 @@ interface OrderDrawerProps {
     stallion_cost?: number;
     carrier_name?: string;
     carrier_cost_currency?: string;
+    shipping_metadata?: any;
   };
   open: boolean;
   onClose: () => void;
@@ -307,6 +309,18 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
             <Info className="h-4 w-4" />
             <h3 className="text-lg font-semibold">Shipping Information</h3>
           </div>
+          
+          {/* Shipping Reason Badge */}
+          {order.shipping_metadata && (
+            <div className="mb-4">
+              <Label className="text-sm text-muted-foreground mb-2 block">Shipping Reason</Label>
+              <ShippingReasonBadge 
+                metadata={order.shipping_metadata}
+                charged={(order as any).shipping ?? 0}
+                className="text-sm"
+              />
+            </div>
+          )}
           
           {/* Actual Charged Shipping */}
           <div className="rounded-lg border-2 border-primary/20 bg-primary/5 p-4">

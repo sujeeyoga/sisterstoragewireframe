@@ -183,6 +183,7 @@ const Checkout = () => {
   const [selectedShippingRate, setSelectedShippingRate] = useState<string>('');
   const [originalShippingCost, setOriginalShippingCost] = useState<number>(0);
   const [matchedZone, setMatchedZone] = useState<{ id: string; name: string } | null>(null);
+  const [shippingMetadata, setShippingMetadata] = useState<any>(null);
   
   // Form stage management
   const [formStage, setFormStage] = useState<'email-address' | 'complete'>('complete');
@@ -346,6 +347,26 @@ const Checkout = () => {
       if (result.success && result.rates) {
         setShippingRates(result.rates);
         setMatchedZone(result.matched_zone);
+        
+        // Store full shipping metadata for order creation
+        const selectedRate = result.rates.length > 0 
+          ? result.rates.reduce((prev, curr) => curr.rate_amount < prev.rate_amount ? curr : prev)
+          : null;
+        
+        setShippingMetadata({
+          zone_name: result.matched_zone?.name,
+          zone_description: result.matched_zone?.description,
+          matched_rule: result.matched_rule,
+          rate_method: selectedRate?.method_name,
+          is_free: selectedRate?.rate_amount === 0,
+          free_threshold: selectedRate?.free_threshold,
+          original_rate: selectedRate?.original_rate_amount || selectedRate?.rate_amount,
+          applied_rate: selectedRate?.rate_amount,
+          reason: selectedRate?.rate_amount === 0 ? 
+            (selectedRate?.free_threshold ? 'free_shipping_threshold_met' : 'free_zone') 
+            : 'charged',
+          source: result.source || 'database',
+        });
         
         // Auto-select the cheapest option
         if (result.rates.length > 0) {
@@ -540,6 +561,7 @@ const Checkout = () => {
           },
           shippingCost: shippingCost,
           shippingMethod: selectedRate?.method_name || 'Standard Shipping',
+          shippingMetadata: shippingMetadata,
           taxAmount: taxAmount,
           taxRate: taxRate,
           province: formData.province,
