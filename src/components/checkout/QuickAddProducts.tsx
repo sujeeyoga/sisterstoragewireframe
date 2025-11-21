@@ -34,9 +34,16 @@ const QuickAddProducts = () => {
 
   if (!products) return null;
 
-  // Get all available bundles that could be recommended
-  const allBundles = [
+  // Get all available products that could be recommended
+  // Priority order: Individual organizers first, then bundles
+  const allRecommendations = [
+    // Individual Organizers (Priority 1-4)
     products.find(p => p.id === 'jewelry-bag-organizer' && p.inStock),
+    products.find(p => p.id === 'large-bangle-box' && p.inStock),
+    products.find(p => p.id === 'medium-bangle-box' && p.inStock),
+    products.find(p => p.id === 'travel-size-bangle-box' && p.inStock),
+    
+    // Bundles (Priority 5-7)
     products.find(p => 
       p.name.toLowerCase().includes('starter') && 
       p.name.toLowerCase().includes('set') &&
@@ -57,17 +64,17 @@ const QuickAddProducts = () => {
     ),
   ].filter(Boolean); // Remove any undefined products
 
-  if (allBundles.length === 0) return null;
+  if (allRecommendations.length === 0) return null;
 
   // Find first product that's not in cart and not dismissed
-  let recommendedProduct = allBundles.find(p => 
+  let recommendedProduct = allRecommendations.find(p => 
     !cartItems.some(item => item.id === p!.id) &&
     !dismissedProducts.has(p!.id)
   );
 
   // If all products are dismissed or in cart, show the first available product anyway
   if (!recommendedProduct) {
-    recommendedProduct = allBundles[0];
+    recommendedProduct = allRecommendations[0];
   }
 
   const recommendedProducts = [recommendedProduct];
