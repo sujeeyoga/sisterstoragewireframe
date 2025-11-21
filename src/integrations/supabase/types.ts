@@ -458,6 +458,68 @@ export type Database = {
         }
         Relationships: []
       }
+      product_reviews: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string | null
+          customer_email: string
+          customer_name: string
+          helpful_count: number | null
+          id: string
+          order_id: string | null
+          product_id: number
+          rating: number
+          review_text: string
+          review_title: string | null
+          status: string
+          updated_at: string | null
+          verified_purchase: boolean | null
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string | null
+          customer_email: string
+          customer_name: string
+          helpful_count?: number | null
+          id?: string
+          order_id?: string | null
+          product_id: number
+          rating: number
+          review_text: string
+          review_title?: string | null
+          status?: string
+          updated_at?: string | null
+          verified_purchase?: boolean | null
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string | null
+          customer_email?: string
+          customer_name?: string
+          helpful_count?: number | null
+          id?: string
+          order_id?: string | null
+          product_id?: number
+          rating?: number
+          review_text?: string
+          review_title?: string | null
+          status?: string
+          updated_at?: string | null
+          verified_purchase?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_reviews_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       qr_codes: {
         Row: {
           created_at: string | null
