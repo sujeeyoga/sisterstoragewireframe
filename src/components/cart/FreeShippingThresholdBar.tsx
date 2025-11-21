@@ -101,7 +101,7 @@ const FreeShippingThresholdBar = ({
               </span>
             )}
           </div>
-          <Progress value={100} className="h-1.5 [&>div]:bg-green-500 dark:[&>div]:bg-green-400" />
+          <Progress value={100} className="h-1.5 bg-white [&>div]:bg-[hsl(var(--brand-pink))]" />
         </div>
       ) : (
         <div className="space-y-1.5">
@@ -112,7 +112,7 @@ const FreeShippingThresholdBar = ({
           </div>
           <Progress 
             value={progressPercent} 
-            className="h-1.5 [&>div]:bg-primary transition-all duration-500"
+            className="h-1.5 bg-white [&>div]:bg-[hsl(var(--brand-pink))] transition-all duration-500"
           />
           <p className="text-[10px] text-muted-foreground text-right">
             {progressPercent.toFixed(0)}% to free shipping
