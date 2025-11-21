@@ -53,7 +53,7 @@ const ReviewsManager: React.FC = () => {
   };
 
   const getProductName = (productId: number) => {
-    const product = products.find((p) => p.id === productId);
+    const product = products.find((p) => Number(p.id) === productId);
     return product?.name || `Product #${productId}`;
   };
 
