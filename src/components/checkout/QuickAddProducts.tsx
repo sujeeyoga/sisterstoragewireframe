@@ -32,16 +32,48 @@ const QuickAddProducts = () => {
 
   if (!products) return null;
 
-  // Find jewelry bag organizer (show even if already in cart for visibility)
+  // Find products to recommend in order of priority
+  // Priority 1: Jewelry bag organizer (if not in cart)
   const jewelryBag = products.find(p => 
     p.id === 'jewelry-bag-organizer' && 
-    p.inStock
+    p.inStock &&
+    !cartItems.some(item => item.id === p.id)
   );
 
-  // Only show if jewelry bag is available and not already in cart
-  if (!jewelryBag || cartItems.some(item => item.id === jewelryBag.id)) return null;
+  // Priority 2: Starter Set bundle (if jewelry bag is in cart)
+  const starterSet = products.find(p => 
+    p.name.toLowerCase().includes('starter') && 
+    p.name.toLowerCase().includes('set') &&
+    p.inStock && 
+    p.visible &&
+    !cartItems.some(item => item.id === p.id)
+  );
 
-  const recommendedProducts = [jewelryBag];
+  // Priority 3: Together Bundle
+  const togetherBundle = products.find(p => 
+    p.name.toLowerCase().includes('together') && 
+    p.name.toLowerCase().includes('bundle') &&
+    p.inStock && 
+    p.visible &&
+    !cartItems.some(item => item.id === p.id)
+  );
+
+  // Priority 4: Complete Family Set
+  const familySet = products.find(p => 
+    (p.name.toLowerCase().includes('complete') || p.name.toLowerCase().includes('family')) && 
+    p.name.toLowerCase().includes('set') &&
+    p.inStock && 
+    p.visible &&
+    !cartItems.some(item => item.id === p.id)
+  );
+
+  // Show products in priority order
+  const recommendedProduct = jewelryBag || starterSet || togetherBundle || familySet;
+
+  // Only show if we have a product to recommend
+  if (!recommendedProduct) return null;
+
+  const recommendedProducts = [recommendedProduct];
 
   const handleAddToCart = (product: typeof recommendedProducts[0]) => {
       const imageUrl = typeof product.images?.[0] === 'string' 
