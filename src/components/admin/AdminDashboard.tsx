@@ -906,7 +906,26 @@ export const AdminDashboard = () => {
       </div>
 
       {/* Missing Notifications Widget */}
-      <MissingNotificationsWidget />
+            <MissingNotificationsWidget />
+            
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <DollarSign className="h-5 w-5" />
+                  Carrier Cost Tools
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <p className="text-sm text-muted-foreground">
+                  Manage carrier costs for accurate shipping profit/loss tracking
+                </p>
+                <Button asChild variant="outline" className="w-full">
+                  <Link to="/admin/orders/carrier-costs">
+                    Manual Cost Entry Tool
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
 
       {/* Checkout Flow Tester */}
       <CheckoutFlowTester />
