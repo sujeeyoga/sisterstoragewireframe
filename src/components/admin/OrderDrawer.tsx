@@ -83,6 +83,8 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
   const [refundType, setRefundType] = useState<'stripe' | 'manual'>('stripe');
   const [manualRefundConfirmed, setManualRefundConfirmed] = useState(false);
   const [orderRefunds, setOrderRefunds] = useState<any[]>([]);
+  const [trackingWarningOpen, setTrackingWarningOpen] = useState(false);
+  const [pendingStatusChange, setPendingStatusChange] = useState<string | null>(null);
 
   // Calculate order subtotal for shipping calculation
   const orderSubtotal = order.line_items?.reduce((sum: number, item: any) => 
@@ -155,7 +157,28 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
   }, [order.id, order.total, order.status, order.stripe_payment_intent_id]);
 
   const handleStatusUpdate = () => {
+    // Phase 3: Check if trying to mark as fulfilled without tracking
+    if (newStatus === 'completed' && !order.tracking_number) {
+      setPendingStatusChange(newStatus);
+      setTrackingWarningOpen(true);
+      return;
+    }
+    
     onStatusUpdate(newStatus);
+  };
+
+  const confirmStatusWithoutTracking = () => {
+    if (pendingStatusChange) {
+      onStatusUpdate(pendingStatusChange);
+      setTrackingWarningOpen(false);
+      setPendingStatusChange(null);
+    }
+  };
+
+  const cancelStatusChange = () => {
+    setNewStatus(order.status);
+    setTrackingWarningOpen(false);
+    setPendingStatusChange(null);
   };
   
   const handleRefund = async () => {
@@ -718,7 +741,19 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label>Fulfillment Status</Label>
-                <div>{getStatusBadge(order.fulfillment_status || 'pending')}</div>
+                <div className="flex items-center gap-2">
+                  {getStatusBadge(order.fulfillment_status || 'pending')}
+                  {order.fulfillment_status === 'fulfilled' && !order.tracking_number && (
+                    <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-300">
+                      ⚠️ No Tracking
+                    </Badge>
+                  )}
+                  {order.fulfillment_status === 'fulfilled' && order.tracking_number && (
+                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-300">
+                      ✅ Tracked
+                    </Badge>
+                  )}
+                </div>
               </div>
               <div>
                 <Label>Tracking Number</Label>
@@ -934,6 +969,49 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
                 ) : (
                   <>{refundType === 'manual' ? 'Record Refund' : `Refund $${parseFloat(refundAmount || '0').toFixed(2)}`}</>
                 )}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        {/* Phase 3: Tracking Warning Dialog */}
+        <AlertDialog open={trackingWarningOpen} onOpenChange={setTrackingWarningOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle className="flex items-center gap-2">
+                <AlertTriangle className="h-5 w-5 text-amber-500" />
+                Warning: No Tracking Number
+              </AlertDialogTitle>
+              <AlertDialogDescription className="space-y-3">
+                <p>
+                  This order doesn't have a tracking number yet. Customers won't receive tracking information.
+                </p>
+                
+                <div className="rounded-lg bg-amber-50 dark:bg-amber-950 border border-amber-200 p-4">
+                  <p className="font-semibold text-amber-900 dark:text-amber-100 mb-2">
+                    📦 Recommended actions:
+                  </p>
+                  <ul className="text-sm space-y-1 text-amber-800 dark:text-amber-200">
+                    <li>• Use Stallion/ChitChats fulfillment to automatically generate tracking</li>
+                    <li>• Add tracking number manually before marking as fulfilled</li>
+                    <li>• Tracking emails are sent automatically when tracking is added</li>
+                  </ul>
+                </div>
+
+                <p className="text-sm text-muted-foreground">
+                  Are you sure you want to mark this order as fulfilled without tracking?
+                </p>
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={cancelStatusChange}>
+                Add Tracking First
+              </AlertDialogCancel>
+              <AlertDialogAction
+                onClick={confirmStatusWithoutTracking}
+                className="bg-amber-600 hover:bg-amber-700"
+              >
+                Fulfill Without Tracking
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
