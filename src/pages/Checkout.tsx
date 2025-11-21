@@ -10,6 +10,7 @@ import { useShippingZones } from '@/hooks/useShippingZones';
 import { useFreeGiftPromotion } from '@/hooks/useFreeGiftPromotion';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -19,10 +20,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 import Logo from '@/components/ui/Logo';
 import SaleBanner from '@/components/SaleBanner';
-import { ArrowLeft, ShoppingBag, CreditCard, Truck, Trash2, Tag, Loader2, Package, Gift, Mail, MapPin, Plus, Minus } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, CreditCard, Truck, Trash2, Tag, Loader2, Package, Gift, Mail, MapPin, Plus, Minus, ChevronDown } from 'lucide-react';
 import { PaymentForm } from '@/components/checkout/PaymentForm';
 import ReadOnlyAddressField from '@/components/checkout/ReadOnlyAddressField';
 import FreeShippingThresholdBar from '@/components/cart/FreeShippingThresholdBar';
@@ -165,6 +167,7 @@ const Checkout = () => {
   const navigate = useNavigate();
   const { items, subtotal, clearCart, removeItem, updateQuantity } = useCart();
   const { toast } = useToast();
+  const isMobile = useIsMobile();
   const { discount, applyDiscount, getDiscountAmount } = useStoreDiscount();
   const { giftOptions } = useGiftOptions();
   const { newsletter } = useNewsletterSettings();
@@ -184,6 +187,7 @@ const Checkout = () => {
   const [originalShippingCost, setOriginalShippingCost] = useState<number>(0);
   const [matchedZone, setMatchedZone] = useState<{ id: string; name: string } | null>(null);
   const [shippingMetadata, setShippingMetadata] = useState<any>(null);
+  const [isOrderSummaryOpen, setIsOrderSummaryOpen] = useState(!isMobile);
   
   // Form stage management
   const [formStage, setFormStage] = useState<'email-address' | 'complete'>('complete');
@@ -1057,198 +1061,217 @@ const Checkout = () => {
           {/* Order Summary */}
           <div className="lg:col-span-1">
             <Card className="sticky top-4">
-              <CardHeader>
-                <CardTitle>Order Summary</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {/* Free Shipping Threshold Bar */}
-                <FreeShippingThresholdBar
-                  cartSubtotal={discountedSubtotal}
-                  isGTA={checkIsGTA(formData.city, formData.province)}
-                  country={formData.country}
-                  isLoading={false}
-                  cartItems={items}
-                  city={formData.city}
-                  region={formData.province}
-                  postalCode={formData.postalCode}
-                />
-                
-                {/* Cart Items */}
-                <div className="space-y-4 max-h-80 overflow-y-auto">
-                  {items.map((item) => (
-                    <div key={item.id} className="space-y-2 pb-4 border-b last:border-0">
-                      <div className="flex gap-3">
-                        {item.image && (item.image.startsWith('http') || item.image.startsWith('/')) ? (
-                          <img 
-                            src={item.image} 
-                            alt={item.name}
-                            className="w-16 h-16 object-cover rounded"
-                            onError={(e) => {
-                              // Fallback to placeholder if image fails to load
-                              e.currentTarget.style.display = 'none';
-                              const fallback = document.createElement('div');
-                              fallback.className = 'w-16 h-16 rounded flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-pink-500 to-rose-500';
-                              fallback.innerHTML = '<span class="text-white font-bold text-xs">SS</span>';
-                              e.currentTarget.parentElement?.appendChild(fallback);
-                            }}
-                          />
-                        ) : (
-                          <div 
-                            className="w-16 h-16 rounded flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-pink-500 to-rose-500"
-                          >
-                            <span className="text-white font-bold text-xs">SS</span>
-                          </div>
-                        )}
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium line-clamp-2 mb-1">{item.name}</p>
-                          <div className="space-y-1">
-                            <p className="text-xs text-gray-600">
-                              Unit Price: <span className="font-medium">${item.price.toFixed(2)}</span>
-                            </p>
-                            <div className="flex items-center gap-2">
-                              <span className="text-xs text-gray-600">Qty:</span>
-                              <div className="flex items-center border border-gray-300 rounded">
-                                <button
-                                  onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                                  className="w-6 h-6 flex items-center justify-center hover:bg-gray-100 transition-colors"
-                                  aria-label="Decrease quantity"
-                                >
-                                  <Minus className="h-3 w-3" />
-                                </button>
-                                <span className="w-8 h-6 flex items-center justify-center text-xs font-medium border-x border-gray-300">
-                                  {item.quantity}
-                                </span>
-                                <button
-                                  onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                                  className="w-6 h-6 flex items-center justify-center hover:bg-gray-100 transition-colors"
-                                  aria-label="Increase quantity"
-                                >
-                                  <Plus className="h-3 w-3" />
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <button
-                          onClick={() => removeItem(item.id)}
-                          className="flex-shrink-0 text-gray-400 hover:text-red-500 transition-colors p-1 h-fit"
-                          aria-label="Remove item"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      </div>
-                      <div className="flex justify-between items-center pl-[76px]">
-                        <span className="text-xs text-gray-500">Item Subtotal:</span>
-                        <span className="text-sm font-semibold text-[hsl(var(--brand-pink))]">
-                          ${(item.price * item.quantity).toFixed(2)}
-                        </span>
-                      </div>
-                     </div>
-                  ))}
-
-                  {/* Free Gift Item */}
-                  {giftQualified && freeGiftProduct && (
-                    <div className="space-y-2 pb-4 border-b bg-gradient-to-r from-green-50 to-emerald-50 -mx-4 px-4 py-3 rounded-lg animate-fade-in">
-                      <div className="flex gap-3">
-                        <img 
-                          src={freeGiftProduct.image} 
-                          alt={freeGiftProduct.name}
-                          className="w-16 h-16 object-cover rounded border-2 border-green-500"
-                        />
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-start gap-2">
-                            <Gift className="h-4 w-4 text-green-600 mt-0.5" />
-                            <div className="flex-1">
-                              <p className="text-sm font-bold text-green-900">{freeGiftProduct.name}</p>
-                              <p className="text-xs text-green-700 mt-0.5">🎁 FREE GIFT - No charge!</p>
-                              <p className="text-xs text-green-600 mt-1">
-                                Qualifying order: {formData.country} ${subtotal.toFixed(2)}+ ✓
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+              <Collapsible open={isOrderSummaryOpen} onOpenChange={setIsOrderSummaryOpen}>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 flex-1">
+                      <CardTitle>Order Summary</CardTitle>
+                      <span className="text-sm text-muted-foreground">({items.length} {items.length === 1 ? 'item' : 'items'})</span>
                     </div>
-                  )}
-                </div>
-
-                <Separator />
-
-                {/* Price Breakdown */}
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Subtotal</span>
-                    <span className="font-medium">${subtotal.toFixed(2)}</span>
+                    {isMobile && (
+                      <div className="flex items-center gap-3">
+                        <span className="text-lg font-bold text-primary">${total.toFixed(2)}</span>
+                        <CollapsibleTrigger asChild>
+                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                            <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isOrderSummaryOpen ? 'rotate-180' : ''}`} />
+                          </Button>
+                        </CollapsibleTrigger>
+                      </div>
+                    )}
                   </div>
-                  
-                  {discount?.enabled && discountAmount > 0 && (
-                    <div className="flex justify-between text-green-600">
-                      <span className="flex items-center gap-1">
-                        <Tag className="h-3 w-3" />
-                        {discount.name} ({discount.percentage}% off)
-                      </span>
-                      <span className="font-medium">-${discountAmount.toFixed(2)}</span>
-                    </div>
-                  )}
-                  
-                  {giftWrappingFee > 0 && (
-                    <div className="flex justify-between">
-                      <span className="text-gray-600 flex items-center gap-1">
-                        <Gift className="h-3 w-3" />
-                        Gift Wrapping
-                      </span>
-                      <span className="font-medium">${giftWrappingFee.toFixed(2)}</span>
-                    </div>
-                  )}
-                  
-                  
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600 font-medium">Shipping</span>
-                    <div className="text-right">
-                      {shippingRates.length === 0 ? (
-                        <span className="text-sm text-gray-400 italic">Input address to Calculate</span>
-                      ) : selectedShippingRate ? (
-                        <>
-                          {shippingCost === 0 && originalShippingCost > 0 ? (
-                            <div className="flex flex-col items-end gap-1">
-                              <div className="flex items-center gap-2">
-                                <span className="text-sm line-through text-muted-foreground">${originalShippingCost.toFixed(2)}</span>
-                                <span className="text-sm font-bold text-green-600 dark:text-green-400">FREE! 🎉</span>
+                </CardHeader>
+                <CollapsibleContent>
+                  <CardContent className="space-y-4">
+                    {/* Free Shipping Threshold Bar */}
+                    <FreeShippingThresholdBar
+                      cartSubtotal={discountedSubtotal}
+                      isGTA={checkIsGTA(formData.city, formData.province)}
+                      country={formData.country}
+                      isLoading={false}
+                      cartItems={items}
+                      city={formData.city}
+                      region={formData.province}
+                      postalCode={formData.postalCode}
+                    />
+                    
+                    {/* Cart Items */}
+                    <div className="space-y-4 max-h-80 overflow-y-auto">
+                      {items.map((item) => (
+                        <div key={item.id} className="space-y-2 pb-4 border-b last:border-0">
+                          <div className="flex gap-3">
+                            {item.image && (item.image.startsWith('http') || item.image.startsWith('/')) ? (
+                              <img 
+                                src={item.image} 
+                                alt={item.name}
+                                className="w-16 h-16 object-cover rounded"
+                                onError={(e) => {
+                                  // Fallback to placeholder if image fails to load
+                                  e.currentTarget.style.display = 'none';
+                                  const fallback = document.createElement('div');
+                                  fallback.className = 'w-16 h-16 rounded flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-pink-500 to-rose-500';
+                                  fallback.innerHTML = '<span class="text-white font-bold text-xs">SS</span>';
+                                  e.currentTarget.parentElement?.appendChild(fallback);
+                                }}
+                              />
+                            ) : (
+                              <div 
+                                className="w-16 h-16 rounded flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-pink-500 to-rose-500"
+                              >
+                                <span className="text-white font-bold text-xs">SS</span>
                               </div>
-                              <span className="text-xs text-gray-500">{selectedRate?.method_name}</span>
+                            )}
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium line-clamp-2 mb-1">{item.name}</p>
+                              <div className="space-y-1">
+                                <p className="text-xs text-gray-600">
+                                  Unit Price: <span className="font-medium">${item.price.toFixed(2)}</span>
+                                </p>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-xs text-gray-600">Qty:</span>
+                                  <div className="flex items-center border border-gray-300 rounded">
+                                    <button
+                                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                                      className="w-6 h-6 flex items-center justify-center hover:bg-gray-100 transition-colors"
+                                      aria-label="Decrease quantity"
+                                    >
+                                      <Minus className="h-3 w-3" />
+                                    </button>
+                                    <span className="w-8 h-6 flex items-center justify-center text-xs font-medium border-x border-gray-300">
+                                      {item.quantity}
+                                    </span>
+                                    <button
+                                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                                      className="w-6 h-6 flex items-center justify-center hover:bg-gray-100 transition-colors"
+                                      aria-label="Increase quantity"
+                                    >
+                                      <Plus className="h-3 w-3" />
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
                             </div>
-                          ) : shippingCost === 0 ? (
-                            <div className="flex flex-col items-end">
-                              <span className="text-green-600 font-bold text-base">FREE</span>
-                              <span className="text-xs text-gray-500">{selectedRate?.method_name}</span>
+                            <button
+                              onClick={() => removeItem(item.id)}
+                              className="flex-shrink-0 text-gray-400 hover:text-red-500 transition-colors p-1 h-fit"
+                              aria-label="Remove item"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          </div>
+                          <div className="flex justify-between items-center pl-[76px]">
+                            <span className="text-xs text-gray-500">Item Subtotal:</span>
+                            <span className="text-sm font-semibold text-[hsl(var(--brand-pink))]">
+                              ${(item.price * item.quantity).toFixed(2)}
+                            </span>
+                          </div>
+                         </div>
+                      ))}
+
+                      {/* Free Gift Item */}
+                      {giftQualified && freeGiftProduct && (
+                        <div className="space-y-2 pb-4 border-b bg-gradient-to-r from-green-50 to-emerald-50 -mx-4 px-4 py-3 rounded-lg animate-fade-in">
+                          <div className="flex gap-3">
+                            <img 
+                              src={freeGiftProduct.image} 
+                              alt={freeGiftProduct.name}
+                              className="w-16 h-16 object-cover rounded border-2 border-green-500"
+                            />
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-start gap-2">
+                                <Gift className="h-4 w-4 text-green-600 mt-0.5" />
+                                <div className="flex-1">
+                                  <p className="text-sm font-bold text-green-900">{freeGiftProduct.name}</p>
+                                  <p className="text-xs text-green-700 mt-0.5">🎁 FREE GIFT - No charge!</p>
+                                  <p className="text-xs text-green-600 mt-1">
+                                    Qualifying order: {formData.country} ${subtotal.toFixed(2)}+ ✓
+                                  </p>
+                                </div>
+                              </div>
                             </div>
-                          ) : (
-                            <div className="flex flex-col items-end">
-                              <span className="font-semibold text-base">${shippingCost.toFixed(2)}</span>
-                              <span className="text-xs text-gray-500">{selectedRate?.method_name}</span>
-                            </div>
-                          )}
-                        </>
-                      ) : (
-                        <span className="text-sm text-yellow-600 italic">Select a method</span>
+                          </div>
+                        </div>
                       )}
                     </div>
-                  </div>
-                  
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Tax ({(taxRate * 100).toFixed(2)}%)</span>
-                    <span className="font-medium">${taxAmount.toFixed(2)}</span>
-                  </div>
-                </div>
 
-                <Separator />
+                    <Separator />
 
-                {/* Total */}
-                <div className="flex justify-between text-lg font-bold">
-                  <span>Total</span>
-                  <span className="text-[hsl(var(--brand-pink))]">${total.toFixed(2)}</span>
-                </div>
-              </CardContent>
+                    {/* Price Breakdown */}
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Subtotal</span>
+                        <span className="font-medium">${subtotal.toFixed(2)}</span>
+                      </div>
+                      
+                      {discount?.enabled && discountAmount > 0 && (
+                        <div className="flex justify-between text-green-600">
+                          <span className="flex items-center gap-1">
+                            <Tag className="h-3 w-3" />
+                            {discount.name} ({discount.percentage}% off)
+                          </span>
+                          <span className="font-medium">-${discountAmount.toFixed(2)}</span>
+                        </div>
+                      )}
+                      
+                      {giftWrappingFee > 0 && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-600 flex items-center gap-1">
+                            <Gift className="h-3 w-3" />
+                            Gift Wrapping
+                          </span>
+                          <span className="font-medium">${giftWrappingFee.toFixed(2)}</span>
+                        </div>
+                      )}
+                      
+                      
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600 font-medium">Shipping</span>
+                        <div className="text-right">
+                          {shippingRates.length === 0 ? (
+                            <span className="text-sm text-gray-400 italic">Input address to Calculate</span>
+                          ) : selectedShippingRate ? (
+                            <>
+                              {shippingCost === 0 && originalShippingCost > 0 ? (
+                                <div className="flex flex-col items-end gap-1">
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-sm line-through text-muted-foreground">${originalShippingCost.toFixed(2)}</span>
+                                    <span className="text-sm font-bold text-green-600 dark:text-green-400">FREE! 🎉</span>
+                                  </div>
+                                  <span className="text-xs text-gray-500">{selectedRate?.method_name}</span>
+                                </div>
+                              ) : shippingCost === 0 ? (
+                                <div className="flex flex-col items-end">
+                                  <span className="text-green-600 font-bold text-base">FREE</span>
+                                  <span className="text-xs text-gray-500">{selectedRate?.method_name}</span>
+                                </div>
+                              ) : (
+                                <div className="flex flex-col items-end">
+                                  <span className="font-semibold text-base">${shippingCost.toFixed(2)}</span>
+                                  <span className="text-xs text-gray-500">{selectedRate?.method_name}</span>
+                                </div>
+                              )}
+                            </>
+                          ) : (
+                            <span className="text-sm text-yellow-600 italic">Select a method</span>
+                          )}
+                        </div>
+                      </div>
+                      
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Tax ({(taxRate * 100).toFixed(2)}%)</span>
+                        <span className="font-medium">${taxAmount.toFixed(2)}</span>
+                      </div>
+                    </div>
+
+                    <Separator />
+
+                    {/* Total */}
+                    <div className="flex justify-between text-lg font-bold">
+                      <span>Total</span>
+                      <span className="text-[hsl(var(--brand-pink))]">${total.toFixed(2)}</span>
+                    </div>
+                  </CardContent>
+                </CollapsibleContent>
+              </Collapsible>
             </Card>
           </div>
         </div>
