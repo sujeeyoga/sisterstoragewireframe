@@ -34,50 +34,41 @@ const QuickAddProducts = () => {
 
   if (!products) return null;
 
-  // Find products to recommend in order of priority
-  // Priority 1: Jewelry bag organizer (if not in cart and not dismissed)
-  const jewelryBag = products.find(p => 
-    p.id === 'jewelry-bag-organizer' && 
-    p.inStock &&
-    !cartItems.some(item => item.id === p.id) &&
-    !dismissedProducts.has(p.id)
+  // Get all available bundles that could be recommended
+  const allBundles = [
+    products.find(p => p.id === 'jewelry-bag-organizer' && p.inStock),
+    products.find(p => 
+      p.name.toLowerCase().includes('starter') && 
+      p.name.toLowerCase().includes('set') &&
+      p.inStock && 
+      p.visible
+    ),
+    products.find(p => 
+      p.name.toLowerCase().includes('together') && 
+      p.name.toLowerCase().includes('bundle') &&
+      p.inStock && 
+      p.visible
+    ),
+    products.find(p => 
+      (p.name.toLowerCase().includes('complete') || p.name.toLowerCase().includes('family')) && 
+      p.name.toLowerCase().includes('set') &&
+      p.inStock && 
+      p.visible
+    ),
+  ].filter(Boolean); // Remove any undefined products
+
+  if (allBundles.length === 0) return null;
+
+  // Find first product that's not in cart and not dismissed
+  let recommendedProduct = allBundles.find(p => 
+    !cartItems.some(item => item.id === p!.id) &&
+    !dismissedProducts.has(p!.id)
   );
 
-  // Priority 2: Starter Set bundle (if jewelry bag is in cart and not dismissed)
-  const starterSet = products.find(p => 
-    p.name.toLowerCase().includes('starter') && 
-    p.name.toLowerCase().includes('set') &&
-    p.inStock && 
-    p.visible &&
-    !cartItems.some(item => item.id === p.id) &&
-    !dismissedProducts.has(p.id)
-  );
-
-  // Priority 3: Together Bundle
-  const togetherBundle = products.find(p => 
-    p.name.toLowerCase().includes('together') && 
-    p.name.toLowerCase().includes('bundle') &&
-    p.inStock && 
-    p.visible &&
-    !cartItems.some(item => item.id === p.id) &&
-    !dismissedProducts.has(p.id)
-  );
-
-  // Priority 4: Complete Family Set
-  const familySet = products.find(p => 
-    (p.name.toLowerCase().includes('complete') || p.name.toLowerCase().includes('family')) && 
-    p.name.toLowerCase().includes('set') &&
-    p.inStock && 
-    p.visible &&
-    !cartItems.some(item => item.id === p.id) &&
-    !dismissedProducts.has(p.id)
-  );
-
-  // Show products in priority order
-  const recommendedProduct = jewelryBag || starterSet || togetherBundle || familySet;
-
-  // Only show if we have a product to recommend
-  if (!recommendedProduct) return null;
+  // If all products are dismissed or in cart, show the first available product anyway
+  if (!recommendedProduct) {
+    recommendedProduct = allBundles[0];
+  }
 
   const recommendedProducts = [recommendedProduct];
 
