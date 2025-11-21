@@ -101,7 +101,7 @@ const FreeShippingThresholdBar = ({
               </span>
             )}
           </div>
-          <Progress value={100} className="h-1.5 bg-white [&>div]:bg-[hsl(var(--brand-pink))]" />
+          <Progress value={100} className="h-1.5 bg-white [&>div]:bg-green-500" />
         </div>
       ) : (
         <div className="space-y-1.5">
