@@ -217,6 +217,39 @@ export const useShippingZones = () => {
     },
   });
 
+  // Update rate mutation
+  const updateRateMutation = useMutation({
+    mutationFn: async (rate: {
+      id: string;
+      rate_amount?: number;
+      method_name?: string;
+      enabled?: boolean;
+      free_threshold?: number;
+    }) => {
+      const { data, error } = await supabase
+        .from('shipping_zone_rates')
+        .update({
+          rate_amount: rate.rate_amount,
+          method_name: rate.method_name,
+          enabled: rate.enabled,
+          free_threshold: rate.free_threshold,
+        })
+        .eq('id', rate.id)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['shipping-zones'] });
+      toast.success('Shipping rate updated');
+    },
+    onError: () => {
+      toast.error('Failed to update shipping rate');
+    },
+  });
+
   // Update fallback settings mutation
   const updateFallbackMutation = useMutation({
     mutationFn: async (settings: {
@@ -264,6 +297,7 @@ export const useShippingZones = () => {
     createZone: createZoneMutation.mutate,
     updateZone: updateZoneMutation.mutate,
     deleteZone: deleteZoneMutation.mutate,
+    updateRate: updateRateMutation.mutate,
     updateFallback: updateFallbackMutation.mutate,
     isCreating: createZoneMutation.isPending,
     isUpdating: updateZoneMutation.isPending,

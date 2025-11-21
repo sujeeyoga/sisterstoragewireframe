@@ -43,6 +43,7 @@ import { ResendConfirmationEmails } from '@/components/admin/ResendConfirmationE
 import { BulkShippingNotificationTool } from '@/components/admin/BulkShippingNotificationTool';
 import { ManualCarrierCostEntry } from '@/components/admin/ManualCarrierCostEntry';
 import LocationDebugPanel from '@/components/admin/LocationDebugPanel';
+import { QuickRateUpdate } from '@/components/admin/QuickRateUpdate';
 
 const Admin = () => {
   const { notification, clearNotification } = useOrderNotifications();
@@ -65,6 +66,7 @@ const Admin = () => {
 
   return (
     <>
+      <QuickRateUpdate />
       <AdminLayout>
         <Routes>
         <Route index element={<AdminDashboard />} />
