@@ -32,16 +32,14 @@ const QuickAddProducts = () => {
 
   if (!products) return null;
 
-  // Find jewelry bag organizer
+  // Find jewelry bag organizer (show even if already in cart for visibility)
   const jewelryBag = products.find(p => 
     p.id === 'jewelry-bag-organizer' && 
-    p.inStock && 
-    p.visible &&
-    !cartItems.some(item => item.id === p.id)
+    p.inStock
   );
 
-  // Only show if jewelry bag is available
-  if (!jewelryBag) return null;
+  // Only show if jewelry bag is available and not already in cart
+  if (!jewelryBag || cartItems.some(item => item.id === jewelryBag.id)) return null;
 
   const recommendedProducts = [jewelryBag];
 
@@ -71,8 +69,8 @@ const QuickAddProducts = () => {
 
   return (
     <div className="mt-6 mb-4">
-      <h3 className="text-sm font-semibold text-foreground mb-3">
-        You might also like
+      <h3 className="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
+        <span className="text-[hsl(var(--brand-pink))]">✨</span> Complete Your Order
       </h3>
       <div className="grid grid-cols-1 gap-3">
         {recommendedProducts.map((product) => {
