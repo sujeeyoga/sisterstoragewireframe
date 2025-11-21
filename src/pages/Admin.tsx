@@ -43,6 +43,7 @@ import { ResendConfirmationEmails } from '@/components/admin/ResendConfirmationE
 import { BulkShippingNotificationTool } from '@/components/admin/BulkShippingNotificationTool';
 import { ManualCarrierCostEntry } from '@/components/admin/ManualCarrierCostEntry';
 import LocationDebugPanel from '@/components/admin/LocationDebugPanel';
+import { TrackingBackfillTool } from '@/components/admin/TrackingBackfillTool';
 
 const Admin = () => {
   const { notification, clearNotification } = useOrderNotifications();
@@ -83,6 +84,7 @@ const Admin = () => {
         <Route path="orders/resend-emails" element={<AdminLayout><ResendConfirmationEmails /></AdminLayout>} />
         <Route path="orders/shipping-notifications" element={<AdminLayout><BulkShippingNotificationTool /></AdminLayout>} />
         <Route path="orders/carrier-costs" element={<AdminLayout><ManualCarrierCostEntry /></AdminLayout>} />
+        <Route path="tracking-backfill" element={<TrackingBackfillTool />} />
         <Route path="products" element={<ProductsTable />} />
         <Route path="products/:id" element={<ProductForm />} />
         <Route path="customers" element={<CustomersTable />} />

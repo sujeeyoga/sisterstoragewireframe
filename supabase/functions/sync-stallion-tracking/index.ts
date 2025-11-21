@@ -106,6 +106,34 @@ serve(async (req) => {
           } else {
             console.log(`Updated order ${order.id} to status: ${newStatus}`);
             updatedCount++;
+            
+            // Phase 2: Send tracking email if transitioning to in-transit and no notification sent
+            if ((trackingData.status === 'In Transit' || trackingData.in_transit) && order.tracking_number) {
+              const { data: fullOrder } = await supabaseAdmin
+                .from(tableName)
+                .select('*')
+                .eq('id', order.id)
+                .single();
+                
+              if (fullOrder && !fullOrder.shipping_notification_sent_at) {
+                try {
+                  await supabaseAdmin.functions.invoke('send-shipping-notification', {
+                    body: {
+                      orderId: order.id,
+                      orderNumber: order.source === 'stripe' ? fullOrder.order_number : order.id.toString(),
+                      customerEmail: order.source === 'stripe' ? fullOrder.customer_email : fullOrder.billing?.email,
+                      customerName: order.source === 'stripe' ? fullOrder.customer_name : `${fullOrder.billing?.first_name} ${fullOrder.billing?.last_name}`,
+                      trackingNumber: order.tracking_number,
+                      carrierName: fullOrder.carrier_name || 'Carrier',
+                      source: order.source
+                    }
+                  });
+                  console.log(`Sent tracking email for order ${order.id}`);
+                } catch (emailError) {
+                  console.error(`Failed to send tracking email for order ${order.id}:`, emailError);
+                }
+              }
+            }
           }
         }
       } catch (error) {

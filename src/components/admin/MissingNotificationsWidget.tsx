@@ -107,10 +107,20 @@ export function MissingNotificationsWidget() {
             )}
 
             <Button
-              onClick={() => navigate('/admin/orders/shipping-notifications')}
+              onClick={() => navigate('/admin/tracking-backfill')}
               variant="outline"
               size="sm"
               className="w-full border-amber-300 text-amber-700 hover:bg-amber-50"
+            >
+              <Package className="h-4 w-4 mr-2" />
+              Fix Tracking Issues
+            </Button>
+            
+            <Button
+              onClick={() => navigate('/admin/orders/shipping-notifications')}
+              variant="outline"
+              size="sm"
+              className="w-full mt-2"
             >
               <Mail className="h-4 w-4 mr-2" />
               Send Missing Notifications
