@@ -54,6 +54,23 @@ export const useCustomerAuth = () => {
       });
       
       if (error) throw error;
+
+      // Create customer profile if it doesn't exist
+      if (data.user) {
+        const { error: profileError } = await supabase
+          .from('customer_profiles')
+          .upsert({
+            phone: data.user.phone || phone,
+            email: data.user.email,
+          }, {
+            onConflict: 'phone',
+          });
+
+        if (profileError) {
+          console.error('Profile creation error:', profileError);
+        }
+      }
+      
       return data;
     },
     onSuccess: () => {

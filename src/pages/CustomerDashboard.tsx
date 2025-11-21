@@ -8,6 +8,8 @@ import { useCustomerAuth, useCustomerOrders } from '@/hooks/useCustomerAuth';
 import { Card, CardContent } from '@/components/ui/card';
 import { Search, LogOut, Package, Loader2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { EmptyOrdersState } from '@/components/customer/EmptyOrdersState';
+import { OrderStatusBadge } from '@/components/customer/OrderStatusBadge';
 
 const CustomerDashboard = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -26,24 +28,6 @@ const CustomerDashboard = () => {
     const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
-
-  const getStatusBadge = (status: string) => {
-    const variants: Record<string, string> = {
-      pending: 'bg-yellow-100 text-yellow-800',
-      processing: 'bg-blue-100 text-blue-800',
-      completed: 'bg-green-100 text-green-800',
-      cancelled: 'bg-red-100 text-red-800',
-    };
-    return variants[status] || 'bg-gray-100 text-gray-800';
-  };
-
-  const getFulfillmentBadge = (status: string) => {
-    const variants: Record<string, string> = {
-      unfulfilled: 'bg-gray-100 text-gray-800',
-      fulfilled: 'bg-green-100 text-green-800',
-    };
-    return variants[status] || 'bg-gray-100 text-gray-800';
-  };
 
   return (
     <BaseLayout variant="standard" pageId="customer-dashboard">
@@ -90,20 +74,7 @@ const CustomerDashboard = () => {
             <Loader2 className="h-8 w-8 animate-spin text-brand-pink" />
           </div>
         ) : filteredOrders.length === 0 ? (
-          <Card>
-            <CardContent className="flex flex-col items-center justify-center py-12">
-              <Package className="h-12 w-12 text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No orders found</h3>
-              <p className="text-muted-foreground text-center mb-4">
-                {searchQuery || statusFilter !== 'all' 
-                  ? 'Try adjusting your search or filters' 
-                  : "You haven't placed any orders yet"}
-              </p>
-              <Button onClick={() => navigate('/shop')} className="bg-brand-pink hover:bg-brand-pink/90">
-                Start Shopping
-              </Button>
-            </CardContent>
-          </Card>
+          <EmptyOrdersState searchQuery={searchQuery} statusFilter={statusFilter} />
         ) : (
           <div className="space-y-4">
             {filteredOrders.map((order) => (
@@ -132,14 +103,10 @@ const CustomerDashboard = () => {
                     </div>
                   </div>
                   
-                  <div className="flex gap-2">
-                    <Badge className={getStatusBadge(order.status)}>
-                      {order.status}
-                    </Badge>
-                    <Badge className={getFulfillmentBadge(order.fulfillment_status)}>
-                      {order.fulfillment_status === 'fulfilled' ? 'Shipped' : 'Processing'}
-                    </Badge>
-                  </div>
+                  <OrderStatusBadge 
+                    status={order.status} 
+                    fulfillmentStatus={order.fulfillment_status}
+                  />
 
                   {order.tracking_number && (
                     <p className="text-sm text-muted-foreground mt-4">
