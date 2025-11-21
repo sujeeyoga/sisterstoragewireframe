@@ -11,7 +11,7 @@ const corsHeaders = {
 };
 
 interface ShippingNotificationRequest {
-  orderId: string;
+  orderId: string | number;
   customerEmail: string;
   customerName: string;
   orderNumber: string;
@@ -20,7 +20,7 @@ interface ShippingNotificationRequest {
   items: Array<{
     name: string;
     quantity: number;
-    price: number;
+    price?: number;
   }>;
 }
 
@@ -52,9 +52,9 @@ const handler = async (req: Request): Promise<Response> => {
           <strong>${item.name}</strong><br/>
           <span style="color: #6b7280; font-size: 14px;">Qty: ${item.quantity}</span>
         </td>
-        <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: right;">
+        ${item.price ? `<td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: right;">
           $${item.price.toFixed(2)}
-        </td>
+        </td>` : ''}
       </tr>
     `
       )
@@ -151,19 +151,53 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Shipping notification sent successfully:", emailResponse);
 
-    // Update order to mark notification as sent (background task)
+    // Log email to email_logs table
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    const updateTask = async () => {
+    try {
       await supabase
+        .from("email_logs")
+        .insert({
+          order_id: String(orderId),
+          recipient_email: customerEmail,
+          email_type: "shipping_notification",
+          subject: `Your order #${orderNumber} has shipped!`,
+          sent_successfully: true,
+          email_data: {
+            orderNumber,
+            trackingNumber,
+            carrier,
+            items
+          },
+        });
+      
+      console.log("Email log created successfully for order:", orderId);
+    } catch (logError) {
+      console.error("Failed to log email:", logError);
+    }
+
+    // Update order to mark notification as sent (background task)
+    const updateTask = async () => {
+      // Try both tables since we support Stripe and WooCommerce orders
+      const { error: orderError } = await supabase
         .from("orders")
         .update({ 
           shipping_notification_sent_at: new Date().toISOString() 
         })
-        .eq("id", orderId);
+        .eq("id", String(orderId));
+
+      if (orderError) {
+        // Try WooCommerce orders table if not found in orders
+        await supabase
+          .from("woocommerce_orders")
+          .update({ 
+            shipping_notification_sent_at: new Date().toISOString() 
+          })
+          .eq("id", orderId);
+      }
     };
 
     EdgeRuntime.waitUntil(updateTask());
@@ -177,6 +211,29 @@ const handler = async (req: Request): Promise<Response> => {
     });
   } catch (error: any) {
     console.error("Error sending shipping notification:", error);
+    
+    // Log failed email attempt
+    try {
+      const { orderId, customerEmail, orderNumber } = await req.json();
+      const supabase = createClient(
+        Deno.env.get("SUPABASE_URL") ?? "",
+        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+      );
+
+      await supabase
+        .from("email_logs")
+        .insert({
+          order_id: String(orderId),
+          recipient_email: customerEmail,
+          email_type: "shipping_notification",
+          subject: `Your order #${orderNumber} has shipped!`,
+          sent_successfully: false,
+          error_message: error.message,
+        });
+    } catch (logError) {
+      console.error("Failed to log error:", logError);
+    }
+    
     return new Response(
       JSON.stringify({ error: error.message }),
       {
