@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, Check } from 'lucide-react';
+import { Plus, Check, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useCart } from '@/contexts/CartContext';
@@ -9,6 +9,8 @@ const QuickAddProducts = () => {
   const { addItem, items: cartItems } = useCart();
   const { data: products, isLoading } = useProducts();
   const [addedItems, setAddedItems] = useState<Set<string>>(new Set());
+  const [dismissedProducts, setDismissedProducts] = useState<Set<string>>(new Set());
+  const [isAnimatingOut, setIsAnimatingOut] = useState(false);
 
   // Show loading state instead of returning null
   if (isLoading) {
@@ -33,20 +35,22 @@ const QuickAddProducts = () => {
   if (!products) return null;
 
   // Find products to recommend in order of priority
-  // Priority 1: Jewelry bag organizer (if not in cart)
+  // Priority 1: Jewelry bag organizer (if not in cart and not dismissed)
   const jewelryBag = products.find(p => 
     p.id === 'jewelry-bag-organizer' && 
     p.inStock &&
-    !cartItems.some(item => item.id === p.id)
+    !cartItems.some(item => item.id === p.id) &&
+    !dismissedProducts.has(p.id)
   );
 
-  // Priority 2: Starter Set bundle (if jewelry bag is in cart)
+  // Priority 2: Starter Set bundle (if jewelry bag is in cart and not dismissed)
   const starterSet = products.find(p => 
     p.name.toLowerCase().includes('starter') && 
     p.name.toLowerCase().includes('set') &&
     p.inStock && 
     p.visible &&
-    !cartItems.some(item => item.id === p.id)
+    !cartItems.some(item => item.id === p.id) &&
+    !dismissedProducts.has(p.id)
   );
 
   // Priority 3: Together Bundle
@@ -55,7 +59,8 @@ const QuickAddProducts = () => {
     p.name.toLowerCase().includes('bundle') &&
     p.inStock && 
     p.visible &&
-    !cartItems.some(item => item.id === p.id)
+    !cartItems.some(item => item.id === p.id) &&
+    !dismissedProducts.has(p.id)
   );
 
   // Priority 4: Complete Family Set
@@ -64,7 +69,8 @@ const QuickAddProducts = () => {
     p.name.toLowerCase().includes('set') &&
     p.inStock && 
     p.visible &&
-    !cartItems.some(item => item.id === p.id)
+    !cartItems.some(item => item.id === p.id) &&
+    !dismissedProducts.has(p.id)
   );
 
   // Show products in priority order
@@ -74,6 +80,14 @@ const QuickAddProducts = () => {
   if (!recommendedProduct) return null;
 
   const recommendedProducts = [recommendedProduct];
+
+  const handleDismiss = (productId: string) => {
+    setIsAnimatingOut(true);
+    setTimeout(() => {
+      setDismissedProducts(prev => new Set(prev).add(productId));
+      setIsAnimatingOut(false);
+    }, 300);
+  };
 
   const handleAddToCart = (product: typeof recommendedProducts[0]) => {
       const imageUrl = typeof product.images?.[0] === 'string' 
@@ -119,7 +133,21 @@ const QuickAddProducts = () => {
           }
           
           return (
-            <div key={product.id} className="flex gap-3 items-center bg-gradient-to-r from-background to-secondary/20 p-3 rounded-lg border border-border">
+            <div 
+              key={product.id} 
+              className={`flex gap-3 items-center bg-gradient-to-r from-background to-secondary/20 p-3 rounded-lg border border-border relative transition-all duration-300 ${
+                isAnimatingOut ? 'animate-fade-out' : 'animate-fade-in'
+              }`}
+            >
+              {/* Dismiss button */}
+              <button
+                onClick={() => handleDismiss(product.id)}
+                className="absolute top-2 right-2 p-1 rounded-full hover:bg-muted transition-colors z-10"
+                aria-label="Dismiss recommendation"
+              >
+                <X className="w-4 h-4 text-muted-foreground hover:text-foreground" />
+              </button>
+              
               <div className="relative w-20 h-20 rounded-lg overflow-hidden bg-muted flex items-center justify-center flex-shrink-0">
                 {imageUrl ? (
                   <img 
