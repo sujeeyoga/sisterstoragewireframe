@@ -248,6 +248,34 @@ export function BulkFulfillmentDialog({ orderIds, open, onClose, onSuccess, onRe
           })
           .eq('id', String(order.id));
 
+        // Send shipping notification email
+        try {
+          const customerEmail = order.source === 'stripe' 
+            ? order.customer_email 
+            : ((order as any).billing?.email || (shippingAddr as any).email || '');
+          
+          const customerName = order.source === 'stripe'
+            ? order.customer_name
+            : `${((order as any).billing?.first_name || '')} ${((order as any).billing?.last_name || '')}`.trim();
+
+          await supabase.functions.invoke('send-shipping-notification', {
+            body: {
+              orderId: order.id,
+              customerEmail,
+              customerName: customerName || 'Customer',
+              orderNumber: order.order_number || String(order.id),
+              trackingNumber: shipment.tracking_number,
+              carrier: 'Stallion Express',
+              items: order.source === 'stripe' 
+                ? ((order as any).items || [])
+                : ((order as any).line_items || [])
+            }
+          });
+        } catch (emailError) {
+          console.error(`Failed to send shipping notification for order ${order.id}:`, emailError);
+          // Don't fail the entire fulfillment if email fails
+        }
+
         processResults.push({ orderId: order.id, success: true });
       } catch (error: any) {
         console.error(`Failed to process order ${order.id}:`, error);

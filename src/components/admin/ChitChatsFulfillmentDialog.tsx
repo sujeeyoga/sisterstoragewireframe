@@ -191,7 +191,7 @@ export function ChitChatsFulfillmentDialog({ order, open, onClose, onSuccess }: 
 
         if (orderData.data) {
           const data: any = orderData.data;
-          await supabase.functions.invoke('send-shipping-notification', {
+          const emailResponse = await supabase.functions.invoke('send-shipping-notification', {
             body: {
               orderId: order.id,
               customerEmail: data.customer_email || data.billing?.email || '',
@@ -202,9 +202,21 @@ export function ChitChatsFulfillmentDialog({ order, open, onClose, onSuccess }: 
               items: data.items || data.line_items || []
             }
           });
+
+          if (emailResponse.error) {
+            console.error('Failed to send shipping notification:', emailResponse.error);
+            toast.error('Shipment created but email notification failed', {
+              description: 'You can resend the notification from the order details.'
+            });
+          } else {
+            toast.success('Shipping notification sent to customer');
+          }
         }
       } catch (emailError) {
         console.error('Failed to send shipping notification:', emailError);
+        toast.error('Shipment created but email notification failed', {
+          description: 'You can resend the notification from the order details.'
+        });
       }
 
       setStep('confirm');

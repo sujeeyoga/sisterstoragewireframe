@@ -18,6 +18,7 @@ import { OrderDrawer } from './OrderDrawer';
 import { CheckoutFlowTester } from './CheckoutFlowTester';
 import { ShippingZoneTester } from './ShippingZoneTester';
 import { ShippingAudit } from './ShippingAudit';
+import { MissingNotificationsWidget } from './MissingNotificationsWidget';
 
 type DateRangePreset = 'today' | '7d' | '30d' | '90d' | 'custom';
 
@@ -903,6 +904,9 @@ export const AdminDashboard = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Missing Notifications Widget */}
+      <MissingNotificationsWidget />
 
       {/* Checkout Flow Tester */}
       <CheckoutFlowTester />
