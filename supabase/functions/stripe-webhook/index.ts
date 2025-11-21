@@ -262,6 +262,7 @@ serve(async (req) => {
           stripe_payment_intent_id: paymentIntentId,
           customer_email: customerEmail,
           customer_name: emailData.customerName,
+          customer_phone: session.metadata?.customerPhone || null,
           order_number: emailData.orderNumber,
           items: emailData.items,
           subtotal: finalSubtotal,

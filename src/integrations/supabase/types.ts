@@ -86,6 +86,36 @@ export type Database = {
         }
         Relationships: []
       }
+      customer_profiles: {
+        Row: {
+          created_at: string | null
+          email: string | null
+          first_name: string | null
+          id: string
+          last_name: string | null
+          phone: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email?: string | null
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          phone: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string | null
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          phone?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       email_campaigns: {
         Row: {
           campaign_name: string
@@ -328,6 +358,7 @@ export type Database = {
           created_at: string | null
           customer_email: string
           customer_name: string | null
+          customer_phone: string | null
           fulfilled_at: string | null
           fulfillment_status: string
           id: string
@@ -358,6 +389,7 @@ export type Database = {
           created_at?: string | null
           customer_email: string
           customer_name?: string | null
+          customer_phone?: string | null
           fulfilled_at?: string | null
           fulfillment_status?: string
           id?: string
@@ -388,6 +420,7 @@ export type Database = {
           created_at?: string | null
           customer_email?: string
           customer_name?: string | null
+          customer_phone?: string | null
           fulfilled_at?: string | null
           fulfillment_status?: string
           id?: string

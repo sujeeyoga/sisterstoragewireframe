@@ -41,6 +41,9 @@ import PasswordReset from "./pages/PasswordReset";
 import { ProtectedRoutes } from "./components/auth/ProtectedRoutes";
 import { AdminProtectedRoute } from "./components/auth/AdminProtectedRoute";
 import AdminEmails from "./pages/AdminEmails";
+import CustomerLogin from "./pages/CustomerLogin";
+import CustomerDashboard from "./pages/CustomerDashboard";
+import CustomerOrderDetail from "./pages/CustomerOrderDetail";
 
 const queryClient = new QueryClient();
 
@@ -93,6 +96,12 @@ const App = () => {
               <Route path="/our-story" element={<ProtectedRoutes><PageTransition><OurStory /></PageTransition></ProtectedRoutes>} />
               <Route path="/admin/*" element={<AdminProtectedRoute><Admin /></AdminProtectedRoute>} />
               <Route path="/admin/emails" element={<AdminProtectedRoute><AdminEmails /></AdminProtectedRoute>} />
+              
+              {/* Customer portal routes */}
+              <Route path="/customer/login" element={<ProtectedRoutes><PageTransition><CustomerLogin /></PageTransition></ProtectedRoutes>} />
+              <Route path="/customer/dashboard" element={<ProtectedRoutes><PageTransition><CustomerDashboard /></PageTransition></ProtectedRoutes>} />
+              <Route path="/customer/orders/:orderId" element={<ProtectedRoutes><PageTransition><CustomerOrderDetail /></PageTransition></ProtectedRoutes>} />
+              
               <Route path="/contact" element={<ProtectedRoutes><PageTransition><Contact /></PageTransition></ProtectedRoutes>} />
               <Route path="/gift" element={<ProtectedRoutes><PageTransition><Gift /></PageTransition></ProtectedRoutes>} />
               <Route path="/qr-generator" element={<ProtectedRoutes><PageTransition><QRCodeGenerator /></PageTransition></ProtectedRoutes>} />

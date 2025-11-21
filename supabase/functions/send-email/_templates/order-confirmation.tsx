@@ -244,6 +244,15 @@ export const OrderConfirmationEmail = ({
           {shippingAddress.country}
         </Text>
 
+        <Section style={trackOrderSection}>
+          <Text style={trackOrderText}>
+            Want to track your order? Sign in with your phone number to view your order status anytime.
+          </Text>
+          <a href="https://sisterstoragebyhamna.com/customer/login" style={trackOrderButton}>
+            Track Your Order
+          </a>
+        </Section>
+
         <Text style={footer}>
           If you have any questions, please don't hesitate to contact us.
           <br />
@@ -405,4 +414,32 @@ const customMessageText = {
   lineHeight: "22px",
   margin: "0",
   whiteSpace: "pre-wrap" as const,
+};
+
+const trackOrderSection = {
+  backgroundColor: "#fdf2f8",
+  border: "2px solid #ec4899",
+  borderRadius: "8px",
+  padding: "20px",
+  margin: "24px 0",
+  textAlign: "center" as const,
+};
+
+const trackOrderText = {
+  color: "#831843",
+  fontSize: "14px",
+  lineHeight: "20px",
+  margin: "0 0 16px",
+};
+
+const trackOrderButton = {
+  backgroundColor: "#ec4899",
+  borderRadius: "6px",
+  color: "#ffffff",
+  fontSize: "16px",
+  fontWeight: "600",
+  textDecoration: "none",
+  textAlign: "center" as const,
+  display: "inline-block",
+  padding: "12px 24px",
 };

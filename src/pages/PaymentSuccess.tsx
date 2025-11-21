@@ -64,14 +64,14 @@ const PaymentSuccess = () => {
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
             <Button
-              onClick={() => navigate("/")}
-              variant="outline"
+              onClick={() => navigate("/customer/login")}
+              className="bg-brand-pink hover:bg-brand-pink/90"
             >
-              Back to Home
+              Track Your Order
             </Button>
             <Button
               onClick={() => navigate("/shop")}
-              className="bg-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))]/90"
+              variant="outline"
             >
               Continue Shopping
             </Button>
