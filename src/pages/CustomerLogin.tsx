@@ -6,7 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useCustomerAuth } from '@/hooks/useCustomerAuth';
-import { Phone, KeyRound, ArrowRight } from 'lucide-react';
+import { Phone, KeyRound, ArrowRight, AlertCircle } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const CustomerLogin = () => {
   const [phone, setPhone] = useState('');
@@ -43,10 +44,15 @@ const CustomerLogin = () => {
     // Format phone to E.164
     const formattedPhone = phone.startsWith('+') ? phone : `+1${phone.replace(/\D/g, '')}`;
     
-    await signInWithPhone.mutateAsync(formattedPhone);
-    localStorage.setItem('customer_phone', phone);
-    setStep('otp');
-    setCountdown(60);
+    try {
+      await signInWithPhone.mutateAsync(formattedPhone);
+      localStorage.setItem('customer_phone', phone);
+      setStep('otp');
+      setCountdown(60);
+    } catch (error) {
+      // Error is handled by mutation's onError
+      console.error('Failed to send OTP:', error);
+    }
   };
 
   const handleVerifyOTP = async (e: React.FormEvent) => {
@@ -75,6 +81,15 @@ const CustomerLogin = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
+            {signInWithPhone.isError && (
+              <Alert variant="destructive" className="mb-4">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>
+                  {signInWithPhone.error?.message || 'Failed to send verification code. Please ensure phone authentication is configured in Supabase.'}
+                </AlertDescription>
+              </Alert>
+            )}
+            
             {step === 'phone' ? (
               <form onSubmit={handleSendOTP} className="space-y-4">
                 <div className="space-y-2">

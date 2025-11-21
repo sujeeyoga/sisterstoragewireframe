@@ -7,6 +7,9 @@ import { supabase } from '@/integrations/supabase/client';
 import { ArrowLeft, Package, MapPin, Truck, ExternalLink, Loader2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { OrderTimeline } from '@/components/customer/OrderTimeline';
+import { OrderStatusBadge } from '@/components/customer/OrderStatusBadge';
+import { ReorderButton } from '@/components/customer/ReorderButton';
 
 const CustomerOrderDetail = () => {
   const { orderId } = useParams();
@@ -52,16 +55,6 @@ const CustomerOrderDetail = () => {
   const items = Array.isArray(order.items) ? order.items : [];
   const shippingAddress = (order.shipping_address as any) || {};
 
-  const getStatusColor = (status: string) => {
-    const colors: Record<string, string> = {
-      pending: 'bg-yellow-100 text-yellow-800',
-      processing: 'bg-blue-100 text-blue-800',
-      completed: 'bg-green-100 text-green-800',
-      cancelled: 'bg-red-100 text-red-800',
-    };
-    return colors[status] || 'bg-gray-100 text-gray-800';
-  };
-
   return (
     <BaseLayout variant="standard" pageId="customer-order-detail">
       <div className="container max-w-4xl py-12 px-4">
@@ -89,9 +82,11 @@ const CustomerOrderDetail = () => {
                 })}
               </p>
             </div>
-            <Badge className={getStatusColor(order.status)}>
-              {order.status}
-            </Badge>
+            <OrderStatusBadge 
+              status={order.status} 
+              fulfillmentStatus={order.fulfillment_status}
+              size="lg"
+            />
           </div>
         </div>
 
@@ -104,20 +99,12 @@ const CustomerOrderDetail = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center gap-4">
-              <div className={`flex-1 ${order.status !== 'pending' ? 'text-brand-pink' : 'text-muted-foreground'}`}>
-                <div className="w-full h-2 bg-current rounded-full opacity-20" />
-                <p className="text-sm mt-2 font-medium">Order Placed</p>
-              </div>
-              <div className={`flex-1 ${order.fulfillment_status === 'fulfilled' ? 'text-brand-pink' : 'text-muted-foreground'}`}>
-                <div className="w-full h-2 bg-current rounded-full opacity-20" />
-                <p className="text-sm mt-2 font-medium">Shipped</p>
-              </div>
-              <div className={`flex-1 ${order.status === 'completed' ? 'text-brand-pink' : 'text-muted-foreground'}`}>
-                <div className="w-full h-2 bg-current rounded-full opacity-20" />
-                <p className="text-sm mt-2 font-medium">Delivered</p>
-              </div>
-            </div>
+            <OrderTimeline
+              status={order.status}
+              fulfillmentStatus={order.fulfillment_status}
+              fulfilledAt={order.fulfilled_at}
+              createdAt={order.created_at}
+            />
           </CardContent>
         </Card>
 
@@ -219,17 +206,28 @@ const CustomerOrderDetail = () => {
           </CardContent>
         </Card>
 
-        {/* Contact Support */}
-        <Card className="mt-6">
-          <CardContent className="pt-6">
-            <p className="text-sm text-muted-foreground text-center">
-              Need help with your order?{' '}
-              <Button variant="link" className="p-0 h-auto text-brand-pink" asChild>
+        {/* Contact Support & Reorder */}
+        <div className="grid gap-4 md:grid-cols-2 mt-6">
+          <Card>
+            <CardContent className="pt-6">
+              <p className="text-sm text-muted-foreground text-center mb-3">
+                Need help with your order?
+              </p>
+              <Button variant="outline" className="w-full" asChild>
                 <a href="mailto:hello@sisterstoragebyhamna.com">Contact Support</a>
               </Button>
-            </p>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="pt-6">
+              <p className="text-sm text-muted-foreground text-center mb-3">
+                Want to order again?
+              </p>
+              <ReorderButton items={items} orderNumber={order.order_number} />
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </BaseLayout>
   );
