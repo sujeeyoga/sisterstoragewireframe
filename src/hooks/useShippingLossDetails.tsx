@@ -16,6 +16,7 @@ interface ShippingLossOrder {
   difference: number;
   createdAt: string;
   shippingAddress: any;
+  shippingMetadata: any;
   hasStallionCost: boolean;
   wasFreeShipping: boolean;
   discountApplied: number;
@@ -130,6 +131,7 @@ export const useShippingLossDetails = (params: UseShippingLossDetailsParams) => 
             difference,
             createdAt: order.created_at!,
             shippingAddress: shippingAddr,
+            shippingMetadata: order.shipping_metadata || null,
             hasStallionCost,
             wasFreeShipping,
             discountApplied,
@@ -197,6 +199,7 @@ export const useShippingLossDetails = (params: UseShippingLossDetailsParams) => 
             difference,
             createdAt: order.created_at!,
             shippingAddress: shippingAddr,
+            shippingMetadata: order.shipping_metadata || null,
             hasStallionCost,
             wasFreeShipping,
             discountApplied,

@@ -22,7 +22,8 @@ serve(async (req) => {
       customerPhone,
       shippingAddress, 
       shippingCost, 
-      shippingMethod, 
+      shippingMethod,
+      shippingMetadata,
       taxAmount, 
       taxRate, 
       province,
@@ -300,6 +301,7 @@ serve(async (req) => {
       metadata: {
         shippingAddress: shippingAddress ? JSON.stringify(shippingAddress) : '',
         shippingMethod: shippingMethod || '',
+        shippingMetadata: shippingMetadata ? JSON.stringify(shippingMetadata) : '',
         customerPhone: customerPhone || '',
         giftWrapping: giftWrapping?.enabled ? 'Yes' : 'No',
         giftMessage: giftWrapping?.message || '',

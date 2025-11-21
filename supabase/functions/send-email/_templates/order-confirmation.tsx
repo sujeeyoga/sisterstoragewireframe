@@ -56,6 +56,17 @@ export const OrderConfirmationEmail = ({
   const isInternational = shippingAddress.country !== 'CA' && shippingAddress.country !== 'Canada';
   const baseShippingRate = tariffFees ? shipping - tariffFees : shipping;
   const showShippingBreakdown = tariffFees && tariffFees > 0;
+  const isFreeShipping = shipping === 0;
+
+  // Determine shipping reason label
+  let shippingLabel = '';
+  if (isFreeShipping) {
+    shippingLabel = '🎉 Free Shipping Applied!';
+  } else if (showShippingBreakdown && isInternational) {
+    shippingLabel = 'International Shipping';
+  } else {
+    shippingLabel = 'Shipping';
+  }
 
   return (
   <Html>
@@ -126,6 +137,14 @@ export const OrderConfirmationEmail = ({
             <>
               <Row>
                 <Column>
+                  <Text style={{...totalLabel, color: '#16a34a', fontWeight: '600'}}>{shippingLabel}</Text>
+                </Column>
+                <Column style={alignRight}>
+                  <Text style={totalValue}></Text>
+                </Column>
+              </Row>
+              <Row>
+                <Column>
                   <Text style={totalLabel}>Base Shipping Rate:</Text>
                 </Column>
                 <Column style={alignRight}>
@@ -149,10 +168,19 @@ export const OrderConfirmationEmail = ({
                 </Column>
               </Row>
             </>
+          ) : isFreeShipping ? (
+            <Row>
+              <Column>
+                <Text style={{...totalLabel, color: '#16a34a', fontWeight: '600'}}>{shippingLabel}</Text>
+              </Column>
+              <Column style={alignRight}>
+                <Text style={{...totalValue, color: '#16a34a', fontWeight: '600'}}>$0.00</Text>
+              </Column>
+            </Row>
           ) : (
             <Row>
               <Column>
-                <Text style={totalLabel}>Shipping:</Text>
+                <Text style={totalLabel}>{shippingLabel}:</Text>
               </Column>
               <Column style={alignRight}>
                 <Text style={totalValue}>${shipping.toFixed(2)}</Text>
