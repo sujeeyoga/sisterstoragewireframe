@@ -9,7 +9,6 @@ import { featuredProduct } from "@/data/products";
 import { FAQSchema } from "@/components/seo/FAQSchema";
 import { shopFAQs } from "@/data/shop-faqs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { DiscountBanner } from "@/components/shop/DiscountBanner";
 
 const Shop = () => {
   const { sortedProducts, isLoading } = useShopFilters();
@@ -22,7 +21,6 @@ const Shop = () => {
       <FAQSchema faqs={shopFAQs} />
       
       <div className="bg-background min-h-screen">
-        <DiscountBanner />
         <HeroSection product={featuredProduct} />
         <ProductsSection 
           products={sortedProducts} 

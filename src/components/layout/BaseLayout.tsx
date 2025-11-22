@@ -3,6 +3,7 @@ import { useLocation, Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SaleBanner from "@/components/SaleBanner";
+import { DiscountBanner } from "@/components/shop/DiscountBanner";
 import useScrollDirection from "@/hooks/use-scroll-direction";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ArrowLeft } from "lucide-react";
@@ -156,8 +157,9 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
   // Standard layout with navigation
   return (
     <div className={`min-h-screen ${getBackgroundClasses()} ${className}`} style={{ position: 'relative' }}>
-      {/* Sale Banner - Fixed at top */}
+      {/* Discount Banner & Sale Banner - Fixed at top */}
       <div className="fixed top-0 left-0 right-0 z-50">
+        <DiscountBanner />
         <SaleBanner />
       </div>
       
