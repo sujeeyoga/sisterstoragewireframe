@@ -26,6 +26,7 @@ const CartDrawer = () => {
   const [originalShippingCost, setOriginalShippingCost] = useState<number | null>(null);
   const [shippingLoading, setShippingLoading] = useState(false);
   const [isOrderSummaryOpen, setIsOrderSummaryOpen] = useState(true);
+  const [isSubtotalOpen, setIsSubtotalOpen] = useState(true);
   
   // Track active cart in real-time
   useActiveCartTracking(items, subtotal);
@@ -330,23 +331,36 @@ const CartDrawer = () => {
                     </div>
                     
                     <CollapsibleContent>
-                      {/* Itemized Breakdown */}
-                      <div className="space-y-1.5 mb-3">
-                    <div className="flex justify-between text-sm text-gray-600">
-                      <span>Subtotal ({totalItems} items)</span>
-                      <span className="font-medium text-gray-900">${subtotal.toFixed(2)}</span>
-                    </div>
-                    
-                    {discount?.enabled && discountAmount > 0 && (
-                      <div className="flex justify-between text-sm text-green-600">
-                        <span className="flex items-center gap-1">
-                          <Tag className="h-3 w-3" />
-                          {discount.name} ({discount.percentage}% off)
-                        </span>
-                        <span className="font-medium">-${discountAmount.toFixed(2)}</span>
-                      </div>
-                    )}
-                  </div>
+                      {/* Itemized Breakdown - Collapsible */}
+                      <Collapsible open={isSubtotalOpen} onOpenChange={setIsSubtotalOpen}>
+                        <div className="flex items-center justify-between mb-2">
+                          <h4 className="text-sm font-medium text-gray-700">Subtotal Breakdown</h4>
+                          <CollapsibleTrigger asChild>
+                            <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                              <ChevronDown className={`h-3 w-3 transition-transform duration-200 ${isSubtotalOpen ? 'rotate-180' : ''}`} />
+                            </Button>
+                          </CollapsibleTrigger>
+                        </div>
+                        
+                        <CollapsibleContent>
+                          <div className="space-y-1.5 mb-3">
+                            <div className="flex justify-between text-sm text-gray-600">
+                              <span>Subtotal ({totalItems} items)</span>
+                              <span className="font-medium text-gray-900">${subtotal.toFixed(2)}</span>
+                            </div>
+                            
+                            {discount?.enabled && discountAmount > 0 && (
+                              <div className="flex justify-between text-sm text-green-600">
+                                <span className="flex items-center gap-1">
+                                  <Tag className="h-3 w-3" />
+                                  {discount.name} ({discount.percentage}% off)
+                                </span>
+                                <span className="font-medium">-${discountAmount.toFixed(2)}</span>
+                              </div>
+                            )}
+                          </div>
+                        </CollapsibleContent>
+                      </Collapsible>
 
                   {/* US Shipping Notice - Only for US customers */}
                   {country === 'US' && (
