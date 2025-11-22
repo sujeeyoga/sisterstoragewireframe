@@ -26,10 +26,16 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const taxonomy = productTaxonomyMap[product.id] ?? undefined;
   const attrs = taxonomy?.attributes;
   
-  const discountedPrice = (discount?.enabled && product.slug !== 'multipurpose-box' && product.id !== 'multipurpose-box') 
-    ? applyDiscount(product.price) 
-    : product.price;
-  const hasDiscount = discount?.enabled && discount.percentage > 0 && product.slug !== 'multipurpose-box' && product.id !== 'multipurpose-box';
+  // Prioritize product's own sale price over store-wide discount
+  const hasProductSalePrice = product.salePrice && product.originalPrice && product.salePrice < product.originalPrice;
+  const shouldApplyStoreDiscount = discount?.enabled && 
+    !hasProductSalePrice && 
+    product.slug !== 'multipurpose-box' && 
+    product.id !== 'multipurpose-box';
+  
+  const discountedPrice = shouldApplyStoreDiscount ? applyDiscount(product.price) : product.price;
+  const displayOriginalPrice = hasProductSalePrice ? product.originalPrice : (shouldApplyStoreDiscount ? product.price : undefined);
+  const hasDiscount = (hasProductSalePrice || shouldApplyStoreDiscount) && discountedPrice < (displayOriginalPrice || product.price);
   
   if (!shouldShowProduct(product.stockQuantity)) return null;
   
@@ -104,10 +110,13 @@ const ProductCard = ({ product }: ProductCardProps) => {
           
           {/* Product badges */}
           <div className="absolute top-3 left-3 flex flex-col gap-2">
-            {hasDiscount && product.slug !== 'multipurpose-box' && product.id !== 'multipurpose-box' && (
+            {hasDiscount && displayOriginalPrice && (
               <Badge className="bg-green-600 text-white">
                 <Tag className="h-3 w-3 mr-1" />
-                {discount.percentage}% OFF
+                {hasProductSalePrice 
+                  ? `SAVE $${(displayOriginalPrice - discountedPrice).toFixed(0)}`
+                  : `${discount.percentage}% OFF`
+                }
               </Badge>
             )}
             {showLowStock && (
@@ -134,15 +143,10 @@ const ProductCard = ({ product }: ProductCardProps) => {
           <div className="mb-2 flex justify-between items-start min-h-[5rem]">
             <h3 className="font-bold text-3xl lg:text-4xl line-clamp-2 flex-1 uppercase">{product.name}</h3>
             <div className="text-right flex-shrink-0 ml-2">
-              {hasDiscount ? (
+              {hasDiscount && displayOriginalPrice ? (
                 <div className="flex flex-col items-end">
-                  <span className="text-sm text-muted-foreground line-through">${product.price.toFixed(2)}</span>
+                  <span className="text-sm text-muted-foreground line-through">${displayOriginalPrice.toFixed(2)}</span>
                   <span className="font-bold text-2xl text-green-600">${discountedPrice.toFixed(2)}</span>
-                </div>
-              ) : (product.originalPrice && product.originalPrice > product.price && (product.originalPrice - product.price) > 0) ? (
-                <div className="flex flex-col items-end">
-                  <span className="text-sm text-muted-foreground line-through">${product.originalPrice.toFixed(2)}</span>
-                  <span className="font-bold text-2xl text-[hsl(var(--primary))]">${product.price.toFixed(2)}</span>
                 </div>
               ) : (
                 <span className="font-bold text-2xl">${product.price.toFixed(2)}</span>
