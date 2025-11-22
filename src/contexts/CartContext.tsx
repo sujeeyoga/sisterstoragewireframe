@@ -1,6 +1,9 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
+// Increment this version to clear all existing carts (useful after product image updates)
+const CART_VERSION = 2;
+
 export type CartItem = {
   id: string;
   name: string;
@@ -35,6 +38,17 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   
   // Load cart from localStorage on mount
   useEffect(() => {
+    // Check cart version
+    const savedVersion = localStorage.getItem('cart_version');
+    const currentVersion = CART_VERSION.toString();
+    
+    if (savedVersion !== currentVersion) {
+      // Clear old cart data when version changes
+      localStorage.removeItem('cart');
+      localStorage.setItem('cart_version', currentVersion);
+      return;
+    }
+    
     const savedCart = localStorage.getItem('cart');
     if (savedCart) {
       try {
