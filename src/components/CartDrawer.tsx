@@ -320,6 +320,19 @@ const CartDrawer = () => {
                       </div>
                     </div>
                     
+                    {/* Checkout button when collapsed */}
+                    {!isOrderSummaryOpen && (
+                      <Link to="/checkout" className="block mb-3">
+                        <Button 
+                          className="w-full bg-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))]/90 text-white"
+                          size="lg"
+                          onClick={() => setIsOpen(false)}
+                        >
+                          Proceed to Checkout
+                        </Button>
+                      </Link>
+                    )}
+                    
                     <CollapsibleContent>
                       {/* Itemized Breakdown */}
                       <div className="space-y-1.5 mb-3">
