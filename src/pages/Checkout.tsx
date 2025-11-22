@@ -1068,16 +1068,16 @@ const Checkout = () => {
                       <CardTitle>Order Summary</CardTitle>
                       <span className="text-sm text-muted-foreground">({items.length} {items.length === 1 ? 'item' : 'items'})</span>
                     </div>
-                    {isMobile && (
-                      <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3">
+                      {!isOrderSummaryOpen && (
                         <span className="text-lg font-bold text-primary">${total.toFixed(2)}</span>
-                        <CollapsibleTrigger asChild>
-                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                            <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isOrderSummaryOpen ? 'rotate-180' : ''}`} />
-                          </Button>
-                        </CollapsibleTrigger>
-                      </div>
-                    )}
+                      )}
+                      <CollapsibleTrigger asChild>
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                          <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isOrderSummaryOpen ? 'rotate-180' : ''}`} />
+                        </Button>
+                      </CollapsibleTrigger>
+                    </div>
                   </div>
                 </CardHeader>
                 <CollapsibleContent>
