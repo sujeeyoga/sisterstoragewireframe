@@ -12,6 +12,13 @@ export type CartItem = {
   quantity: number;
   description?: string;
   sleeve?: string;
+  attributes?: {
+    rodCount?: string | string[];
+    size?: string | string[];
+    useCase?: string[];
+    bundleSize?: string;
+  };
+  category?: string;
 };
 
 type CartContextType = {
