@@ -316,11 +316,9 @@ const CartDrawer = () => {
                       <div className="flex items-center gap-2 flex-shrink-0">
                         {!isOrderSummaryOpen && (
                           <Link to="/checkout" onClick={() => setIsOpen(false)}>
-                            <Button 
-                              className="bg-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))]/90 text-white h-8 px-3 text-sm"
-                            >
+                            <span className="text-sm font-semibold text-[hsl(var(--brand-pink))] hover:underline cursor-pointer">
                               Checkout
-                            </Button>
+                            </span>
                           </Link>
                         )}
                         <CollapsibleTrigger asChild>
