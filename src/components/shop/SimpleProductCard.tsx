@@ -51,10 +51,16 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
     } : null;
   }, [product]);
   
-  const discountedPrice = (discount?.enabled && product.slug !== 'multipurpose-box' && product.id !== 'multipurpose-box') 
-    ? applyDiscount(product.price) 
-    : product.price;
-  const hasDiscount = discount?.enabled && discount.percentage > 0 && product.slug !== 'multipurpose-box' && product.id !== 'multipurpose-box';
+  // Prioritize product's own sale price over store-wide discount
+  const hasProductSalePrice = product.salePrice && product.originalPrice && product.salePrice < product.originalPrice;
+  const shouldApplyStoreDiscount = discount?.enabled && 
+    !hasProductSalePrice && 
+    product.slug !== 'multipurpose-box' && 
+    product.id !== 'multipurpose-box';
+  
+  const discountedPrice = shouldApplyStoreDiscount ? applyDiscount(product.price) : product.price;
+  const displayOriginalPrice = hasProductSalePrice ? product.originalPrice : (shouldApplyStoreDiscount ? product.price : undefined);
+  const hasDiscount = (hasProductSalePrice || shouldApplyStoreDiscount) && discountedPrice < (displayOriginalPrice || product.price);
 
   return (
     <Card className={cn(
@@ -65,10 +71,13 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
       <Link to={`/shop/${product.id}`} className="block relative">
         {/* Badges */}
         <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
-          {hasDiscount && product.category !== 'open-box' && product.slug !== 'multipurpose-box' && product.id !== 'multipurpose-box' && (
+          {hasDiscount && displayOriginalPrice && product.category !== 'open-box' && (
             <Badge className="bg-green-600 text-white border-none px-2.5 py-1 text-xs font-bold uppercase tracking-wider shadow-lg">
               <Tag className="w-3 h-3 mr-1 inline-block" />
-              {discount.percentage}% OFF
+              {hasProductSalePrice 
+                ? `SAVE $${(displayOriginalPrice - discountedPrice).toFixed(0)}`
+                : `${discount.percentage}% OFF`
+              }
             </Badge>
           )}
           {product.category === 'open-box' && (
@@ -212,27 +221,18 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
             ) : (
               <>
                 <div className="flex items-baseline gap-2">
-                  {hasDiscount ? (
+                  {hasDiscount && displayOriginalPrice ? (
                     <>
                       <span className="text-3xl font-bold text-green-600">${discountedPrice.toFixed(2)}</span>
-                      <span className="text-lg text-gray-400 line-through">${product.price.toFixed(2)}</span>
+                      <span className="text-lg text-gray-400 line-through">${displayOriginalPrice.toFixed(2)}</span>
                     </>
                   ) : (
-                  <>
                     <span className="text-3xl font-bold text-gray-900">${product.price.toFixed(2)}</span>
-                    {product.originalPrice && product.originalPrice > product.price && (product.originalPrice - product.price) > 0 && (
-                      <span className="text-lg text-gray-400 line-through">${product.originalPrice.toFixed(2)}</span>
-                    )}
-                  </>
                   )}
                 </div>
-                {hasDiscount ? (
+                {hasDiscount && displayOriginalPrice ? (
                   <Badge className="bg-green-600 text-white">
-                    SAVE ${(product.price - discountedPrice).toFixed(2)}
-                  </Badge>
-                ) : (product.originalPrice && product.originalPrice > product.price && (product.originalPrice - product.price) > 0) ? (
-                  <Badge variant="destructive" className="bg-red-500 text-white">
-                    SAVE ${(product.originalPrice - product.price).toFixed(2)}
+                    SAVE ${(displayOriginalPrice - discountedPrice).toFixed(2)}
                   </Badge>
                 ) : null}
               </>
