@@ -213,7 +213,7 @@ const CartDrawer = () => {
                       <div key={`${item.id}-${item.sleeve || 'none'}`} className="flex gap-4 pb-4 border-b border-gray-100">
                         {/* Product Image */}
                         <div className="flex-shrink-0">
-                          {item.image.startsWith('http') ? (
+                          {item.image.startsWith('http') || item.image.startsWith('/') ? (
                             <img 
                               src={item.image} 
                               alt={item.name}
