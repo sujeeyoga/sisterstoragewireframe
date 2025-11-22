@@ -195,9 +195,21 @@ const QuickAddProducts = () => {
                 <p className="text-sm font-medium text-foreground line-clamp-2 mb-1">
                   {product.name}
                 </p>
-                <p className="text-sm font-semibold text-[hsl(var(--brand-pink))]">
-                  ${product.price?.toFixed(2)}
-                </p>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <p className="text-sm font-semibold text-[hsl(var(--brand-pink))]">
+                    ${product.price?.toFixed(2)}
+                  </p>
+                  {product.originalPrice && product.originalPrice > (product.price || 0) && (
+                    <>
+                      <p className="text-xs text-muted-foreground line-through">
+                        ${product.originalPrice.toFixed(2)}
+                      </p>
+                      <span className="text-xs font-semibold text-[hsl(var(--brand-pink))] bg-[hsl(var(--brand-pink))]/10 px-1.5 py-0.5 rounded">
+                        {Math.round(((product.originalPrice - (product.price || 0)) / product.originalPrice) * 100)}% OFF
+                      </span>
+                    </>
+                  )}
+                </div>
               </div>
               <Button
                 size="sm"
