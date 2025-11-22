@@ -209,22 +209,29 @@ const CartDrawer = () => {
                 <div className="space-y-4">
                   {items.map((item) => {
                     const itemTotal = item.price * item.quantity;
+                    // Calculate original price if discount is active
+                    const hasDiscount = discount?.enabled;
+                    const originalPrice = hasDiscount && discount.percentage 
+                      ? item.price / (1 - discount.percentage / 100)
+                      : item.price;
                     
                     return (
                       <div key={`${item.id}-${item.sleeve || 'none'}`} className="flex gap-4 pb-4 border-b border-gray-100">
                         {/* Product Image */}
                         <div className="flex-shrink-0">
-                          {item.image.startsWith('http') || item.image.startsWith('/') ? (
+                          {item.image ? (
                             <img 
                               src={item.image} 
                               alt={item.name}
                               className="w-20 h-20 object-cover rounded-lg"
+                              onError={(e) => {
+                                // Fallback to placeholder on error
+                                e.currentTarget.style.display = 'none';
+                                e.currentTarget.parentElement!.innerHTML = `<div class="w-20 h-20 rounded-lg bg-[hsl(var(--brand-pink))] flex items-center justify-center"><span class="text-white font-bold text-sm">SS</span></div>`;
+                              }}
                             />
                           ) : (
-                            <div 
-                              className="w-20 h-20 rounded-lg flex items-center justify-center"
-                              style={{ backgroundColor: item.image.startsWith('#') ? item.image : '#e90064' }}
-                            >
+                            <div className="w-20 h-20 rounded-lg bg-[hsl(var(--brand-pink))] flex items-center justify-center">
                               <span className="text-white font-bold text-sm">SS</span>
                             </div>
                           )}
@@ -248,9 +255,23 @@ const CartDrawer = () => {
                             </Link>
                           )}
                           
-                          <p className="text-[hsl(var(--brand-pink))] font-semibold text-sm mb-2">
-                            ${item.price.toFixed(2)} each
-                          </p>
+                          {/* Price Display with Discount */}
+                          <div className="mb-2">
+                            {hasDiscount ? (
+                              <div className="flex items-center gap-2">
+                                <span className="text-xs text-gray-500 line-through">
+                                  ${originalPrice.toFixed(2)}
+                                </span>
+                                <span className="text-[hsl(var(--brand-pink))] font-semibold text-sm">
+                                  ${item.price.toFixed(2)} each
+                                </span>
+                              </div>
+                            ) : (
+                              <p className="text-[hsl(var(--brand-pink))] font-semibold text-sm">
+                                ${item.price.toFixed(2)} each
+                              </p>
+                            )}
+                          </div>
                           
                           {/* Quantity Controls */}
                           <div className="flex items-center gap-2">

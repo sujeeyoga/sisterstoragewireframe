@@ -1097,10 +1097,17 @@ const Checkout = () => {
                     
                     {/* Cart Items */}
                     <div className="space-y-4 max-h-80 overflow-y-auto">
-                      {items.map((item) => (
+                      {items.map((item) => {
+                        // Calculate original price if discount is active
+                        const hasDiscount = discount?.enabled;
+                        const originalPrice = hasDiscount && discount.percentage 
+                          ? item.price / (1 - discount.percentage / 100)
+                          : item.price;
+                        
+                        return (
                         <div key={item.id} className="space-y-2 pb-4 border-b last:border-0">
                           <div className="flex gap-3">
-                            {item.image && (item.image.startsWith('http') || item.image.startsWith('/')) ? (
+                            {item.image ? (
                               <img 
                                 src={item.image} 
                                 alt={item.name}
@@ -1124,9 +1131,22 @@ const Checkout = () => {
                             <div className="flex-1 min-w-0">
                               <p className="text-sm font-medium line-clamp-2 mb-1">{item.name}</p>
                               <div className="space-y-1">
-                                <p className="text-xs text-gray-600">
-                                  Unit Price: <span className="font-medium">${item.price.toFixed(2)}</span>
-                                </p>
+                                {/* Price Display with Discount */}
+                                {hasDiscount ? (
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-xs text-gray-600">Unit Price:</span>
+                                    <span className="text-xs text-gray-500 line-through">
+                                      ${originalPrice.toFixed(2)}
+                                    </span>
+                                    <span className="text-xs font-medium text-[hsl(var(--brand-pink))]">
+                                      ${item.price.toFixed(2)}
+                                    </span>
+                                  </div>
+                                ) : (
+                                  <p className="text-xs text-gray-600">
+                                    Unit Price: <span className="font-medium">${item.price.toFixed(2)}</span>
+                                  </p>
+                                )}
                                 <div className="flex items-center gap-2">
                                   <span className="text-xs text-gray-600">Qty:</span>
                                   <div className="flex items-center border border-gray-300 rounded">
@@ -1165,8 +1185,9 @@ const Checkout = () => {
                               ${(item.price * item.quantity).toFixed(2)}
                             </span>
                           </div>
-                         </div>
-                      ))}
+                          </div>
+                        );
+                      })}
 
                       {/* Free Gift Item */}
                       {giftQualified && freeGiftProduct && (
