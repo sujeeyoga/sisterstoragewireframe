@@ -188,6 +188,7 @@ const Checkout = () => {
   const [matchedZone, setMatchedZone] = useState<{ id: string; name: string } | null>(null);
   const [shippingMetadata, setShippingMetadata] = useState<any>(null);
   const [isOrderSummaryOpen, setIsOrderSummaryOpen] = useState(!isMobile);
+  const [isSubtotalOpen, setIsSubtotalOpen] = useState(true);
   
   // Form stage management
   const [formStage, setFormStage] = useState<'email-address' | 'complete'>('complete');
@@ -1195,72 +1196,85 @@ const Checkout = () => {
 
                     <Separator />
 
-                    {/* Price Breakdown */}
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Subtotal</span>
-                        <span className="font-medium">${subtotal.toFixed(2)}</span>
+                    {/* Price Breakdown - Collapsible */}
+                    <Collapsible open={isSubtotalOpen} onOpenChange={setIsSubtotalOpen}>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-sm font-medium text-gray-700">Price Breakdown</h4>
+                        <CollapsibleTrigger asChild>
+                          <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                            <ChevronDown className={`h-3 w-3 transition-transform duration-200 ${isSubtotalOpen ? 'rotate-180' : ''}`} />
+                          </Button>
+                        </CollapsibleTrigger>
                       </div>
                       
-                      {discount?.enabled && discountAmount > 0 && (
-                        <div className="flex justify-between text-green-600">
-                          <span className="flex items-center gap-1">
-                            <Tag className="h-3 w-3" />
-                            {discount.name} ({discount.percentage}% off)
-                          </span>
-                          <span className="font-medium">-${discountAmount.toFixed(2)}</span>
-                        </div>
-                      )}
-                      
-                      {giftWrappingFee > 0 && (
-                        <div className="flex justify-between">
-                          <span className="text-gray-600 flex items-center gap-1">
-                            <Gift className="h-3 w-3" />
-                            Gift Wrapping
-                          </span>
-                          <span className="font-medium">${giftWrappingFee.toFixed(2)}</span>
-                        </div>
-                      )}
-                      
-                      
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-600 font-medium">Shipping</span>
-                        <div className="text-right">
-                          {shippingRates.length === 0 ? (
-                            <span className="text-sm text-gray-400 italic">Input address to Calculate</span>
-                          ) : selectedShippingRate ? (
-                            <>
-                              {shippingCost === 0 && originalShippingCost > 0 ? (
-                                <div className="flex flex-col items-end gap-1">
-                                  <div className="flex items-center gap-2">
-                                    <span className="text-sm line-through text-muted-foreground">${originalShippingCost.toFixed(2)}</span>
-                                    <span className="text-sm font-bold text-green-600 dark:text-green-400">FREE! 🎉</span>
-                                  </div>
-                                  <span className="text-xs text-gray-500">{selectedRate?.method_name}</span>
-                                </div>
-                              ) : shippingCost === 0 ? (
-                                <div className="flex flex-col items-end">
-                                  <span className="text-green-600 font-bold text-base">FREE</span>
-                                  <span className="text-xs text-gray-500">{selectedRate?.method_name}</span>
-                                </div>
-                              ) : (
-                                <div className="flex flex-col items-end">
-                                  <span className="font-semibold text-base">${shippingCost.toFixed(2)}</span>
-                                  <span className="text-xs text-gray-500">{selectedRate?.method_name}</span>
-                                </div>
-                              )}
-                            </>
-                          ) : (
-                            <span className="text-sm text-yellow-600 italic">Select a method</span>
+                      <CollapsibleContent>
+                        <div className="space-y-2 text-sm">
+                          <div className="flex justify-between">
+                            <span className="text-gray-600">Subtotal</span>
+                            <span className="font-medium">${subtotal.toFixed(2)}</span>
+                          </div>
+                          
+                          {discount?.enabled && discountAmount > 0 && (
+                            <div className="flex justify-between text-green-600">
+                              <span className="flex items-center gap-1">
+                                <Tag className="h-3 w-3" />
+                                {discount.name} ({discount.percentage}% off)
+                              </span>
+                              <span className="font-medium">-${discountAmount.toFixed(2)}</span>
+                            </div>
                           )}
+                          
+                          {giftWrappingFee > 0 && (
+                            <div className="flex justify-between">
+                              <span className="text-gray-600 flex items-center gap-1">
+                                <Gift className="h-3 w-3" />
+                                Gift Wrapping
+                              </span>
+                              <span className="font-medium">${giftWrappingFee.toFixed(2)}</span>
+                            </div>
+                          )}
+                          
+                          
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-600 font-medium">Shipping</span>
+                            <div className="text-right">
+                              {shippingRates.length === 0 ? (
+                                <span className="text-sm text-gray-400 italic">Input address to Calculate</span>
+                              ) : selectedShippingRate ? (
+                                <>
+                                  {shippingCost === 0 && originalShippingCost > 0 ? (
+                                    <div className="flex flex-col items-end gap-1">
+                                      <div className="flex items-center gap-2">
+                                        <span className="text-sm line-through text-muted-foreground">${originalShippingCost.toFixed(2)}</span>
+                                        <span className="text-sm font-bold text-green-600 dark:text-green-400">FREE! 🎉</span>
+                                      </div>
+                                      <span className="text-xs text-gray-500">{selectedRate?.method_name}</span>
+                                    </div>
+                                  ) : shippingCost === 0 ? (
+                                    <div className="flex flex-col items-end">
+                                      <span className="text-green-600 font-bold text-base">FREE</span>
+                                      <span className="text-xs text-gray-500">{selectedRate?.method_name}</span>
+                                    </div>
+                                  ) : (
+                                    <div className="flex flex-col items-end">
+                                      <span className="font-semibold text-base">${shippingCost.toFixed(2)}</span>
+                                      <span className="text-xs text-gray-500">{selectedRate?.method_name}</span>
+                                    </div>
+                                  )}
+                                </>
+                              ) : (
+                                <span className="text-sm text-yellow-600 italic">Select a method</span>
+                              )}
+                            </div>
+                          </div>
+                          
+                          <div className="flex justify-between">
+                            <span className="text-gray-600">Tax ({(taxRate * 100).toFixed(2)}%)</span>
+                            <span className="font-medium">${taxAmount.toFixed(2)}</span>
+                          </div>
                         </div>
-                      </div>
-                      
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Tax ({(taxRate * 100).toFixed(2)}%)</span>
-                        <span className="font-medium">${taxAmount.toFixed(2)}</span>
-                      </div>
-                    </div>
+                      </CollapsibleContent>
+                    </Collapsible>
 
                     <Separator />
 
