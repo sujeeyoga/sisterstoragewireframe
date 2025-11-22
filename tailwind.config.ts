@@ -302,6 +302,14 @@ export default {
 					'100%': {
 						backgroundPosition: '1000px 0'
 					}
+				},
+				'banner-scroll': {
+					'0%': {
+						transform: 'translateX(0)'
+					},
+					'100%': {
+						transform: 'translateX(-33.333%)'
+					}
 				}
 			},
 			animation: {
@@ -334,6 +342,8 @@ export default {
 				'ss-marquee-left': 'ss-marquee-left var(--ss-marquee-duration, 20s) linear infinite',
 				// Shimmer effect for loading skeletons
 				'shimmer': 'shimmer 2s ease-in-out infinite',
+				// Banner scroll animation
+				'banner-scroll': 'banner-scroll 20s linear infinite',
 			},
 			fontFamily: {
 				sans: ['Poppins', 'sans-serif'],
