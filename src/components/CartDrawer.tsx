@@ -304,13 +304,24 @@ const CartDrawer = () => {
               <div className="flex-shrink-0 md:w-[40%] border-t md:border-t-0 md:border-l border-gray-200 p-3 bg-gray-50 md:overflow-y-auto">
                 <div className="md:sticky md:top-4">
                   <Collapsible open={isOrderSummaryOpen} onOpenChange={setIsOrderSummaryOpen}>
-                    <div className="flex items-center justify-between mb-3">
-                      <h3 className="text-base font-semibold">Order Summary</h3>
-                      <div className="flex items-center gap-2">
+                    <div className="flex items-center justify-between mb-3 gap-2">
+                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                        <h3 className="text-base font-semibold">Order Summary</h3>
                         {!isOrderSummaryOpen && (
                           <span className="text-sm font-bold text-[hsl(var(--brand-pink))]">
                             ${estimatedShipping !== null ? estimatedTotal.toFixed(2) : total.toFixed(2)}
                           </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        {!isOrderSummaryOpen && (
+                          <Link to="/checkout" onClick={() => setIsOpen(false)}>
+                            <Button 
+                              className="bg-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))]/90 text-white h-8 px-3 text-sm"
+                            >
+                              Checkout
+                            </Button>
+                          </Link>
                         )}
                         <CollapsibleTrigger asChild>
                           <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
@@ -319,19 +330,6 @@ const CartDrawer = () => {
                         </CollapsibleTrigger>
                       </div>
                     </div>
-                    
-                    {/* Checkout button when collapsed */}
-                    {!isOrderSummaryOpen && (
-                      <Link to="/checkout" className="block mb-3">
-                        <Button 
-                          className="w-full bg-[hsl(var(--brand-pink))] hover:bg-[hsl(var(--brand-pink))]/90 text-white"
-                          size="lg"
-                          onClick={() => setIsOpen(false)}
-                        >
-                          Proceed to Checkout
-                        </Button>
-                      </Link>
-                    )}
                     
                     <CollapsibleContent>
                       {/* Itemized Breakdown */}
