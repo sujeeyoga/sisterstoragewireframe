@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { X, Trash2, Plus, Minus, ShoppingBag, Tag, Truck, MapPin, ChevronDown, Info } from 'lucide-react';
+import { X, Trash2, Plus, Minus, ShoppingBag, Tag, Truck, MapPin, ChevronDown, Info, Package } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -260,6 +260,29 @@ const CartDrawer = () => {
                                   )}
                                 </div>
                               </div>
+                              
+                              {/* Product Attributes */}
+                              {(item.attributes?.rodCount || item.attributes?.size || item.category) && (
+                                <div className="flex flex-wrap gap-2 pt-2">
+                                  {item.attributes?.rodCount && (
+                                    <div className="inline-flex items-center gap-1 px-2 py-1 bg-[hsl(var(--brand-pink))]/10 text-[hsl(var(--brand-pink))] rounded-md text-xs font-medium">
+                                      <Package className="w-3 h-3" />
+                                      {Array.isArray(item.attributes.rodCount) ? item.attributes.rodCount[0] : item.attributes.rodCount} Rod{(Array.isArray(item.attributes.rodCount) ? item.attributes.rodCount[0] : item.attributes.rodCount) !== '1' ? 's' : ''}
+                                    </div>
+                                  )}
+                                  {item.attributes?.size && (
+                                    <div className="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-700 rounded-md text-xs font-medium">
+                                      {Array.isArray(item.attributes.size) ? item.attributes.size[0] : item.attributes.size}
+                                    </div>
+                                  )}
+                                  {item.category === 'open-box' && (
+                                    <div className="inline-flex items-center px-2 py-1 bg-orange-100 text-orange-700 rounded-md text-xs font-medium">
+                                      Open Box
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                              
                               <div className="space-y-1.5 pt-2 border-t">
                                 <div className="flex justify-between text-sm">
                                   <span className="text-muted-foreground">Unit Price:</span>
