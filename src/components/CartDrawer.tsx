@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { X, Trash2, Plus, Minus, ShoppingBag, Tag, Truck, MapPin, ChevronDown } from 'lucide-react';
+import { X, Trash2, Plus, Minus, ShoppingBag, Tag, Truck, MapPin, ChevronDown, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useCart } from '@/contexts/CartContext';
 import { Link, useLocation } from 'react-router-dom';
 import Logo from '@/components/ui/Logo';
@@ -217,25 +218,82 @@ const CartDrawer = () => {
                     
                     return (
                       <div key={`${item.id}-${item.sleeve || 'none'}`} className="flex gap-4 pb-4 border-b border-gray-100">
-                        {/* Product Image */}
-                        <div className="flex-shrink-0">
-                          {item.image ? (
-                            <img 
-                              src={item.image} 
-                              alt={item.name}
-                              className="w-20 h-20 object-cover rounded-lg"
-                              onError={(e) => {
-                                // Fallback to placeholder on error
-                                e.currentTarget.style.display = 'none';
-                                e.currentTarget.parentElement!.innerHTML = `<div class="w-20 h-20 rounded-lg bg-[hsl(var(--brand-pink))] flex items-center justify-center"><span class="text-white font-bold text-sm">SS</span></div>`;
-                              }}
-                            />
-                          ) : (
-                            <div className="w-20 h-20 rounded-lg bg-[hsl(var(--brand-pink))] flex items-center justify-center">
-                              <span className="text-white font-bold text-sm">SS</span>
+                        {/* Product Image with Info Popover */}
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <div className="flex-shrink-0 cursor-pointer relative group">
+                              {item.image ? (
+                                <img 
+                                  src={item.image} 
+                                  alt={item.name}
+                                  className="w-20 h-20 object-cover rounded-lg transition-opacity group-hover:opacity-90"
+                                  onError={(e) => {
+                                    // Fallback to placeholder on error
+                                    e.currentTarget.style.display = 'none';
+                                    e.currentTarget.parentElement!.innerHTML = `<div class="w-20 h-20 rounded-lg bg-[hsl(var(--brand-pink))] flex items-center justify-center"><span class="text-white font-bold text-sm">SS</span></div>`;
+                                  }}
+                                />
+                              ) : (
+                                <div className="w-20 h-20 rounded-lg bg-[hsl(var(--brand-pink))] flex items-center justify-center">
+                                  <span className="text-white font-bold text-sm">SS</span>
+                                </div>
+                              )}
+                              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 rounded-lg transition-colors flex items-center justify-center">
+                                <Info className="h-5 w-5 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                              </div>
                             </div>
-                          )}
-                        </div>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-72 p-4" side="right" align="start">
+                            <div className="space-y-3">
+                              <div className="flex gap-3">
+                                {item.image && (
+                                  <img 
+                                    src={item.image} 
+                                    alt={item.name}
+                                    className="w-20 h-20 object-cover rounded-lg flex-shrink-0"
+                                  />
+                                )}
+                                <div className="flex-1 min-w-0">
+                                  <h4 className="font-semibold text-sm mb-1 line-clamp-2">{item.name}</h4>
+                                  {item.description && (
+                                    <p className="text-xs text-muted-foreground line-clamp-2">{item.description}</p>
+                                  )}
+                                </div>
+                              </div>
+                              <div className="space-y-1.5 pt-2 border-t">
+                                <div className="flex justify-between text-sm">
+                                  <span className="text-muted-foreground">Unit Price:</span>
+                                  <span className="font-semibold text-[hsl(var(--brand-pink))]">${item.price.toFixed(2)}</span>
+                                </div>
+                                <div className="flex justify-between text-sm">
+                                  <span className="text-muted-foreground">Quantity:</span>
+                                  <span className="font-medium">{item.quantity}</span>
+                                </div>
+                                {item.sleeve && (
+                                  <div className="flex justify-between text-sm">
+                                    <span className="text-muted-foreground">Sleeve:</span>
+                                    <span className="font-medium capitalize">{item.sleeve}</span>
+                                  </div>
+                                )}
+                                <div className="flex justify-between text-sm pt-1.5 border-t">
+                                  <span className="font-medium">Item Total:</span>
+                                  <span className="font-bold text-[hsl(var(--brand-pink))]">
+                                    ${(item.price * item.quantity).toFixed(2)}
+                                  </span>
+                                </div>
+                              </div>
+                              <Link 
+                                to={`/shop/${item.id}`}
+                                onClick={() => setIsOpen(false)}
+                                className="block"
+                              >
+                                <Button variant="outline" size="sm" className="w-full">
+                                  View Product Details
+                                </Button>
+                              </Link>
+                            </div>
+                          </PopoverContent>
+                        </Popover>
 
                          {/* Product Info */}
                         <div className="flex-grow min-w-0">

@@ -21,10 +21,11 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 import Logo from '@/components/ui/Logo';
 import SaleBanner from '@/components/SaleBanner';
-import { ArrowLeft, ShoppingBag, CreditCard, Truck, Trash2, Tag, Loader2, Package, Gift, Mail, MapPin, Plus, Minus, ChevronDown } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, CreditCard, Truck, Trash2, Tag, Loader2, Package, Gift, Mail, MapPin, Plus, Minus, ChevronDown, Info } from 'lucide-react';
 import { PaymentForm } from '@/components/checkout/PaymentForm';
 import ReadOnlyAddressField from '@/components/checkout/ReadOnlyAddressField';
 import FreeShippingThresholdBar from '@/components/cart/FreeShippingThresholdBar';
@@ -1107,27 +1108,86 @@ const Checkout = () => {
                         return (
                         <div key={item.id} className="space-y-2 pb-4 border-b last:border-0">
                           <div className="flex gap-3">
-                            {item.image ? (
-                              <img 
-                                src={item.image} 
-                                alt={item.name}
-                                className="w-16 h-16 object-cover rounded"
-                                onError={(e) => {
-                                  // Fallback to placeholder if image fails to load
-                                  e.currentTarget.style.display = 'none';
-                                  const fallback = document.createElement('div');
-                                  fallback.className = 'w-16 h-16 rounded flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-pink-500 to-rose-500';
-                                  fallback.innerHTML = '<span class="text-white font-bold text-xs">SS</span>';
-                                  e.currentTarget.parentElement?.appendChild(fallback);
-                                }}
-                              />
-                            ) : (
-                              <div 
-                                className="w-16 h-16 rounded flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-pink-500 to-rose-500"
-                              >
-                                <span className="text-white font-bold text-xs">SS</span>
-                              </div>
-                            )}
+                            {/* Product Image with Info Popover */}
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <div className="flex-shrink-0 cursor-pointer relative group">
+                                  {item.image ? (
+                                    <img 
+                                      src={item.image} 
+                                      alt={item.name}
+                                      className="w-16 h-16 object-cover rounded transition-opacity group-hover:opacity-90"
+                                      onError={(e) => {
+                                        // Fallback to placeholder if image fails to load
+                                        e.currentTarget.style.display = 'none';
+                                        const fallback = document.createElement('div');
+                                        fallback.className = 'w-16 h-16 rounded flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-pink-500 to-rose-500';
+                                        fallback.innerHTML = '<span class="text-white font-bold text-xs">SS</span>';
+                                        e.currentTarget.parentElement?.appendChild(fallback);
+                                      }}
+                                    />
+                                  ) : (
+                                    <div 
+                                      className="w-16 h-16 rounded flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-pink-500 to-rose-500"
+                                    >
+                                      <span className="text-white font-bold text-xs">SS</span>
+                                    </div>
+                                  )}
+                                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 rounded transition-colors flex items-center justify-center">
+                                    <Info className="h-4 w-4 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                                  </div>
+                                </div>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-72 p-4" side="right" align="start">
+                                <div className="space-y-3">
+                                  <div className="flex gap-3">
+                                    {item.image && (
+                                      <img 
+                                        src={item.image} 
+                                        alt={item.name}
+                                        className="w-16 h-16 object-cover rounded flex-shrink-0"
+                                      />
+                                    )}
+                                    <div className="flex-1 min-w-0">
+                                      <h4 className="font-semibold text-sm mb-1 line-clamp-2">{item.name}</h4>
+                                      {item.description && (
+                                        <p className="text-xs text-muted-foreground line-clamp-2">{item.description}</p>
+                                      )}
+                                    </div>
+                                  </div>
+                                  <div className="space-y-1.5 pt-2 border-t">
+                                    <div className="flex justify-between text-sm">
+                                      <span className="text-muted-foreground">Unit Price:</span>
+                                      <span className="font-semibold text-[hsl(var(--brand-pink))]">${item.price.toFixed(2)}</span>
+                                    </div>
+                                    <div className="flex justify-between text-sm">
+                                      <span className="text-muted-foreground">Quantity:</span>
+                                      <span className="font-medium">{item.quantity}</span>
+                                    </div>
+                                    {item.sleeve && (
+                                      <div className="flex justify-between text-sm">
+                                        <span className="text-muted-foreground">Sleeve:</span>
+                                        <span className="font-medium capitalize">{item.sleeve}</span>
+                                      </div>
+                                    )}
+                                    <div className="flex justify-between text-sm pt-1.5 border-t">
+                                      <span className="font-medium">Item Total:</span>
+                                      <span className="font-bold text-[hsl(var(--brand-pink))]">
+                                        ${(item.price * item.quantity).toFixed(2)}
+                                      </span>
+                                    </div>
+                                  </div>
+                                  <Link 
+                                    to={`/shop/${item.id}`}
+                                    className="block"
+                                  >
+                                    <Button variant="outline" size="sm" className="w-full">
+                                      View Product Details
+                                    </Button>
+                                  </Link>
+                                </div>
+                              </PopoverContent>
+                            </Popover>
                             <div className="flex-1 min-w-0">
                               <p className="text-sm font-medium line-clamp-2 mb-1">{item.name}</p>
                               <div className="space-y-1">
