@@ -612,6 +612,24 @@
   animation: marquee 20s linear infinite;
 }
 
+/* Banner scroll animation for announcement bar */
+@keyframes banner-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-33.333%);
+  }
+}
+
+.animate-banner-scroll {
+  animation: banner-scroll 20s linear infinite;
+}
+
+.animate-banner-scroll:hover {
+  animation-play-state: paused;
+}
+
 /* Adjust speed on larger screens */
 @media (min-width: 768px) {
   .animate-marquee {
