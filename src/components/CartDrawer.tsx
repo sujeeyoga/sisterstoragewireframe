@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { X, Trash2, Plus, Minus, ShoppingBag, Tag, Truck, MapPin } from 'lucide-react';
+import { X, Trash2, Plus, Minus, ShoppingBag, Tag, Truck, MapPin, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useCart } from '@/contexts/CartContext';
 import { Link, useLocation } from 'react-router-dom';
 import Logo from '@/components/ui/Logo';
@@ -24,6 +25,7 @@ const CartDrawer = () => {
   const [estimatedShipping, setEstimatedShipping] = useState<number | null>(null);
   const [originalShippingCost, setOriginalShippingCost] = useState<number | null>(null);
   const [shippingLoading, setShippingLoading] = useState(false);
+  const [isOrderSummaryOpen, setIsOrderSummaryOpen] = useState(true);
   
   // Track active cart in real-time
   useActiveCartTracking(items, subtotal);
@@ -301,10 +303,26 @@ const CartDrawer = () => {
             {items.length > 0 && (
               <div className="flex-shrink-0 md:w-[40%] border-t md:border-t-0 md:border-l border-gray-200 p-3 bg-gray-50 md:overflow-y-auto">
                 <div className="md:sticky md:top-4">
-                  <h3 className="text-base font-semibold mb-3">Order Summary</h3>
-                  
-                  {/* Itemized Breakdown */}
-                  <div className="space-y-1.5 mb-3">
+                  <Collapsible open={isOrderSummaryOpen} onOpenChange={setIsOrderSummaryOpen}>
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="text-base font-semibold">Order Summary</h3>
+                      <div className="flex items-center gap-2">
+                        {!isOrderSummaryOpen && (
+                          <span className="text-sm font-bold text-[hsl(var(--brand-pink))]">
+                            ${estimatedShipping !== null ? estimatedTotal.toFixed(2) : total.toFixed(2)}
+                          </span>
+                        )}
+                        <CollapsibleTrigger asChild>
+                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                            <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isOrderSummaryOpen ? 'rotate-180' : ''}`} />
+                          </Button>
+                        </CollapsibleTrigger>
+                      </div>
+                    </div>
+                    
+                    <CollapsibleContent>
+                      {/* Itemized Breakdown */}
+                      <div className="space-y-1.5 mb-3">
                     <div className="flex justify-between text-sm text-gray-600">
                       <span>Subtotal ({totalItems} items)</span>
                       <span className="font-medium text-gray-900">${subtotal.toFixed(2)}</span>
@@ -473,6 +491,8 @@ const CartDrawer = () => {
                       Continue Shopping
                     </Button>
                   </div>
+                  </CollapsibleContent>
+                </Collapsible>
                 </div>
               </div>
             )}
