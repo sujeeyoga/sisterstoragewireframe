@@ -102,7 +102,7 @@ export function transformProduct(dbProduct: any): Product {
     description: dbProduct.description || dbProduct.short_description || '',
     shortDescription: dbProduct.short_description || undefined,
     price: dbProduct.sale_price || dbProduct.price || dbProduct.regular_price || 0,
-    originalPrice: dbProduct.regular_price || undefined,
+    originalPrice: (dbProduct.regular_price && dbProduct.regular_price > 0) ? dbProduct.regular_price : undefined,
     salePrice: dbProduct.sale_price || undefined,
     category,
     categories: categories.map((cat: any) => cat.slug),
