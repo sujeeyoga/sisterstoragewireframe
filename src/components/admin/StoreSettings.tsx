@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Settings, Percent, Gift, Mail, Star, Package, AlertTriangle, MapPin, Store, Sparkles } from "lucide-react";
+import { Settings, Percent, Gift, Mail, Star, Package, AlertTriangle, MapPin, Store, Sparkles, Tag } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState } from "react";
 
@@ -42,6 +42,18 @@ export function StoreSettings() {
         .from('store_settings')
         .select('*')
         .eq('setting_key', 'store_wide_discount')
+        .maybeSingle();
+      return data;
+    },
+  });
+
+  const { data: showSalePricingSettings } = useQuery({
+    queryKey: ['store-settings', 'show-sale-pricing'],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('store_settings')
+        .select('*')
+        .eq('setting_key', 'show_sale_pricing')
         .maybeSingle();
       return data;
     },
@@ -357,6 +369,7 @@ export function StoreSettings() {
   const toggleNewsletterMutation = createToggleMutation('newsletter_optin', ['store-settings', 'newsletter-optin']);
   const toggleReviewsMutation = createToggleMutation('product_reviews', ['store-settings', 'product-reviews']);
   const togglePreordersMutation = createToggleMutation('preorders', ['store-settings', 'preorders']);
+  const toggleShowSalePricingMutation = createToggleMutation('show_sale_pricing', ['store-settings', 'show-sale-pricing']);
 
   const updateGiftMutation = createUpdateMutation('gift_messages', ['store-settings', 'gift-messages'], () => ({
     charLimit: parseInt(giftCharLimit),
@@ -627,6 +640,35 @@ export function StoreSettings() {
                   </div>
                 </div>
               )}
+            </CardContent>
+          </Card>
+
+          {/* Show Sale Pricing Toggle */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-xl">
+                <Tag className="h-5 w-5" />
+                Show Sale Pricing
+              </CardTitle>
+              <CardDescription>Control visibility of sale badges and crossed-out prices</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="flex items-center justify-between p-4 rounded-lg border bg-muted/50">
+                <div className="space-y-1">
+                  <Label className="text-base font-medium">Display Sale Pricing</Label>
+                  <p className="text-sm text-muted-foreground">Show sale badges and original prices on product cards</p>
+                </div>
+                <Switch
+                  checked={showSalePricingSettings?.enabled ?? true}
+                  onCheckedChange={(checked) => toggleShowSalePricingMutation.mutate(checked)}
+                />
+              </div>
+
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <p className="text-sm text-blue-800">
+                  <strong>Note:</strong> This controls the display of sale pricing only. Actual sale prices remain unchanged in the database. Use this to prepare sales in advance or temporarily hide sale indicators.
+                </p>
+              </div>
             </CardContent>
           </Card>
 

@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import AddToCartBar from "@/components/cart/AddToCartBar";
 import { useStoreDiscount } from "@/hooks/useStoreDiscount";
+import { useShowSalePricing } from "@/hooks/useShowSalePricing";
 
 interface SimpleProductCardProps {
   product: Product;
@@ -16,6 +17,7 @@ interface SimpleProductCardProps {
 const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets }) => {
   const [imageLoaded, setImageLoaded] = React.useState(false);
   const { discount, applyDiscount } = useStoreDiscount();
+  const { showSalePricing } = useShowSalePricing();
 
   // Extract rod count from attributes
   const rodCount = product.attributes?.rodCount?.[0];
@@ -72,7 +74,7 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
       <Link to={`/shop/${product.id}`} className="block relative">
         {/* Badges */}
         <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
-          {hasDiscount && displayOriginalPrice && product.category !== 'open-box' && (
+          {showSalePricing && hasDiscount && displayOriginalPrice && product.category !== 'open-box' && (
             <Badge className="bg-green-600 text-white border-none px-2.5 py-1 text-xs font-bold uppercase tracking-wider shadow-lg">
               <Tag className="w-3 h-3 mr-1 inline-block" />
               {hasProductSalePrice 
@@ -222,7 +224,7 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
             ) : (
               <>
                 <div className="flex items-baseline gap-2">
-                  {hasDiscount && displayOriginalPrice ? (
+                  {showSalePricing && hasDiscount && displayOriginalPrice ? (
                     <>
                       <span className="text-3xl font-bold text-green-600">${discountedPrice.toFixed(2)}</span>
                       <span className="text-lg text-gray-400 line-through">${displayOriginalPrice.toFixed(2)}</span>
@@ -231,7 +233,7 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
                     <span className="text-3xl font-bold text-gray-900">${product.price.toFixed(2)}</span>
                   )}
                 </div>
-                {hasDiscount && displayOriginalPrice ? (
+                {showSalePricing && hasDiscount && displayOriginalPrice ? (
                   <Badge className="bg-green-600 text-white">
                     {Math.round(((displayOriginalPrice - discountedPrice) / displayOriginalPrice) * 100)}% OFF
                   </Badge>
