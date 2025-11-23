@@ -1181,7 +1181,7 @@ const Checkout = () => {
                                   <div className="space-y-1.5 pt-2 border-t">
                                     <div className="flex justify-between text-sm">
                                       <span className="text-muted-foreground">Unit Price:</span>
-                                      <span className="font-semibold text-[hsl(var(--brand-pink))]">${item.price.toFixed(2)}</span>
+                                      <span className="font-semibold text-[hsl(var(--brand-pink))]">${(item.price || 0).toFixed(2)}</span>
                                     </div>
                                     <div className="flex justify-between text-sm">
                                       <span className="text-muted-foreground">Quantity:</span>
@@ -1196,7 +1196,7 @@ const Checkout = () => {
                                     <div className="flex justify-between text-sm pt-1.5 border-t">
                                       <span className="font-medium">Item Total:</span>
                                       <span className="font-bold text-[hsl(var(--brand-pink))]">
-                                        ${(item.price * item.quantity).toFixed(2)}
+                                        ${((item.price || 0) * (item.quantity || 0)).toFixed(2)}
                                       </span>
                                     </div>
                                   </div>
@@ -1219,15 +1219,15 @@ const Checkout = () => {
                                   <div className="flex items-center gap-2">
                                     <span className="text-xs text-gray-600">Unit Price:</span>
                                     <span className="text-xs text-gray-500 line-through">
-                                      ${originalPrice.toFixed(2)}
+                                      ${(originalPrice || 0).toFixed(2)}
                                     </span>
                                     <span className="text-xs font-medium text-[hsl(var(--brand-pink))]">
-                                      ${item.price.toFixed(2)}
+                                      ${(item.price || 0).toFixed(2)}
                                     </span>
                                   </div>
                                 ) : (
                                   <p className="text-xs text-gray-600">
-                                    Unit Price: <span className="font-medium">${item.price.toFixed(2)}</span>
+                                    Unit Price: <span className="font-medium">${(item.price || 0).toFixed(2)}</span>
                                   </p>
                                 )}
                                 <div className="flex items-center gap-2">
@@ -1265,7 +1265,7 @@ const Checkout = () => {
                           <div className="flex justify-between items-center pl-[76px]">
                             <span className="text-xs text-gray-500">Item Subtotal:</span>
                             <span className="text-sm font-semibold text-[hsl(var(--brand-pink))]">
-                              ${(item.price * item.quantity).toFixed(2)}
+                              ${((item.price || 0) * (item.quantity || 0)).toFixed(2)}
                             </span>
                           </div>
                           </div>
