@@ -76,7 +76,7 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
             <Badge className="bg-green-600 text-white border-none px-2.5 py-1 text-xs font-bold uppercase tracking-wider shadow-lg">
               <Tag className="w-3 h-3 mr-1 inline-block" />
               {hasProductSalePrice 
-                ? `SAVE $${(displayOriginalPrice - discountedPrice).toFixed(0)}`
+                ? `${Math.round(((displayOriginalPrice - discountedPrice) / displayOriginalPrice) * 100)}% OFF`
                 : `${discount.percentage}% OFF`
               }
             </Badge>
@@ -233,7 +233,7 @@ const SimpleProductCard: React.FC<SimpleProductCardProps> = ({ product, bullets 
                 </div>
                 {hasDiscount && displayOriginalPrice ? (
                   <Badge className="bg-green-600 text-white">
-                    SAVE ${(displayOriginalPrice - discountedPrice).toFixed(2)}
+                    {Math.round(((displayOriginalPrice - discountedPrice) / displayOriginalPrice) * 100)}% OFF
                   </Badge>
                 ) : null}
               </>
