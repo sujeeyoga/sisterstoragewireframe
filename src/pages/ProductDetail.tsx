@@ -85,8 +85,7 @@ const ProductDetail = () => {
   const hasProductSalePrice = product.salePrice && product.originalPrice && product.salePrice < product.originalPrice;
   const shouldApplyStoreDiscount = discount?.enabled && 
     !hasProductSalePrice && 
-    product.slug !== 'multipurpose-box' && 
-    product.id !== 'multipurpose-box';
+    product.slug !== 'multipurpose-box-1-large-box';
 
   const discountedPrice = shouldApplyStoreDiscount ? applyDiscount(product.price) : product.price;
   const displayOriginalPrice = hasProductSalePrice ? product.originalPrice : (shouldApplyStoreDiscount ? product.price : undefined);
