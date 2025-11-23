@@ -115,7 +115,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
               <Badge className="bg-green-600 text-white">
                 <Tag className="h-3 w-3 mr-1" />
                 {hasProductSalePrice 
-                  ? `SAVE $${(displayOriginalPrice - discountedPrice).toFixed(0)}`
+                  ? `${Math.round(((displayOriginalPrice - discountedPrice) / displayOriginalPrice) * 100)}% OFF`
                   : `${discount.percentage}% OFF`
                 }
               </Badge>
