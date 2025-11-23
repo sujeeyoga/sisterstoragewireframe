@@ -85,7 +85,9 @@ const ProductDetail = () => {
   const hasProductSalePrice = product.salePrice && product.originalPrice && product.salePrice < product.originalPrice;
   const shouldApplyStoreDiscount = discount?.enabled && 
     !hasProductSalePrice && 
-    product.slug !== 'multipurpose-box-1-large-box';
+    product.slug !== 'multipurpose-box-1-large-box' &&
+    product.slug !== 'jewelry-bag-organizer' &&
+    product.slug !== 'jewelry-bag-organizer-7-removable-jewelry-pouches';
 
   const discountedPrice = shouldApplyStoreDiscount ? applyDiscount(product.price) : product.price;
   const displayOriginalPrice = hasProductSalePrice ? product.originalPrice : (shouldApplyStoreDiscount ? product.price : undefined);
