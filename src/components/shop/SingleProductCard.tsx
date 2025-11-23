@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ShoppingBag } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
+import { useShowSalePricing } from "@/hooks/useShowSalePricing";
 import { Product } from "@/types/product";
 import { productTaxonomyMap } from "@/data/product-taxonomy";
 
