@@ -31,8 +31,13 @@ const HeroProductCard = ({
 }: HeroProductCardProps) => {
   const { discount, applyDiscount } = useStoreDiscount();
   
-  const discountedPrice = discount?.enabled ? applyDiscount(price) : price;
-  const hasDiscount = discount?.enabled && discount.percentage > 0;
+  // Check if product has its own sale price
+  const hasProductSalePrice = price && originalPrice && price < originalPrice;
+  const shouldApplyStoreDiscount = discount?.enabled && !hasProductSalePrice;
+
+  const discountedPrice = shouldApplyStoreDiscount ? applyDiscount(price) : price;
+  const displayOriginalPrice = hasProductSalePrice ? originalPrice : (shouldApplyStoreDiscount ? price : undefined);
+  const hasDiscount = (hasProductSalePrice || shouldApplyStoreDiscount) && discountedPrice < (displayOriginalPrice || price);
 
   return (
     <Card className="group overflow-hidden border-none shadow-md hover:shadow-xl transition-all duration-500 bg-white relative transform hover:-translate-y-1 hover:scale-[1.02] max-w-sm">
@@ -84,24 +89,14 @@ const HeroProductCard = ({
         <div className="mt-auto space-y-3">
           <div className="flex items-center justify-between min-h-[2rem]">
             <div className="flex items-baseline gap-2">
-              {hasDiscount ? (
-                <>
-                  <span className="text-2xl font-black text-green-600">${discountedPrice.toFixed(2)}</span>
-                  <span className="text-sm text-gray-400 line-through">${price}</span>
-                </>
-              ) : (
-                <>
-                  <span className="text-2xl font-black text-gray-900">${price}</span>
-                  <span className="text-sm text-gray-400 line-through">${originalPrice}</span>
-                </>
+              <span className="text-2xl font-black text-green-600">${discountedPrice.toFixed(2)}</span>
+              {displayOriginalPrice && (
+                <span className="text-sm text-gray-400 line-through">${displayOriginalPrice.toFixed(2)}</span>
               )}
             </div>
-            {((hasDiscount && (price - discountedPrice) > 0) || (!hasDiscount && (originalPrice - price) > 0)) && (
+            {hasDiscount && displayOriginalPrice && (displayOriginalPrice - discountedPrice) > 0 && (
               <div className="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-lg min-w-[4rem] text-center">
-                {hasDiscount 
-                  ? `Save $${(price - discountedPrice).toFixed(2)}`
-                  : `Save $${(originalPrice - price).toFixed(2)}`
-                }
+                Save ${(displayOriginalPrice - discountedPrice).toFixed(2)}
               </div>
             )}
           </div>
@@ -110,8 +105,8 @@ const HeroProductCard = ({
             product={{
               id,
               name,
-              price: hasDiscount ? discountedPrice : price,
-              originalPrice: hasDiscount ? price : originalPrice,
+              price: discountedPrice,
+              originalPrice: displayOriginalPrice,
               description,
               category: 'bundle',
               color: '#E90064',

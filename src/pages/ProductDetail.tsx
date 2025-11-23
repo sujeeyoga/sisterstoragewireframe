@@ -81,7 +81,16 @@ const ProductDetail = () => {
     .filter((p) => p.id !== product.id)
     .slice(0, 4);
   
-  const discountedPrice = discount?.enabled ? applyDiscount(product.price) : product.price;
+  // Check if product has its own sale price
+  const hasProductSalePrice = product.salePrice && product.originalPrice && product.salePrice < product.originalPrice;
+  const shouldApplyStoreDiscount = discount?.enabled && 
+    !hasProductSalePrice && 
+    product.slug !== 'multipurpose-box' && 
+    product.id !== 'multipurpose-box';
+
+  const discountedPrice = shouldApplyStoreDiscount ? applyDiscount(product.price) : product.price;
+  const displayOriginalPrice = hasProductSalePrice ? product.originalPrice : (shouldApplyStoreDiscount ? product.price : undefined);
+  const hasDiscount = (hasProductSalePrice || shouldApplyStoreDiscount) && discountedPrice < (displayOriginalPrice || product.price);
   const canAddToCart = true; // Always allow adding to cart
 
   const handleAddToCart = () => {

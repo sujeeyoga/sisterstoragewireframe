@@ -4,10 +4,6 @@ export const shopFAQs = [
     answer: "Consider three factors: 1) Number of bangles you own (choose rod count accordingly), 2) Available space (we offer stackable options), 3) Use case (travel vs. home storage). Filter by rod count, size, and use case to find your perfect match."
   },
   {
-    question: "What's the difference between 1-rod, 2-rod, and 4-rod organizers?",
-    answer: "Rod count determines capacity: 1-rod (~10 bangles, travel size), 2-rod (15-20 bangles, medium), 4-rod (30-50 bangles, large). All feature the same premium plastic construction and stackable design."
-  },
-  {
     question: "Are these organizers travel-friendly?",
     answer: "Yes! Our compact designs with secure lids are perfect for travel. Look for products tagged with 'Travel' use case for the most portable options."
   },
