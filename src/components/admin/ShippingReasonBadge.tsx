@@ -62,7 +62,7 @@ export function ShippingReasonBadge({ metadata, charged = 0, className = "" }: S
     }
   } else {
     if (metadata.zone_name) {
-      label = `$${charged.toFixed(2)} - ${metadata.zone_name}`;
+      label = `$${(charged || 0).toFixed(2)} - ${metadata.zone_name}`;
       variant = "secondary";
       emoji = "💰";
       if (thresholdMet) {
@@ -71,7 +71,7 @@ export function ShippingReasonBadge({ metadata, charged = 0, className = "" }: S
         description = metadata.rate_method || "Standard shipping rate";
       }
     } else {
-      label = `$${charged.toFixed(2)} - Standard`;
+      label = `$${(charged || 0).toFixed(2)} - Standard`;
       variant = "secondary";
       emoji = "💰";
       description = "Standard shipping rate applied";
@@ -98,7 +98,7 @@ export function ShippingReasonBadge({ metadata, charged = 0, className = "" }: S
             )}
             {metadata.original_rate && metadata.original_rate !== charged && (
               <p className="text-xs text-muted-foreground">
-                Original rate: ${metadata.original_rate.toFixed(2)}
+                Original rate: ${(metadata.original_rate || 0).toFixed(2)}
               </p>
             )}
             {metadata.source && (
