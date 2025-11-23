@@ -286,7 +286,7 @@ const CartDrawer = () => {
                               <div className="space-y-1.5 pt-2 border-t">
                                 <div className="flex justify-between text-sm">
                                   <span className="text-muted-foreground">Unit Price:</span>
-                                  <span className="font-semibold text-[hsl(var(--brand-pink))]">${item.price.toFixed(2)}</span>
+                                  <span className="font-semibold text-[hsl(var(--brand-pink))]">${(item.price || 0).toFixed(2)}</span>
                                 </div>
                                 <div className="flex justify-between text-sm">
                                   <span className="text-muted-foreground">Quantity:</span>
@@ -301,7 +301,7 @@ const CartDrawer = () => {
                                 <div className="flex justify-between text-sm pt-1.5 border-t">
                                   <span className="font-medium">Item Total:</span>
                                   <span className="font-bold text-[hsl(var(--brand-pink))]">
-                                    ${(item.price * item.quantity).toFixed(2)}
+                                    ${((item.price || 0) * (item.quantity || 0)).toFixed(2)}
                                   </span>
                                 </div>
                               </div>
@@ -338,20 +338,20 @@ const CartDrawer = () => {
                           
                           {/* Price Display with Discount */}
                           <div className="mb-2">
-                            {hasDiscount ? (
-                              <div className="flex items-center gap-2">
-                                <span className="text-xs text-gray-500 line-through">
-                                  ${originalPrice.toFixed(2)}
-                                </span>
-                                <span className="text-[hsl(var(--brand-pink))] font-semibold text-sm">
-                                  ${item.price.toFixed(2)} each
-                                </span>
-                              </div>
-                            ) : (
-                              <p className="text-[hsl(var(--brand-pink))] font-semibold text-sm">
-                                ${item.price.toFixed(2)} each
-                              </p>
-                            )}
+                          {hasDiscount ? (
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs text-gray-500 line-through">
+                                ${(originalPrice || 0).toFixed(2)}
+                              </span>
+                              <span className="text-[hsl(var(--brand-pink))] font-semibold text-sm">
+                                ${(item.price || 0).toFixed(2)} each
+                              </span>
+                            </div>
+                          ) : (
+                            <p className="text-[hsl(var(--brand-pink))] font-semibold text-sm">
+                              ${(item.price || 0).toFixed(2)} each
+                            </p>
+                          )}
                           </div>
                           
                           {/* Quantity Controls */}
@@ -377,7 +377,7 @@ const CartDrawer = () => {
                             </div>
                             
                             <span className="text-sm font-semibold text-gray-900">
-                              ${itemTotal.toFixed(2)}
+                              ${(itemTotal || 0).toFixed(2)}
                             </span>
                           </div>
                         </div>
