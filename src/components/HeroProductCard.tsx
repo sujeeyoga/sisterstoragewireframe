@@ -33,7 +33,7 @@ const HeroProductCard = ({
   
   // Check if product has its own sale price
   const hasProductSalePrice = price && originalPrice && price < originalPrice;
-  const shouldApplyStoreDiscount = discount?.enabled && !hasProductSalePrice && id !== 'multipurpose-box';
+  const shouldApplyStoreDiscount = discount?.enabled && !hasProductSalePrice;
 
   const discountedPrice = shouldApplyStoreDiscount ? applyDiscount(price) : price;
   const displayOriginalPrice = hasProductSalePrice ? originalPrice : (shouldApplyStoreDiscount ? price : undefined);
