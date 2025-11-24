@@ -579,17 +579,17 @@ export const AdminDashboard = () => {
             ) : (
               <>
                 <div className="text-2xl font-bold">
-                  ${stats?.netRevenue.toFixed(2) || '0.00'}
+                  ${(stats?.netRevenue ?? 0).toFixed(2)}
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
-                  After ${stats?.totalRefunds.toFixed(2) || '0.00'} in refunds
+                  After ${(stats?.totalRefunds ?? 0).toFixed(2)} in refunds
                 </p>
                 {stats && Object.keys(stats.currencyBreakdown).length > 1 && (
                   <div className="mt-2 pt-2 border-t">
                     <p className="text-xs font-medium mb-1">By Currency:</p>
                     {Object.entries(stats.currencyBreakdown).map(([curr, data]: [string, any]) => (
                       <p key={curr} className="text-xs text-muted-foreground">
-                        {curr}: ${data.total.toFixed(2)} ({data.count} orders)
+                        {curr}: ${(data.total ?? 0).toFixed(2)} ({data.count} orders)
                       </p>
                     ))}
                   </div>
@@ -633,7 +633,7 @@ export const AdminDashboard = () => {
             ) : (
               <>
                 <div className="text-2xl font-bold">
-                  ${stats?.avgOrderValue.toFixed(2) || '0.00'}
+                  ${(stats?.avgOrderValue ?? 0).toFixed(2)}
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
                   Per order average
@@ -855,7 +855,7 @@ export const AdminDashboard = () => {
                       </p>
                     </div>
                     <div className="text-right space-y-1">
-                      <p className="text-sm font-medium">${order.total.toFixed(2)}</p>
+                      <p className="text-sm font-medium">${(order.total ?? 0).toFixed(2)}</p>
                       {getStatusBadge(order.status)}
                       {order.fulfillment_status && getFulfillmentBadge(order.fulfillment_status)}
                     </div>
