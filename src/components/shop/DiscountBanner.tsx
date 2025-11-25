@@ -10,7 +10,7 @@ export function DiscountBanner() {
     return null;
   }
 
-  const message = `🎉 ${discount.name} - ${discount.percentage}% OFF Everything! • Discount applied at checkout •`;
+  const message = `🎉 ${discount.name} • Discount applied at checkout •`;
 
   return (
     <div className="bg-black text-white py-2 px-4 relative overflow-hidden">
