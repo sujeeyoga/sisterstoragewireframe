@@ -124,6 +124,8 @@ const QuickAddProducts = () => {
         id: product.id,
         name: product.name,
         price: product.price || 0,
+        regularPrice: product.originalPrice,
+        salePrice: product.originalPrice && product.price && product.price < product.originalPrice ? product.price : undefined,
         image: imageUrl,
       });
     

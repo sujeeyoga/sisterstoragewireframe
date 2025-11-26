@@ -51,6 +51,8 @@ const ProductCard = ({ product }: ProductCardProps) => {
       id: product.id,
       name: product.name,
       price: discountedPrice,
+      regularPrice: displayOriginalPrice || product.price,
+      salePrice: hasProductSalePrice ? product.salePrice : undefined,
       image: product.images?.[0] || product.color
     });
     

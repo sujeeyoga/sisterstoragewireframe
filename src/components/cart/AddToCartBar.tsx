@@ -49,6 +49,8 @@ const AddToCartBar: React.FC<AddToCartBarProps> = ({ product, className }) => {
         id: String(product.id),
         name: String(product.name ?? "Untitled"),
         price: safePrice,
+        regularPrice: product.originalPrice || product.regularPrice,
+        salePrice: product.salePrice,
         image: imageSrc, // supports http URL or color hex; drawer handles both
       });
 
@@ -82,6 +84,8 @@ const AddToCartBar: React.FC<AddToCartBarProps> = ({ product, className }) => {
         id: String(product.id),
         name: String(product.name ?? "Untitled"),
         price: safePrice,
+        regularPrice: product.originalPrice || product.regularPrice,
+        salePrice: product.salePrice,
         image: imageSrc,
       });
       

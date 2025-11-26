@@ -166,15 +166,23 @@ serve(async (req) => {
       let discountedPrice = item.price;
       let appliedDiscount = 'none';
 
+      // Determine if item is already on sale
+      const hasExistingSale = item.salePrice && item.regularPrice && item.salePrice < item.regularPrice;
+
       if (flashSale) {
         const flashDiscount = calculateFlashDiscount(item.price, flashSale);
         discountedPrice = item.price - flashDiscount;
         appliedDiscount = `flash-${flashSale.id}`;
         console.log(`Flash sale applied to ${item.name}:`, flashSale.name, discountedPrice);
-      } else if (discountPercentage > 0) {
-        // Apply store-wide discount if no flash sale
+      } else if (discountPercentage > 0 && !hasExistingSale) {
+        // Only apply store-wide discount if item is NOT already on sale
+        // This prevents double discounting
         discountedPrice = item.price * (1 - discountPercentage / 100);
         appliedDiscount = 'store-wide';
+        console.log(`Store-wide discount applied to ${item.name}: ${item.price} → ${discountedPrice}`);
+      } else if (hasExistingSale) {
+        // Item already has sale price, don't apply additional discounts
+        console.log(`Item ${item.name} already on sale - skipping store-wide discount`);
       }
       
       const itemData: any = {
@@ -232,11 +240,15 @@ serve(async (req) => {
       // Check for flash sale
       const flashSale = getFlashSaleForProduct(item.id);
       let discountedPrice = item.price;
+      
+      // Determine if item is already on sale
+      const hasExistingSale = item.salePrice && item.regularPrice && item.salePrice < item.regularPrice;
 
       if (flashSale) {
         const flashDiscount = calculateFlashDiscount(item.price, flashSale);
         discountedPrice = item.price - flashDiscount;
-      } else if (discountPercentage > 0) {
+      } else if (discountPercentage > 0 && !hasExistingSale) {
+        // Only apply store-wide discount if item is NOT already on sale
         discountedPrice = item.price * (1 - discountPercentage / 100);
       }
 
