@@ -47,7 +47,7 @@ const FreeShippingCartIndicator = ({
 
     // If location is unknown, use fallback threshold
     if (!city || !region || !country) {
-      setThreshold(289); // Default Canada-Wide threshold
+      setThreshold(50); // Default Canada-Wide threshold
       setEstimatedShipping(null);
       return;
     }
