@@ -10,6 +10,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Settings, Percent, Gift, Mail, Star, Package, AlertTriangle, MapPin, Store, Sparkles, Tag } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState } from "react";
+import { useFlashSales } from "@/hooks/useFlashSales";
+import { DiscountConflictWarning } from "./DiscountConflictWarning";
 
 interface StoreSetting {
   id: string;
@@ -21,6 +23,15 @@ interface StoreSetting {
 export function StoreSettings() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const { data: flashSales } = useFlashSales();
+
+  // Count active flash sales
+  const now = new Date();
+  const activeFlashSalesCount = flashSales?.filter(sale => {
+    const start = new Date(sale.starts_at);
+    const end = new Date(sale.ends_at);
+    return sale.enabled && start <= now && end >= now;
+  }).length || 0;
 
   // Fetch all settings
   const { data: comingSoonSettings } = useQuery({
@@ -584,6 +595,13 @@ export function StoreSettings() {
 
         {/* PROMOTIONS TAB */}
         <TabsContent value="promotions" className="space-y-6">
+          {/* Discount Conflict Warning */}
+          <DiscountConflictWarning
+            storeWideEnabled={discountSettings?.enabled}
+            storeWidePercentage={parseFloat(discountPercentage)}
+            activeFlashSalesCount={activeFlashSalesCount}
+          />
+
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-xl">
