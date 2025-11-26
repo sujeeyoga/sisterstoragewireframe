@@ -1,29 +1,14 @@
 import React from "react";
-
-interface HeroProductContent {
-  qty: number;
-  label: string;
-  rodsEach: number;
-  detail: string;
-}
-
-interface HeroProduct {
-  id: string;
-  title: string;
-  subtitle: string;
-  price: number;
-  compareAt?: number;
-  ratingCount: number;
-  image: string;
-  badge: string;
-  contents: HeroProductContent[];
-}
+import { Product } from "@/types/product";
 
 interface HeroSectionProps {
-  product: HeroProduct;
+  product: Product;
 }
 
 const HeroSection: React.FC<HeroSectionProps> = ({ product }) => {
+  // Get the first image from the product
+  const heroImage = product.images?.[0] || "";
+  
   return (
     <section className="w-full bg-white">
       {/* Mobile: Stacked layout */}
@@ -31,8 +16,8 @@ const HeroSection: React.FC<HeroSectionProps> = ({ product }) => {
         <div className="max-w-full">
           <div className="relative h-[400px] overflow-hidden rounded-3xl shadow-xl">
             <img 
-              src={product.image} 
-              alt="Shop Hero"
+              src={heroImage} 
+              alt={product.name}
               className="w-full h-full object-cover"
               loading="eager"
               fetchPriority="high"
@@ -57,8 +42,8 @@ const HeroSection: React.FC<HeroSectionProps> = ({ product }) => {
         {/* Image - Left Side */}
         <div className="relative overflow-hidden">
           <img 
-            src={product.image} 
-            alt="Shop Hero"
+            src={heroImage} 
+            alt={product.name}
             className="w-full h-full object-cover"
             loading="eager"
             fetchPriority="high"
