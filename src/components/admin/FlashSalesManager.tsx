@@ -79,8 +79,10 @@ export const FlashSalesManager = () => {
 
   return (
     <div className="container mx-auto p-6 space-y-6">
-      {/* Active Promotions Summary */}
-      <ActivePromotionsSummary />
+      {/* Active Promotions Summary - Highlighted */}
+      <div className="border-2 border-purple-500 rounded-lg shadow-lg">
+        <ActivePromotionsSummary />
+      </div>
 
       {/* Discount Conflict Warning */}
       <DiscountConflictWarning
