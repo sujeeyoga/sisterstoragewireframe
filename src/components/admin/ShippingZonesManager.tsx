@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Plus, Pencil, Trash2, MapPin } from 'lucide-react';
 import { ZoneEditor } from './ZoneEditor';
 import { FallbackSettings } from './FallbackSettings';
+import { UpdateGTAShipping } from './UpdateGTAShipping';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -50,10 +51,13 @@ export const ShippingZonesManager = () => {
             Manage geographic shipping zones and rates
           </p>
         </div>
-        <Button onClick={() => setIsEditorOpen(true)}>
-          <Plus className="mr-2 h-4 w-4" />
-          Add Zone
-        </Button>
+        <div className="flex gap-2">
+          <UpdateGTAShipping />
+          <Button onClick={() => setIsEditorOpen(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            Add Zone
+          </Button>
+        </div>
       </div>
 
       <FallbackSettings />
