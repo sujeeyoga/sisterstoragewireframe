@@ -32,6 +32,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Edit, Trash2, Plus, Search, Eye, EyeOff, AlertCircle, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { products as staticProducts } from '@/data/products';
+import { ProductFormDialog } from './ProductFormDialog';
 
 type SortField = 'name' | 'price' | 'stock' | 'visible';
 type SortDirection = 'asc' | 'desc' | null;
@@ -42,6 +43,8 @@ export const ProductsTable = () => {
   const [sortField, setSortField] = useState<SortField | null>(null);
   const [sortDirection, setSortDirection] = useState<SortDirection>(null);
   const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false);
+  const [showProductForm, setShowProductForm] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<any>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -235,11 +238,12 @@ export const ProductsTable = () => {
               Remove {productsNotOnShop.length} Hidden Products
             </Button>
           )}
-          <Button asChild>
-            <Link to="/admin/products/new">
-              <Plus className="mr-2 h-4 w-4" />
-              Add Product
-            </Link>
+          <Button onClick={() => {
+            setEditingProduct(null);
+            setShowProductForm(true);
+          }}>
+            <Plus className="mr-2 h-4 w-4" />
+            Add Product
           </Button>
         </div>
       </div>
@@ -428,7 +432,8 @@ export const ProductsTable = () => {
                         variant="outline"
                         onClick={(e) => {
                           e.stopPropagation();
-                          navigate(`/admin/products/${product.id}`);
+                          setEditingProduct(product);
+                          setShowProductForm(true);
                         }}
                       >
                         <Edit className="h-4 w-4" />
@@ -503,6 +508,15 @@ export const ProductsTable = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <ProductFormDialog
+        open={showProductForm}
+        onOpenChange={(open) => {
+          setShowProductForm(open);
+          if (!open) setEditingProduct(null);
+        }}
+        product={editingProduct}
+      />
     </div>
   );
 };
