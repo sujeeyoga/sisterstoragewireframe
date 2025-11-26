@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, Edit, Trash2, Zap } from 'lucide-react';
-import { useFlashSales, useDeleteFlashSale, FlashSale } from '@/hooks/useFlashSales';
+import { useFlashSales, useDeleteFlashSale, FlashSale, applyFlashSaleDiscount } from '@/hooks/useFlashSales';
+import { useProducts } from '@/hooks/useProducts';
 import { FlashSaleForm } from './FlashSaleForm';
 import { FlashSaleStatusBadge } from './FlashSaleStatusBadge';
 import {
@@ -27,6 +28,7 @@ import { format } from 'date-fns';
 
 export const FlashSalesManager = () => {
   const { data: sales, isLoading } = useFlashSales();
+  const { data: products = [] } = useProducts();
   const deleteMutation = useDeleteFlashSale();
   const [formOpen, setFormOpen] = useState(false);
   const [editingSale, setEditingSale] = useState<FlashSale | null>(null);
@@ -39,6 +41,20 @@ export const FlashSalesManager = () => {
     const end = new Date(sale.ends_at);
     return sale.enabled && start <= now && end >= now;
   }) || [];
+
+  // Get products affected by a sale
+  const getSaleProducts = (sale: FlashSale) => {
+    if (sale.applies_to === 'all') {
+      return products;
+    } else if (sale.applies_to === 'products' && sale.product_ids) {
+      return products.filter(p => sale.product_ids?.includes(parseInt(p.id)));
+    } else if (sale.applies_to === 'categories' && sale.category_slugs) {
+      return products.filter(p => 
+        p.taxonomy?.categorySlugs?.some(slug => sale.category_slugs?.includes(slug))
+      );
+    }
+    return [];
+  };
 
   const handleEdit = (sale: FlashSale) => {
     setEditingSale(sale);
@@ -73,51 +89,90 @@ export const FlashSalesManager = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {activeSales.map((sale) => (
-                <div key={sale.id} className="p-4 bg-green-50 rounded-lg border border-green-200">
-                  <div className="flex items-start justify-between">
-                    <div className="space-y-1">
-                      <h4 className="font-semibold text-lg">{sale.name}</h4>
-                      {sale.description && (
-                        <p className="text-sm text-muted-foreground">{sale.description}</p>
-                      )}
-                      <div className="flex gap-4 text-sm">
-                        <span className="font-medium">
-                          {sale.discount_type === 'percentage' && `${sale.discount_value}% OFF`}
-                          {sale.discount_type === 'fixed_amount' && `$${sale.discount_value} OFF`}
-                          {sale.discount_type === 'bogo' && 'BOGO'}
-                        </span>
-                        <span className="text-muted-foreground">•</span>
-                        <span className="capitalize">{sale.applies_to}</span>
-                        {sale.product_ids && sale.product_ids.length > 0 && (
-                          <>
+              {activeSales.map((sale) => {
+                const saleProducts = getSaleProducts(sale);
+                
+                return (
+                  <div key={sale.id} className="space-y-4">
+                    <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                      <div className="flex items-start justify-between">
+                        <div className="space-y-1">
+                          <h4 className="font-semibold text-lg">{sale.name}</h4>
+                          {sale.description && (
+                            <p className="text-sm text-muted-foreground">{sale.description}</p>
+                          )}
+                          <div className="flex gap-4 text-sm">
+                            <span className="font-medium">
+                              {sale.discount_type === 'percentage' && `${sale.discount_value}% OFF`}
+                              {sale.discount_type === 'fixed_amount' && `$${sale.discount_value} OFF`}
+                              {sale.discount_type === 'bogo' && 'BOGO'}
+                            </span>
                             <span className="text-muted-foreground">•</span>
-                            <span>{sale.product_ids.length} product{sale.product_ids.length !== 1 ? 's' : ''}</span>
-                          </>
-                        )}
-                        {sale.category_slugs && sale.category_slugs.length > 0 && (
-                          <>
-                            <span className="text-muted-foreground">•</span>
-                            <span>{sale.category_slugs.length} categor{sale.category_slugs.length !== 1 ? 'ies' : 'y'}</span>
-                          </>
-                        )}
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        Ends: {format(new Date(sale.ends_at), 'MMM d, yyyy h:mm a')}
+                            <span className="capitalize">{sale.applies_to}</span>
+                            {sale.product_ids && sale.product_ids.length > 0 && (
+                              <>
+                                <span className="text-muted-foreground">•</span>
+                                <span>{sale.product_ids.length} product{sale.product_ids.length !== 1 ? 's' : ''}</span>
+                              </>
+                            )}
+                            {sale.category_slugs && sale.category_slugs.length > 0 && (
+                              <>
+                                <span className="text-muted-foreground">•</span>
+                                <span>{sale.category_slugs.length} categor{sale.category_slugs.length !== 1 ? 'ies' : 'y'}</span>
+                              </>
+                            )}
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            Ends: {format(new Date(sale.ends_at), 'MMM d, yyyy h:mm a')}
+                          </div>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleEdit(sale)}
+                          >
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                        </div>
                       </div>
                     </div>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleEdit(sale)}
-                      >
-                        <Edit className="w-4 h-4" />
-                      </Button>
-                    </div>
+                    
+                    {/* Products with discounted prices */}
+                    {saleProducts.length > 0 && (
+                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pl-4">
+                        {saleProducts.map((product) => {
+                          const { discountedPrice } = applyFlashSaleDiscount(product.price, sale);
+                          
+                          return (
+                            <div key={product.id} className="border rounded-lg p-3 bg-white">
+                              {product.images?.[0] && (
+                                <img 
+                                  src={product.images[0]} 
+                                  alt={product.name}
+                                  className="w-full h-32 object-cover rounded mb-2"
+                                />
+                              )}
+                              <h5 className="text-sm font-medium line-clamp-2 mb-1">{product.name}</h5>
+                              <div className="flex items-center gap-2">
+                                <span className="text-sm text-muted-foreground line-through">
+                                  ${product.price.toFixed(2)}
+                                </span>
+                                <span className="text-lg font-bold text-green-600">
+                                  ${discountedPrice.toFixed(2)}
+                                </span>
+                              </div>
+                              <div className="text-xs text-green-600 font-medium">
+                                Save ${(product.price - discountedPrice).toFixed(2)}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </CardContent>
         </Card>
