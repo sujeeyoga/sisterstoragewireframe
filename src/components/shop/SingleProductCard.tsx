@@ -6,7 +6,6 @@ import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
 import { useShowSalePricing } from "@/hooks/useShowSalePricing";
 import { Product } from "@/types/product";
-import { productTaxonomyMap } from "@/data/product-taxonomy";
 
 interface SingleProductCardProps {
   product: Product;
@@ -17,10 +16,9 @@ const SingleProductCard = ({ product, priority = false }: SingleProductCardProps
   const { addItem, setIsOpen } = useCart();
   const { toast } = useToast();
   
-  // Get taxonomy info for rod count and other attributes
-  const taxonomy = productTaxonomyMap[product.id];
-  const rodCount = taxonomy?.attributes?.rodCount;
-  const size = taxonomy?.attributes?.size;
+  // Get attributes from product taxonomy
+  const rodCount = product.taxonomy?.attributes?.rodCount;
+  const size = product.taxonomy?.attributes?.size;
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();

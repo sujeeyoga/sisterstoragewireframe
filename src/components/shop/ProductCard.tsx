@@ -7,7 +7,6 @@ import { useToast } from "@/hooks/use-toast";
 import { useCart } from "@/contexts/CartContext";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { productTaxonomyMap } from "@/data/product-taxonomy";
 import { useStoreDiscount } from "@/hooks/useStoreDiscount";
 import { useInventorySettings } from "@/hooks/useInventorySettings";
 import { useShowSalePricing } from "@/hooks/useShowSalePricing";
@@ -25,8 +24,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const { discount, applyDiscount } = useStoreDiscount();
   const { lowStock, preorders, isLowStock, isOutOfStock, shouldShowProduct } = useInventorySettings();
   const { showSalePricing } = useShowSalePricing();
-  const taxonomy = productTaxonomyMap[product.id] ?? undefined;
-  const attrs = taxonomy?.attributes;
+  const attrs = product.taxonomy?.attributes;
   
   // Prioritize product's own sale price over store-wide discount
   const hasProductSalePrice = product.salePrice && product.originalPrice && product.salePrice < product.originalPrice;

@@ -16,8 +16,6 @@ import Layout from "@/components/layout/Layout";
 import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, Package } from "lucide-react";
 
-import { productTaxonomyMap } from "@/data/product-taxonomy";
-
 const ProductDetail = () => {
   const { productId } = useParams<{ productId: string }>();
   const [quantity, setQuantity] = useState(1);
@@ -30,9 +28,8 @@ const ProductDetail = () => {
   
   // Fetch product from Supabase (supports both ID and slug)
   const { data: product, isLoading } = useProduct(productId || "");
-  const taxonomy = product ? productTaxonomyMap[product.slug || product.id] : undefined;
-  const attributes = taxonomy?.attributes;
-  const primaryCategorySlug = taxonomy?.categorySlugs?.[0];
+  const attributes = product?.taxonomy?.attributes;
+  const primaryCategorySlug = product?.taxonomy?.categorySlugs?.[0];
   const primaryCategory = product?.categories?.[0];
   
   // Normalize attributes for ProductInfo (ensure arrays)

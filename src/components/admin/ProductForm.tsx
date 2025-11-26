@@ -12,7 +12,6 @@ import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Bold, Italic, Underline, Type, History, Save, Check, Bookmark, ShoppingBag, Upload, X, Image as ImageIcon } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { productTaxonomyMap } from '@/data/product-taxonomy';
 
 type ProductFormData = {
   name: string;
@@ -986,45 +985,12 @@ export const ProductForm = () => {
                     
                     {/* Rod Count - Fixed Height */}
                     <div className="min-h-[4rem] mb-3 flex justify-center">
-                      {(() => {
-                        const taxonomy = productTaxonomyMap[formValues.slug];
-                        const rodCount = taxonomy?.attributes?.rodCount;
-                        
-                        return rodCount ? (
-                          <div className="inline-flex flex-col items-center bg-[hsl(var(--primary))] text-primary-foreground rounded-lg px-3 py-2">
-                            <span className="text-xs font-medium">RODS</span>
-                            <span className="text-2xl font-bold">{rodCount}</span>
-                          </div>
-                        ) : null;
-                      })()}
+                      {/* Rod count preview removed - fetched from database attributes */}
                     </div>
                     
                     {/* Attribute Chips - Fixed Height */}
                     <div className="min-h-[2rem] mb-3">
-                      {(() => {
-                        const taxonomy = productTaxonomyMap[formValues.slug];
-                        const attrs = taxonomy?.attributes;
-                        if (!attrs) return null;
-                        
-                        const chips: React.ReactNode[] = [];
-                        const push = (label: string, vals?: unknown) => {
-                          const arr = Array.isArray(vals) ? vals : vals ? [vals] : [];
-                          arr.forEach((v, i) =>
-                            chips.push(
-                              <Badge key={`${label}-${String(v)}-${i}`} variant="outline" className="text-xs h-6 px-2">
-                                {label}: {String(v)}
-                              </Badge>
-                            )
-                          );
-                        };
-                        push("Size", attrs.size);
-                        push("Use", attrs.useCase);
-                        push("Bundle", attrs.bundleSize);
-                        
-                        return chips.length > 0 ? (
-                          <div className="flex flex-wrap gap-2">{chips}</div>
-                        ) : null;
-                      })()}
+                      {/* Attribute chips preview removed - fetched from database attributes */}
                     </div>
                     
                     {/* Bottom Section - Fixed at Bottom */}

@@ -74,6 +74,16 @@ export interface Product {
   width?: number;   // in cm
   height?: number;  // in cm
   packageValue?: number;  // for customs (USD)
+  // Taxonomy extracted from database for filtering
+  taxonomy?: {
+    categorySlugs: string[];
+    attributes?: {
+      rodCount?: string | string[];
+      size?: string | string[];
+      useCase?: string[];
+      bundleSize?: string;
+    };
+  };
 }
 
 // Transform database product to frontend product
@@ -95,6 +105,27 @@ export function transformProduct(dbProduct: any): Product {
   const metaData = dbProduct.meta_data || {};
   const features = metaData.features || 
     attributes.map((attr: any) => `${attr.name}: ${attr.options.join(', ')}`);
+
+  // Extract taxonomy from database attributes
+  const extractTaxonomy = () => {
+    const categorySlugs = categories.map((cat: any) => cat.slug);
+    
+    // Extract specific attributes for filtering
+    const rodCount = attributesMap['rod count'] || attributesMap['rods'];
+    const size = attributesMap['size'];
+    const useCase = attributesMap['use case'] || attributesMap['use'];
+    const bundleSize = attributesMap['bundle size'];
+    
+    return {
+      categorySlugs,
+      attributes: {
+        rodCount: rodCount?.[0],
+        size: size?.[0],
+        useCase,
+        bundleSize: bundleSize?.[0],
+      },
+    };
+  };
 
   return {
     id: dbProduct.id.toString(),
@@ -129,5 +160,6 @@ export function transformProduct(dbProduct: any): Product {
     width: dbProduct.width || undefined,
     height: dbProduct.height || undefined,
     packageValue: dbProduct.package_value || undefined,
+    taxonomy: extractTaxonomy(),
   };
 }
