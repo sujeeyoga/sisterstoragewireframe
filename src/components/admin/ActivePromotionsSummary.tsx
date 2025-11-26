@@ -2,7 +2,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
-import { Zap, Tag, Package, Loader2, Truck } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Zap, Tag, Package, Loader2, Truck, Pencil } from 'lucide-react';
 import { useFlashSales, useUpdateFlashSale } from '@/hooks/useFlashSales';
 import { useStoreDiscount } from '@/hooks/useStoreDiscount';
 import { useProducts } from '@/hooks/useProducts';
@@ -10,14 +12,19 @@ import { useShippingZones } from '@/hooks/useShippingZones';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useState } from 'react';
 
 export const ActivePromotionsSummary = () => {
   const { data: flashSales } = useFlashSales();
   const { discount: storeDiscount } = useStoreDiscount();
   const { data: products = [] } = useProducts();
-  const { zones, isLoading: zonesLoading } = useShippingZones();
+  const { zones, isLoading: zonesLoading, updateRate } = useShippingZones();
   const queryClient = useQueryClient();
   const updateFlashSale = useUpdateFlashSale();
+  
+  const [editingRateId, setEditingRateId] = useState<string | null>(null);
+  const [editThreshold, setEditThreshold] = useState<string>("");
+  const [editRate, setEditRate] = useState<string>("");
 
   // Mutation to toggle store-wide discount
   const toggleStoreDiscount = useMutation({
@@ -73,6 +80,30 @@ export const ActivePromotionsSummary = () => {
       toast.error('Failed to update zone: ' + error.message);
     },
   });
+
+  const handleStartEdit = (rateId: string, currentThreshold: number | null, currentRate: number) => {
+    setEditingRateId(rateId);
+    setEditThreshold(currentThreshold?.toString() || "");
+    setEditRate(currentRate.toString());
+  };
+
+  const handleSaveEdit = () => {
+    if (!editingRateId) return;
+    
+    updateRate({
+      id: editingRateId,
+      free_threshold: editThreshold ? parseFloat(editThreshold) : null,
+      rate_amount: parseFloat(editRate),
+    });
+    
+    setEditingRateId(null);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingRateId(null);
+    setEditThreshold("");
+    setEditRate("");
+  };
 
   // Filter active flash sales
   const now = new Date();
@@ -235,6 +266,70 @@ export const ActivePromotionsSummary = () => {
                             <Badge className="bg-green-500 text-white">
                               FREE over ${rate.free_threshold}
                             </Badge>
+                            <Popover 
+                              open={editingRateId === rate.id}
+                              onOpenChange={(open) => {
+                                if (!open) handleCancelEdit();
+                              }}
+                            >
+                              <PopoverTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-6 w-6"
+                                  onClick={() => handleStartEdit(rate.id, rate.free_threshold, rate.rate_amount)}
+                                >
+                                  <Pencil className="h-3 w-3" />
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-80">
+                                <div className="space-y-4">
+                                  <div>
+                                    <h4 className="font-medium mb-3">Edit {zone.name}</h4>
+                                  </div>
+                                  <div className="space-y-2">
+                                    <label className="text-sm font-medium">
+                                      Free Threshold ($)
+                                    </label>
+                                    <Input
+                                      type="number"
+                                      value={editThreshold}
+                                      onChange={(e) => setEditThreshold(e.target.value)}
+                                      placeholder="e.g., 50"
+                                      step="0.01"
+                                    />
+                                  </div>
+                                  <div className="space-y-2">
+                                    <label className="text-sm font-medium">
+                                      Flat Rate ($)
+                                    </label>
+                                    <Input
+                                      type="number"
+                                      value={editRate}
+                                      onChange={(e) => setEditRate(e.target.value)}
+                                      placeholder="e.g., 4.99"
+                                      step="0.01"
+                                    />
+                                  </div>
+                                  <div className="flex justify-end gap-2">
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={handleCancelEdit}
+                                    >
+                                      Cancel
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      onClick={handleSaveEdit}
+                                      disabled={!editRate}
+                                    >
+                                      Save
+                                    </Button>
+                                  </div>
+                                </div>
+                              </PopoverContent>
+                            </Popover>
                             <Badge variant="outline">
                               ${rate.rate_amount}
                             </Badge>
