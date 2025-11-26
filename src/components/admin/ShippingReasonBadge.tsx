@@ -62,7 +62,7 @@ export function ShippingReasonBadge({ metadata, charged = 0, className = "" }: S
     }
   } else {
     if (metadata.zone_name) {
-      label = `$${(charged || 0).toFixed(2)} - ${metadata.zone_name}`;
+      label = `$${Number(charged || 0).toFixed(2)} - ${metadata.zone_name}`;
       variant = "secondary";
       emoji = "💰";
       if (thresholdMet) {
@@ -71,7 +71,7 @@ export function ShippingReasonBadge({ metadata, charged = 0, className = "" }: S
         description = metadata.rate_method || "Standard shipping rate";
       }
     } else {
-      label = `$${(charged || 0).toFixed(2)} - Standard`;
+      label = `$${Number(charged || 0).toFixed(2)} - Standard`;
       variant = "secondary";
       emoji = "💰";
       description = "Standard shipping rate applied";
