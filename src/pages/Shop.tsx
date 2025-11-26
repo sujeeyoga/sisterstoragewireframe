@@ -5,13 +5,14 @@ import ProductsSection from "@/components/shop/sections/ProductsSection";
 import FooterSection from "@/components/shop/sections/FooterSection";
 import { useShopFilters } from "@/hooks/useShopFilters";
 import { useShopSEO } from "@/hooks/useShopSEO";
-import { featuredProduct } from "@/data/products";
+import { useProduct } from "@/hooks/useProducts";
 import { FAQSchema } from "@/components/seo/FAQSchema";
 import { shopFAQs } from "@/data/shop-faqs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 const Shop = () => {
   const { sortedProducts, isLoading } = useShopFilters();
+  const { data: featuredProduct } = useProduct("bundle-3");
   
   // SEO setup
   useShopSEO(sortedProducts);
@@ -21,8 +22,8 @@ const Shop = () => {
       <FAQSchema faqs={shopFAQs} />
       
       <div className="bg-background min-h-screen">
-        <HeroSection product={featuredProduct} />
-        <ProductsSection 
+        {featuredProduct && <HeroSection product={featuredProduct} />}
+        <ProductsSection
           products={sortedProducts} 
           isLoading={isLoading}
         />

@@ -1,7 +1,7 @@
 
 import React from "react";
 import { categoryTree } from "@/data/catalog";
-import { products } from "@/data/products";
+import { useProducts } from "@/hooks/useProducts";
 import { productTaxonomyMap } from "@/data/product-taxonomy";
 
 interface ShopHeroProps {
@@ -10,6 +10,8 @@ interface ShopHeroProps {
 }
 
 const ShopHero = ({ activeCategorySlug, onSelectCategory }: ShopHeroProps) => {
+  const { data: products = [], isLoading } = useProducts();
+  
   // Calculate product counts for each category using taxonomy (same logic as filtering)
   const getCategoryCount = (categorySlug?: string) => {
     if (!categorySlug) return products.length;
