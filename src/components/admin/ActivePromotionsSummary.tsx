@@ -19,7 +19,7 @@ export const ActivePromotionsSummary = () => {
   }) || [];
 
   // Count products with sale prices
-  const productsOnSale = products.filter(p => p.salePrice && p.salePrice < p.price).length;
+  const productsOnSale = products.filter(p => p.salePrice && p.originalPrice && p.salePrice < p.originalPrice).length;
 
   const totalActivePromotions = 
     (storeDiscount?.enabled ? 1 : 0) + 
