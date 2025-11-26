@@ -221,6 +221,60 @@ export type Database = {
           },
         ]
       }
+      flash_sales: {
+        Row: {
+          applies_to: string
+          category_slugs: string[] | null
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          discount_type: string
+          discount_value: number
+          enabled: boolean | null
+          ends_at: string
+          id: string
+          name: string
+          priority: number | null
+          product_ids: number[] | null
+          starts_at: string
+          updated_at: string | null
+        }
+        Insert: {
+          applies_to?: string
+          category_slugs?: string[] | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          discount_type: string
+          discount_value: number
+          enabled?: boolean | null
+          ends_at: string
+          id?: string
+          name: string
+          priority?: number | null
+          product_ids?: number[] | null
+          starts_at: string
+          updated_at?: string | null
+        }
+        Update: {
+          applies_to?: string
+          category_slugs?: string[] | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          discount_type?: string
+          discount_value?: number
+          enabled?: boolean | null
+          ends_at?: string
+          id?: string
+          name?: string
+          priority?: number | null
+          product_ids?: number[] | null
+          starts_at?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       hero_images: {
         Row: {
           alt_text: string | null
