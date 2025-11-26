@@ -6,9 +6,6 @@ import BestSeller from "@/components/BestSeller";
 import OrganizationGallery from "@/components/OrganizationGallery";
 import PromotionalBanner from "@/components/PromotionalBanner";
 import { SEO } from "@/components/SEO";
-import { FAQSchema } from "@/components/seo/FAQSchema";
-import { homepageFAQs } from "@/data/homepage-faqs";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { burstPreloadImages, burstPreloadVideos } from "@/lib/burstImagePreloader";
 
 const Index = () => {
@@ -75,7 +72,6 @@ const Index = () => {
         url="/"
         structuredData={structuredData}
       />
-      <FAQSchema faqs={homepageFAQs} />
       
       <div className="min-h-screen bg-[#F10781] -mt-28">
         {/* Hero Section */}
@@ -89,25 +85,6 @@ const Index = () => {
         
         {/* Organization Gallery - Photo grid */}
         <OrganizationGallery />
-        
-        {/* FAQ Section */}
-        <section className="bg-background py-16">
-          <div className="container-custom max-w-4xl">
-            <h2 className="text-3xl font-bold text-center mb-8">Frequently Asked Questions</h2>
-            <Accordion type="single" collapsible className="w-full">
-              {homepageFAQs.map((faq, index) => (
-                <AccordionItem key={index} value={`item-${index}`}>
-                  <AccordionTrigger className="text-left">
-                    {faq.question}
-                  </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground">
-                    {faq.answer}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </div>
-        </section>
         
         {/* Promotional Banner - Bottom CTA */}
         <PromotionalBanner />
