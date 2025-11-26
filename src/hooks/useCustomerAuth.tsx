@@ -45,6 +45,26 @@ export const useCustomerAuth = () => {
     },
   });
 
+  const signInWithEmail = useMutation({
+    mutationFn: async (email: string) => {
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: `${window.location.origin}/customer/dashboard`,
+        },
+      });
+      
+      if (error) throw error;
+      return email;
+    },
+    onSuccess: () => {
+      toast.success('Check your email for the login link!');
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Failed to send login link');
+    },
+  });
+
   const verifyOTP = useMutation({
     mutationFn: async ({ phone, token }: { phone: string; token: string }) => {
       const { data, error } = await supabase.auth.verifyOtp({
@@ -100,6 +120,7 @@ export const useCustomerAuth = () => {
     user,
     loading,
     signInWithPhone,
+    signInWithEmail,
     verifyOTP,
     signOut,
   };
