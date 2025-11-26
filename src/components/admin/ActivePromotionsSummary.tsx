@@ -2,10 +2,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
-import { Zap, Tag, Package, Loader2 } from 'lucide-react';
+import { Zap, Tag, Package, Loader2, Truck } from 'lucide-react';
 import { useFlashSales, useUpdateFlashSale } from '@/hooks/useFlashSales';
 import { useStoreDiscount } from '@/hooks/useStoreDiscount';
 import { useProducts } from '@/hooks/useProducts';
+import { useShippingZones } from '@/hooks/useShippingZones';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -14,6 +15,7 @@ export const ActivePromotionsSummary = () => {
   const { data: flashSales } = useFlashSales();
   const { discount: storeDiscount } = useStoreDiscount();
   const { data: products = [] } = useProducts();
+  const { zones, isLoading: zonesLoading } = useShippingZones();
   const queryClient = useQueryClient();
   const updateFlashSale = useUpdateFlashSale();
 
@@ -52,6 +54,26 @@ export const ActivePromotionsSummary = () => {
     },
   });
 
+  // Mutation to toggle shipping zone
+  const toggleShippingZone = useMutation({
+    mutationFn: async ({ zoneId, enabled }: { zoneId: string; enabled: boolean }) => {
+      const { error } = await supabase
+        .from('shipping_zones')
+        .update({ enabled })
+        .eq('id', zoneId);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['shipping-zones'] });
+      queryClient.invalidateQueries({ queryKey: ['shipping-thresholds'] });
+      toast.success('Shipping zone updated');
+    },
+    onError: (error) => {
+      toast.error('Failed to update zone: ' + error.message);
+    },
+  });
+
   // Filter active flash sales
   const now = new Date();
   const activeFlashSales = flashSales?.filter(sale => {
@@ -63,10 +85,16 @@ export const ActivePromotionsSummary = () => {
   // Count products with sale prices
   const productsOnSale = products.filter(p => p.salePrice && p.originalPrice && p.salePrice < p.originalPrice).length;
 
+  // Get zones with free shipping thresholds
+  const zonesWithFreeShipping = zones?.filter(zone => 
+    zone.enabled && zone.rates?.some(rate => rate.enabled && rate.free_threshold && rate.free_threshold > 0)
+  ) || [];
+
   const totalActivePromotions = 
     (storeDiscount?.enabled ? 1 : 0) + 
     activeFlashSales.length + 
-    (productsOnSale > 0 ? 1 : 0);
+    (productsOnSale > 0 ? 1 : 0) +
+    zonesWithFreeShipping.length;
 
   return (
     <Card>
@@ -168,6 +196,68 @@ export const ActivePromotionsSummary = () => {
             <Badge className={productsOnSale > 0 ? 'bg-blue-500' : ''} variant={productsOnSale > 0 ? 'default' : 'secondary'}>
               {productsOnSale} Products
             </Badge>
+          </div>
+
+          {/* Shipping Promotions */}
+          <div className="p-4 border rounded-lg">
+            <div className="flex items-center gap-3 mb-3">
+              <Truck className="h-5 w-5 text-green-600" />
+              <div className="flex-1">
+                <p className="font-medium">Shipping Promotions</p>
+                <p className="text-sm text-muted-foreground">
+                  Free shipping thresholds by region
+                </p>
+              </div>
+            </div>
+            
+            {zonesLoading ? (
+              <div className="flex items-center justify-center py-4">
+                <Loader2 className="h-5 w-5 animate-spin" />
+              </div>
+            ) : zonesWithFreeShipping.length > 0 ? (
+              <div className="space-y-2 pl-8">
+                {zonesWithFreeShipping.map(zone => {
+                  const freeShippingRates = zone.rates?.filter(rate => 
+                    rate.enabled && rate.free_threshold && rate.free_threshold > 0
+                  ) || [];
+                  
+                  return (
+                    <div key={zone.id} className="flex items-center justify-between gap-3 py-2">
+                      <div className="flex-1">
+                        <p className="font-medium text-sm">{zone.name}</p>
+                        {zone.description && (
+                          <p className="text-xs text-muted-foreground">{zone.description}</p>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {freeShippingRates.map(rate => (
+                          <div key={rate.id} className="flex items-center gap-1">
+                            <Badge className="bg-green-500 text-white">
+                              FREE over ${rate.free_threshold}
+                            </Badge>
+                            <Badge variant="outline">
+                              ${rate.rate_amount}
+                            </Badge>
+                          </div>
+                        ))}
+                        <Switch
+                          checked={zone.enabled}
+                          onCheckedChange={(checked) => 
+                            toggleShippingZone.mutate({ zoneId: zone.id, enabled: checked })
+                          }
+                          disabled={toggleShippingZone.isPending}
+                        />
+                        {toggleShippingZone.isPending && (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground pl-8">No free shipping promotions active</p>
+            )}
           </div>
 
           {/* Discount Priority Explanation */}
