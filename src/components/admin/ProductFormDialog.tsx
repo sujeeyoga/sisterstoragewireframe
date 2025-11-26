@@ -26,7 +26,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Loader2, Plus, X } from "lucide-react";
+import { Loader2, Plus, X, Image } from "lucide-react";
+import { ImagePickerDialog } from "./ImagePickerDialog";
 
 const productSchema = z.object({
   name: z.string().min(1, "Product name is required").max(200),
@@ -59,6 +60,7 @@ export function ProductFormDialog({ open, onOpenChange, product }: ProductFormDi
     product?.images?.map((img: any) => img.src) || []
   );
   const [newImageUrl, setNewImageUrl] = useState("");
+  const [showImagePicker, setShowImagePicker] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -137,6 +139,10 @@ export function ProductFormDialog({ open, onOpenChange, product }: ProductFormDi
 
   const removeImageUrl = (index: number) => {
     setImageUrls(imageUrls.filter((_, i) => i !== index));
+  };
+
+  const handleImageSelection = (selectedUrls: string[]) => {
+    setImageUrls(selectedUrls);
   };
 
   return (
@@ -299,6 +305,20 @@ export function ProductFormDialog({ open, onOpenChange, product }: ProductFormDi
             <div className="space-y-2">
               <FormLabel>Product Images</FormLabel>
               <div className="flex gap-2">
+                <Button 
+                  type="button" 
+                  onClick={() => setShowImagePicker(true)} 
+                  variant="outline"
+                  className="flex-1"
+                >
+                  <Image className="h-4 w-4 mr-2" />
+                  Browse Images
+                </Button>
+              </div>
+              <div className="text-xs text-muted-foreground mt-1">
+                Or manually add image URL:
+              </div>
+              <div className="flex gap-2">
                 <Input
                   placeholder="/lovable-uploads/image.jpg"
                   value={newImageUrl}
@@ -314,21 +334,35 @@ export function ProductFormDialog({ open, onOpenChange, product }: ProductFormDi
                   <Plus className="h-4 w-4" />
                 </Button>
               </div>
-              <div className="space-y-2 mt-2">
-                {imageUrls.map((url, index) => (
-                  <div key={index} className="flex items-center gap-2 p-2 bg-muted rounded">
-                    <span className="flex-1 text-sm truncate">{url}</span>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => removeImageUrl(index)}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
+              
+              {imageUrls.length > 0 && (
+                <div className="space-y-2 mt-4">
+                  <FormLabel className="text-xs">Selected Images ({imageUrls.length})</FormLabel>
+                  <div className="grid grid-cols-3 gap-2">
+                    {imageUrls.map((url, index) => (
+                      <div key={index} className="relative aspect-square rounded-lg overflow-hidden border border-border group">
+                        <img 
+                          src={url} 
+                          alt={`Product ${index + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="sm"
+                          className="absolute top-1 right-1 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={() => removeImageUrl(index)}
+                        >
+                          <X className="h-3 w-3" />
+                        </Button>
+                        <div className="absolute bottom-0 left-0 right-0 bg-black/60 p-1">
+                          <p className="text-xs text-white truncate">{index + 1}</p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
+                </div>
+              )}
             </div>
 
             <div className="grid grid-cols-4 gap-4">
@@ -464,6 +498,13 @@ export function ProductFormDialog({ open, onOpenChange, product }: ProductFormDi
           </form>
         </Form>
       </DialogContent>
+
+      <ImagePickerDialog
+        open={showImagePicker}
+        onOpenChange={setShowImagePicker}
+        onSelect={handleImageSelection}
+        selectedUrls={imageUrls}
+      />
     </Dialog>
   );
 }
