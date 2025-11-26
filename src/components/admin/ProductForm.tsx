@@ -12,7 +12,6 @@ import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Bold, Italic, Underline, Type, History, Save, Check, Bookmark, ShoppingBag, Upload, X, Image as ImageIcon } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { products as staticProducts } from '@/data/products';
 import { productTaxonomyMap } from '@/data/product-taxonomy';
 
 type ProductFormData = {
@@ -881,14 +880,12 @@ export const ProductForm = () => {
                           );
                         }
                         
-                        // Then try shop product images
-                        const shopProduct = staticProducts.find(p => p.slug === formValues.slug);
-                        const imageUrl = shopProduct?.images?.[0];
-                        
-                        if (imageUrl) {
+                        // Then try database images from form
+                        const firstImage = (formValues.images as any)?.[0]?.src;
+                        if (firstImage) {
                           return (
                             <img 
-                              src={imageUrl} 
+                              src={firstImage} 
                               alt={formValues.name || 'Product'}
                               className="w-full h-full object-cover"
                             />
@@ -899,7 +896,7 @@ export const ProductForm = () => {
                         return (
                           <div 
                             className="w-full h-full flex items-center justify-center"
-                            style={{ backgroundColor: shopProduct?.color || '#E91E63' }}
+                            style={{ backgroundColor: '#E91E63' }}
                           >
                             <ImageIcon className="h-12 w-12 text-background/50" />
                           </div>
@@ -922,20 +919,12 @@ export const ProductForm = () => {
                     
                     {/* Product badges */}
                     <div className="absolute top-3 left-3 flex flex-col gap-2">
-                      {(() => {
-                        const shopProduct = staticProducts.find(p => p.slug === formValues.slug);
-                        return (
-                          <>
-                            {shopProduct?.bestSeller && <Badge>Best Seller</Badge>}
-                            {formValues.manage_stock && formValues.stock_quantity !== null && formValues.stock_quantity <= 5 && formValues.stock_quantity > 0 && (
-                              <Badge variant="outline">Only {formValues.stock_quantity} left</Badge>
-                            )}
-                            {!formValues.in_stock && (
-                              <Badge variant="destructive">Out of Stock</Badge>
-                            )}
-                          </>
-                        );
-                      })()}
+                      {formValues.manage_stock && formValues.stock_quantity !== null && formValues.stock_quantity <= 5 && formValues.stock_quantity > 0 && (
+                        <Badge variant="outline">Only {formValues.stock_quantity} left</Badge>
+                      )}
+                      {!formValues.in_stock && (
+                        <Badge variant="destructive">Out of Stock</Badge>
+                      )}
                     </div>
                   </div>
                   
@@ -966,14 +955,11 @@ export const ProductForm = () => {
                     
                     {/* Sister Caption - Fixed Height */}
                     <div className="min-h-[2rem] mb-2">
-                      {(() => {
-                        const shopProduct = staticProducts.find(p => p.slug === formValues.slug);
-                        return shopProduct?.caption ? (
-                          <p className="text-[hsl(var(--primary))] text-lg font-medium italic line-clamp-1">
-                            "{shopProduct.caption}"
-                          </p>
-                        ) : null;
-                      })()}
+                      {formValues.short_description && (
+                        <p className="text-[hsl(var(--primary))] text-lg font-medium italic line-clamp-1">
+                          "{formValues.short_description}"
+                        </p>
+                      )}
                     </div>
                     
                     {/* Description - Fixed Height */}
@@ -987,33 +973,21 @@ export const ProductForm = () => {
                     
                     {/* Material - Fixed Height */}
                     <div className="h-[1.5rem] mb-3 text-sm text-muted-foreground">
-                      {(() => {
-                        const shopProduct = staticProducts.find(p => p.slug === formValues.slug);
-                        return shopProduct?.material || 'Premium materials';
-                      })()}
+                      Premium materials
                     </div>
                     
                     {/* Feature - Fixed Height */}
                     <div className="h-[1.5rem] mb-3">
-                      {(() => {
-                        const shopProduct = staticProducts.find(p => p.slug === formValues.slug);
-                        const feature = shopProduct?.features?.[0];
-                        return feature ? (
-                          <div className="text-sm text-muted-foreground flex items-center gap-1">
-                            <Check className="h-4 w-4 text-[hsl(var(--primary))]" /> 
-                            <span className="line-clamp-1">{feature}</span>
-                          </div>
-                        ) : null;
-                      })()}
+                      <div className="text-sm text-muted-foreground flex items-center gap-1">
+                        <Check className="h-4 w-4 text-[hsl(var(--primary))]" /> 
+                        <span className="line-clamp-1">Quality craftsmanship</span>
+                      </div>
                     </div>
                     
                     {/* Rod Count - Fixed Height */}
                     <div className="min-h-[4rem] mb-3 flex justify-center">
                       {(() => {
-                        const shopProduct = staticProducts.find(p => p.slug === formValues.slug);
-                        if (!shopProduct) return null;
-                        
-                        const taxonomy = productTaxonomyMap[shopProduct.id];
+                        const taxonomy = productTaxonomyMap[formValues.slug];
                         const rodCount = taxonomy?.attributes?.rodCount;
                         
                         return rodCount ? (
@@ -1028,10 +1002,7 @@ export const ProductForm = () => {
                     {/* Attribute Chips - Fixed Height */}
                     <div className="min-h-[2rem] mb-3">
                       {(() => {
-                        const shopProduct = staticProducts.find(p => p.slug === formValues.slug);
-                        if (!shopProduct) return null;
-                        
-                        const taxonomy = productTaxonomyMap[shopProduct.id];
+                        const taxonomy = productTaxonomyMap[formValues.slug];
                         const attrs = taxonomy?.attributes;
                         if (!attrs) return null;
                         
@@ -1060,24 +1031,18 @@ export const ProductForm = () => {
                     <div className="mt-auto space-y-2">
                       {/* SKU - Fixed Height */}
                       <div className="min-h-[1rem]">
-                        {(() => {
-                          const shopProduct = staticProducts.find(p => p.slug === formValues.slug);
-                          return shopProduct?.sku ? (
-                            <div className="text-xs text-muted-foreground">
-                              SKU: {shopProduct.sku}
-                            </div>
-                          ) : null;
-                        })()}
+                        {formValues.slug && (
+                          <div className="text-xs text-muted-foreground">
+                            SKU: {formValues.slug}
+                          </div>
+                        )}
                       </div>
                       
                       {/* Category Badge - Fixed Height */}
                       <div className="flex justify-between items-center h-8">
-                        {(() => {
-                          const shopProduct = staticProducts.find(p => p.slug === formValues.slug);
-                          return shopProduct?.category ? (
-                            <Badge variant="outline" className="h-6 px-3">{shopProduct.category}</Badge>
-                          ) : null;
-                        })()}
+                        {formValues.slug && (
+                          <Badge variant="outline" className="h-6 px-3">{formValues.slug}</Badge>
+                        )}
                       </div>
                       
                       {/* Add to Cart Button */}

@@ -29,9 +29,8 @@ import {
 } from '@/components/ui/tooltip';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { Edit, Trash2, Plus, Search, Eye, EyeOff, AlertCircle, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
-import { products as staticProducts } from '@/data/products';
+import { Edit, Trash2, Plus, Search, Eye, EyeOff, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { ProductFormDialog } from './ProductFormDialog';
 
 type SortField = 'name' | 'price' | 'stock' | 'visible';
@@ -48,16 +47,6 @@ export const ProductsTable = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-
-  // Check if a product exists on the shop page (static products)
-  const isOnShopPage = (productSlug: string) => {
-    return staticProducts.some(p => p.slug === productSlug);
-  };
-
-  // Get shop page product data by slug
-  const getShopPageProduct = (productSlug: string) => {
-    return staticProducts.find(p => p.slug === productSlug);
-  };
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -182,16 +171,6 @@ export const ProductsTable = () => {
     },
   });
 
-  const handleBulkDelete = () => {
-    if (!products) return;
-    const productsNotOnShop = products.filter(p => !isOnShopPage(p.slug));
-    const ids = productsNotOnShop.map(p => p.id);
-    if (ids.length > 0) {
-      bulkDeleteMutation.mutate(ids);
-    }
-  };
-
-  const productsNotOnShop = products?.filter(p => !isOnShopPage(p.slug)) || [];
 
   const toggleVisibilityMutation = useMutation({
     mutationFn: async ({ id, visible }: { id: number; visible: boolean }) => {
@@ -220,22 +199,8 @@ export const ProductsTable = () => {
         <div>
           <h1 className="text-3xl font-bold mb-2">Products</h1>
           <p className="text-muted-foreground">Manage all products in your store</p>
-          {productsNotOnShop.length > 0 && (
-            <p className="text-sm text-destructive mt-1">
-              {productsNotOnShop.length} product(s) not on shop page
-            </p>
-          )}
         </div>
         <div className="flex gap-2">
-          {productsNotOnShop.length > 0 && (
-            <Button 
-              variant="destructive" 
-              onClick={() => setShowBulkDeleteDialog(true)}
-            >
-              <Trash2 className="mr-2 h-4 w-4" />
-              Remove {productsNotOnShop.length} Hidden Products
-            </Button>
-          )}
           <Button onClick={() => {
             setEditingProduct(null);
             setShowProductForm(true);
@@ -329,12 +294,10 @@ export const ProductsTable = () => {
               </TableRow>
             ) : (
               products?.map((product) => {
-                const shopProduct = getShopPageProduct(product.slug);
-                const displayName = shopProduct?.name || product.name;
-                const displayPrice = shopProduct?.price || product.sale_price || product.regular_price || product.price;
-                const displayStock = shopProduct?.stock || product.stock_quantity;
-                const displayInStock = shopProduct?.inStock ?? product.in_stock;
-                
+                const displayName = product.name;
+                const displayPrice = product.sale_price || product.regular_price || product.price;
+                const displayStock = product.stock_quantity;
+                const displayInStock = product.in_stock;
                 const firstImage = product.images?.[0]?.src;
                 
                 return (
@@ -370,7 +333,7 @@ export const ProductsTable = () => {
                       ${displayPrice}
                     </TableCell>
                     <TableCell>
-                      {shopProduct ? displayStock : (product.manage_stock ? product.stock_quantity : 'Unlimited')}
+                      {product.manage_stock ? product.stock_quantity : 'Unlimited'}
                     </TableCell>
                     <TableCell>
                       {product.weight ? (
@@ -401,44 +364,25 @@ export const ProductsTable = () => {
                       </Badge>
                     </TableCell>
                     <TableCell onClick={(e) => e.stopPropagation()}>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            toggleVisibilityMutation.mutate({
-                              id: product.id,
-                              visible: !product.visible,
-                            });
-                          }}
-                          title={product.visible ? 'Hide product' : 'Show product'}
-                        >
-                        {!isOnShopPage(product.slug) ? (
-                          <Eye className="h-4 w-4 text-red-600" />
-                        ) : product.visible ? (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleVisibilityMutation.mutate({
+                            id: product.id,
+                            visible: !product.visible,
+                          });
+                        }}
+                        title={product.visible ? 'Hide product' : 'Show product'}
+                      >
+                        {product.visible ? (
                           <Eye className="h-4 w-4 text-green-600" />
                         ) : (
                           <EyeOff className="h-4 w-4 text-red-600" />
                         )}
                       </Button>
-                      {!isOnShopPage(product.slug) && (
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <AlertCircle className="h-4 w-4 text-red-600" />
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p className="max-w-xs">
-                                This product is not in the shop page's product list.
-                                It won't appear on the website even if visible.
-                              </p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      )}
-                    </div>
-                  </TableCell>
+                    </TableCell>
                   <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
                     <div className="flex justify-end gap-2">
                       <Button
@@ -487,37 +431,6 @@ export const ProductsTable = () => {
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      <AlertDialog open={showBulkDeleteDialog} onOpenChange={setShowBulkDeleteDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Remove Products Not on Shop Page</AlertDialogTitle>
-            <AlertDialogDescription>
-              This will permanently delete {productsNotOnShop.length} product(s) that are not displayed on the shop page. 
-              These products have a warning icon (⚠️) in the visibility column.
-              <div className="mt-4 p-3 bg-muted rounded-md max-h-48 overflow-y-auto">
-                <p className="text-sm font-medium mb-2">Products to be deleted:</p>
-                <ul className="text-sm space-y-1">
-                  {productsNotOnShop.map(p => (
-                    <li key={p.id}>• {p.name}</li>
-                  ))}
-                </ul>
-              </div>
-              <p className="mt-3 font-semibold text-destructive">This action cannot be undone.</p>
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleBulkDelete}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              disabled={bulkDeleteMutation.isPending}
-            >
-              {bulkDeleteMutation.isPending ? 'Deleting...' : `Delete ${productsNotOnShop.length} Products`}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

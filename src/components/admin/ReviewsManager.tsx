@@ -24,7 +24,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { useProductReviews } from '@/hooks/useProductReviews';
 import { format } from 'date-fns';
-import { products } from '@/data/products';
+import { useProducts } from '@/hooks/useProducts';
 
 const ReviewsManager: React.FC = () => {
   const { allReviews, isLoadingAll, updateReviewStatus, deleteReview } = useProductReviews();
@@ -53,8 +53,7 @@ const ReviewsManager: React.FC = () => {
   };
 
   const getProductName = (productId: number) => {
-    const product = products.find((p) => Number(p.id) === productId);
-    return product?.name || `Product #${productId}`;
+    return `Product #${productId}`;
   };
 
   const handleApprove = (review: any) => {
