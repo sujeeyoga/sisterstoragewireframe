@@ -1,4 +1,4 @@
-import { LayoutDashboard, Package, Layout, RefreshCw, Settings, Users, ShoppingCart, Image, FolderOpen, FileText, Sparkles, Truck, Video, Film, LogOut, DollarSign, Type, PackageCheck, Mail, TrendingUp, Globe, Ship, QrCode, Wallet, Search, MapPin } from 'lucide-react';
+import { LayoutDashboard, Package, Layout, RefreshCw, Settings, Users, ShoppingCart, Image, FolderOpen, FileText, Sparkles, Truck, Video, Film, LogOut, DollarSign, Type, PackageCheck, Mail, TrendingUp, Globe, Ship, QrCode, Wallet, Search, MapPin, Zap, Star } from 'lucide-react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -37,6 +37,8 @@ const menuGroups = [
       { title: 'Email Campaigns', url: '/admin/emails', icon: Mail, end: false },
       { title: 'Products', url: '/admin/products', icon: Package, end: false },
       { title: 'Customers', url: '/admin/customers', icon: Users, end: false },
+      { title: 'Reviews', url: '/admin/reviews', icon: Star, end: false },
+      { title: 'Flash Sales', url: '/admin/flash-sales', icon: Zap, end: false },
       { title: 'Bulk Shipping Refund', url: '/admin/bulk-shipping-refund', icon: DollarSign, end: false },
     ]
   },

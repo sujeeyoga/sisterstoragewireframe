@@ -83,6 +83,18 @@ serve(async (req) => {
 
     console.log('Store discount:', discountData);
 
+    // Fetch active flash sales
+    const now = new Date().toISOString();
+    const { data: flashSales } = await supabaseClient
+      .from('flash_sales')
+      .select('*')
+      .eq('enabled', true)
+      .lte('starts_at', now)
+      .gte('ends_at', now)
+      .order('priority', { ascending: false });
+
+    console.log('Active flash sales:', flashSales?.length || 0);
+
     // Check if customer exists
     let customerId;
     const customers = await stripe.customers.list({ email: customerEmail, limit: 1 });
@@ -90,12 +102,37 @@ serve(async (req) => {
       customerId = customers.data[0].id;
     }
 
-    // Calculate discounted prices if store discount is active
+    // Calculate discounted prices - flash sales take priority over store-wide discount
     let discountPercentage = 0;
     if (discountData?.setting_value?.percentage) {
       discountPercentage = discountData.setting_value.percentage;
       console.log('Store discount active:', discountPercentage, '%');
     }
+
+    // Helper function to find applicable flash sale for a product
+    const getFlashSaleForProduct = (productId: number) => {
+      if (!flashSales || flashSales.length === 0) return null;
+      
+      for (const sale of flashSales) {
+        if (sale.applies_to === 'all') {
+          return sale;
+        } else if (sale.applies_to === 'products' && sale.product_ids?.includes(productId)) {
+          return sale;
+        }
+        // Category-based flash sales would need category info from items
+      }
+      return null;
+    };
+
+    // Helper function to calculate flash sale discount
+    const calculateFlashDiscount = (price: number, sale: any) => {
+      if (sale.discount_type === 'percentage') {
+        return price * (sale.discount_value / 100);
+      } else if (sale.discount_type === 'fixed_amount') {
+        return Math.min(sale.discount_value, price);
+      }
+      return 0; // BOGO handled elsewhere
+    };
 
     // Build line items for Stripe from cart items with discount already applied
     const lineItems = items.map((item: any) => {
@@ -124,16 +161,30 @@ serve(async (req) => {
         return freeItemData;
       }
 
-      // Apply discount to regular item price if discount exists
-      const discountedPrice = discountPercentage > 0 
-        ? item.price * (1 - discountPercentage / 100)
-        : item.price;
+      // Check for flash sale on this product (takes priority)
+      const flashSale = getFlashSaleForProduct(item.id);
+      let discountedPrice = item.price;
+      let appliedDiscount = 'none';
+
+      if (flashSale) {
+        const flashDiscount = calculateFlashDiscount(item.price, flashSale);
+        discountedPrice = item.price - flashDiscount;
+        appliedDiscount = `flash-${flashSale.id}`;
+        console.log(`Flash sale applied to ${item.name}:`, flashSale.name, discountedPrice);
+      } else if (discountPercentage > 0) {
+        // Apply store-wide discount if no flash sale
+        discountedPrice = item.price * (1 - discountPercentage / 100);
+        appliedDiscount = 'store-wide';
+      }
       
       const itemData: any = {
         price_data: {
           currency: 'cad',
           product_data: {
             name: item.name,
+            metadata: {
+              appliedDiscount,
+            },
           },
           unit_amount: Math.round(discountedPrice * 100),
         },
@@ -177,9 +228,18 @@ serve(async (req) => {
       if (item.isFreeGift || item.price === 0) {
         return sum;
       }
-      const discountedPrice = discountPercentage > 0 
-        ? item.price * (1 - discountPercentage / 100)
-        : item.price;
+
+      // Check for flash sale
+      const flashSale = getFlashSaleForProduct(item.id);
+      let discountedPrice = item.price;
+
+      if (flashSale) {
+        const flashDiscount = calculateFlashDiscount(item.price, flashSale);
+        discountedPrice = item.price - flashDiscount;
+      } else if (discountPercentage > 0) {
+        discountedPrice = item.price * (1 - discountPercentage / 100);
+      }
+
       return sum + (discountedPrice * item.quantity);
     }, 0);
 

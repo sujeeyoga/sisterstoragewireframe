@@ -44,6 +44,8 @@ import { BulkShippingNotificationTool } from '@/components/admin/BulkShippingNot
 import { ManualCarrierCostEntry } from '@/components/admin/ManualCarrierCostEntry';
 import LocationDebugPanel from '@/components/admin/LocationDebugPanel';
 import { TrackingBackfillTool } from '@/components/admin/TrackingBackfillTool';
+import { FlashSalesManager } from '@/components/admin/FlashSalesManager';
+import ReviewsManager from '@/components/admin/ReviewsManager';
 
 const Admin = () => {
   const { notification, clearNotification } = useOrderNotifications();
@@ -88,6 +90,8 @@ const Admin = () => {
         <Route path="products" element={<ProductsTable />} />
         <Route path="products/:id" element={<ProductForm />} />
         <Route path="customers" element={<CustomersTable />} />
+        <Route path="reviews" element={<ReviewsManager />} />
+        <Route path="flash-sales" element={<FlashSalesManager />} />
         <Route path="shipping" element={<StallionDashboard />} />
         <Route path="shipping-settings" element={<ShippingSettings />} />
         <Route path="shipping-zones" element={<ShippingZonesManager />} />
