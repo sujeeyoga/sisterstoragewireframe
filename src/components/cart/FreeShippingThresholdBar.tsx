@@ -37,9 +37,16 @@ const FreeShippingThresholdBar = ({
 
   // Calculate shipping estimate and free shipping threshold
   useEffect(() => {
-    if (!city || !region || !country || cartItems.length === 0) {
+    if (cartItems.length === 0) {
       setEstimatedShipping(null);
       setThreshold(null);
+      return;
+    }
+
+    // If location is unknown, use fallback threshold
+    if (!city || !region || !country) {
+      setThreshold(289); // Default Canada-Wide threshold
+      setEstimatedShipping(null);
       return;
     }
 
