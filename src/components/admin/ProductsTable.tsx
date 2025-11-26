@@ -41,6 +41,7 @@ export const ProductsTable = () => {
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [sortField, setSortField] = useState<SortField | null>(null);
   const [sortDirection, setSortDirection] = useState<SortDirection>(null);
+  const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -154,6 +155,43 @@ export const ProductsTable = () => {
     },
   });
 
+  const bulkDeleteMutation = useMutation({
+    mutationFn: async (ids: number[]) => {
+      const { error } = await supabase
+        .from('woocommerce_products')
+        .delete()
+        .in('id', ids);
+      if (error) throw error;
+      return ids.length;
+    },
+    onSuccess: (count) => {
+      toast({ 
+        title: 'Products deleted', 
+        description: `${count} product(s) removed successfully` 
+      });
+      queryClient.invalidateQueries({ queryKey: ['admin-products'] });
+      setShowBulkDeleteDialog(false);
+    },
+    onError: (error) => {
+      toast({
+        title: 'Failed to delete products',
+        description: error.message,
+        variant: 'destructive',
+      });
+    },
+  });
+
+  const handleBulkDelete = () => {
+    if (!products) return;
+    const productsNotOnShop = products.filter(p => !isOnShopPage(p.slug));
+    const ids = productsNotOnShop.map(p => p.id);
+    if (ids.length > 0) {
+      bulkDeleteMutation.mutate(ids);
+    }
+  };
+
+  const productsNotOnShop = products?.filter(p => !isOnShopPage(p.slug)) || [];
+
   const toggleVisibilityMutation = useMutation({
     mutationFn: async ({ id, visible }: { id: number; visible: boolean }) => {
       const { error } = await supabase
@@ -181,13 +219,29 @@ export const ProductsTable = () => {
         <div>
           <h1 className="text-3xl font-bold mb-2">Products</h1>
           <p className="text-muted-foreground">Showing shop-visible products only (visible & in stock)</p>
+          {productsNotOnShop.length > 0 && (
+            <p className="text-sm text-destructive mt-1">
+              {productsNotOnShop.length} product(s) not on shop page
+            </p>
+          )}
         </div>
-        <Button asChild>
-          <Link to="/admin/products/new">
-            <Plus className="mr-2 h-4 w-4" />
-            Add Product
-          </Link>
-        </Button>
+        <div className="flex gap-2">
+          {productsNotOnShop.length > 0 && (
+            <Button 
+              variant="destructive" 
+              onClick={() => setShowBulkDeleteDialog(true)}
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              Remove {productsNotOnShop.length} Hidden Products
+            </Button>
+          )}
+          <Button asChild>
+            <Link to="/admin/products/new">
+              <Plus className="mr-2 h-4 w-4" />
+              Add Product
+            </Link>
+          </Button>
+        </div>
       </div>
 
       <div className="mb-6">
@@ -414,6 +468,37 @@ export const ProductsTable = () => {
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={showBulkDeleteDialog} onOpenChange={setShowBulkDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove Products Not on Shop Page</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete {productsNotOnShop.length} product(s) that are not displayed on the shop page. 
+              These products have a warning icon (⚠️) in the visibility column.
+              <div className="mt-4 p-3 bg-muted rounded-md max-h-48 overflow-y-auto">
+                <p className="text-sm font-medium mb-2">Products to be deleted:</p>
+                <ul className="text-sm space-y-1">
+                  {productsNotOnShop.map(p => (
+                    <li key={p.id}>• {p.name}</li>
+                  ))}
+                </ul>
+              </div>
+              <p className="mt-3 font-semibold text-destructive">This action cannot be undone.</p>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleBulkDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              disabled={bulkDeleteMutation.isPending}
+            >
+              {bulkDeleteMutation.isPending ? 'Deleting...' : `Delete ${productsNotOnShop.length} Products`}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
