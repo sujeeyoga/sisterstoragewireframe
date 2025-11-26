@@ -227,6 +227,30 @@ export const products: Product[] = [
     attributes: {},
     caption: "All your pieces, organized and loved.",
     funnelStage: "Everyday Sister Staples – No rods"
+  },
+  {
+    id: "multipurpose-box",
+    name: "Multipurpose Box",
+    description: "STORE. ORGANIZE. SIMPLIFY.",
+    shortDescription: "Versatile storage box for jewelry and accessories",
+    price: 18.00,
+    category: "organizers",
+    categories: ["organizers"],
+    color: "#c80056",
+    features: ["Multiple compartments", "Versatile storage", "Sleek design"],
+    material: "Durable materials with premium finish",
+    stock: 50,
+    inStock: true,
+    sku: "MULTI-BOX-001",
+    slug: "multipurpose-box",
+    images: [
+      "/lovable-uploads/multipurpose-box-1.jpg",
+      "/lovable-uploads/multipurpose-box-2.jpg",
+      "/lovable-uploads/multipurpose-box-3.jpg"
+    ],
+    attributes: {},
+    caption: "Perfect for all your organizing needs.",
+    funnelStage: "Everyday Sister Staples – No rods"
   }
 ];
 
