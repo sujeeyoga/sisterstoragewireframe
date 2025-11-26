@@ -40,6 +40,8 @@ const ShopHeroProduct: React.FC<ShopHeroProductProps> = ({ product }) => {
       id: product.id,
       name: product.title,
       price: product.price,
+      regularPrice: product.compareAt,
+      salePrice: product.compareAt && product.price < product.compareAt ? product.price : undefined,
       image: product.image,
     });
     
@@ -54,6 +56,8 @@ const ShopHeroProduct: React.FC<ShopHeroProductProps> = ({ product }) => {
       id: product.id,
       name: product.title,
       price: product.price,
+      regularPrice: product.compareAt,
+      salePrice: product.compareAt && product.price < product.compareAt ? product.price : undefined,
       image: product.image,
     });
     

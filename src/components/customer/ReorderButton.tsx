@@ -25,6 +25,8 @@ export const ReorderButton = ({ items, orderNumber }: ReorderButtonProps) => {
             id: item.product_id || item.id,
             name: item.name,
             price: item.price,
+            regularPrice: item.regular_price,
+            salePrice: item.sale_price,
             image: item.image,
           });
         }

@@ -20,6 +20,8 @@ const DualProductCard = ({ products }: DualProductCardProps) => {
       id: product.id,
       name: product.name,
       price: product.price,
+      regularPrice: product.originalPrice,
+      salePrice: product.originalPrice && product.price < product.originalPrice ? product.price : undefined,
       image: product.images?.[0] || product.color
     });
     

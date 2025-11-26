@@ -116,6 +116,8 @@ const FeaturedItems = () => {
       id: item.id,
       name: item.name,
       price: item.price,
+      regularPrice: undefined,
+      salePrice: undefined,
       image: item.image
     });
     

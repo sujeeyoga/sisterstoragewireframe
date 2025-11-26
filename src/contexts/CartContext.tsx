@@ -8,6 +8,8 @@ export type CartItem = {
   id: string;
   name: string;
   price: number;
+  regularPrice?: number;  // Original price before any sale
+  salePrice?: number;     // Sale price if product is on sale
   image: string;
   quantity: number;
   description?: string;
