@@ -25,23 +25,21 @@ const FreeShippingThresholdBar = ({
   postalCode
 }: FreeShippingThresholdBarProps) => {
   const { calculateShipping } = useShippingZones();
-  const THRESHOLD = 289;
+  const [threshold, setThreshold] = useState<number | null>(null);
   const [prevSubtotal, setPrevSubtotal] = useState(cartSubtotal);
   const [showConfetti, setShowConfetti] = useState(false);
   const [estimatedShipping, setEstimatedShipping] = useState<number | null>(null);
   const [isCalculating, setIsCalculating] = useState(false);
 
-  // Only show for Canada or US customers
-  const shouldShowBar = country === 'CA' || country === 'US';
+  const remaining = threshold ? Math.max(0, threshold - cartSubtotal) : 0;
+  const progressPercent = threshold ? Math.min(100, (cartSubtotal / threshold) * 100) : 0;
+  const hasReachedThreshold = threshold ? cartSubtotal >= threshold : false;
 
-  const remaining = Math.max(0, THRESHOLD - cartSubtotal);
-  const progressPercent = Math.min(100, (cartSubtotal / THRESHOLD) * 100);
-  const hasReachedThreshold = cartSubtotal >= THRESHOLD;
-
-  // Calculate shipping estimate
+  // Calculate shipping estimate and free shipping threshold
   useEffect(() => {
     if (!city || !region || !country || cartItems.length === 0) {
       setEstimatedShipping(null);
+      setThreshold(null);
       return;
     }
 
@@ -57,6 +55,14 @@ const FreeShippingThresholdBar = ({
         if (result?.appliedRate) {
           setEstimatedShipping(result.appliedRate.rate_amount);
         }
+
+        // Extract free shipping threshold from the matched zone's rates
+        if (result?.rates && result.rates.length > 0) {
+          const rateWithThreshold = result.rates.find((r: any) => r.free_threshold !== null);
+          if (rateWithThreshold?.free_threshold) {
+            setThreshold(rateWithThreshold.free_threshold);
+          }
+        }
       } catch (error) {
         console.error('Failed to calculate shipping:', error);
         setEstimatedShipping(null);
@@ -71,16 +77,15 @@ const FreeShippingThresholdBar = ({
 
   useEffect(() => {
     // Trigger confetti animation when threshold is crossed
-    if (hasReachedThreshold && prevSubtotal < THRESHOLD && cartSubtotal >= THRESHOLD) {
+    if (threshold && hasReachedThreshold && prevSubtotal < threshold && cartSubtotal >= threshold) {
       setShowConfetti(true);
       setTimeout(() => setShowConfetti(false), 3000);
     }
     setPrevSubtotal(cartSubtotal);
-  }, [cartSubtotal, hasReachedThreshold, prevSubtotal, THRESHOLD]);
+  }, [cartSubtotal, hasReachedThreshold, prevSubtotal, threshold]);
 
   // Don't show bar if not applicable or still loading location
-  if (isLoading) return null;
-  if (!shouldShowBar) return null;
+  if (isLoading || threshold === null) return null;
 
   return (
     <div className="mb-3 p-2 bg-gradient-to-r from-background to-secondary/20 rounded-lg border border-border/50">

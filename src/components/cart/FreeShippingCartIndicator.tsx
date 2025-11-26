@@ -27,12 +27,8 @@ const FreeShippingCartIndicator = ({
 }: FreeShippingCartIndicatorProps) => {
   const { calculateShipping } = useShippingZones();
   const [estimatedShipping, setEstimatedShipping] = useState<number | null>(null);
+  const [threshold, setThreshold] = useState<number | null>(null);
   const [isCalculating, setIsCalculating] = useState(false);
-  const threshold = useMemo(() => {
-    if (country === 'CA') return 289;
-    if (country === 'US') return 289;
-    return null;
-  }, [country]);
 
   const remaining = useMemo(() => {
     if (threshold === null) return null;
@@ -41,10 +37,11 @@ const FreeShippingCartIndicator = ({
 
   const animatedRemaining = useAnimatedNumber(remaining || 0, 400);
 
-  // Calculate shipping estimate
+  // Calculate shipping estimate and free shipping threshold
   useEffect(() => {
-    if (!city || !region || !country || cartItems.length === 0 || !remaining || remaining === 0) {
+    if (!city || !region || !country || cartItems.length === 0) {
       setEstimatedShipping(null);
+      setThreshold(null);
       return;
     }
 
@@ -60,6 +57,14 @@ const FreeShippingCartIndicator = ({
         if (result?.appliedRate) {
           setEstimatedShipping(result.appliedRate.rate_amount);
         }
+
+        // Extract free shipping threshold from the matched zone's rates
+        if (result?.rates && result.rates.length > 0) {
+          const rateWithThreshold = result.rates.find((r: any) => r.free_threshold !== null);
+          if (rateWithThreshold?.free_threshold) {
+            setThreshold(rateWithThreshold.free_threshold);
+          }
+        }
       } catch (error) {
         console.error('Failed to calculate shipping:', error);
         setEstimatedShipping(null);
@@ -70,7 +75,7 @@ const FreeShippingCartIndicator = ({
 
     const debounceTimer = setTimeout(calculate, 500);
     return () => clearTimeout(debounceTimer);
-  }, [cartSubtotal, cartItems, city, region, country, postalCode, remaining, calculateShipping]);
+  }, [cartSubtotal, cartItems, city, region, country, postalCode, calculateShipping]);
 
   // Don't show if loading, empty cart, or not eligible
   if (isLoading || cartSubtotal === 0 || threshold === null) {
