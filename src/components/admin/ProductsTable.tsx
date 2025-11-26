@@ -90,8 +90,6 @@ export const ProductsTable = () => {
       let query = supabase
         .from('woocommerce_products')
         .select('*')
-        .eq('visible', true)
-        .eq('in_stock', true)
         .order('name');
       
       if (search) {
@@ -221,7 +219,7 @@ export const ProductsTable = () => {
       <div className="mb-6 flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold mb-2">Products</h1>
-          <p className="text-muted-foreground">Showing shop-visible products only (visible & in stock)</p>
+          <p className="text-muted-foreground">Manage all products in your store</p>
           {productsNotOnShop.length > 0 && (
             <p className="text-sm text-destructive mt-1">
               {productsNotOnShop.length} product(s) not on shop page
