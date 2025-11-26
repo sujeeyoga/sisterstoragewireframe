@@ -264,6 +264,7 @@ export const ProductsTable = () => {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-[80px]">Image</TableHead>
               <TableHead>
                 <Button
                   variant="ghost"
@@ -318,13 +319,13 @@ export const ProductsTable = () => {
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell colSpan={9} className="text-center py-8">
+                <TableCell colSpan={10} className="text-center py-8">
                   Loading products...
                 </TableCell>
               </TableRow>
             ) : products?.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={9} className="text-center py-8">
+                <TableCell colSpan={10} className="text-center py-8">
                   No products found
                 </TableCell>
               </TableRow>
@@ -336,12 +337,27 @@ export const ProductsTable = () => {
                 const displayStock = shopProduct?.stock || product.stock_quantity;
                 const displayInStock = shopProduct?.inStock ?? product.in_stock;
                 
+                const firstImage = product.images?.[0]?.src;
+                
                 return (
                   <TableRow 
                     key={product.id}
                     className={`cursor-pointer hover:bg-muted/50 ${!product.visible ? 'opacity-50 bg-muted/30' : ''}`}
                     onClick={() => navigate(`/admin/products/${product.id}`)}
                   >
+                    <TableCell>
+                      <div className="w-12 h-12 rounded-md overflow-hidden bg-muted flex items-center justify-center">
+                        {firstImage ? (
+                          <img 
+                            src={firstImage} 
+                            alt={displayName}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <span className="text-xs text-muted-foreground">No image</span>
+                        )}
+                      </div>
+                    </TableCell>
                     <TableCell className="font-medium">
                       <div className="flex items-center gap-2">
                         {displayName}
