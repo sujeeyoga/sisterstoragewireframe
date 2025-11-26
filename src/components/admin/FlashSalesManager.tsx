@@ -32,6 +32,14 @@ export const FlashSalesManager = () => {
   const [editingSale, setEditingSale] = useState<FlashSale | null>(null);
   const [deletingSale, setDeletingSale] = useState<FlashSale | null>(null);
 
+  // Filter currently active sales
+  const now = new Date();
+  const activeSales = sales?.filter(sale => {
+    const start = new Date(sale.starts_at);
+    const end = new Date(sale.ends_at);
+    return sale.enabled && start <= now && end >= now;
+  }) || [];
+
   const handleEdit = (sale: FlashSale) => {
     setEditingSale(sale);
     setFormOpen(true);
@@ -51,6 +59,70 @@ export const FlashSalesManager = () => {
 
   return (
     <div className="container mx-auto p-6 space-y-6">
+      {/* Currently Active Sales Section */}
+      {activeSales.length > 0 && (
+        <Card className="border-2 border-green-500">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-green-600">
+              <Zap className="h-5 w-5" />
+              Currently Active Sales
+            </CardTitle>
+            <CardDescription>
+              {activeSales.length} sale{activeSales.length !== 1 ? 's' : ''} running right now
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {activeSales.map((sale) => (
+                <div key={sale.id} className="p-4 bg-green-50 rounded-lg border border-green-200">
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-1">
+                      <h4 className="font-semibold text-lg">{sale.name}</h4>
+                      {sale.description && (
+                        <p className="text-sm text-muted-foreground">{sale.description}</p>
+                      )}
+                      <div className="flex gap-4 text-sm">
+                        <span className="font-medium">
+                          {sale.discount_type === 'percentage' && `${sale.discount_value}% OFF`}
+                          {sale.discount_type === 'fixed_amount' && `$${sale.discount_value} OFF`}
+                          {sale.discount_type === 'bogo' && 'BOGO'}
+                        </span>
+                        <span className="text-muted-foreground">•</span>
+                        <span className="capitalize">{sale.applies_to}</span>
+                        {sale.product_ids && sale.product_ids.length > 0 && (
+                          <>
+                            <span className="text-muted-foreground">•</span>
+                            <span>{sale.product_ids.length} product{sale.product_ids.length !== 1 ? 's' : ''}</span>
+                          </>
+                        )}
+                        {sale.category_slugs && sale.category_slugs.length > 0 && (
+                          <>
+                            <span className="text-muted-foreground">•</span>
+                            <span>{sale.category_slugs.length} categor{sale.category_slugs.length !== 1 ? 'ies' : 'y'}</span>
+                          </>
+                        )}
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        Ends: {format(new Date(sale.ends_at), 'MMM d, yyyy h:mm a')}
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleEdit(sale)}
+                      >
+                        <Edit className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
