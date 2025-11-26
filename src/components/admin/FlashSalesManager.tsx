@@ -4,8 +4,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Plus, Edit, Trash2, Zap } from 'lucide-react';
 import { useFlashSales, useDeleteFlashSale, FlashSale, applyFlashSaleDiscount } from '@/hooks/useFlashSales';
 import { useProducts } from '@/hooks/useProducts';
+import { useStoreDiscount } from '@/hooks/useStoreDiscount';
 import { FlashSaleForm } from './FlashSaleForm';
 import { FlashSaleStatusBadge } from './FlashSaleStatusBadge';
+import { DiscountConflictWarning } from './DiscountConflictWarning';
+import { ActivePromotionsSummary } from './ActivePromotionsSummary';
 import {
   Table,
   TableBody,
@@ -29,6 +32,7 @@ import { format } from 'date-fns';
 export const FlashSalesManager = () => {
   const { data: sales, isLoading } = useFlashSales();
   const { data: products = [] } = useProducts();
+  const { discount: storeDiscount } = useStoreDiscount();
   const deleteMutation = useDeleteFlashSale();
   const [formOpen, setFormOpen] = useState(false);
   const [editingSale, setEditingSale] = useState<FlashSale | null>(null);
@@ -75,6 +79,16 @@ export const FlashSalesManager = () => {
 
   return (
     <div className="container mx-auto p-6 space-y-6">
+      {/* Active Promotions Summary */}
+      <ActivePromotionsSummary />
+
+      {/* Discount Conflict Warning */}
+      <DiscountConflictWarning
+        storeWideEnabled={storeDiscount?.enabled}
+        storeWidePercentage={storeDiscount?.percentage}
+        activeFlashSalesCount={activeSales.length}
+      />
+
       {/* Currently Active Sales Section */}
       {activeSales.length > 0 && (
         <Card className="border-2 border-green-500">

@@ -6,8 +6,11 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Info } from 'lucide-react';
 import { FlashSale, useCreateFlashSale, useUpdateFlashSale } from '@/hooks/useFlashSales';
 import { useProducts } from '@/hooks/useProducts';
+import { useStoreDiscount } from '@/hooks/useStoreDiscount';
 
 interface FlashSaleFormProps {
   open: boolean;
@@ -17,6 +20,7 @@ interface FlashSaleFormProps {
 
 export const FlashSaleForm = ({ open, onOpenChange, sale }: FlashSaleFormProps) => {
   const { data: products } = useProducts();
+  const { discount: storeDiscount } = useStoreDiscount();
   const createMutation = useCreateFlashSale();
   const updateMutation = useUpdateFlashSale();
 
@@ -62,6 +66,17 @@ export const FlashSaleForm = ({ open, onOpenChange, sale }: FlashSaleFormProps) 
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Store-wide discount info banner */}
+          {storeDiscount?.enabled && (
+            <Alert className="border-blue-500 bg-blue-50">
+              <Info className="h-4 w-4 text-blue-600" />
+              <AlertDescription className="text-blue-800">
+                <strong>Note:</strong> A {storeDiscount.percentage}% store-wide discount is currently active. 
+                Flash sales take priority and will override the store-wide discount for affected products.
+              </AlertDescription>
+            </Alert>
+          )}
+
           <div className="space-y-2">
             <Label htmlFor="name">Sale Name *</Label>
             <Input
