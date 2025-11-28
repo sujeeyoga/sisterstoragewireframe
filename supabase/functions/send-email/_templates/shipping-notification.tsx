@@ -109,7 +109,7 @@ export const ShippingNotificationEmail = ({
         </Text>
 
         <Text style={footer}>
-          If you have any questions about your shipment, please don't hesitate to contact us.
+          If you have any questions about your shipment, please contact us at sisterstorageinc@gmail.com
           <br />
           Thank you for shopping with Sister Storage!
         </Text>
