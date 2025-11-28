@@ -56,6 +56,7 @@ const menuGroups = [
     items: [
       { title: 'Admin Settings', url: '/admin/admin-settings', icon: Settings, end: false },
       { title: 'Store Settings', url: '/admin/store-settings', icon: Package, end: false },
+      { title: 'Email Testing', url: '/admin/email-testing', icon: Mail, end: false },
       { title: 'Location Debug', url: '/admin/location-debug', icon: MapPin, end: false },
     ]
   },

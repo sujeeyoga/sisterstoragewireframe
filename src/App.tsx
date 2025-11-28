@@ -41,6 +41,7 @@ import PasswordReset from "./pages/PasswordReset";
 import { ProtectedRoutes } from "./components/auth/ProtectedRoutes";
 import { AdminProtectedRoute } from "./components/auth/AdminProtectedRoute";
 import AdminEmails from "./pages/AdminEmails";
+import AdminEmailTesting from "./pages/AdminEmailTesting";
 import CustomerLogin from "./pages/CustomerLogin";
 import CustomerDashboard from "./pages/CustomerDashboard";
 import CustomerOrderDetail from "./pages/CustomerOrderDetail";
@@ -96,6 +97,7 @@ const App = () => {
               <Route path="/our-story" element={<ProtectedRoutes><PageTransition><OurStory /></PageTransition></ProtectedRoutes>} />
               <Route path="/admin/*" element={<AdminProtectedRoute><Admin /></AdminProtectedRoute>} />
               <Route path="/admin/emails" element={<AdminProtectedRoute><AdminEmails /></AdminProtectedRoute>} />
+              <Route path="/admin/email-testing" element={<AdminProtectedRoute><AdminEmailTesting /></AdminProtectedRoute>} />
               
               {/* Customer portal routes */}
               <Route path="/customer/login" element={<ProtectedRoutes><PageTransition><CustomerLogin /></PageTransition></ProtectedRoutes>} />
