@@ -54,7 +54,7 @@ const PrivacyPolicy = () => {
                   <h2 className="text-2xl font-semibold mb-4 text-primary">Your Rights</h2>
                   <p className="mb-4">
                     You have the right to access, update, or delete your personal information. You may also opt out of 
-                    marketing communications at any time. To exercise these rights, please contact us at privacy@sisterstorage.com.
+                    marketing communications at any time. To exercise these rights, please contact us at sisterstorageinc@gmail.com.
                   </p>
                 </section>
 
@@ -65,7 +65,7 @@ const PrivacyPolicy = () => {
                   </p>
                   <p className="font-medium">
                     Sister Storage<br />
-                    Email: privacy@sisterstorage.com<br />
+                    Email: sisterstorageinc@gmail.com<br />
                     Phone: 1-800-SISTERS
                   </p>
                 </section>

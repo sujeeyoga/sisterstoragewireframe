@@ -185,7 +185,7 @@ const handler = async (req: Request): Promise<Response> => {
             }
 
             const { data, error } = await resend.emails.send({
-              from: 'Sister Storage <hello@sisterstorage.ca>',
+              from: 'Sister Storage <sisterstorageinc@gmail.com>',
               to: [recipient.email],
               subject: templateData.subject,
               html,
