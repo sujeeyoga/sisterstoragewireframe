@@ -1,357 +1,348 @@
-import React from "react";
+import {
+  Body,
+  Button,
+  Container,
+  Head,
+  Heading,
+  Hr,
+  Html,
+  Link,
+  Preview,
+  Section,
+  Text,
+} from 'npm:@react-email/components@0.0.22';
+import * as React from 'npm:react@18.3.1';
 
 interface DelayedTrackingEmailProps {
   customerName: string;
   orderNumber: string;
   trackingNumber: string;
-  carrierName: string;
+  carrier: string;
   items: Array<{
     name: string;
     quantity: number;
-    price: number;
   }>;
   shippingAddress: {
-    address?: string;
-    address_1?: string;
-    address_2?: string;
-    city?: string;
-    state?: string;
-    postal_code?: string;
-    postcode?: string;
-    country?: string;
+    name: string;
+    address: string;
+    city: string;
+    state: string;
+    postal_code: string;
+    country: string;
   };
 }
 
-export const DelayedTrackingEmail: React.FC<DelayedTrackingEmailProps> = ({
+export const DelayedTrackingEmail = ({
   customerName,
   orderNumber,
   trackingNumber,
-  carrierName,
+  carrier,
   items,
   shippingAddress,
-}) => {
+}: DelayedTrackingEmailProps) => {
   const trackingUrl = `https://www.google.com/search?q=${encodeURIComponent(trackingNumber)}`;
 
   return (
-    <html>
-      <body style={bodyStyle}>
-        <div style={containerStyle}>
+    <Html>
+      <Head />
+      <Preview>Your delayed tracking information for order #{orderNumber}</Preview>
+      <Body style={main}>
+        <Container style={container}>
           {/* Header */}
-          <div style={headerStyle}>
-            <h1 style={brandStyle}>Sister Storage</h1>
-          </div>
+          <Section style={header}>
+            <Heading style={brandHeading}>Sister Storage</Heading>
+          </Section>
 
           {/* Apology Notice */}
-          <div style={apologyBoxStyle}>
-            <h2 style={apologyTitleStyle}>⏰ We Apologize for the Delay</h2>
-            <p style={apologyTextStyle}>
+          <Section style={apologyBox}>
+            <Heading style={apologyTitle}>⏰ We Apologize for the Delay</Heading>
+            <Text style={apologyText}>
               We sincerely apologize for not sending you tracking information sooner. 
               Your order has been on its way, and we want to make sure you can track it now.
-            </p>
-          </div>
+            </Text>
+          </Section>
 
           {/* Main Content */}
-          <div style={contentStyle}>
-            <h2 style={titleStyle}>Your Package is On The Way! 📦</h2>
+          <Heading style={h1}>Your Package is On The Way! 📦</Heading>
+          
+          <Text style={greeting}>Hi {customerName},</Text>
+          
+          <Text style={text}>
+            Your order <strong>#{orderNumber}</strong> has been shipped and may already be close to delivery!
+            Here's your tracking information:
+          </Text>
+
+          {/* Tracking Box */}
+          <Section style={trackingBox}>
+            <Text style={trackingLabel}>TRACKING NUMBER</Text>
+            <Text style={trackingNumber}>{trackingNumber}</Text>
+            <Text style={carrierText}>Carrier: {carrier}</Text>
             
-            <p style={greetingStyle}>Hi {customerName},</p>
-            
-            <p style={textStyle}>
-              Your order <strong>#{orderNumber}</strong> has been shipped and may already be close to delivery!
-              Here's your tracking information:
-            </p>
+            <Button style={button} href={trackingUrl}>
+              Track Your Package
+            </Button>
+          </Section>
 
-            {/* Tracking Box */}
-            <div style={trackingBoxStyle}>
-              <div style={trackingLabelStyle}>Tracking Number</div>
-              <div style={trackingNumberStyle}>{trackingNumber}</div>
-              <div style={carrierStyle}>Carrier: {carrierName}</div>
-              
-              <a href={trackingUrl} style={buttonStyle}>
-                Track Your Package
-              </a>
-            </div>
-
-            {/* Shipped Items */}
-            <div style={itemsSectionStyle}>
-              <h3 style={sectionTitleStyle}>Shipped Items</h3>
-              {items.map((item, index) => (
-                <div key={index} style={itemRowStyle}>
-                  <div style={itemNameStyle}>
-                    {item.name} × {item.quantity}
-                  </div>
-                  <div style={itemPriceStyle}>
-                    ${(item.price * item.quantity).toFixed(2)}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Shipping Address */}
-            <div style={addressSectionStyle}>
-              <h3 style={sectionTitleStyle}>Shipping Address</h3>
-              <div style={addressStyle}>
-                {shippingAddress.address || shippingAddress.address_1}
-                {shippingAddress.address_2 && (
-                  <>
-                    <br />
-                    {shippingAddress.address_2}
-                  </>
-                )}
-                <br />
-                {shippingAddress.city}, {shippingAddress.state}{" "}
-                {shippingAddress.postal_code || shippingAddress.postcode}
-                <br />
-                {shippingAddress.country}
+          {/* Shipped Items */}
+          <Section style={itemsSection}>
+            <Heading style={sectionTitle}>Shipped Items</Heading>
+            {items.map((item, index) => (
+              <div key={index} style={itemRow}>
+                <Text style={itemName}>
+                  {item.name} × {item.quantity}
+                </Text>
               </div>
-            </div>
+            ))}
+          </Section>
 
-            {/* Support Notice */}
-            <div style={supportBoxStyle}>
-              <p style={supportTextStyle}>
-                <strong>Haven't received your package yet?</strong>
-              </p>
-              <p style={supportTextStyle}>
-                Since we're sending this tracking information late, your package may already be out for delivery or very close to arriving. 
-                If it hasn't arrived and the tracking shows it should have, please don't hesitate to contact our support team.
-              </p>
-              <p style={supportTextStyle}>
-                We're here to help: <a href="mailto:sisterstorageinc@gmail.com" style={linkStyle}>sisterstorageinc@gmail.com</a>
-              </p>
-            </div>
-
-            <p style={textStyle}>
-              Thank you for your patience and for being a valued Sister Storage customer!
-            </p>
-
-            <p style={signatureStyle}>
-              With sincere apologies,
+          {/* Shipping Address */}
+          <Section style={addressSection}>
+            <Heading style={sectionTitle}>Shipping Address</Heading>
+            <Text style={address}>
+              {shippingAddress.address}
               <br />
-              <strong>The Sister Storage Team</strong>
-            </p>
-          </div>
+              {shippingAddress.city}, {shippingAddress.state} {shippingAddress.postal_code}
+              <br />
+              {shippingAddress.country}
+            </Text>
+          </Section>
+
+          {/* Support Notice */}
+          <Section style={supportBox}>
+            <Text style={supportText}>
+              <strong>Haven't received your package yet?</strong>
+            </Text>
+            <Text style={supportText}>
+              Since we're sending this tracking information late, your package may already be out for delivery or very close to arriving. 
+              If it hasn't arrived and the tracking shows it should have, please don't hesitate to contact our support team.
+            </Text>
+            <Text style={supportText}>
+              We're here to help: <Link href="mailto:sisterstorageinc@gmail.com" style={link}>sisterstorageinc@gmail.com</Link>
+            </Text>
+          </Section>
+
+          <Text style={text}>
+            Thank you for your patience and for being a valued Sister Storage customer!
+          </Text>
+
+          <Text style={signature}>
+            With sincere apologies,
+            <br />
+            <strong>The Sister Storage Team</strong>
+          </Text>
+
+          <Hr style={hr} />
 
           {/* Footer */}
-          <div style={footerStyle}>
-            <p style={footerTextStyle}>
-              Sister Storage - Organized Living, Simplified
-            </p>
-            <p style={footerTextStyle}>
-              <a href="https://sisterstorage.com" style={footerLinkStyle}>
-                Visit Our Store
-              </a>
-            </p>
-          </div>
-        </div>
-      </body>
-    </html>
+          <Text style={footer}>
+            Sister Storage - Organized Living, Simplified
+          </Text>
+          <Text style={footer}>
+            <Link href="https://sisterstorage.ca" style={footerLink}>
+              Visit Our Store
+            </Link>
+          </Text>
+        </Container>
+      </Body>
+    </Html>
   );
 };
 
+export default DelayedTrackingEmail;
+
 // Styles
-const bodyStyle: React.CSSProperties = {
-  margin: 0,
-  padding: 0,
-  backgroundColor: "#f5f5f5",
+const main = {
+  backgroundColor: '#f5f5f5',
   fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
 };
 
-const containerStyle: React.CSSProperties = {
-  maxWidth: "600px",
-  margin: "0 auto",
-  backgroundColor: "#ffffff",
+const container = {
+  margin: '0 auto',
+  padding: '20px 0 48px',
+  maxWidth: '600px',
+  backgroundColor: '#ffffff',
 };
 
-const headerStyle: React.CSSProperties = {
-  backgroundColor: "#FFB7C5",
-  padding: "30px 20px",
-  textAlign: "center",
+const header = {
+  backgroundColor: '#FFB7C5',
+  padding: '30px 20px',
+  textAlign: 'center' as const,
 };
 
-const brandStyle: React.CSSProperties = {
-  margin: 0,
-  color: "#ffffff",
-  fontSize: "28px",
-  fontWeight: "bold",
+const brandHeading = {
+  margin: '0',
+  color: '#ffffff',
+  fontSize: '28px',
+  fontWeight: 'bold',
 };
 
-const apologyBoxStyle: React.CSSProperties = {
-  backgroundColor: "#FFF4E6",
-  border: "2px solid #FFB84D",
-  borderRadius: "8px",
-  padding: "20px",
-  margin: "20px",
-  textAlign: "center",
+const apologyBox = {
+  backgroundColor: '#FFF4E6',
+  border: '2px solid #FFB84D',
+  borderRadius: '8px',
+  padding: '20px',
+  margin: '20px',
+  textAlign: 'center' as const,
 };
 
-const apologyTitleStyle: React.CSSProperties = {
-  color: "#CC7A00",
-  fontSize: "18px",
-  marginTop: 0,
-  marginBottom: "12px",
+const apologyTitle = {
+  color: '#CC7A00',
+  fontSize: '18px',
+  marginTop: '0',
+  marginBottom: '12px',
 };
 
-const apologyTextStyle: React.CSSProperties = {
-  color: "#663C00",
-  fontSize: "14px",
-  lineHeight: "1.6",
-  margin: 0,
+const apologyText = {
+  color: '#663C00',
+  fontSize: '14px',
+  lineHeight: '1.6',
+  margin: '0',
 };
 
-const contentStyle: React.CSSProperties = {
-  padding: "30px 20px",
+const h1 = {
+  color: '#333333',
+  fontSize: '24px',
+  fontWeight: 'bold',
+  margin: '30px 0',
+  padding: '0 20px',
+  textAlign: 'center' as const,
 };
 
-const titleStyle: React.CSSProperties = {
-  color: "#333333",
-  fontSize: "24px",
-  marginTop: 0,
-  marginBottom: "20px",
-  textAlign: "center",
+const greeting = {
+  color: '#333333',
+  fontSize: '16px',
+  marginBottom: '16px',
+  padding: '0 20px',
 };
 
-const greetingStyle: React.CSSProperties = {
-  color: "#333333",
-  fontSize: "16px",
-  marginBottom: "16px",
+const text = {
+  color: '#666666',
+  fontSize: '14px',
+  lineHeight: '1.6',
+  marginBottom: '16px',
+  padding: '0 20px',
 };
 
-const textStyle: React.CSSProperties = {
-  color: "#666666",
-  fontSize: "14px",
-  lineHeight: "1.6",
-  marginBottom: "16px",
+const trackingBox = {
+  backgroundColor: '#f8f9fa',
+  border: '2px solid #FFB7C5',
+  borderRadius: '8px',
+  padding: '24px',
+  margin: '24px 20px',
+  textAlign: 'center' as const,
 };
 
-const trackingBoxStyle: React.CSSProperties = {
-  backgroundColor: "#f8f9fa",
-  border: "2px solid #FFB7C5",
-  borderRadius: "8px",
-  padding: "24px",
-  margin: "24px 0",
-  textAlign: "center",
+const trackingLabel = {
+  color: '#666666',
+  fontSize: '12px',
+  textTransform: 'uppercase' as const,
+  letterSpacing: '1px',
+  marginBottom: '8px',
 };
 
-const trackingLabelStyle: React.CSSProperties = {
-  color: "#666666",
-  fontSize: "12px",
-  textTransform: "uppercase",
-  letterSpacing: "1px",
-  marginBottom: "8px",
+const trackingNumber = {
+  color: '#333333',
+  fontSize: '20px',
+  fontWeight: 'bold',
+  marginBottom: '8px',
+  fontFamily: 'monospace',
 };
 
-const trackingNumberStyle: React.CSSProperties = {
-  color: "#333333",
-  fontSize: "20px",
-  fontWeight: "bold",
-  marginBottom: "8px",
-  fontFamily: "monospace",
+const carrierText = {
+  color: '#666666',
+  fontSize: '14px',
+  marginBottom: '20px',
 };
 
-const carrierStyle: React.CSSProperties = {
-  color: "#666666",
-  fontSize: "14px",
-  marginBottom: "20px",
+const button = {
+  backgroundColor: '#FFB7C5',
+  borderRadius: '6px',
+  color: '#fff',
+  fontSize: '14px',
+  fontWeight: 'bold',
+  textDecoration: 'none',
+  textAlign: 'center' as const,
+  display: 'inline-block',
+  padding: '12px 32px',
 };
 
-const buttonStyle: React.CSSProperties = {
-  display: "inline-block",
-  backgroundColor: "#FFB7C5",
-  color: "#ffffff",
-  padding: "12px 32px",
-  borderRadius: "6px",
-  textDecoration: "none",
-  fontWeight: "bold",
-  fontSize: "14px",
+const itemsSection = {
+  margin: '32px 20px',
 };
 
-const itemsSectionStyle: React.CSSProperties = {
-  marginTop: "32px",
-  marginBottom: "32px",
+const sectionTitle = {
+  color: '#333333',
+  fontSize: '16px',
+  fontWeight: 'bold',
+  marginBottom: '16px',
+  borderBottom: '2px solid #FFB7C5',
+  paddingBottom: '8px',
 };
 
-const sectionTitleStyle: React.CSSProperties = {
-  color: "#333333",
-  fontSize: "16px",
-  fontWeight: "bold",
-  marginBottom: "16px",
-  borderBottom: "2px solid #FFB7C5",
-  paddingBottom: "8px",
+const itemRow = {
+  padding: '12px 0',
+  borderBottom: '1px solid #eeeeee',
 };
 
-const itemRowStyle: React.CSSProperties = {
-  display: "flex",
-  justifyContent: "space-between",
-  padding: "12px 0",
-  borderBottom: "1px solid #eeeeee",
+const itemName = {
+  color: '#333333',
+  fontSize: '14px',
 };
 
-const itemNameStyle: React.CSSProperties = {
-  color: "#333333",
-  fontSize: "14px",
+const addressSection = {
+  margin: '32px 20px',
 };
 
-const itemPriceStyle: React.CSSProperties = {
-  color: "#666666",
-  fontSize: "14px",
-  fontWeight: "bold",
+const address = {
+  color: '#666666',
+  fontSize: '14px',
+  lineHeight: '1.6',
+  backgroundColor: '#f8f9fa',
+  padding: '16px',
+  borderRadius: '6px',
 };
 
-const addressSectionStyle: React.CSSProperties = {
-  marginTop: "32px",
-  marginBottom: "32px",
+const supportBox = {
+  backgroundColor: '#E8F5E9',
+  border: '2px solid #81C784',
+  borderRadius: '8px',
+  padding: '20px',
+  margin: '24px 20px',
 };
 
-const addressStyle: React.CSSProperties = {
-  color: "#666666",
-  fontSize: "14px",
-  lineHeight: "1.6",
-  backgroundColor: "#f8f9fa",
-  padding: "16px",
-  borderRadius: "6px",
+const supportText = {
+  color: '#2E7D32',
+  fontSize: '14px',
+  lineHeight: '1.6',
+  margin: '8px 0',
 };
 
-const supportBoxStyle: React.CSSProperties = {
-  backgroundColor: "#E8F5E9",
-  border: "2px solid #81C784",
-  borderRadius: "8px",
-  padding: "20px",
-  margin: "24px 0",
+const link = {
+  color: '#1976D2',
+  textDecoration: 'underline',
 };
 
-const supportTextStyle: React.CSSProperties = {
-  color: "#2E7D32",
-  fontSize: "14px",
-  lineHeight: "1.6",
-  margin: "8px 0",
+const signature = {
+  color: '#666666',
+  fontSize: '14px',
+  margin: '32px 20px',
+  lineHeight: '1.6',
 };
 
-const linkStyle: React.CSSProperties = {
-  color: "#1976D2",
-  textDecoration: "underline",
+const hr = {
+  borderColor: '#e6e6e6',
+  margin: '40px 20px',
 };
 
-const signatureStyle: React.CSSProperties = {
-  color: "#666666",
-  fontSize: "14px",
-  marginTop: "32px",
-  lineHeight: "1.6",
+const footer = {
+  color: '#999999',
+  fontSize: '12px',
+  lineHeight: '24px',
+  textAlign: 'center' as const,
+  margin: '8px 20px',
 };
 
-const footerStyle: React.CSSProperties = {
-  backgroundColor: "#f8f9fa",
-  padding: "24px 20px",
-  textAlign: "center",
-  borderTop: "1px solid #eeeeee",
-};
-
-const footerTextStyle: React.CSSProperties = {
-  color: "#999999",
-  fontSize: "12px",
-  margin: "8px 0",
-};
-
-const footerLinkStyle: React.CSSProperties = {
-  color: "#FFB7C5",
-  textDecoration: "none",
+const footerLink = {
+  color: '#FFB7C5',
+  textDecoration: 'none',
 };
