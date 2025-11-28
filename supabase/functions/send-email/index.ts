@@ -7,6 +7,9 @@ import { OrderConfirmationEmail } from "./_templates/order-confirmation.tsx";
 import { ShippingNotificationEmail } from "./_templates/shipping-notification.tsx";
 import { AdminWelcomeEmail } from "./_templates/admin-welcome.tsx";
 import { AdminPromotionEmail } from "./_templates/admin-promotion.tsx";
+import { AnnouncementEmail } from "./_templates/announcement.tsx";
+import { PromotionalEmail } from "./_templates/promotional.tsx";
+import { DelayedTrackingEmail } from "./_templates/delayed-tracking.tsx";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -16,9 +19,9 @@ const corsHeaders = {
 };
 
 interface EmailRequest {
-  type: "order_confirmation" | "shipping_notification" | "admin_welcome" | "admin_promotion";
+  type: "order_confirmation" | "shipping_notification" | "admin_welcome" | "admin_promotion" | "announcement" | "promotional" | "delayed_tracking";
   to: string;
-  data: OrderConfirmationData | ShippingNotificationData | AdminWelcomeData | AdminPromotionData;
+  data: OrderConfirmationData | ShippingNotificationData | AdminWelcomeData | AdminPromotionData | AnnouncementEmailData | PromotionalEmailData | DelayedTrackingEmailData;
 }
 
 interface OrderConfirmationData {
@@ -80,6 +83,56 @@ interface AdminPromotionData {
   loginUrl: string;
 }
 
+interface AnnouncementEmailData {
+  customerName?: string;
+  subject: string;
+  previewText?: string;
+  image?: string;
+  headline: string;
+  bodyText: string;
+  ctaText: string;
+  ctaLink: string;
+  footerText?: string;
+}
+
+interface PromotionalEmailData {
+  customerName?: string;
+  subject: string;
+  previewText?: string;
+  heroImage?: string;
+  headline: string;
+  subheadline?: string;
+  bodyText: string;
+  ctaText: string;
+  ctaLink: string;
+  productCards?: Array<{
+    name: string;
+    image: string;
+    price: string;
+    link: string;
+  }>;
+  footerText?: string;
+}
+
+interface DelayedTrackingEmailData {
+  customerName: string;
+  orderNumber: string;
+  trackingNumber: string;
+  carrier: string;
+  items: Array<{
+    name: string;
+    quantity: number;
+  }>;
+  shippingAddress: {
+    name: string;
+    address: string;
+    city: string;
+    state: string;
+    postal_code: string;
+    country: string;
+  };
+}
+
 const handler = async (req: Request): Promise<Response> => {
   // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
@@ -128,6 +181,30 @@ const handler = async (req: Request): Promise<Response> => {
           React.createElement(AdminPromotionEmail, promotionData)
         );
         subject = `Admin Access Granted - Sister Storage`;
+        break;
+
+      case "announcement":
+        const announcementData = data as AnnouncementEmailData;
+        html = await renderAsync(
+          React.createElement(AnnouncementEmail, announcementData)
+        );
+        subject = announcementData.subject;
+        break;
+
+      case "promotional":
+        const promoData = data as PromotionalEmailData;
+        html = await renderAsync(
+          React.createElement(PromotionalEmail, promoData)
+        );
+        subject = promoData.subject;
+        break;
+
+      case "delayed_tracking":
+        const delayedData = data as DelayedTrackingEmailData;
+        html = await renderAsync(
+          React.createElement(DelayedTrackingEmail, delayedData)
+        );
+        subject = `Tracking Information - Order #${delayedData.orderNumber}`;
         break;
 
       default:
