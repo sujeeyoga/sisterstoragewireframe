@@ -214,7 +214,7 @@ const CustomerOrderDetail = () => {
                 Need help with your order?
               </p>
               <Button variant="outline" className="w-full" asChild>
-                <a href="mailto:hello@sisterstoragebyhamna.com">Contact Support</a>
+                <a href="mailto:sisterstorageinc@gmail.com">Contact Support</a>
               </Button>
             </CardContent>
           </Card>

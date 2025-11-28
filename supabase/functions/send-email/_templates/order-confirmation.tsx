@@ -254,7 +254,7 @@ export const OrderConfirmationEmail = ({
         </Section>
 
         <Text style={footer}>
-          If you have any questions, please don't hesitate to contact us.
+          If you have any questions, please contact us at sisterstorageinc@gmail.com
           <br />
           Thank you for shopping with Sister Storage!
         </Text>

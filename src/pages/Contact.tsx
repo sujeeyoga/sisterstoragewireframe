@@ -125,21 +125,18 @@ const Contact = () => {
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
                         <Mail className="h-5 w-5 text-primary" />
-                        Email Support
+                        Email Us
                       </CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-3">
+                    <CardContent>
                       <div>
-                        <p className="font-medium">General Inquiries</p>
-                        <p className="text-muted-foreground">hello@sisterstorage.com</p>
-                      </div>
-                      <div>
-                        <p className="font-medium">Order Support</p>
-                        <p className="text-muted-foreground">orders@sisterstorage.com</p>
-                      </div>
-                      <div>
-                        <p className="font-medium">Wholesale & Partnerships</p>
-                        <p className="text-muted-foreground">wholesale@sisterstorage.com</p>
+                        <p className="font-medium mb-2">Contact Us</p>
+                        <a 
+                          href="mailto:sisterstorageinc@gmail.com" 
+                          className="text-primary hover:underline"
+                        >
+                          sisterstorageinc@gmail.com
+                        </a>
                       </div>
                     </CardContent>
                   </Card>
