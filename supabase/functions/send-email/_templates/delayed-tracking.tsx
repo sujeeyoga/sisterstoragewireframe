@@ -116,7 +116,7 @@ export const DelayedTrackingEmail: React.FC<DelayedTrackingEmailProps> = ({
                 If it hasn't arrived and the tracking shows it should have, please don't hesitate to contact our support team.
               </p>
               <p style={supportTextStyle}>
-                We're here to help: <a href="mailto:support@sisterstorage.com" style={linkStyle}>support@sisterstorage.com</a>
+                We're here to help: <a href="mailto:sisterstorageinc@gmail.com" style={linkStyle}>sisterstorageinc@gmail.com</a>
               </p>
             </div>
 

@@ -170,7 +170,7 @@ serve(async (req) => {
       await supabase.functions.invoke('send-email', {
         body: {
           type: 'admin_promotion',
-          to: 'admin@sisterstorageandorganization.com',
+          to: 'sisterstorageinc@gmail.com',
           data: {
             subject: '🚨 Critical Order Data Issues Detected',
             preview: `${criticalCount} critical issues found in order data`,

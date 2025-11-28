@@ -49,7 +49,7 @@ const handler = async (req: Request): Promise<Response> => {
       .eq('setting_key', 'reviews')
       .single();
 
-    const adminEmail = "hello@sisterstoragebyhamna.com"; // Default admin email
+    const adminEmail = "sisterstorageinc@gmail.com"; // Default admin email
 
     const emails = [];
 
@@ -57,7 +57,7 @@ const handler = async (req: Request): Promise<Response> => {
     if (notification_type === 'submission') {
       // 1. Send confirmation to customer
       const customerEmailResponse = await resend.emails.send({
-        from: "Sister Storage <hello@sisterstoragebyhamna.com>",
+        from: "Sister Storage <sisterstorageinc@gmail.com>",
         to: [customer_email],
         subject: "Thank you for your review! 💖",
         html: `
@@ -92,7 +92,7 @@ const handler = async (req: Request): Promise<Response> => {
 
       // 2. Send notification to admin
       const adminEmailResponse = await resend.emails.send({
-        from: "Sister Storage Reviews <hello@sisterstoragebyhamna.com>",
+        from: "Sister Storage Reviews <sisterstorageinc@gmail.com>",
         to: [adminEmail],
         subject: "New Product Review Submitted ⭐",
         html: `
@@ -130,7 +130,7 @@ const handler = async (req: Request): Promise<Response> => {
     if (notification_type === 'approval') {
       // Send approval email to customer
       const approvalEmailResponse = await resend.emails.send({
-        from: "Sister Storage <hello@sisterstoragebyhamna.com>",
+        from: "Sister Storage <sisterstorageinc@gmail.com>",
         to: [customer_email],
         subject: "Your review has been published! 🎉",
         html: `

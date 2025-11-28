@@ -70,7 +70,7 @@ const TermsOfService = () => {
                   </p>
                   <p className="font-medium">
                     Sister Storage<br />
-                    Email: legal@sisterstorage.com<br />
+                    Email: sisterstorageinc@gmail.com<br />
                     Phone: 1-800-SISTERS
                   </p>
                 </section>

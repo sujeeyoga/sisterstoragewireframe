@@ -129,7 +129,7 @@ const handler = async (req: Request): Promise<Response> => {
               
               <p style="font-size: 14px; color: #666; margin-top: 30px; text-align: center;">
                 Questions? We're here to help!<br>
-                Contact us anytime at support@sisterstorage.com
+                Contact us anytime at sisterstorageinc@gmail.com
               </p>
             </div>
             
