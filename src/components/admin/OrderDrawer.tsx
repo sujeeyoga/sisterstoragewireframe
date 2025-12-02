@@ -32,7 +32,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { format } from 'date-fns';
-import { Package, DollarSign, User, MapPin, CreditCard, Truck, ExternalLink, AlertTriangle, RefreshCw, AlertCircle } from 'lucide-react';
+import { Package, DollarSign, User, MapPin, CreditCard, Truck, ExternalLink, AlertTriangle, RefreshCw, AlertCircle, Send, Loader2 } from 'lucide-react';
 import { StallionFulfillmentDialog } from './StallionFulfillmentDialog';
 import { ChitChatsFulfillmentDialog } from './ChitChatsFulfillmentDialog';
 import { ShippingReasonBadge } from './ShippingReasonBadge';
@@ -85,6 +85,9 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
   const [orderRefunds, setOrderRefunds] = useState<any[]>([]);
   const [trackingWarningOpen, setTrackingWarningOpen] = useState(false);
   const [pendingStatusChange, setPendingStatusChange] = useState<string | null>(null);
+  const [editableTracking, setEditableTracking] = useState(order.tracking_number || '');
+  const [editableCarrier, setEditableCarrier] = useState(order.carrier_name || 'Canada Post');
+  const [isSavingTracking, setIsSavingTracking] = useState(false);
 
   // Calculate order subtotal for shipping calculation
   const orderSubtotal = order.line_items?.reduce((sum: number, item: any) => 
@@ -154,7 +157,9 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
     setRefundType(order.stripe_payment_intent_id ? 'stripe' : 'manual');
     setManualRefundConfirmed(false);
     setNewStatus(order.status);
-  }, [order.id, order.total, order.status, order.stripe_payment_intent_id]);
+    setEditableTracking(order.tracking_number || '');
+    setEditableCarrier(order.carrier_name || 'Canada Post');
+  }, [order.id, order.total, order.status, order.stripe_payment_intent_id, order.tracking_number, order.carrier_name]);
 
   const handleStatusUpdate = () => {
     // Phase 3: Check if trying to mark as fulfilled without tracking
@@ -233,6 +238,84 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
     }
     // Could add more specific validation based on carrier format
     return true;
+  };
+
+  const handleSaveTrackingAndNotify = async () => {
+    if (!editableTracking.trim()) {
+      toast.error('Please enter a tracking number');
+      return;
+    }
+
+    if (!validateTrackingNumber(editableTracking)) {
+      toast.error('Please enter a valid tracking number (at least 5 characters)');
+      return;
+    }
+
+    setIsSavingTracking(true);
+    
+    try {
+      // Determine which table to update based on order ID type
+      const isStripeOrder = typeof order.id === 'string';
+      const table = isStripeOrder ? 'orders' : 'woocommerce_orders';
+      
+      // 1. Update tracking number and carrier in the database
+      const { error: updateError } = await supabase
+        .from(table)
+        .update({
+          tracking_number: editableTracking.trim(),
+          carrier_name: editableCarrier,
+          fulfillment_status: 'fulfilled',
+          fulfilled_at: new Date().toISOString(),
+        })
+        .eq('id', order.id);
+
+      if (updateError) throw updateError;
+
+      // 2. Send shipping notification email
+      const shippingAddress = order.shipping || order.shipping_address || order.billing;
+      const customerEmail = order.customer_email || order.billing?.email;
+      const customerName = order.customer_name || 
+        (order.billing?.first_name ? `${order.billing.first_name} ${order.billing.last_name || ''}`.trim() : 'Customer');
+
+      if (!customerEmail) {
+        toast.error('No customer email found for this order');
+        setIsSavingTracking(false);
+        return;
+      }
+
+      const { error: emailError } = await supabase.functions.invoke('send-shipping-notification', {
+        body: {
+          orderId: order.id,
+          orderNumber: isStripeOrder ? (order as any).order_number || order.id : order.id.toString(),
+          customerEmail,
+          customerName,
+          trackingNumber: editableTracking.trim(),
+          carrierName: editableCarrier,
+          shippingAddress,
+          items: order.line_items?.filter((item: any) => 
+            !item.name?.toLowerCase().includes('shipping') && 
+            !item.name?.toLowerCase().includes('chit chats') &&
+            !item.name?.toLowerCase().includes('stallion')
+          ),
+          source: isStripeOrder ? 'stripe' : 'woocommerce',
+        },
+      });
+
+      if (emailError) {
+        console.error('Email error:', emailError);
+        toast.warning('Tracking saved but email notification failed. Customer may need manual notification.');
+      } else {
+        toast.success(`Tracking saved and shipping notification sent to ${customerEmail}`);
+      }
+
+      // Close the drawer and trigger refresh
+      onClose();
+    } catch (error: any) {
+      console.error('Error saving tracking:', error);
+      toast.error(error.message || 'Failed to save tracking number');
+    } finally {
+      setIsSavingTracking(false);
+    }
   };
 
   const getStatusBadge = (status: string) => {
@@ -755,23 +838,66 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
                   )}
                 </div>
               </div>
-              <div>
-                <Label>Tracking Number</Label>
-                <div className="flex items-center space-x-2">
-                  <Input type="text" value={order.tracking_number || ''} readOnly />
-                  {order.tracking_number && validateTrackingNumber(order.tracking_number) ? (
-                    <a
-                      href={`https://www.google.com/search?q=track+${order.tracking_number}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-500 hover:underline"
-                    >
-                      <ExternalLink className="h-4 w-4" />
-                    </a>
-                  ) : (
-                    <AlertTriangle className="h-4 w-4 text-red-500" />
-                  )}
+              <div className="col-span-2 space-y-3">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label>Tracking Number</Label>
+                    <div className="flex items-center space-x-2">
+                      <Input 
+                        type="text" 
+                        value={editableTracking} 
+                        onChange={(e) => setEditableTracking(e.target.value)}
+                        placeholder="Enter tracking number..."
+                      />
+                      {editableTracking && validateTrackingNumber(editableTracking) && (
+                        <a
+                          href={`https://www.google.com/search?q=track+${editableTracking}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-500 hover:underline shrink-0"
+                        >
+                          <ExternalLink className="h-4 w-4" />
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                  <div>
+                    <Label>Carrier</Label>
+                    <Select value={editableCarrier} onValueChange={setEditableCarrier}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select carrier" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Canada Post">Canada Post</SelectItem>
+                        <SelectItem value="Stallion Express">Stallion Express</SelectItem>
+                        <SelectItem value="ChitChats">ChitChats</SelectItem>
+                        <SelectItem value="USPS">USPS</SelectItem>
+                        <SelectItem value="UPS">UPS</SelectItem>
+                        <SelectItem value="FedEx">FedEx</SelectItem>
+                        <SelectItem value="Purolator">Purolator</SelectItem>
+                        <SelectItem value="Other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
+                <Button
+                  onClick={handleSaveTrackingAndNotify}
+                  disabled={isSavingTracking || !editableTracking.trim()}
+                  className="w-full"
+                  variant="default"
+                >
+                  {isSavingTracking ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Saving & Sending...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="h-4 w-4 mr-2" />
+                      Save Tracking & Notify Customer
+                    </>
+                  )}
+                </Button>
               </div>
             </div>
 
