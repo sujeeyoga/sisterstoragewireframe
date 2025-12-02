@@ -11,7 +11,6 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -23,24 +22,25 @@ serve(async (req) => {
       throw new Error('Stallion Express API token not configured');
     }
 
-    // Create Supabase client with service role key
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    // Fetch all orders with Stallion shipment IDs that aren't delivered yet
+    // Fetch orders with Stallion shipment IDs that need tracking updates
     const { data: stripeOrders, error: stripeError } = await supabaseAdmin
       .from('orders')
-      .select('id, stallion_shipment_id, tracking_number, status')
+      .select('id, order_number, stallion_shipment_id, tracking_number, status, fulfillment_status, customer_email, customer_name, items, shipping_address, carrier_name, shipping_notification_sent_at')
       .not('stallion_shipment_id', 'is', null)
-      .neq('status', 'delivered');
+      .neq('status', 'delivered')
+      .is('shipping_notification_sent_at', null);
 
     const { data: wooOrders, error: wooError } = await supabaseAdmin
       .from('woocommerce_orders')
-      .select('id, stallion_shipment_id, tracking_number, status')
+      .select('id, stallion_shipment_id, tracking_number, status, fulfillment_status, billing, line_items, shipping, carrier_name, shipping_notification_sent_at')
       .not('stallion_shipment_id', 'is', null)
-      .neq('status', 'delivered');
+      .neq('status', 'delivered')
+      .is('shipping_notification_sent_at', null);
 
     if (stripeError) console.error('Error fetching Stripe orders:', stripeError);
     if (wooError) console.error('Error fetching WooCommerce orders:', wooError);
@@ -50,17 +50,17 @@ serve(async (req) => {
       ...(wooOrders || []).map(o => ({ ...o, source: 'woocommerce' as const }))
     ];
 
-    console.log(`Found ${allOrders.length} orders to sync`);
+    console.log(`Found ${allOrders.length} orders to check for tracking updates`);
 
     let updatedCount = 0;
+    let notifiedCount = 0;
     let errorCount = 0;
-    const errorDetails: Array<{ orderId: string | number; error: string }> = [];
 
     for (const order of allOrders) {
       try {
-        // Fetch tracking info from Stallion
-        const response = await fetch(
-          `${STALLION_BASE_URL}/shipments/${order.stallion_shipment_id}/tracking`,
+        // Fetch shipment details from Stallion
+        const shipmentResponse = await fetch(
+          `${STALLION_BASE_URL}/shipments/${order.stallion_shipment_id}`,
           {
             method: 'GET',
             headers: {
@@ -71,88 +71,116 @@ serve(async (req) => {
           }
         );
 
-        if (!response.ok) {
-          const errorMsg = `Failed to get tracking for shipment ${order.stallion_shipment_id}: ${response.status}`;
-          console.error(errorMsg);
-          errorDetails.push({ orderId: order.id, error: errorMsg });
+        if (!shipmentResponse.ok) {
+          console.error(`Failed to get shipment ${order.stallion_shipment_id}: ${shipmentResponse.status}`);
           errorCount++;
           continue;
         }
 
-        const trackingData = await response.json();
-        console.log(`Tracking data for order ${order.id}:`, trackingData);
+        const shipmentData = await shipmentResponse.json();
+        console.log(`Shipment data for order ${order.id}:`, JSON.stringify(shipmentData).substring(0, 500));
 
-        // Determine new status based on tracking data
-        let newStatus = order.status;
-        if (trackingData.status === 'Delivered' || trackingData.delivered) {
-          newStatus = 'delivered';
-        } else if (trackingData.status === 'In Transit' || trackingData.in_transit) {
-          newStatus = order.source === 'stripe' ? 'processing' : 'on-hold';
-        }
+        // Extract tracking number from Stallion response
+        const stallionTrackingNumber = shipmentData.data?.tracking_number || 
+                                       shipmentData.tracking_number ||
+                                       shipmentData.data?.carrier_tracking_number;
+        
+        const shipmentStatus = shipmentData.data?.status || shipmentData.status;
+        const isInTransit = shipmentStatus === 'In Transit' || 
+                           shipmentStatus === 'in_transit' ||
+                           shipmentStatus === 'shipped' ||
+                           shipmentStatus === 'Shipped';
 
-        // Update order if status changed
-        if (newStatus !== order.status) {
-          const tableName = order.source === 'stripe' ? 'orders' : 'woocommerce_orders';
+        // Update tracking number if we got one from Stallion and order doesn't have it
+        const tableName = order.source === 'stripe' ? 'orders' : 'woocommerce_orders';
+        const needsTrackingUpdate = stallionTrackingNumber && !order.tracking_number;
+        
+        if (needsTrackingUpdate) {
           const { error: updateError } = await supabaseAdmin
             .from(tableName)
-            .update({ status: newStatus })
+            .update({ 
+              tracking_number: stallionTrackingNumber,
+              carrier_name: order.carrier_name || 'Stallion Express'
+            })
             .eq('id', order.id);
 
           if (updateError) {
-            const errorMsg = `Failed to update order ${order.id}: ${updateError.message}`;
-            console.error(errorMsg);
-            errorDetails.push({ orderId: order.id, error: errorMsg });
-            errorCount++;
+            console.error(`Failed to update tracking for order ${order.id}:`, updateError);
           } else {
-            console.log(`Updated order ${order.id} to status: ${newStatus}`);
+            console.log(`Updated tracking number for order ${order.id}: ${stallionTrackingNumber}`);
             updatedCount++;
+          }
+        }
+
+        // Send notification if in transit and has tracking number
+        const trackingToUse = stallionTrackingNumber || order.tracking_number;
+        
+        if (isInTransit && trackingToUse && !order.shipping_notification_sent_at) {
+          console.log(`Sending shipping notification for order ${order.id}`);
+          
+          // Prepare notification data based on order source
+          let notificationData;
+          
+          if (order.source === 'stripe') {
+            notificationData = {
+              orderId: order.id,
+              orderNumber: order.order_number,
+              customerEmail: order.customer_email,
+              customerName: order.customer_name,
+              trackingNumber: trackingToUse,
+              carrierName: order.carrier_name || 'Stallion Express',
+              shippingAddress: order.shipping_address,
+              items: order.items,
+              source: 'stripe'
+            };
+          } else {
+            const billing = order.billing as Record<string, string> | null;
+            notificationData = {
+              orderId: order.id,
+              orderNumber: order.id.toString(),
+              customerEmail: billing?.email,
+              customerName: `${billing?.first_name || ''} ${billing?.last_name || ''}`.trim(),
+              trackingNumber: trackingToUse,
+              carrierName: order.carrier_name || 'Stallion Express',
+              shippingAddress: order.shipping,
+              items: order.line_items,
+              source: 'woocommerce'
+            };
+          }
+
+          // Invoke the send-shipping-notification function
+          const { error: invokeError } = await supabaseAdmin.functions.invoke('send-shipping-notification', {
+            body: notificationData
+          });
+
+          if (invokeError) {
+            console.error(`Failed to send notification for order ${order.id}:`, invokeError);
+          } else {
+            console.log(`Shipping notification sent for order ${order.id}`);
+            notifiedCount++;
             
-            // Phase 2: Send tracking email if transitioning to in-transit and no notification sent
-            if ((trackingData.status === 'In Transit' || trackingData.in_transit) && order.tracking_number) {
-              const { data: fullOrder } = await supabaseAdmin
-                .from(tableName)
-                .select('*')
-                .eq('id', order.id)
-                .single();
-                
-              if (fullOrder && !fullOrder.shipping_notification_sent_at) {
-                try {
-                  await supabaseAdmin.functions.invoke('send-shipping-notification', {
-                    body: {
-                      orderId: order.id,
-                      orderNumber: order.source === 'stripe' ? fullOrder.order_number : order.id.toString(),
-                      customerEmail: order.source === 'stripe' ? fullOrder.customer_email : fullOrder.billing?.email,
-                      customerName: order.source === 'stripe' ? fullOrder.customer_name : `${fullOrder.billing?.first_name} ${fullOrder.billing?.last_name}`,
-                      trackingNumber: order.tracking_number,
-                      carrierName: fullOrder.carrier_name || 'Carrier',
-                      source: order.source
-                    }
-                  });
-                  console.log(`Sent tracking email for order ${order.id}`);
-                } catch (emailError) {
-                  console.error(`Failed to send tracking email for order ${order.id}:`, emailError);
-                }
-              }
-            }
+            // Mark notification as sent
+            await supabaseAdmin
+              .from(tableName)
+              .update({ shipping_notification_sent_at: new Date().toISOString() })
+              .eq('id', order.id);
           }
         }
       } catch (error) {
-        const errorMsg = `Error processing order ${order.id}: ${error instanceof Error ? error.message : String(error)}`;
-        console.error(errorMsg);
-        errorDetails.push({ orderId: order.id, error: errorMsg });
+        console.error(`Error processing order ${order.id}:`, error);
         errorCount++;
       }
     }
 
-    console.log(`Sync complete. Updated: ${updatedCount}, Errors: ${errorCount}`);
+    console.log(`Sync complete. Updated: ${updatedCount}, Notified: ${notifiedCount}, Errors: ${errorCount}`);
 
     return new Response(
       JSON.stringify({
         success: true,
         updated: updatedCount,
+        notified: notifiedCount,
         errors: errorCount,
         total: allOrders.length,
-        errorDetails: errorDetails.slice(0, 10), // Include first 10 errors
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
