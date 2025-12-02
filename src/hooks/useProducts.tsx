@@ -42,7 +42,10 @@ export function useProduct(idOrSlug: string) {
       // Try to find by ID first (if numeric)
       const isNumeric = /^\d+$/.test(idOrSlug);
       
-      let query = supabase.from('woocommerce_products').select('*');
+      let query = supabase
+        .from('woocommerce_products')
+        .select('*')
+        .eq('visible', true); // Only fetch visible products
       
       if (isNumeric) {
         query = query.eq('id', parseInt(idOrSlug));
