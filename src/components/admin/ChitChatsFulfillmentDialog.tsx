@@ -172,6 +172,7 @@ export function ChitChatsFulfillmentDialog({ order, open, onClose, onSuccess }: 
         .update({
           fulfillment_status: 'fulfilled',
           tracking_number: shipment.tracking_number || shipment.id,
+          chitchats_shipment_id: shipment.id, // Store ChitChats shipment ID for tracking sync
           shipping_label_url: shipment.label_url || shipment.postage_label_url,
           fulfilled_at: new Date().toISOString(),
           stallion_cost: actualCost,

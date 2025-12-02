@@ -81,3 +81,6 @@ verify_jwt = false
 [functions.resend-order-confirmation]
 verify_jwt = true
 
+[functions.sync-chitchats-tracking]
+verify_jwt = false
+
