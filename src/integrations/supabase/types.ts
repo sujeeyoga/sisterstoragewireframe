@@ -409,6 +409,7 @@ export type Database = {
           archived_at: string | null
           carrier_cost_currency: string | null
           carrier_name: string | null
+          chitchats_shipment_id: string | null
           created_at: string | null
           customer_email: string
           customer_name: string | null
@@ -440,6 +441,7 @@ export type Database = {
           archived_at?: string | null
           carrier_cost_currency?: string | null
           carrier_name?: string | null
+          chitchats_shipment_id?: string | null
           created_at?: string | null
           customer_email: string
           customer_name?: string | null
@@ -471,6 +473,7 @@ export type Database = {
           archived_at?: string | null
           carrier_cost_currency?: string | null
           carrier_name?: string | null
+          chitchats_shipment_id?: string | null
           created_at?: string | null
           customer_email?: string
           customer_name?: string | null
@@ -1341,6 +1344,7 @@ export type Database = {
           billing: Json | null
           carrier_cost_currency: string | null
           carrier_name: string | null
+          chitchats_shipment_id: string | null
           created_at: string | null
           currency: string | null
           date_created: string | null
@@ -1367,6 +1371,7 @@ export type Database = {
           billing?: Json | null
           carrier_cost_currency?: string | null
           carrier_name?: string | null
+          chitchats_shipment_id?: string | null
           created_at?: string | null
           currency?: string | null
           date_created?: string | null
@@ -1393,6 +1398,7 @@ export type Database = {
           billing?: Json | null
           carrier_cost_currency?: string | null
           carrier_name?: string | null
+          chitchats_shipment_id?: string | null
           created_at?: string | null
           currency?: string | null
           date_created?: string | null
