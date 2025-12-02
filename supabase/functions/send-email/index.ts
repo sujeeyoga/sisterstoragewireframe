@@ -212,7 +212,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const emailResponse = await resend.emails.send({
-      from: "Sister Storage <onboarding@resend.dev>",
+      from: "Sister Storage <noreply@sisterstorage.com>",
       to: [to],
       bcc: type === "order_confirmation" ? ["sisterstorageinc@gmail.com"] : undefined,
       replyTo: ["sisterstorageinc@gmail.com"],
