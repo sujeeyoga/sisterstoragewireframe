@@ -61,8 +61,9 @@ const handler = async (req: Request): Promise<Response> => {
       .join("");
 
     const emailResponse = await resend.emails.send({
-      from: "Sister Storage <sisterstorageinc@gmail.com>",
+      from: "Sister Storage <noreply@sisterstorage.com>",
       to: [customerEmail],
+      replyTo: ["sisterstorageinc@gmail.com"],
       subject: `Your order #${orderNumber} has shipped!`,
       html: `
         <!DOCTYPE html>
