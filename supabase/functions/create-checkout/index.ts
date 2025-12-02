@@ -73,6 +73,42 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_ANON_KEY") ?? ""
     );
 
+    // Validate all cart items are still visible and in stock
+    const itemSlugs = items
+      .filter((item: any) => !item.isFreeGift)
+      .map((item: any) => item.id);
+    
+    if (itemSlugs.length > 0) {
+      const { data: availableProducts, error: productError } = await supabaseClient
+        .from('woocommerce_products')
+        .select('slug, name, visible, in_stock')
+        .in('slug', itemSlugs);
+
+      if (productError) {
+        console.error('Error checking product availability:', productError);
+      } else if (availableProducts) {
+        const availableSlugs = new Set(
+          availableProducts
+            .filter((p: any) => p.visible && p.in_stock)
+            .map((p: any) => p.slug)
+        );
+
+        for (const item of items) {
+          if (item.isFreeGift) continue;
+          
+          if (!availableSlugs.has(item.id)) {
+            const product = availableProducts.find((p: any) => p.slug === item.id);
+            const reason = product 
+              ? (!product.visible ? 'no longer available' : 'out of stock')
+              : 'not found';
+            console.error(`Product unavailable: ${item.name} (${item.id}) - ${reason}`);
+            throw new Error(`"${item.name}" is ${reason}. Please remove it from your cart and try again.`);
+          }
+        }
+        console.log('✅ All cart items validated as available');
+      }
+    }
+
     // Fetch store-wide discount
     const { data: discountData } = await supabaseClient
       .from('store_settings')
