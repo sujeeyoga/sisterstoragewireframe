@@ -74,34 +74,42 @@ serve(async (req) => {
     );
 
     // Validate all cart items are still visible and in stock
-    const itemSlugs = items
+    const itemIds = items
       .filter((item: any) => !item.isFreeGift)
-      .map((item: any) => item.id);
+      .map((item: any) => {
+        // Handle both numeric IDs and string slugs
+        const id = item.productId || item.id;
+        return typeof id === 'number' ? id : parseInt(id, 10);
+      })
+      .filter((id: number) => !isNaN(id));
     
-    if (itemSlugs.length > 0) {
+    if (itemIds.length > 0) {
       const { data: availableProducts, error: productError } = await supabaseClient
         .from('woocommerce_products')
-        .select('slug, name, visible, in_stock')
-        .in('slug', itemSlugs);
+        .select('id, slug, name, visible, in_stock')
+        .in('id', itemIds);
 
       if (productError) {
         console.error('Error checking product availability:', productError);
       } else if (availableProducts) {
-        const availableSlugs = new Set(
+        const availableIdSet = new Set(
           availableProducts
             .filter((p: any) => p.visible && p.in_stock)
-            .map((p: any) => p.slug)
+            .map((p: any) => p.id)
         );
 
         for (const item of items) {
           if (item.isFreeGift) continue;
           
-          if (!availableSlugs.has(item.id)) {
-            const product = availableProducts.find((p: any) => p.slug === item.id);
+          const itemId = item.productId || item.id;
+          const numericId = typeof itemId === 'number' ? itemId : parseInt(itemId, 10);
+          
+          if (!isNaN(numericId) && !availableIdSet.has(numericId)) {
+            const product = availableProducts.find((p: any) => p.id === numericId);
             const reason = product 
               ? (!product.visible ? 'no longer available' : 'out of stock')
               : 'not found';
-            console.error(`Product unavailable: ${item.name} (${item.id}) - ${reason}`);
+            console.error(`Product unavailable: ${item.name} (${numericId}) - ${reason}`);
             throw new Error(`"${item.name}" is ${reason}. Please remove it from your cart and try again.`);
           }
         }
