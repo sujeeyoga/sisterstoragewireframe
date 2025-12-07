@@ -507,40 +507,23 @@ Deno.serve(async (req) => {
                            matchedRule.rule_value?.toUpperCase() !== 'US' &&
                            matchedRule.rule_value?.toUpperCase() !== 'GB';
 
-      // For Canadian domestic orders, try to get real-time Stallion rates
+      // For Canadian domestic orders, use database flat rates directly
       if (isCADomestic) {
-        console.log('🇨🇦 Canadian domestic order detected - fetching Stallion API rates');
-        const stallionData = await getStallionRates(address, supabase, packageInfo);
-        
-        if (stallionData?.success) {
-          const stallionRates = transformStallionRates(stallionData, subtotal);
-          
-          if (stallionRates.length > 0) {
-            // Apply free threshold logic to Stallion rates if zone has thresholds
-            applicableRates = stallionRates.map(stallionRate => {
-              // Check if this zone has free shipping thresholds
-              const zoneRateWithThreshold = matchedZone.rates.find(r => r.free_threshold);
-              
-              if (zoneRateWithThreshold?.free_threshold && subtotal >= zoneRateWithThreshold.free_threshold) {
-                console.log(`✅ Free shipping applied (subtotal $${subtotal} >= threshold $${zoneRateWithThreshold.free_threshold})`);
-                return {
-                  ...stallionRate,
-                  rate_amount: 0, // Customer pays $0
-                  is_free: true,
-                  free_threshold: zoneRateWithThreshold.free_threshold,
-                  // Keep carrier_cost for backend tracking
-                };
-              }
-              
-              return stallionRate;
-            });
-            
-            rateSource = 'stallion';
-            console.log(`✅ Using Stallion rates for Canadian domestic:`, applicableRates);
-          }
-        } else {
-          console.log('⚠️ Stallion API failed - will use database fallback');
-        }
+        console.log('🇨🇦 Canadian domestic order - using database flat rates');
+        applicableRates = matchedZone.rates
+          .filter(r => r.enabled)
+          .map(rate => {
+            const isFree = rate.free_threshold && subtotal >= rate.free_threshold;
+            return {
+              id: rate.id,
+              method_name: rate.method_name,
+              rate_amount: isFree ? 0 : rate.rate_amount,
+              is_free: isFree,
+              free_threshold: rate.free_threshold,
+              display_order: rate.display_order,
+            };
+          });
+        rateSource = 'database';
       }
       // For UK zones, try to get real-time ChitChats rates
       // US zones now use database rates only (flat $30)
@@ -558,7 +541,7 @@ Deno.serve(async (req) => {
         console.log('US zone detected - using database flat rate');
       }
 
-      // Fall back to database rates if API calls failed
+      // Fall back to database rates if API calls failed (only applies to UK now)
       if (applicableRates.length === 0) {
         if (isUSZone) {
           // US: Use database rates (flat $30)
@@ -586,21 +569,6 @@ Deno.serve(async (req) => {
             display_order: rate.display_order,
           }));
           rateSource = 'database';
-        } else if (isCADomestic) {
-          // Canadian fallback: Use database rates if Stallion fails
-          console.log('⚠️ Stallion API failed - using database fallback rates');
-          applicableRates = matchedZone.rates.map(rate => {
-            const isFree = rate.free_threshold && subtotal >= rate.free_threshold;
-            return {
-              id: rate.id,
-              method_name: rate.method_name,
-              rate_amount: isFree ? 0 : rate.rate_amount,
-              is_free: isFree,
-              free_threshold: rate.free_threshold,
-              display_order: rate.display_order,
-            };
-          });
-          rateSource = 'database_fallback';
         } else {
           // Other zones: use database rates with free threshold logic
           console.log('Using database rates for zone:', matchedZone.name);
