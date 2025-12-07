@@ -13,6 +13,27 @@ serve(async (req) => {
   }
 
   try {
+    // Get origin with fallbacks for mobile browsers that may not send Origin header
+    const getOrigin = (): string => {
+      const origin = req.headers.get("origin");
+      if (origin && origin !== 'null') return origin;
+      
+      const referer = req.headers.get("referer");
+      if (referer) {
+        try {
+          return new URL(referer).origin;
+        } catch {
+          // Invalid referer URL, continue to fallback
+        }
+      }
+      
+      // Production fallback
+      return "https://sisterstorage.ca";
+    };
+
+    const origin = getOrigin();
+    console.log('Using origin for checkout URLs:', origin);
+
     const requestBody = await req.json();
     console.log('Raw checkout request body:', JSON.stringify(requestBody, null, 2));
 
@@ -412,8 +433,8 @@ serve(async (req) => {
       customer_email: customerId ? undefined : customerEmail,
       line_items: lineItems,
       mode: "payment",
-      success_url: `${req.headers.get("origin")}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.headers.get("origin")}/checkout`,
+      success_url: `${origin}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/checkout`,
       metadata: {
         shippingAddress: shippingAddress ? JSON.stringify(shippingAddress) : '',
         shippingMethod: shippingMethod || '',
