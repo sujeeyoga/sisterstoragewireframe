@@ -59,7 +59,7 @@ const handler = async (req: Request): Promise<Response> => {
       customerName,
       orderNumber,
       trackingNumber,
-      carrier = "Stallion Express",
+      carrier,
       items,
     }: ShippingNotificationRequest = await req.json();
 
@@ -130,7 +130,7 @@ const handler = async (req: Request): Promise<Response> => {
                   <div style="margin-bottom: 20px;">
                     <span style="color: #6b7280; font-size: 14px;">Carrier:</span><br/>
                     <span style="color: #1f2937; font-size: 16px; font-weight: 500;">
-                      ${carrier}
+                      ${carrier || 'Shipping Carrier'}
                     </span>
                   </div>
                   <a href="${getTrackingUrl(carrier, trackingNumber)}" 
