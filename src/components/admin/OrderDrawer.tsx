@@ -290,7 +290,7 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
           customerEmail,
           customerName,
           trackingNumber: editableTracking.trim(),
-          carrierName: editableCarrier,
+          carrier: editableCarrier,
           shippingAddress,
           items: order.line_items?.filter((item: any) => 
             !item.name?.toLowerCase().includes('shipping') && 
