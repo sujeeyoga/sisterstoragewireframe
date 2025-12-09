@@ -4,6 +4,28 @@ import { Resend } from "npm:resend@2.0.0";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
+/**
+ * Returns the correct tracking URL based on the carrier
+ */
+const getTrackingUrl = (carrier: string, trackingNumber: string): string => {
+  const carrierLower = carrier?.toLowerCase() || '';
+  
+  if (carrierLower.includes('stallion')) {
+    return `https://www.stallionexpress.ca/tracking?tracking_number=${trackingNumber}`;
+  } else if (carrierLower.includes('chitchat')) {
+    return `https://chitchats.com/tracking?shipment_id=${trackingNumber}`;
+  } else if (carrierLower.includes('canada post')) {
+    return `https://www.canadapost-postescanada.ca/track-reperage/en#/search?searchFor=${trackingNumber}`;
+  } else if (carrierLower.includes('ups')) {
+    return `https://www.ups.com/track?tracknum=${trackingNumber}`;
+  } else if (carrierLower.includes('fedex')) {
+    return `https://www.fedex.com/fedextrack/?tracknumbers=${trackingNumber}`;
+  } else {
+    // Generic fallback - Google search
+    return `https://www.google.com/search?q=${encodeURIComponent(trackingNumber + ' tracking')}`;
+  }
+};
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -111,7 +133,7 @@ const handler = async (req: Request): Promise<Response> => {
                       ${carrier}
                     </span>
                   </div>
-                  <a href="https://www.stallionexpress.ca/tracking?tracking_number=${trackingNumber}" 
+                  <a href="${getTrackingUrl(carrier, trackingNumber)}" 
                      style="display: inline-block; background: #2563eb; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 500; font-size: 14px;">
                     Track Your Package
                   </a>
