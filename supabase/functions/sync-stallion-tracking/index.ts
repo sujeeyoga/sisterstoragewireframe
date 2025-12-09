@@ -119,6 +119,7 @@ serve(async (req) => {
           console.log(`Sending shipping notification for order ${order.id}`);
           
           // Prepare notification data based on order source
+          // Use 'carrier' field to match send-shipping-notification interface
           let notificationData;
           
           if (order.source === 'stripe') {
@@ -128,7 +129,7 @@ serve(async (req) => {
               customerEmail: order.customer_email,
               customerName: order.customer_name,
               trackingNumber: trackingToUse,
-              carrierName: order.carrier_name || 'Stallion Express',
+              carrier: 'Stallion Express', // Always Stallion for this sync function
               shippingAddress: order.shipping_address,
               items: order.items,
               source: 'stripe'
@@ -141,7 +142,7 @@ serve(async (req) => {
               customerEmail: billing?.email,
               customerName: `${billing?.first_name || ''} ${billing?.last_name || ''}`.trim(),
               trackingNumber: trackingToUse,
-              carrierName: order.carrier_name || 'Stallion Express',
+              carrier: 'Stallion Express', // Always Stallion for this sync function
               shippingAddress: order.shipping,
               items: order.line_items,
               source: 'woocommerce'
