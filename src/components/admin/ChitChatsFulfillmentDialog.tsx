@@ -199,7 +199,7 @@ export function ChitChatsFulfillmentDialog({ order, open, onClose, onSuccess }: 
               customerName: data.customer_name || `${data.billing?.first_name || ''} ${data.billing?.last_name || ''}`.trim() || 'Customer',
               orderNumber: data.order_number || String(order.id),
               trackingNumber: shipment.tracking_number || shipment.id,
-              carrier: selectedRateData?.carrier || 'ChitChats',
+              carrier: 'ChitChats',
               items: data.items || data.line_items || []
             }
           });
