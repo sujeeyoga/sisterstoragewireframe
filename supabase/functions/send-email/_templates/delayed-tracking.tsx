@@ -138,7 +138,7 @@ export const DelayedTrackingEmail = ({
             Sister Storage - Organized Living, Simplified
           </Text>
           <Text style={footer}>
-            <Link href="https://sisterstorage.ca" style={footerLink}>
+            <Link href="https://sisterstorage.com" style={footerLink}>
               Visit Our Store
             </Link>
           </Text>

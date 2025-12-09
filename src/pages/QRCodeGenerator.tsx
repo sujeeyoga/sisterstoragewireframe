@@ -19,7 +19,7 @@ export default function QRCodeGenerator() {
   const [activeTab, setActiveTab] = useState<'static' | 'dynamic'>('static');
   
   // Static QR state
-  const [url, setUrl] = useState('https://sisterstorage.ca');
+  const [url, setUrl] = useState('https://sisterstorage.com');
   const [size, setSize] = useState(256);
   const [fgColor, setFgColor] = useState('#000000');
   const [bgColor, setBgColor] = useState('#ffffff');
@@ -159,7 +159,7 @@ export default function QRCodeGenerator() {
                     id="url"
                     value={url}
                     onChange={(e) => setUrl(e.target.value)}
-                    placeholder="https://sisterstorage.ca"
+                    placeholder="https://sisterstorage.com"
                   />
                 </div>
 
@@ -385,7 +385,7 @@ export default function QRCodeGenerator() {
                       id="destination"
                       value={destinationUrl}
                       onChange={(e) => setDestinationUrl(e.target.value)}
-                      placeholder="https://sisterstorage.ca/shop"
+                      placeholder="https://sisterstorage.com/shop"
                     />
                     <p className="text-xs text-muted-foreground">
                       Where should this QR code redirect to? You can change this later.

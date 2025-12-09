@@ -41,7 +41,7 @@ export const useShopSEO = (products: Product[]) => {
       link.rel = "canonical";
       document.head.appendChild(link);
     }
-    link.href = "https://sisterstorage.ca/shop";
+    link.href = "https://sisterstorage.com/shop";
 
     // Add structured data with ItemList and BreadcrumbList
     const itemListId = "ld-shop";
@@ -97,13 +97,13 @@ export const useShopSEO = (products: Product[]) => {
           "@type": "ListItem",
           position: 1,
           name: "Home",
-          item: "https://sisterstorage.ca"
+          item: "https://sisterstorage.com"
         },
         {
           "@type": "ListItem",
           position: 2,
           name: "Shop Bangle Storage",
-          item: "https://sisterstorage.ca/shop"
+          item: "https://sisterstorage.com/shop"
         }
       ]
     };

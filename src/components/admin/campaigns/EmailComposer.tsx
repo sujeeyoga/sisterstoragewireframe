@@ -260,7 +260,7 @@ export const EmailComposer = ({ onBack }: EmailComposerProps) => {
                 <Label htmlFor="ctaLink">Call-to-Action Link</Label>
                 <Input
                   id="ctaLink"
-                  placeholder="https://sisterstorage.ca/shop"
+                  placeholder="https://sisterstorage.com/shop"
                   value={ctaLink}
                   onChange={(e) => setCtaLink(e.target.value)}
                 />

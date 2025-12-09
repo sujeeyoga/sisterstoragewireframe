@@ -466,7 +466,7 @@ export const QRCodesManager = () => {
                 id="production_domain"
                 value={productionDomain}
                 onChange={(e) => setProductionDomain(e.target.value)}
-                placeholder="https://sisterstorage.ca"
+                placeholder="https://sisterstorage.com"
               />
               <p className="text-xs text-muted-foreground mt-1">
                 This is the domain that will be used in your QR codes. Must start with https://
@@ -479,7 +479,7 @@ export const QRCodesManager = () => {
             </div>
             <div className="bg-muted/50 rounded-lg p-3 text-xs space-y-1">
               <p className="font-medium">💡 Tips:</p>
-              <p>• Set this to your live domain (e.g., https://sisterstorage.ca)</p>
+              <p>• Set this to your live domain (e.g., https://sisterstorage.com)</p>
               <p>• Re-download any previously created QR codes after changing this</p>
               <p>• QR codes will use this domain instead of the preview URL</p>
             </div>
@@ -528,7 +528,7 @@ export const QRCodesManager = () => {
                 id="destination_url"
                 value={formData.destination_url}
                 onChange={(e) => setFormData({ ...formData, destination_url: e.target.value })}
-                placeholder="https://sisterstorage.ca/shop"
+                placeholder="https://sisterstorage.com/shop"
               />
             </div>
 
