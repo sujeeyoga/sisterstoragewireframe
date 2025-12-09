@@ -103,6 +103,7 @@ serve(async (req) => {
         }
 
         // Prepare email data based on order source
+        // Use 'carrier' field to match send-shipping-notification interface
         let emailData: any;
         if (order.source === 'stripe') {
           emailData = {
@@ -111,7 +112,7 @@ serve(async (req) => {
             customerEmail: order.customer_email,
             customerName: order.customer_name || 'Customer',
             trackingNumber: trackingNumber,
-            carrierName: shipment.carrier || 'ChitChats',
+            carrier: 'ChitChats', // Always ChitChats for this sync function
             shippingAddress: order.shipping_address,
             items: order.items || [],
             source: 'stripe'
@@ -124,7 +125,7 @@ serve(async (req) => {
             customerEmail: billing.email,
             customerName: `${billing.first_name || ''} ${billing.last_name || ''}`.trim() || 'Customer',
             trackingNumber: trackingNumber,
-            carrierName: shipment.carrier || 'ChitChats',
+            carrier: 'ChitChats', // Always ChitChats for this sync function
             shippingAddress: order.shipping,
             items: order.line_items || [],
             source: 'woocommerce'
