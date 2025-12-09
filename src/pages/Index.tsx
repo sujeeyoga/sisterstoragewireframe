@@ -6,6 +6,8 @@ import BestSeller from "@/components/BestSeller";
 import OrganizationGallery from "@/components/OrganizationGallery";
 import PromotionalBanner from "@/components/PromotionalBanner";
 import { SEO } from "@/components/SEO";
+import { FAQSchema } from "@/components/seo/FAQSchema";
+import { homepageFAQs } from "@/data/homepage-faqs";
 import { burstPreloadImages, burstPreloadVideos } from "@/lib/burstImagePreloader";
 
 const Index = () => {
@@ -25,9 +27,9 @@ const Index = () => {
       '/src/assets/optimized/sister-staples.jpg',
       '/src/assets/optimized/family-set.jpg',
       // Instagram Posts
-      'https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-23-scaled.jpg',
-      'https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-31-scaled.jpg',
-      'https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-13-scaled.jpg',
+      'https://sisterstorage.ca/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-23-scaled.jpg',
+      'https://sisterstorage.ca/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-31-scaled.jpg',
+      'https://sisterstorage.ca/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-13-scaled.jpg',
     ];
     
     // Burst load homepage videos in parallel with images
@@ -55,10 +57,10 @@ const Index = () => {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'Sister Storage',
-    url: 'https://www.sisterstorage.com',
+    url: 'https://sisterstorage.ca',
     potentialAction: {
       '@type': 'SearchAction',
-      target: 'https://www.sisterstorage.com/shop?search={search_term_string}',
+      target: 'https://sisterstorage.ca/shop?search={search_term_string}',
       'query-input': 'required name=search_term_string'
     }
   };
@@ -66,12 +68,13 @@ const Index = () => {
   return (
     <BaseLayout variant="standard" spacing="none" showFooter={true}>
       <SEO
-        title="Sister Storage | Culture Without Clutter – Premium Bangle & Jewelry Organizers"
-        description="Sister Storage offers premium stackable bangle and jewelry organizers. Shop our 4-rod dust-free storage boxes. Ship to Canada & USA. UK shipping coming soon!"
-        keywords="sister storage, bangle organizer, jewelry storage box, 4 rod bangle storage, stackable jewelry organizer, south asian jewelry, cultural keepsakes, canadian jewelry storage, dust free organizer, bangle box"
+        title="Bangle Storage Boxes & Organizers | Sister Storage – Culture Without Clutter"
+        description="Shop premium bangle storage boxes that protect your jewelry. Dust-free, stackable organizers designed for South Asian jewelry. Ships to Canada & USA."
+        keywords="bangle storage box, bangle organizer, jewelry storage, 4 rod bangle storage, stackable jewelry organizer, south asian jewelry, indian bangle box, dust free organizer, sister storage canada"
         url="/"
         structuredData={structuredData}
       />
+      <FAQSchema faqs={homepageFAQs} />
       
       <div className="min-h-screen bg-[#F10781] -mt-28">
         {/* Hero Section */}

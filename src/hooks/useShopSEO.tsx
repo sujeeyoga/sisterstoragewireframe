@@ -10,8 +10,8 @@ interface Product {
 
 export const useShopSEO = (products: Product[]) => {
   useEffect(() => {
-    // Set page title
-    document.title = "Shop Organizers & Bangle Boxes | Sister Storage";
+    // Set page title - front-loaded with keywords
+    document.title = "Shop Bangle Storage Boxes & Organizers | Sister Storage Canada";
     
     // Set meta description
     let metaDescription = document.querySelector('meta[name="description"]') as HTMLMetaElement | null;
@@ -21,8 +21,8 @@ export const useShopSEO = (products: Product[]) => {
       document.head.appendChild(metaDescription);
     }
     const descriptionText = products.length > 0
-      ? `Shop tangle-free, dust-proof bangle storage solutions. Browse ${products.length}+ premium organizers that protect your bangles and save space. Ships to Canada and USA.`
-      : "Shop tangle-free, dust-proof bangle storage from Sister Storage. Premium organizers designed with culture in mind.";
+      ? `Shop Sister Storage's premium bangle storage boxes. Browse ${products.length}+ dust-free, stackable organizers perfect for Indian, Pakistani & South Asian jewelry. Free shipping in Canada over $50.`
+      : "Shop premium bangle storage boxes from Sister Storage. Dust-free, stackable organizers designed for South Asian jewelry. Free shipping in Canada over $50.";
     metaDescription.content = descriptionText;
 
     // Set meta keywords
@@ -41,16 +41,22 @@ export const useShopSEO = (products: Product[]) => {
       link.rel = "canonical";
       document.head.appendChild(link);
     }
-    link.href = `${window.location.origin}/shop`;
+    link.href = "https://sisterstorage.ca/shop";
 
-    // Add structured data
-    const id = "ld-shop";
-    const existing = document.getElementById(id);
-    if (existing) existing.remove();
+    // Add structured data with ItemList and BreadcrumbList
+    const itemListId = "ld-shop";
+    const breadcrumbId = "ld-shop-breadcrumb";
     
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.id = id;
+    // Remove existing scripts
+    const existingItemList = document.getElementById(itemListId);
+    if (existingItemList) existingItemList.remove();
+    const existingBreadcrumb = document.getElementById(breadcrumbId);
+    if (existingBreadcrumb) existingBreadcrumb.remove();
+    
+    // Create ItemList schema
+    const itemListScript = document.createElement("script");
+    itemListScript.type = "application/ld+json";
+    itemListScript.id = itemListId;
     
     const itemList = {
       "@context": "https://schema.org",
@@ -61,24 +67,56 @@ export const useShopSEO = (products: Product[]) => {
         item: {
           "@type": "Product",
           name: p.name,
-          brand: "Sister Storage",
+          brand: {
+            "@type": "Brand",
+            name: "Sister Storage"
+          },
           offers: {
             "@type": "Offer",
             price: p.price,
-            priceCurrency: "USD",
+            priceCurrency: "CAD",
             availability: p.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
           },
         },
       })),
     };
     
-    script.textContent = JSON.stringify(itemList);
-    document.head.appendChild(script);
+    itemListScript.textContent = JSON.stringify(itemList);
+    document.head.appendChild(itemListScript);
+    
+    // Create BreadcrumbList schema
+    const breadcrumbScript = document.createElement("script");
+    breadcrumbScript.type = "application/ld+json";
+    breadcrumbScript.id = breadcrumbId;
+    
+    const breadcrumbList = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Home",
+          item: "https://sisterstorage.ca"
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Shop Bangle Storage",
+          item: "https://sisterstorage.ca/shop"
+        }
+      ]
+    };
+    
+    breadcrumbScript.textContent = JSON.stringify(breadcrumbList);
+    document.head.appendChild(breadcrumbScript);
 
     return () => {
       // Cleanup on unmount
-      const scriptToRemove = document.getElementById(id);
+      const scriptToRemove = document.getElementById(itemListId);
       if (scriptToRemove) scriptToRemove.remove();
+      const breadcrumbToRemove = document.getElementById(breadcrumbId);
+      if (breadcrumbToRemove) breadcrumbToRemove.remove();
     };
   }, [products]);
 };
