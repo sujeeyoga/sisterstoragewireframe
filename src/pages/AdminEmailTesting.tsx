@@ -80,7 +80,7 @@ const emailTemplates: Record<EmailType, EmailTemplate> = {
     sampleData: {
       adminName: 'Admin User',
       adminEmail: 'admin@example.com',
-      dashboardUrl: 'https://sisterstoragebyhamna.com/admin'
+      dashboardUrl: 'https://sisterstorage.ca/admin'
     }
   },
   admin_promotion: {
@@ -91,7 +91,7 @@ const emailTemplates: Record<EmailType, EmailTemplate> = {
       preview: 'Check out the new email testing tool',
       body: 'We\'ve added a new email testing tool to help you preview and test all email templates. You can find it in the admin panel under Settings.',
       ctaText: 'View Admin Panel',
-      ctaUrl: 'https://sisterstoragebyhamna.com/admin'
+      ctaUrl: 'https://sisterstorage.ca/admin'
     }
   },
   announcement: {
@@ -103,7 +103,7 @@ const emailTemplates: Record<EmailType, EmailTemplate> = {
       headline: 'Exciting News! 🎉',
       body: 'We\'re thrilled to announce the launch of our new collection coming this February. Stay tuned for exclusive early access!',
       ctaText: 'Learn More',
-      ctaUrl: 'https://sisterstoragebyhamna.com/shop'
+      ctaUrl: 'https://sisterstorage.ca/shop'
     }
   },
   promotional: {
@@ -115,7 +115,7 @@ const emailTemplates: Record<EmailType, EmailTemplate> = {
       headline: 'Weekend Sale! 💝',
       body: 'Get 20% off all bangle storage solutions this weekend only. Use code WEEKEND20 at checkout.',
       ctaText: 'Shop Now',
-      ctaUrl: 'https://sisterstoragebyhamna.com/shop',
+      ctaUrl: 'https://sisterstorage.ca/shop',
       disclaimer: 'Offer valid until January 31, 2025. Cannot be combined with other offers.'
     }
   }
