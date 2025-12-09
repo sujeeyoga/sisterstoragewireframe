@@ -27,9 +27,9 @@ const Index = () => {
       '/src/assets/optimized/sister-staples.jpg',
       '/src/assets/optimized/family-set.jpg',
       // Instagram Posts
-      'https://sisterstorage.ca/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-23-scaled.jpg',
-      'https://sisterstorage.ca/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-31-scaled.jpg',
-      'https://sisterstorage.ca/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-13-scaled.jpg',
+      'https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-23-scaled.jpg',
+      'https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-31-scaled.jpg',
+      'https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-13-scaled.jpg',
     ];
     
     // Burst load homepage videos in parallel with images
@@ -57,10 +57,10 @@ const Index = () => {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'Sister Storage',
-    url: 'https://sisterstorage.ca',
+    url: 'https://sisterstorage.com',
     potentialAction: {
       '@type': 'SearchAction',
-      target: 'https://sisterstorage.ca/shop?search={search_term_string}',
+      target: 'https://sisterstorage.com/shop?search={search_term_string}',
       'query-input': 'required name=search_term_string'
     }
   };

@@ -17,12 +17,12 @@ export const SEO = ({
   description = 'Shop premium bangle storage boxes that protect your jewelry. Dust-free, stackable organizers designed for South Asian jewelry. Ships to Canada & USA.',
   keywords = getGlobalKeywords(),
   image = 'https://storage.googleapis.com/gpt-engineer-file-uploads/8uQERUCGS1TCaXnOFIRH4upfJG73/social-images/social-1760066089943-sister storage logo.jpg',
-  url = 'https://sisterstorage.ca',
+  url = 'https://sisterstorage.com',
   type = 'website',
   noindex = false,
   structuredData
 }: SEOProps) => {
-  const siteUrl = 'https://sisterstorage.ca';
+  const siteUrl = 'https://sisterstorage.com';
   const fullUrl = url.startsWith('http') ? url : `${siteUrl}${url}`;
 
   // Base structured data for the organization

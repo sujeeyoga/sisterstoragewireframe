@@ -82,7 +82,7 @@ const handler = async (req: Request): Promise<Response> => {
             <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;" />
             <p style="font-size: 12px; color: #666;">
               Sister Storage<br>
-              <a href="https://sisterstorage.ca" style="color: #FF69B4;">sisterstorage.ca</a>
+              <a href="https://sisterstorage.com" style="color: #FF69B4;">sisterstorage.com</a>
             </p>
           </div>
         `,
@@ -111,7 +111,7 @@ const handler = async (req: Request): Promise<Response> => {
             </div>
             
             <p>
-              <a href="https://sisterstorage.ca/admin" 
+              <a href="https://sisterstorage.com/admin" 
                  style="display: inline-block; background: #FF69B4; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">
                 Review in Admin Panel →
               </a>
@@ -147,7 +147,7 @@ const handler = async (req: Request): Promise<Response> => {
             <p>Thank you for helping other sisters make informed decisions about their jewelry storage needs!</p>
             
             <p>
-              <a href="https://sisterstorage.ca/shop" 
+              <a href="https://sisterstorage.com/shop" 
                  style="display: inline-block; background: #FF69B4; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">
                 View Your Review →
               </a>

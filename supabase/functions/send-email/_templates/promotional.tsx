@@ -108,7 +108,7 @@ export const PromotionalEmail = ({
         </Text>
         
         <Text style={footer}>
-          <Link href="https://sisterstorage.ca" style={link}>
+          <Link href="https://sisterstorage.com" style={link}>
             Visit our website
           </Link>
           {' • '}

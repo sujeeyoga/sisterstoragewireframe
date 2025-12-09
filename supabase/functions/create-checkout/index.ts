@@ -28,7 +28,7 @@ serve(async (req) => {
       }
       
       // Production fallback
-      return "https://sisterstorage.ca";
+      return "https://sisterstorage.com";
     };
 
     const origin = getOrigin();

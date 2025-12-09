@@ -70,7 +70,7 @@ const PromotionalEmail = ({ customerName, subject, previewText, heroImage, headl
         React.createElement(Hr, { style: hr }),
         React.createElement(Text, { style: footer }, footerText || 'Thank you for being a valued customer at Sister Storage.'),
         React.createElement(Text, { style: footer },
-          React.createElement(Link, { href: 'https://sisterstorage.ca', style: link }, 'Visit our website'),
+          React.createElement(Link, { href: 'https://sisterstorage.com', style: link }, 'Visit our website'),
           ' • ',
           React.createElement(Link, { href: 'https://instagram.com/sisterstorage', style: link }, 'Follow us on Instagram')
         ),
@@ -119,7 +119,7 @@ const AnnouncementEmail = ({ customerName, subject, previewText, image, headline
         React.createElement(Hr, { style: hr }),
         React.createElement(Text, { style: footer }, footerText || 'Thank you for being part of the Sister Storage community.'),
         React.createElement(Text, { style: footer },
-          React.createElement(Link, { href: 'https://sisterstorage.ca', style: link }, 'Visit our website'),
+          React.createElement(Link, { href: 'https://sisterstorage.com', style: link }, 'Visit our website'),
           ' • ',
           React.createElement(Link, { href: 'https://instagram.com/sisterstorage', style: link }, 'Follow us on Instagram')
         ),
