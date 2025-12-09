@@ -13,16 +13,16 @@ interface SEOProps {
 }
 
 export const SEO = ({
-  title = 'Sister Storage | Culture Without Clutter – Stylish Bangle & Keepsake Organizers',
-  description = 'Sister Storage offers premium bangle and jewelry organizers including our stackable 4-rod dust-free storage box. Ship to Canada and USA. UK shipping coming soon!',
+  title = 'Bangle Storage Boxes & Organizers | Sister Storage – Culture Without Clutter',
+  description = 'Shop premium bangle storage boxes that protect your jewelry. Dust-free, stackable organizers designed for South Asian jewelry. Ships to Canada & USA.',
   keywords = getGlobalKeywords(),
   image = 'https://storage.googleapis.com/gpt-engineer-file-uploads/8uQERUCGS1TCaXnOFIRH4upfJG73/social-images/social-1760066089943-sister storage logo.jpg',
-  url = 'https://www.sisterstorage.com',
+  url = 'https://sisterstorage.ca',
   type = 'website',
   noindex = false,
   structuredData
 }: SEOProps) => {
-  const siteUrl = 'https://www.sisterstorage.com';
+  const siteUrl = 'https://sisterstorage.ca';
   const fullUrl = url.startsWith('http') ? url : `${siteUrl}${url}`;
 
   // Base structured data for the organization
@@ -30,14 +30,14 @@ export const SEO = ({
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: 'Sister Storage',
-    description: 'Premium bangle and jewelry organizers with culture in mind',
+    description: 'Premium bangle storage boxes and jewelry organizers designed for South Asian jewelry',
     url: siteUrl,
     logo: image,
     contactPoint: {
       '@type': 'ContactPoint',
       email: 'sisterstorageinc@gmail.com',
       contactType: 'Customer Service',
-      areaServed: ['CA', 'US', 'GB']
+      areaServed: ['CA', 'US']
     },
     sameAs: [
       'https://www.instagram.com/sisterstorageinc'
