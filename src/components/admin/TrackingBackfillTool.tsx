@@ -30,6 +30,7 @@ interface OrderWithoutTracking {
   source: 'stripe' | 'woocommerce';
   tracking_number?: string;
   shipping_notification_sent_at?: string;
+  carrier_name?: string;
   billing?: any;
 }
 
@@ -162,7 +163,7 @@ export function TrackingBackfillTool() {
             customerEmail: order.customer_email,
             customerName: order.customer_name || 'Valued Customer',
             trackingNumber: order.tracking_number,
-            carrierName: 'Carrier',
+            carrier: order.carrier_name || 'Carrier',
             source: order.source
           }
         });
