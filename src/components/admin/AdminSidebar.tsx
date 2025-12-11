@@ -94,7 +94,7 @@ export function AdminSidebar() {
   };
 
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
-    isActive ? 'bg-pink-100 text-pink-600 font-medium' : 'text-muted-foreground hover:bg-muted/50';
+    isActive ? 'bg-pink-100 text-pink-600 font-medium border-l-4 border-pink-500' : 'text-muted-foreground hover:bg-muted/50';
 
   return (
     <Sidebar className={`bg-white border-r border-border ${isCollapsed ? 'w-14' : 'w-60'}`} collapsible="icon">
