@@ -117,7 +117,7 @@ export function AdminSidebar() {
                         className={getNavCls}
                         onClick={handleNavClick}
                       >
-                        <item.icon className="h-4 w-4" />
+                        <item.icon className="h-4 w-4 shrink-0" />
                         {!isCollapsed && <span className="text-sm">{item.title}</span>}
                       </NavLink>
                     </SidebarMenuButton>
