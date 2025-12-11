@@ -39,6 +39,7 @@ const menuGroups = [
       { title: 'Customers', url: '/admin/customers', icon: Users, end: false },
       { title: 'Reviews', url: '/admin/reviews', icon: Star, end: false },
       { title: 'Flash Sales', url: '/admin/flash-sales', icon: Zap, end: false },
+      { title: 'Shipping Thresholds', url: '/admin/shipping-thresholds', icon: Truck, end: false },
       { title: 'Bulk Shipping Refund', url: '/admin/bulk-shipping-refund', icon: DollarSign, end: false },
     ]
   },
