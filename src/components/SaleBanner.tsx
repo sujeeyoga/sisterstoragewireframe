@@ -8,7 +8,7 @@ interface SaleBannerProps {}
 const REGION_MESSAGES = {
   'toronto-gta': {
     icon: BadgePercent,
-    text: 'Free Shipping Over $50 in Toronto & GTA',
+    text: 'Free Shipping Over $60 in Toronto & GTA',
     iconColor: 'text-brand-pink'
   },
   'canada-wide': {
