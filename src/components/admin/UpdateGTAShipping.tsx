@@ -35,7 +35,7 @@ export function UpdateGTAShipping() {
         .from('shipping_zone_rates')
         .update({
           rate_amount: 4.99,
-          free_threshold: 50
+          free_threshold: 60
         })
         .in('zone_id', zoneIds);
 
@@ -45,7 +45,7 @@ export function UpdateGTAShipping() {
       queryClient.invalidateQueries({ queryKey: ['shipping-zones'] });
       queryClient.invalidateQueries({ queryKey: ['shipping-thresholds'] });
 
-      toast.success('GTA shipping updated: $4.99 flat rate, free over $50');
+      toast.success('GTA shipping updated: $4.99 flat rate, free over $60');
       setHasRun(true);
     } catch (error: any) {
       console.error('Error updating GTA shipping:', error);

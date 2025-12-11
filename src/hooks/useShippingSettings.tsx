@@ -32,7 +32,7 @@ export const useShippingSettings = () => {
         // Default settings
         return {
           toronto_flat_rate: { enabled: true, rate: 3.99 },
-          gta_free_shipping: { enabled: true, threshold: 50 },
+          gta_free_shipping: { enabled: true, threshold: 60 },
           default_shipping: { provider: 'stallion', fallback_rate: 9.99 },
         } as ShippingSettingsData;
       }

@@ -31,7 +31,7 @@ Deno.serve(async (req) => {
       .from('shipping_zone_rates')
       .update({
         rate_amount: 4.99,
-        free_threshold: 50
+        free_threshold: 60
       })
       .in('zone_id', zoneIds)
       .select()
