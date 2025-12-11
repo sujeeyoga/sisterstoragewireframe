@@ -46,6 +46,7 @@ import LocationDebugPanel from '@/components/admin/LocationDebugPanel';
 import { TrackingBackfillTool } from '@/components/admin/TrackingBackfillTool';
 import { FlashSalesManager } from '@/components/admin/FlashSalesManager';
 import ReviewsManager from '@/components/admin/ReviewsManager';
+import { ShippingThresholdsPanel } from '@/components/admin/ShippingThresholdsPanel';
 
 const Admin = () => {
   const { notification, clearNotification } = useOrderNotifications();
@@ -95,6 +96,7 @@ const Admin = () => {
         <Route path="shipping" element={<StallionDashboard />} />
         <Route path="shipping-settings" element={<ShippingSettings />} />
         <Route path="shipping-zones" element={<ShippingZonesManager />} />
+        <Route path="shipping-thresholds" element={<ShippingThresholdsPanel />} />
         <Route path="bulk-shipping-refund" element={<BulkShippingRefundTool />} />
         <Route path="sections" element={<SectionsManager />} />
         <Route path="pages" element={<PagesManager />} />
