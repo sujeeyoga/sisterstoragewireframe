@@ -115,7 +115,11 @@ export function ProductFormDialog({ open, onOpenChange, product }: ProductFormDi
         description: `${data.name} has been ${product ? 'updated' : 'created'} successfully.`,
       });
 
+      // Invalidate all product caches across the site
+      queryClient.invalidateQueries({ queryKey: ['admin-products'] });
       queryClient.invalidateQueries({ queryKey: ['products'] });
+      queryClient.invalidateQueries({ queryKey: ['product'] });
+      queryClient.invalidateQueries({ queryKey: ['products-catalog'] });
       onOpenChange(false);
       form.reset();
     } catch (error: any) {
