@@ -29,7 +29,7 @@ import {
 } from '@/components/ui/tooltip';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { Edit, Trash2, Plus, Search, Eye, EyeOff, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
+import { Edit, Trash2, Plus, Search, Eye, EyeOff, ArrowUpDown, ArrowUp, ArrowDown, RefreshCw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { ProductFormDialog } from './ProductFormDialog';
 
@@ -193,6 +193,18 @@ export const ProductsTable = () => {
     },
   });
 
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const handleRefreshCache = async () => {
+    setIsRefreshing(true);
+    await queryClient.invalidateQueries({ queryKey: ['admin-products'] });
+    await queryClient.invalidateQueries({ queryKey: ['products'] });
+    await queryClient.invalidateQueries({ queryKey: ['product'] });
+    await queryClient.invalidateQueries({ queryKey: ['products-catalog'] });
+    toast({ title: 'Cache refreshed', description: 'Product data has been refreshed across all pages' });
+    setIsRefreshing(false);
+  };
+
   return (
     <div className="p-8">
       <div className="mb-6 flex justify-between items-center">
@@ -201,6 +213,14 @@ export const ProductsTable = () => {
           <p className="text-muted-foreground">Manage all products in your store</p>
         </div>
         <div className="flex gap-2">
+          <Button 
+            variant="outline" 
+            onClick={handleRefreshCache}
+            disabled={isRefreshing}
+          >
+            <RefreshCw className={`mr-2 h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+            Refresh Cache
+          </Button>
           <Button onClick={() => {
             setEditingProduct(null);
             setShowProductForm(true);
