@@ -191,6 +191,17 @@ const Checkout = () => {
   const [isOrderSummaryOpen, setIsOrderSummaryOpen] = useState(!isMobile);
   const [isSubtotalOpen, setIsSubtotalOpen] = useState(true);
   
+  // Debounced subtotal for shipping recalculation
+  const [debouncedSubtotal, setDebouncedSubtotal] = useState(subtotal);
+  
+  // Debounce subtotal changes to prevent API spam
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSubtotal(subtotal);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [subtotal]);
+  
   // Form stage management
   const [formStage, setFormStage] = useState<'email-address' | 'complete'>('complete');
   
@@ -403,12 +414,12 @@ const Checkout = () => {
     }
   }, [formData.address, formData.city, formData.province, formData.postalCode, formData.country, calculateShipping, subtotal, items, toast]);
 
-  // Auto-calculate shipping when address is complete
+  // Auto-calculate shipping when address is complete OR subtotal changes (for free shipping threshold)
   useEffect(() => {
-    if (isManualAddressComplete && shippingRates.length === 0 && !isLoadingRates) {
+    if (isManualAddressComplete && !isLoadingRates) {
       calculateShippingZones();
     }
-  }, [isManualAddressComplete, calculateShippingZones, shippingRates.length, isLoadingRates]);
+  }, [isManualAddressComplete, debouncedSubtotal]);
 
   // Check if customer qualifies for free gift
   const giftQualified = qualifiesForGift(formData.country, subtotal);
