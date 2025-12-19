@@ -1,29 +1,41 @@
 import { useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, DollarSign, TrendingUp, ShoppingCart, Package, User } from 'lucide-react';
+import { ArrowLeft, DollarSign, TrendingUp, ShoppingCart, Package, User, Calendar, Download, Zap } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { subDays } from 'date-fns';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar as CalendarComponent } from '@/components/ui/calendar';
+import { subDays, format, differenceInDays } from 'date-fns';
 import { useOrderAnalytics } from '@/hooks/useOrderAnalytics';
 import { useOrderTimeSeriesAnalytics } from '@/hooks/useOrderTimeSeriesAnalytics';
 import { useProductProfitAnalytics } from '@/hooks/useProductProfitAnalytics';
 import { ResponsiveContainer, ComposedChart, Line, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell, BarChart } from 'recharts';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { cn } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast';
 
 const AdminSalesReports = () => {
   const navigate = useNavigate();
-  const [dateRange, setDateRange] = useState<'7d' | '30d' | '90d' | '6m' | '12m'>('30d');
+  const { toast } = useToast();
+  const [dateRange, setDateRange] = useState<'7d' | '30d' | '90d' | '6m' | '12m' | 'custom'>('30d');
+  const [customStartDate, setCustomStartDate] = useState<Date | undefined>(undefined);
+  const [customEndDate, setCustomEndDate] = useState<Date | undefined>(undefined);
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
   const [isCustomerDialogOpen, setIsCustomerDialogOpen] = useState(false);
   
   const dateRangeValues = useMemo(() => {
+    if (dateRange === 'custom' && customStartDate && customEndDate) {
+      return { start: customStartDate, end: customEndDate };
+    }
     const end = new Date();
     const days = dateRange === '7d' ? 7 : dateRange === '30d' ? 30 : dateRange === '90d' ? 90 : dateRange === '6m' ? 180 : 365;
     return { start: subDays(end, days), end };
-  }, [dateRange]);
+  }, [dateRange, customStartDate, customEndDate]);
+
+  const periodDays = differenceInDays(dateRangeValues.end, dateRangeValues.start) || 1;
 
   const { data: orderData, isLoading: isLoadingOrders } = useOrderAnalytics(dateRangeValues);
   const { data: orderTimeSeries } = useOrderTimeSeriesAnalytics(dateRangeValues);
@@ -163,10 +175,51 @@ const AdminSalesReports = () => {
 
   const COLORS = ['hsl(var(--primary))', 'hsl(var(--secondary))', 'hsl(var(--accent))', '#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#00C49F', '#FFBB28', '#FF8042'];
 
+  // Calculate sales velocity
+  const totalUnits = productSales?.reduce((sum, p) => sum + p.quantity, 0) || 0;
+  const totalRevenue = orderData?.totalRevenue || 0;
+  const unitsPerDay = (totalUnits / periodDays).toFixed(1);
+  const revenuePerDay = (totalRevenue / periodDays).toFixed(2);
+
+  // Export to CSV
+  const handleExportCSV = () => {
+    if (!profitData?.products || profitData.products.length === 0) {
+      toast({ title: "No data to export", variant: "destructive" });
+      return;
+    }
+
+    const headers = ['Product Name', 'Quantity Sold', 'Revenue', 'Shipping Cost', 'Refunds', 'Profit', 'Profit Margin %'];
+    const rows = profitData.products.map(p => [
+      `"${p.name}"`,
+      p.quantity,
+      p.revenue.toFixed(2),
+      p.shippingCost.toFixed(2),
+      p.refunds.toFixed(2),
+      p.profit.toFixed(2),
+      p.profitMargin.toFixed(1)
+    ]);
+
+    const csvContent = [
+      `Sales Report: ${format(dateRangeValues.start, 'MMM d, yyyy')} - ${format(dateRangeValues.end, 'MMM d, yyyy')}`,
+      '',
+      headers.join(','),
+      ...rows.map(row => row.join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `sales-report-${format(dateRangeValues.start, 'yyyy-MM-dd')}-${format(dateRangeValues.end, 'yyyy-MM-dd')}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+    toast({ title: "CSV exported successfully" });
+  };
+
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="icon" onClick={() => navigate('/admin/analytics')}>
             <ArrowLeft className="h-5 w-5" />
@@ -174,26 +227,73 @@ const AdminSalesReports = () => {
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Sales Reports</h1>
             <p className="text-muted-foreground">
-              Detailed revenue and sales performance analytics
+              {format(dateRangeValues.start, 'MMM d, yyyy')} - {format(dateRangeValues.end, 'MMM d, yyyy')} ({periodDays} days)
             </p>
           </div>
         </div>
-        <Select value={dateRange} onValueChange={(value: any) => setDateRange(value)}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="7d">Last 7 days</SelectItem>
-            <SelectItem value="30d">Last 30 days</SelectItem>
-            <SelectItem value="90d">Last 90 days</SelectItem>
-            <SelectItem value="6m">Last 6 months</SelectItem>
-            <SelectItem value="12m">Last 12 months</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="flex items-center gap-2 flex-wrap">
+          <Select value={dateRange} onValueChange={(value: any) => setDateRange(value)}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="7d">Last 7 days</SelectItem>
+              <SelectItem value="30d">Last 30 days</SelectItem>
+              <SelectItem value="90d">Last 90 days</SelectItem>
+              <SelectItem value="6m">Last 6 months</SelectItem>
+              <SelectItem value="12m">Last 12 months</SelectItem>
+              <SelectItem value="custom">Custom Range</SelectItem>
+            </SelectContent>
+          </Select>
+          
+          {dateRange === 'custom' && (
+            <div className="flex items-center gap-2">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className={cn("w-[140px] justify-start text-left font-normal", !customStartDate && "text-muted-foreground")}>
+                    <Calendar className="mr-2 h-4 w-4" />
+                    {customStartDate ? format(customStartDate, "MMM d, yyyy") : "Start date"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <CalendarComponent
+                    mode="single"
+                    selected={customStartDate}
+                    onSelect={setCustomStartDate}
+                    initialFocus
+                    className="pointer-events-auto"
+                  />
+                </PopoverContent>
+              </Popover>
+              <span className="text-muted-foreground">to</span>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className={cn("w-[140px] justify-start text-left font-normal", !customEndDate && "text-muted-foreground")}>
+                    <Calendar className="mr-2 h-4 w-4" />
+                    {customEndDate ? format(customEndDate, "MMM d, yyyy") : "End date"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <CalendarComponent
+                    mode="single"
+                    selected={customEndDate}
+                    onSelect={setCustomEndDate}
+                    initialFocus
+                    className="pointer-events-auto"
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+          )}
+          
+          <Button variant="outline" size="icon" onClick={handleExportCSV} title="Export to CSV">
+            <Download className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
 
       {/* Key Metrics */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
@@ -246,10 +346,25 @@ const AdminSalesReports = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {productSales?.reduce((sum, p) => sum + p.quantity, 0) || 0}
+              {totalUnits}
             </div>
             <p className="text-xs text-muted-foreground">
               Total units
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-primary/5 border-primary/20">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Sales Velocity</CardTitle>
+            <Zap className="h-4 w-4 text-primary" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-primary">
+              {unitsPerDay}/day
+            </div>
+            <p className="text-xs text-muted-foreground">
+              ${revenuePerDay}/day revenue
             </p>
           </CardContent>
         </Card>
