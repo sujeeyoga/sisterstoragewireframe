@@ -9,7 +9,7 @@ const testimonials = [
     quote: "These organizers changed my life! Now everything has a home.",
     author: "Priya S.",
     title: "Jewelry Collector",
-    color: "#E90064"
+    color: "#E80065"
   },
   {
     id: 2,
@@ -52,7 +52,7 @@ const Testimonials = () => {
       <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-start">
         {/* Left Column - Header Section */}
         <div className="text-center md:text-left px-4">
-          <span className="text-[#E90064] font-medium">Customer Love</span>
+          <span className="text-[#E80065] font-medium">Customer Love</span>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mt-2 mb-3">What Our Sisters Are Saying</h2>
           <p className="text-gray-600">
             Don't just take our word for it—hear from our community of organized enthusiasts
@@ -76,7 +76,7 @@ const Testimonials = () => {
                    <div className="bg-white p-6 rounded-lg shadow-md border border-gray-100 h-[280px] flex flex-col">
                      {/* Quote Icon - Fixed Height */}
                      <div className="mb-4 h-6">
-                       <svg className="h-6 w-6 text-[#E90064]" fill="currentColor" viewBox="0 0 24 24">
+                       <svg className="h-6 w-6 text-[#E80065]" fill="currentColor" viewBox="0 0 24 24">
                          <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
                        </svg>
                      </div>

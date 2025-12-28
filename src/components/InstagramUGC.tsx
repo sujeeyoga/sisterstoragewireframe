@@ -97,12 +97,12 @@ const InstagramUGC = () => {
     <section className="py-16 md:py-24 bg-gradient-to-br from-pink-50 via-white to-orange-50">
       <div className="container-custom">
         <div className="text-center mb-12 md:mb-16">
-          <span className="inline-block px-4 py-2 bg-[#E90064] text-white text-sm font-bold rounded-full mb-4">
+          <span className="inline-block px-4 py-2 bg-[#E80065] text-white text-sm font-bold rounded-full mb-4">
             Community Stories
           </span>
           <h2 className="text-4xl md:text-6xl lg:text-7xl font-black text-gray-900 mt-2 mb-6 leading-tight">
             STYLED BY OUR<br />
-            <span className="text-[#E90064]">SISTERS</span>
+            <span className="text-[#E80065]">SISTERS</span>
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto text-lg leading-relaxed">
             See how our community celebrates organizing with culture, color, and love. 

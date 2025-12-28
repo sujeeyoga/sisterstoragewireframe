@@ -137,7 +137,7 @@ export function transformProduct(dbProduct: any): Product {
     salePrice: dbProduct.sale_price || undefined,
     category,
     categories: categories.map((cat: any) => cat.slug),
-    color: metaData.color || '#e90064',
+    color: metaData.color || '#E80065',
     features: Array.isArray(features) ? features : [],
     material: metaData.material || 'Premium materials',
     bestSeller: metaData.bestSeller || false,
