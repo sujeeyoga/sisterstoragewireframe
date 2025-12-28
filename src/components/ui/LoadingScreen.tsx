@@ -23,7 +23,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ onLoadingComplete }) => {
     <div 
       className="fixed inset-0 z-[9999] flex items-center justify-center animate-fade-out overflow-hidden"
       style={{
-        backgroundColor: '#F00881',
+        backgroundColor: '#E80065',
         animation: isVisible ? 'none' : 'fade-out 0.3s ease-out forwards'
       }}
     >

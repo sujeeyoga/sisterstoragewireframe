@@ -23,12 +23,12 @@
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 3.9%;
 
-    /* Primary: Brand Pink (#F00881) */
-    --primary: 329 93% 49%;
+    /* Primary: Brand Pink (#E80065) */
+    --primary: 336 97% 45%;
     --primary-foreground: 0 0% 98%;
 
-    /* Secondary: Bright Pink (#F00881) */
-    --secondary: 329 93% 49%;
+    /* Secondary: Bright Pink (#E80065) */
+    --secondary: 336 97% 45%;
     --secondary-foreground: 0 0% 98%;
 
     /* Muted: Light Gray */
