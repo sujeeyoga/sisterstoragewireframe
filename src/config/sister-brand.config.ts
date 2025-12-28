@@ -1,7 +1,7 @@
 export const SisterBrand = {
   colors: {
     // Primary brand colors
-    'Sister Pink': '#EA0064',
+    'Sister Pink': '#E80065',
     'Sister Orange': '#FF8021',
     'Sister Black': '#000000',
     'Sister Gray': '#F4F4F4',
