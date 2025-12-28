@@ -8,8 +8,8 @@
 @layer base {
   :root {
     /* Primary branding colors */
-    --brand-pink: 329 93% 49%;
-    --brand-pink-hover: 329 93% 39%;
+    --brand-pink: 336 97% 45%;
+    --brand-pink-hover: 336 97% 35%;
     --brand-orange: 23 100% 56%;
     --brand-orange-hover: 23 100% 46%;
     --brand-black: 0 0% 10%;
@@ -46,10 +46,10 @@
     /* Border & Input */
     --border: 0 0% 89.8%;
     --input: 0 0% 89.8%;
-    --ring: 329 93% 49%;
+    --ring: 336 97% 45%;
 
     /* Chart colors (optional, but nice to have) */
-    --chart-1: 329 93% 49%;
+    --chart-1: 336 97% 45%;
     --chart-2: 23 100% 56%;
     --chart-3: 0 0% 10%;
     --chart-4: 326 70% 95%;
@@ -60,8 +60,8 @@
     --sidebar-foreground: 0 0% 10%;
     --sidebar-border: 0 0% 89.8%;
     --sidebar-accent: 326 70% 95%;
-    --sidebar-accent-foreground: 329 93% 20%;
-    --sidebar-ring: 329 93% 49%;
+    --sidebar-accent-foreground: 336 97% 20%;
+    --sidebar-ring: 336 97% 45%;
 
     --radius: 0.5rem;
   }
@@ -73,7 +73,7 @@
     --card-foreground: 0 0% 98%;
     --popover: 0 0% 3.9%;
     --popover-foreground: 0 0% 98%;
-    --primary: 329 93% 49%;
+    --primary: 336 97% 45%;
     --primary-foreground: 0 0% 98%;
     --secondary: 329 100% 15%;
     --secondary-foreground: 0 0% 98%;
