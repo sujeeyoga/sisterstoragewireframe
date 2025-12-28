@@ -16,7 +16,7 @@ const BrandColors = () => {
 
   // Create color pairs (darker on left, lighter on right)
   const colorPairs = [
-    { dark: { name: 'Sister Pink', value: '#EA0064' }, light: { name: 'Light Pink', value: '#FE5FA4' } },
+    { dark: { name: 'Sister Pink', value: '#E80065' }, light: { name: 'Light Pink', value: '#FE5FA4' } },
     { dark: { name: 'Sister Orange', value: '#FF8021' }, light: { name: 'Sister Gold', value: '#FFA51E' } },
     { dark: { name: 'Sister Black', value: '#000000' }, light: { name: 'Charcoal', value: '#403E43' } },
     { dark: { name: 'Sister Peach', value: '#FFDCBD' }, light: { name: 'Soft Peach', value: '#FDE1D3' } },
