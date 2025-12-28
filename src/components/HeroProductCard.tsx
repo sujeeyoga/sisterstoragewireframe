@@ -109,7 +109,7 @@ const HeroProductCard = ({
               originalPrice: displayOriginalPrice,
               description,
               category: 'bundle',
-              color: '#E90064',
+              color: '#E80065',
               images: [image],
               features: [],
               material: '',

@@ -48,7 +48,7 @@ const Section: React.FC<SectionProps> = ({
     white: 'bg-white',
     gray: 'bg-gray-50',
     dark: 'bg-black text-white',
-    'brand-pink': 'bg-[#E90064] text-white',
+    'brand-pink': 'bg-[#E80065] text-white',
     'brand-orange': 'bg-[#FF8021] text-white'
   };
 
