@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { useEffect } from "react";
+import { useCodeProtection } from "./hooks/useCodeProtection";
 import Index from "./pages/Index";
 import Shop from "./pages/Shop";
 import Gallery from "./pages/Gallery";
@@ -49,6 +50,9 @@ import CustomerOrderDetail from "./pages/CustomerOrderDetail";
 const queryClient = new QueryClient();
 
 const App = () => {
+  // Enable code protection (disable right-click and dev tools shortcuts)
+  useCodeProtection(true);
+  
   // Disable right-click context menu
   useEffect(() => {
     const handleContextMenu = (e: MouseEvent) => {
