@@ -38,7 +38,8 @@ const FeaturedGridItem: React.FC<FeaturedGridItemProps> = ({
       {/* Image */}
       <img
         src={image}
-        alt={title}
+        alt={`Sister Storage ${title} - Premium Jewelry Organization Canada`}
+        title={`Sister Storage ${title}`}
         fetchPriority="low"
         className="w-full h-full object-cover transform-gpu group-hover:scale-105 transition-transform duration-300"
         loading="lazy"

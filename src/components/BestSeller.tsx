@@ -129,7 +129,8 @@ const BestSeller = () => {
                   
                   <img 
                     src={buyCards[0].image} 
-                    alt={`${buyCards[0].name} - Bundle collection`} 
+                    alt={`Sister Storage ${buyCards[0].name} - Premium Bangle Storage Bundle Canada`}
+                    title={`Sister Storage ${buyCards[0].name}`}
                     className={cn("w-full h-full object-cover transition-opacity duration-500 scale-125", loadedImages[buyCards[0].id] ? "opacity-100" : "opacity-0")} 
                     loading="eager"
                     decoding="async"
@@ -191,7 +192,7 @@ const BestSeller = () => {
                 <div className="relative h-full">
                   {!loadedImages[buyCards[1].id] && <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse" />}
                   
-                  <img src={buyCards[1].image} alt={`${buyCards[1].name} - Bundle collection`} className={cn("w-full h-full object-cover transition-opacity duration-500 scale-125", loadedImages[buyCards[1].id] ? "opacity-100" : "opacity-0")} loading="eager" decoding="async" onLoad={() => handleImageLoad(buyCards[1].id)} onError={() => handleImageError(buyCards[1].id)} />
+                  <img src={buyCards[1].image} alt={`Sister Storage ${buyCards[1].name} - Premium Bangle Storage Bundle Canada`} title={`Sister Storage ${buyCards[1].name}`} className={cn("w-full h-full object-cover transition-opacity duration-500 scale-125", loadedImages[buyCards[1].id] ? "opacity-100" : "opacity-0")} loading="eager" decoding="async" onLoad={() => handleImageLoad(buyCards[1].id)} onError={() => handleImageError(buyCards[1].id)} />
                   
                   <div className={cn(
                     "absolute inset-0 flex items-center justify-center transition-opacity duration-300",
