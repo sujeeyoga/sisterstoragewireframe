@@ -21,7 +21,8 @@ const RelatedProducts = ({ products }: RelatedProductsProps) => {
                 {product.images && product.images[0] ? (
                   <img 
                     src={product.images[0]} 
-                    alt={product.name}
+                    alt={`Sister Storage ${product.name} - Premium Bangle Box Canada`}
+                    title={`Sister Storage ${product.name}`}
                     loading="lazy"
                     decoding="async"
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"

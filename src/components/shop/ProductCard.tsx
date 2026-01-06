@@ -75,7 +75,8 @@ const ProductCard = ({ product }: ProductCardProps) => {
             {product.images && product.images[0] ? (
               <img 
                 src={product.images[0]} 
-                alt={product.name}
+                alt={`Sister Storage ${product.name} - Premium Bangle Storage Canada`}
+                title={`Sister Storage ${product.name}`}
                 loading="eager"
                 fetchPriority="high"
                 decoding="async"
