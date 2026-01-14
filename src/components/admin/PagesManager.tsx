@@ -13,6 +13,7 @@ const pages = [
   { title: 'Gift', path: '/gift', icon: Gift, description: 'Gift options and bundles' },
   { title: 'Brand Guide', path: '/brand', icon: Palette, description: 'Brand guidelines and design system' },
   { title: 'Community', path: '/community', icon: Users, description: 'Community stories and engagement' },
+  { title: 'Culture', path: '/culture', icon: Heart, description: 'Celebrating South Asian heritage and traditions' },
 ];
 
 export const PagesManager = () => {
