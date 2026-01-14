@@ -49,34 +49,53 @@ const Culture = () => {
             }}
           />
           
-          <div className="container mx-auto px-4 relative z-10">
-            <div className="flex justify-center">
-              <div className="grid grid-cols-1 md:grid-cols-[100px_1fr] gap-0 max-w-4xl w-full">
-                {/* Side Decorative Strip - Hidden on mobile */}
-                <div className="hidden md:block bg-primary-foreground/10 rounded-l-lg" />
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="flex justify-center">
+            <div className="grid grid-cols-1 md:grid-cols-[100px_1fr] gap-0 max-w-4xl w-full">
+              {/* Side Decorative Strip - Hidden on mobile */}
+              <div 
+                className="hidden md:block rounded-l-lg"
+                style={{
+                  backgroundImage: 'linear-gradient(180deg, hsl(var(--primary)) 0%, hsl(var(--primary)/0.8) 50%, hsl(var(--primary)) 100%)',
+                  backgroundSize: 'cover',
+                  position: 'relative',
+                  overflow: 'hidden',
+                }}
+              >
+                {/* Decorative vertical pattern */}
+                <div 
+                  className="absolute inset-0 opacity-30"
+                  style={{
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='80' viewBox='0 0 40 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 0c-6 0-12 5-12 12s6 12 12 12c4 0 8-2 10-6 1-1 2-2 4-2 2 0 4 2 4 4 0 1 0 2-1 2-3 6-10 10-17 10-11 0-20-9-20-20S9 0 20 0c7 0 13 4 17 10 1 0 1 1 1 2 0 2-2 4-4 4-2 0-3-1-4-2-2-4-6-6-10-6z' fill='%23ffffff' fill-opacity='0.5'/%3E%3Cpath d='M20 40c-6 0-12 5-12 12s6 12 12 12c4 0 8-2 10-6 1-1 2-2 4-2 2 0 4 2 4 4 0 1 0 2-1 2-3 6-10 10-17 10-11 0-20-9-20-20s9-20 20-20c7 0 13 4 17 10 1 0 1 1 1 2 0 2-2 4-4 4-2 0-3-1-4-2-2-4-6-6-10-6z' fill='%23ffffff' fill-opacity='0.5'/%3E%3C/svg%3E")`,
+                    backgroundRepeat: 'repeat-y',
+                    backgroundSize: '40px auto',
+                    backgroundPosition: 'center',
+                  }}
+                />
+              </div>
+              
+              {/* Content Box */}
+              <div className="bg-background border-4 border-primary p-8 md:p-12 lg:p-16">
+                <h1 className="mb-2">
+                  <span className="font-script text-primary text-5xl md:text-6xl lg:text-7xl block leading-tight">
+                    Culture,
+                  </span>
+                  <span className="text-primary text-2xl md:text-3xl lg:text-4xl font-semibold uppercase tracking-wider block mt-1">
+                    without clutter.
+                  </span>
+                </h1>
                 
-                {/* Content Box */}
-                <div className="bg-background border-4 border-primary p-8 md:p-12 lg:p-16">
-                  <h1 className="mb-2">
-                    <span className="font-script text-primary text-5xl md:text-6xl lg:text-7xl block leading-tight">
-                      Culture,
-                    </span>
-                    <span className="text-primary text-2xl md:text-3xl lg:text-4xl font-semibold uppercase tracking-wider block mt-1">
-                      without clutter.
-                    </span>
-                  </h1>
-                  
-                  <p className="text-muted-foreground text-lg md:text-xl mt-6 mb-8 max-w-lg">
-                    Thoughtfully designed storage that protects tradition, not mess.
-                  </p>
-                  
-                  <Button asChild size="lg" className="px-8">
-                    <Link to="/shop">Shop the Collection</Link>
-                  </Button>
-                </div>
+                <p className="text-muted-foreground text-lg md:text-xl mt-6 mb-8 max-w-lg">
+                  Thoughtfully designed storage that protects tradition, not mess.
+                </p>
+                
+                <Button asChild size="lg" className="px-8">
+                  <Link to="/shop">Shop the Collection</Link>
+                </Button>
               </div>
             </div>
           </div>
+        </div>
         </section>
 
         {/* Features Carousel Section */}
