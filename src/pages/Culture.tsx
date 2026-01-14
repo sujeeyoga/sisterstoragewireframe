@@ -56,7 +56,7 @@ const Culture = () => {
               <div 
                 className="hidden md:block rounded-l-lg"
                 style={{
-                  backgroundImage: 'linear-gradient(180deg, hsl(var(--primary)) 0%, hsl(var(--primary)/0.8) 50%, hsl(var(--primary)) 100%)',
+                  backgroundImage: 'linear-gradient(180deg, #ff0077 0%, #ff0077cc 50%, #ff0077 100%)',
                   backgroundSize: 'cover',
                   position: 'relative',
                   overflow: 'hidden',
