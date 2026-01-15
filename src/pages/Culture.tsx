@@ -7,19 +7,19 @@ import cultureHeroSide from '@/assets/culture-hero-side.png';
 
 const features = [
   {
-    title: 'Purpose-Built',
-    description: 'Designed specifically for bangles, jewelry, keepsakes, and heirlooms.',
-    videoUrl: '', // Add video URL here
+    title: 'No More Tangled Bangles',
+    description: 'Remember digging through that drawer? Yeah, we fixed that. Your bangles stay organized, untangled, and ready for any celebration.',
+    videoUrl: '',
   },
   {
-    title: 'Beautiful & Practical',
-    description: 'Clean, elegant designs that feel good to open and easy to store.',
-    videoUrl: '', // Add video URL here
+    title: 'Pass It Down, Not Around',
+    description: 'Grandma\'s gold deserves better than a shoebox. Keep your heirlooms safe and beautiful for the next generation.',
+    videoUrl: '',
   },
   {
-    title: 'Culture-First',
-    description: 'Made with intention — honoring traditions without adding clutter.',
-    videoUrl: '', // Add video URL here
+    title: 'Eid-Ready in Seconds',
+    description: 'When the outfit is pressed and the mehendi is fresh — your jewelry should be just as ready. No last-minute hunts.',
+    videoUrl: '',
   },
 ];
 
