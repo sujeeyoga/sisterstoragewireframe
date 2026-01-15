@@ -194,15 +194,9 @@ const Culture = () => {
 
             {/* Pink Sidebar with SS Logo */}
             <div 
-              className="hidden md:flex w-16 lg:w-20 flex-shrink-0 flex-col items-center justify-start py-8 relative"
+              className="hidden md:flex w-16 lg:w-20 flex-shrink-0 flex-col items-center justify-start py-8"
               style={{ backgroundColor: '#ff0077' }}
             >
-              {/* Blue vertical line */}
-              <div 
-                className="absolute right-3 lg:right-4 top-0 bottom-0 w-0.5"
-                style={{ backgroundColor: '#4A90D9' }}
-              />
-              
               {/* SS Logo */}
               <span 
                 className="text-white text-xl lg:text-2xl font-bold tracking-wider"
