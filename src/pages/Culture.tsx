@@ -40,14 +40,6 @@ const Culture = () => {
       <div className="min-h-screen">
         {/* Hero Section */}
         <section className="relative py-16 md:py-24 overflow-hidden" style={{ backgroundColor: '#ff0077' }}>
-          {/* Paisley Pattern Overlay */}
-          <div 
-            className="absolute inset-0 opacity-10 pointer-events-none"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5c-8 0-15 7-15 15s7 15 15 15c5 0 10-3 12-7 1-2 3-3 5-3 3 0 5 2 5 5 0 1 0 2-1 3-4 7-12 12-21 12-14 0-25-11-25-25S16 0 30 0c9 0 17 5 21 12 1 1 1 2 1 3 0 3-2 5-5 5-2 0-4-1-5-3-2-4-7-7-12-7z' fill='%23ffffff' fill-opacity='0.4'/%3E%3C/svg%3E")`,
-              backgroundSize: '120px 120px',
-            }}
-          />
           
         <div className="container mx-auto px-4 relative z-10">
           <div className="flex justify-center">
