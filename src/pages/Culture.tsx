@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import cultureHeroSide from '@/assets/culture-hero-side.png';
 import sisNeededThisProduct from '@/assets/sis-needed-this-product.png';
+import { useOptimizedParallax } from '@/hooks/use-optimized-parallax';
 const features = [{
   title: 'Travel Friendly',
   description: '"Pack your bangles without the stress. TSA-approved and ready for any destination — from weddings abroad to weekend getaways."',
@@ -20,6 +21,7 @@ const features = [{
 }];
 const Culture = () => {
   const [activeFeature, setActiveFeature] = useState(0);
+  const { ref: parallaxRef, offset } = useOptimizedParallax({ speed: 0.3 });
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveFeature(prev => (prev + 1) % features.length);
@@ -184,13 +186,17 @@ const Culture = () => {
             </div>
 
             {/* Product Image on Right with Parallax */}
-            <div className="hidden md:block w-[27rem] lg:w-[30rem] flex-shrink-0 relative overflow-hidden">
+            <div 
+              ref={parallaxRef}
+              className="hidden md:block w-[27rem] lg:w-[30rem] flex-shrink-0 relative overflow-hidden"
+            >
               <img 
                 src={sisNeededThisProduct} 
                 alt="Sister Storage bangle box with beautiful henna hands design"
                 className="absolute inset-0 w-full h-[150%] object-cover object-center"
                 style={{ 
-                  top: '-25%',
+                  transform: `translateY(${offset * -0.5}px)`,
+                  willChange: 'transform'
                 }}
               />
             </div>
