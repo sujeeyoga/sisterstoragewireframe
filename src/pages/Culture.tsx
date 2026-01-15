@@ -150,7 +150,7 @@ const Culture = () => {
         </section>
 
         {/* Sis, You Needed This Section */}
-        <section className="relative overflow-hidden h-[300px] md:h-[350px]">
+        <section className="relative overflow-hidden">
           <div className="flex h-full">
             {/* Main Orange Section with Paisley */}
             <div 
@@ -184,18 +184,17 @@ const Culture = () => {
               </div>
             </div>
 
-            {/* Product Image on Right with Parallax */}
+            {/* Product Image on Right - drives section height */}
             <div 
               ref={parallaxRef}
-              className="hidden md:block w-[27rem] lg:w-[30rem] flex-shrink-0 relative overflow-hidden"
+              className="hidden md:block w-[27rem] lg:w-[30rem] flex-shrink-0 relative"
             >
               <img 
                 src={sisNeededThisProduct} 
                 alt="Sister Storage bangle box with beautiful henna hands design"
-                className="absolute w-full h-[150%] object-cover object-center will-change-transform"
+                className="w-full h-auto object-cover object-center will-change-transform"
                 style={{ 
-                  bottom: '-25%',
-                  transform: `translateY(${-offset}px)`
+                  transform: `translateY(${-offset * 0.1}px)`
                 }}
               />
             </div>
