@@ -48,19 +48,21 @@ export const useOptimizedParallax = ({
     };
   }, [threshold, disabled, prefersReducedMotion]);
 
-  // Optimized scroll handler
+  // Optimized scroll handler - calculate offset relative to viewport
   const updateOffset = useCallback(() => {
-    if (!isVisible || disabled || prefersReducedMotion) return;
+    if (!isVisible || disabled || prefersReducedMotion || !elementRef.current) return;
 
-    const scrollY = window.pageYOffset;
-    const deltaY = Math.abs(scrollY - lastScrollY.current);
+    const rect = elementRef.current.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
     
-    // Only update if there's meaningful change (increased threshold)
-    if (deltaY > 5) {
-      const newOffset = scrollY * speed;
-      setOffset(newOffset);
-      lastScrollY.current = scrollY;
-    }
+    // Calculate how far into view the element is (0 = just entering, 1 = fully past)
+    const progress = (viewportHeight - rect.top) / (viewportHeight + rect.height);
+    
+    // Clamp to 0-1 range and apply speed multiplier
+    const clampedProgress = Math.max(0, Math.min(1, progress));
+    const newOffset = clampedProgress * 100 * speed;
+    
+    setOffset(newOffset);
   }, [isVisible, disabled, prefersReducedMotion, speed]);
 
   const handleScroll = useCallback(() => {
