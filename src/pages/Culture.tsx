@@ -148,11 +148,11 @@ const Culture = () => {
         </section>
 
         {/* Sis, You Needed This Section */}
-        <section className="relative overflow-hidden">
-          <div className="flex">
+        <section className="relative overflow-hidden h-[300px] md:h-[350px]">
+          <div className="flex h-full">
             {/* Main Orange Section with Paisley */}
             <div 
-              className="flex-1 relative py-20 md:py-32 px-8 md:px-16"
+              className="flex-1 relative py-12 md:py-16 px-8 md:px-16 flex items-center"
               style={{ backgroundColor: '#E86A33' }}
             >
               {/* Paisley pattern overlay */}
@@ -183,12 +183,15 @@ const Culture = () => {
               </div>
             </div>
 
-            {/* Product Image on Right */}
-            <div className="hidden md:block w-[27rem] lg:w-[30rem] flex-shrink-0">
+            {/* Product Image on Right with Parallax */}
+            <div className="hidden md:block w-[27rem] lg:w-[30rem] flex-shrink-0 relative overflow-hidden">
               <img 
                 src={sisNeededThisProduct} 
                 alt="Sister Storage bangle box with beautiful henna hands design"
-                className="w-full h-full object-cover"
+                className="absolute inset-0 w-full h-[150%] object-cover object-center"
+                style={{ 
+                  top: '-25%',
+                }}
               />
             </div>
 
