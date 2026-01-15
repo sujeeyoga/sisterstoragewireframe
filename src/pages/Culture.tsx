@@ -46,7 +46,7 @@ const Culture = () => {
             className="absolute inset-0 opacity-[0.33]"
             style={{
               backgroundImage: `url(${cultureHeroSide})`,
-              backgroundSize: 'contain',
+              backgroundSize: 'cover',
               backgroundPosition: 'center',
               backgroundRepeat: 'no-repeat',
               filter: 'brightness(0) saturate(100%) invert(15%) sepia(95%) saturate(6000%) hue-rotate(325deg) brightness(95%) contrast(105%)',
