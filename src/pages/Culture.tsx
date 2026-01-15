@@ -9,14 +9,17 @@ const features = [
   {
     title: 'Purpose-Built',
     description: 'Designed specifically for bangles, jewelry, keepsakes, and heirlooms.',
+    videoUrl: '', // Add video URL here
   },
   {
     title: 'Beautiful & Practical',
     description: 'Clean, elegant designs that feel good to open and easy to store.',
+    videoUrl: '', // Add video URL here
   },
   {
     title: 'Culture-First',
     description: 'Made with intention — honoring traditions without adding clutter.',
+    videoUrl: '', // Add video URL here
   },
 ];
 
@@ -116,13 +119,13 @@ const Culture = () => {
         {/* Features Carousel Section */}
         <section className="py-16 md:py-20 bg-background">
           <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto">
+            <div className="max-w-5xl mx-auto">
               <div className="border-2 border-primary rounded-lg overflow-hidden">
-                <div className="relative h-48 md:h-56">
+                <div className="relative min-h-[500px] md:min-h-[650px]">
                   {features.map((feature, index) => (
                     <div
                       key={feature.title}
-                      className={`absolute inset-0 flex flex-col items-center justify-center text-center p-8 transition-all duration-500 ${
+                      className={`absolute inset-0 flex flex-col md:flex-row items-center justify-center gap-8 p-8 transition-all duration-500 ${
                         index === activeFeature 
                           ? 'opacity-100 translate-x-0' 
                           : index < activeFeature 
@@ -130,12 +133,37 @@ const Culture = () => {
                             : 'opacity-0 translate-x-full'
                       }`}
                     >
-                      <h3 className="text-2xl md:text-3xl font-semibold text-primary mb-3">
-                        {feature.title}
-                      </h3>
-                      <p className="text-muted-foreground text-lg max-w-md">
-                        {feature.description}
-                      </p>
+                      {/* Video Container - 400x600 aspect ratio */}
+                      <div 
+                        className="w-[200px] h-[300px] md:w-[400px] md:h-[600px] bg-muted rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center border border-border"
+                      >
+                        {feature.videoUrl ? (
+                          <video 
+                            src={feature.videoUrl}
+                            className="w-full h-full object-cover"
+                            autoPlay
+                            muted
+                            loop
+                            playsInline
+                          />
+                        ) : (
+                          <div className="text-muted-foreground text-center p-4">
+                            <div className="text-4xl mb-2">🎬</div>
+                            <p className="text-sm">Video placeholder</p>
+                            <p className="text-xs mt-1">400×600</p>
+                          </div>
+                        )}
+                      </div>
+                      
+                      {/* Text Content */}
+                      <div className="text-center md:text-left max-w-md">
+                        <h3 className="text-2xl md:text-3xl font-semibold text-primary mb-3">
+                          {feature.title}
+                        </h3>
+                        <p className="text-muted-foreground text-lg">
+                          {feature.description}
+                        </p>
+                      </div>
                     </div>
                   ))}
                 </div>
