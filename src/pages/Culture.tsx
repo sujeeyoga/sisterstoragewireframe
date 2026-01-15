@@ -194,8 +194,8 @@ const Culture = () => {
                 alt="Sister Storage bangle box with beautiful henna hands design"
                 className="absolute w-full h-[150%] object-cover object-center will-change-transform"
                 style={{ 
-                  top: '-25%',
-                  transform: `translateY(${offset}px)`
+                  bottom: '-25%',
+                  transform: `translateY(${-offset}px)`
                 }}
               />
             </div>
