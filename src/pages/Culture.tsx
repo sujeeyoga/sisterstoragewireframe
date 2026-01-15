@@ -41,6 +41,16 @@ const Culture = () => {
       <div className="min-h-screen">
         {/* Hero Section */}
         <section className="relative py-16 md:py-24 overflow-hidden" style={{ backgroundColor: '#ff0077' }}>
+          {/* Paisley pattern overlay */}
+          <div 
+            className="absolute inset-0 opacity-[0.33]"
+            style={{
+              backgroundImage: `url(${cultureHeroSide})`,
+              backgroundSize: 'auto 100%',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'repeat-x',
+            }}
+          />
           
         <div className="container mx-auto px-4 relative z-10">
           <div className="flex justify-center">
