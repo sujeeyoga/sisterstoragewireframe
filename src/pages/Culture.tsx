@@ -62,8 +62,15 @@ const Culture = () => {
           
         <div className="container mx-auto px-4 relative z-10">
           <div className="flex justify-center">
-            <div className="grid grid-cols-1 md:grid-cols-[100px_1fr] gap-0 max-w-4xl w-full">
-              {/* Side Decorative Strip - Hidden on mobile */}
+            <div className="flex flex-col md:grid md:grid-cols-[100px_1fr] gap-0 max-w-4xl w-full">
+              {/* Top Decorative Strip - Mobile only */}
+              <div className="block md:hidden h-16 rounded-t-lg bg-white" style={{
+                backgroundImage: `url(${cultureHeroSide})`,
+                backgroundSize: 'auto 100%',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'repeat-x'
+              }} />
+              {/* Side Decorative Strip - Desktop only */}
               <div className="hidden md:block rounded-l-lg bg-white" style={{
                 backgroundImage: `url(${cultureHeroSide})`,
                 backgroundSize: '100% auto',
