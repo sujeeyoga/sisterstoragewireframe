@@ -38,14 +38,14 @@ const Culture = () => {
         <section className="relative py-16 md:py-24 overflow-hidden" style={{
         backgroundColor: '#ff0077'
       }}>
-          {/* Paisley pattern overlay */}
-          <div className="absolute inset-0 opacity-15" style={{
+          {/* Shimmering Paisley pattern overlay */}
+          <div className="absolute inset-0 opacity-20 animate-shimmer-slow" style={{
           backgroundImage: `url(${cultureHeroSide})`,
           backgroundSize: '300px auto',
           backgroundPosition: 'center',
           backgroundRepeat: 'repeat',
           backgroundAttachment: 'scroll',
-          filter: 'brightness(0)'
+          filter: 'brightness(1.2) contrast(1.1)'
         }} />
           {/* Bottom fade to blend the seam */}
           <div className="absolute bottom-0 left-0 right-0 h-24 pointer-events-none" style={{
@@ -62,24 +62,9 @@ const Culture = () => {
           
         <div className="container mx-auto px-4 relative z-10">
           <div className="flex justify-center">
-            <div className="flex flex-col md:grid md:grid-cols-[100px_1fr] gap-0 max-w-4xl w-full">
-              {/* Top Decorative Strip - Mobile only */}
-              <div className="block md:hidden h-16 rounded-t-lg bg-white" style={{
-                backgroundImage: `url(${cultureHeroSide})`,
-                backgroundSize: 'auto 100%',
-                backgroundPosition: 'center',
-                backgroundRepeat: 'repeat-x'
-              }} />
-              {/* Side Decorative Strip - Desktop only */}
-              <div className="hidden md:block rounded-l-lg bg-white" style={{
-                backgroundImage: `url(${cultureHeroSide})`,
-                backgroundSize: '100% auto',
-                backgroundPosition: 'top center',
-                backgroundRepeat: 'repeat-y'
-              }} />
-              
+            <div className="max-w-4xl w-full">
               {/* Content Box */}
-              <div className="bg-background border-4 border-primary p-8 md:p-12 lg:p-16">
+              <div className="bg-background border-4 border-primary p-8 md:p-12 lg:p-16 rounded-lg">
                 <h1 className="mb-2">
                   <span className="text-5xl md:text-6xl lg:text-7xl block leading-tight" style={{
                     fontFamily: 'Regards, cursive',

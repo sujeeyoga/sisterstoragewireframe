@@ -303,12 +303,26 @@ export default {
 						opacity: '0' 
 					}
 				},
-				'shimmer': {
+'shimmer': {
 					'0%': {
 						backgroundPosition: '-1000px 0'
 					},
 					'100%': {
 						backgroundPosition: '1000px 0'
+					}
+				},
+				'shimmer-slow': {
+					'0%': {
+						opacity: '0.15',
+						transform: 'scale(1)'
+					},
+					'50%': {
+						opacity: '0.25',
+						transform: 'scale(1.02)'
+					},
+					'100%': {
+						opacity: '0.15',
+						transform: 'scale(1)'
 					}
 				},
 				'banner-scroll': {
@@ -350,6 +364,8 @@ export default {
 				'ss-marquee-left': 'ss-marquee-left var(--ss-marquee-duration, 20s) linear infinite',
 				// Shimmer effect for loading skeletons
 				'shimmer': 'shimmer 2s ease-in-out infinite',
+				// Slow shimmer for paisley backgrounds
+				'shimmer-slow': 'shimmer-slow 4s ease-in-out infinite',
 				// Banner scroll animation
 				'banner-scroll': 'banner-scroll 20s linear infinite',
 			},
