@@ -184,7 +184,7 @@ const Culture = () => {
             </div>
 
             {/* Product Image on Right */}
-            <div className="hidden md:block w-72 lg:w-80 flex-shrink-0">
+            <div className="hidden md:block w-[27rem] lg:w-[30rem] flex-shrink-0">
               <img 
                 src={sisNeededThisProduct} 
                 alt="Sister Storage bangle box with beautiful henna hands design"
