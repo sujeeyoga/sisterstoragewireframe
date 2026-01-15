@@ -7,18 +7,18 @@ import cultureHeroSide from '@/assets/culture-hero-side.png';
 
 const features = [
   {
-    title: 'Finally, Everything Has a Place',
-    description: '"I used to keep my bangles in a drawer wrapped in cloth. Now they\'re displayed beautifully and I can actually find what I need."',
+    title: 'Travel Friendly',
+    description: '"Pack your bangles without the stress. TSA-approved and ready for any destination — from weddings abroad to weekend getaways."',
     videoUrl: 'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/videos/1760062793750-171q1r.mp4',
   },
   {
-    title: 'Organization Made Beautiful',
-    description: '"My collection went from chaos to organized in one afternoon. My mom couldn\'t believe the transformation!"',
+    title: 'Shake Test Done ✓',
+    description: '"We tested it so you don\'t have to. Your jewelry stays secure, protected, and exactly where you left it."',
     videoUrl: '/lovable-uploads/sister-story-new.mp4',
   },
   {
-    title: 'A Sister\'s Must-Have',
-    description: '"Every desi girl needs this. It\'s changed how I store and display my jewelry. No more tangled mess!"',
+    title: 'Organization for Brown Queens',
+    description: '"Made by us, for us. Finally, storage that understands our collections, our traditions, and our style."',
     videoUrl: 'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/sister/bingewithanbu_.mp4',
   },
 ];
