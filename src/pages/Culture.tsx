@@ -136,7 +136,7 @@ const Culture = () => {
         </section>
 
         {/* Elevator Culture Split Section */}
-        <section className="py-24 md:py-32 bg-[#111] overflow-hidden">
+        <section className="py-24 md:py-32 bg-[#ff0077] overflow-hidden">
           <div 
             ref={scrollRef}
             className="mx-auto max-w-5xl grid grid-cols-2 gap-4 px-4"
