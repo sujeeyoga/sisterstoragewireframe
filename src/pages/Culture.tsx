@@ -2,8 +2,7 @@ import { SEO } from '@/components/SEO';
 import BaseLayout from '@/components/layout/BaseLayout';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { useEffect, useState, useRef } from 'react';
-import { motion, useScroll, useTransform } from 'motion/react';
+import { useEffect, useState } from 'react';
 import cultureHeroSide from '@/assets/culture-hero-side.png';
 
 const features = [
@@ -23,14 +22,6 @@ const features = [
 
 const Culture = () => {
   const [activeFeature, setActiveFeature] = useState(0);
-  const heroRef = useRef(null);
-  
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"]
-  });
-  
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -49,17 +40,16 @@ const Culture = () => {
       
       <div className="min-h-screen">
         {/* Hero Section */}
-        <section ref={heroRef} className="relative py-16 md:py-24 overflow-hidden" style={{ backgroundColor: '#ff0077' }}>
-          {/* Paisley pattern overlay with parallax */}
-          <motion.div 
+        <section className="relative py-16 md:py-24 overflow-hidden" style={{ backgroundColor: '#ff0077' }}>
+          {/* Paisley pattern overlay */}
+          <div 
             className="absolute inset-0 opacity-40"
             style={{
               backgroundImage: `url(${cultureHeroSide})`,
-              backgroundSize: 'cover',
+              backgroundSize: '300px auto',
               backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat',
+              backgroundRepeat: 'repeat',
               filter: 'brightness(0)',
-              y,
             }}
           />
           
