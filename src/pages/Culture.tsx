@@ -38,15 +38,17 @@ const Culture = () => {
         <section className="relative py-16 md:py-24 overflow-hidden" style={{
         backgroundColor: '#ff0077'
       }}>
-          {/* Shimmering Paisley pattern overlay */}
-          <div className="absolute inset-0 opacity-15" style={{
-          backgroundImage: `url(${cultureHeroSide})`,
-          backgroundSize: '300px auto',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'repeat',
-          backgroundAttachment: 'scroll',
-          filter: 'brightness(0)'
-        }} />
+          {/* Paisley pattern overlay */}
+          <div className="absolute inset-0 opacity-20" style={{
+            backgroundImage: `url(${cultureHeroSide})`,
+            backgroundSize: '300px auto',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'repeat',
+            backgroundAttachment: 'scroll',
+            filter: 'brightness(0)'
+          }} />
+          {/* Glassmorphism overlay */}
+          <div className="absolute inset-0 backdrop-blur-sm bg-white/5 border-b border-white/10" />
           {/* Bottom fade to blend the seam */}
           <div className="absolute bottom-0 left-0 right-0 h-24 pointer-events-none" style={{
           background: 'linear-gradient(to bottom, transparent, #ff0077)'
