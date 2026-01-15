@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import cultureHeroSide from '@/assets/culture-hero-side.png';
 import sisNeededThisProduct from '@/assets/sis-needed-this-product.png';
 import { useOptimizedParallax } from '@/hooks/use-optimized-parallax';
+import { useScrollProgress } from '@/hooks/use-scroll-progress';
 const features = [{
   title: 'Travel Friendly',
   description: '"Pack your bangles without the stress. TSA-approved and ready for any destination — from weddings abroad to weekend getaways."',
@@ -22,6 +23,7 @@ const features = [{
 const Culture = () => {
   const [activeFeature, setActiveFeature] = useState(0);
   const { ref: parallaxRef, offset } = useOptimizedParallax({ speed: 0.3 });
+  const scrollRef = useScrollProgress();
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveFeature(prev => (prev + 1) % features.length);
@@ -129,6 +131,31 @@ const Culture = () => {
                   {features.map((_, index) => <button key={index} onClick={() => setActiveFeature(index)} className={`w-2 h-2 rounded-full transition-all duration-300 ${index === activeFeature ? 'bg-primary w-6' : 'bg-primary/30 hover:bg-primary/50'}`} aria-label={`Go to slide ${index + 1}`} />)}
                 </div>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Elevator Culture Split Section */}
+        <section className="py-24 md:py-32 bg-[#111] overflow-hidden">
+          <div 
+            ref={scrollRef}
+            className="mx-auto max-w-5xl grid grid-cols-2 gap-4 px-4"
+          >
+            <div className="elevator-left text-right">
+              <span 
+                className="text-white text-4xl md:text-6xl lg:text-7xl"
+                style={{ fontFamily: 'Regards, cursive' }}
+              >
+                Culture
+              </span>
+            </div>
+            <div className="elevator-right text-left">
+              <span 
+                className="text-white text-4xl md:text-6xl lg:text-7xl"
+                style={{ fontFamily: 'Regards, cursive' }}
+              >
+                Culture
+              </span>
             </div>
           </div>
         </section>

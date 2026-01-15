@@ -685,3 +685,26 @@
     transform: rotate(360deg) scale(1.05);
   }
 }
+
+/* Elevator Split Animation - Scroll-driven */
+.elevator-left {
+  animation: elevator-left 1s forwards;
+  animation-play-state: paused;
+  animation-delay: calc(var(--scroll, 0) * -1s);
+}
+
+.elevator-right {
+  animation: elevator-right 1s forwards;
+  animation-play-state: paused;
+  animation-delay: calc(var(--scroll, 0) * -1s);
+}
+
+@keyframes elevator-left {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-10em); }
+}
+
+@keyframes elevator-right {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(10em); }
+}

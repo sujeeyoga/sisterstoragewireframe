@@ -119,6 +119,14 @@ export default {
 				sm: 'calc(var(--radius) - 4px)'
 			},
 			keyframes: {
+				'elevator-left': {
+					'0%': { transform: 'translateX(0)' },
+					'100%': { transform: 'translateX(-10em)' }
+				},
+				'elevator-right': {
+					'0%': { transform: 'translateX(0)' },
+					'100%': { transform: 'translateX(10em)' }
+				},
 				'wipe-in-right': {
 					'0%': {
 						clipPath: 'inset(0 100% 0 0)',
