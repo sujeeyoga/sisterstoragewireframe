@@ -60,6 +60,20 @@ const Culture = () => {
               background: 'linear-gradient(to bottom, transparent, #ff0077)',
             }}
           />
+          {/* Left fade */}
+          <div 
+            className="absolute top-0 bottom-0 left-0 w-12 pointer-events-none"
+            style={{
+              background: 'linear-gradient(to right, #ff0077, transparent)',
+            }}
+          />
+          {/* Right fade */}
+          <div 
+            className="absolute top-0 bottom-0 right-0 w-12 pointer-events-none"
+            style={{
+              background: 'linear-gradient(to left, #ff0077, transparent)',
+            }}
+          />
           
         <div className="container mx-auto px-4 relative z-10">
           <div className="flex justify-center">
