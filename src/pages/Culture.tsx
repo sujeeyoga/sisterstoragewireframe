@@ -69,7 +69,7 @@ const Culture = () => {
               {/* Content Box */}
               <div className="bg-background border-4 border-primary p-8 md:p-12 lg:p-16">
                 <h1 className="mb-2">
-                  <span className="font-script text-primary text-5xl md:text-6xl lg:text-7xl block leading-tight">
+                  <span className="text-primary text-5xl md:text-6xl lg:text-7xl block leading-tight" style={{ fontFamily: 'Regards, cursive' }}>
                     Culture,
                   </span>
                   <span className="text-primary text-2xl md:text-3xl lg:text-4xl font-semibold uppercase tracking-wider block mt-1">
