@@ -184,12 +184,32 @@ const Culture = () => {
             </div>
 
             {/* Product Image on Right */}
-            <div className="hidden md:block w-80 lg:w-96 flex-shrink-0">
+            <div className="hidden md:block w-72 lg:w-80 flex-shrink-0">
               <img 
                 src={sisNeededThisProduct} 
                 alt="Sister Storage bangle box with beautiful henna hands design"
                 className="w-full h-full object-cover"
               />
+            </div>
+
+            {/* Pink Sidebar with SS Logo */}
+            <div 
+              className="hidden md:flex w-16 lg:w-20 flex-shrink-0 flex-col items-center justify-start py-8 relative"
+              style={{ backgroundColor: '#ff0077' }}
+            >
+              {/* Blue vertical line */}
+              <div 
+                className="absolute right-3 lg:right-4 top-0 bottom-0 w-0.5"
+                style={{ backgroundColor: '#4A90D9' }}
+              />
+              
+              {/* SS Logo */}
+              <span 
+                className="text-white text-xl lg:text-2xl font-bold tracking-wider"
+                style={{ fontFamily: 'Regards, cursive' }}
+              >
+                SS
+              </span>
             </div>
           </div>
         </section>
