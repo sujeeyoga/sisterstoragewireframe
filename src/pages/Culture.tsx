@@ -7,18 +7,18 @@ import cultureHeroSide from '@/assets/culture-hero-side.png';
 
 const features = [
   {
-    title: 'No More Tangled Bangles',
-    description: 'Remember digging through that drawer? Yeah, we fixed that. Your bangles stay organized, untangled, and ready for any celebration.',
+    title: 'Finally, Everything Has a Place',
+    description: '"I used to keep my bangles in a drawer wrapped in cloth. Now they\'re displayed beautifully and I can actually find what I need."',
     videoUrl: 'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/videos/1760062793750-171q1r.mp4',
   },
   {
-    title: 'Pass It Down, Not Around',
-    description: 'Grandma\'s gold deserves better than a shoebox. Keep your heirlooms safe and beautiful for the next generation.',
+    title: 'Organization Made Beautiful',
+    description: '"My collection went from chaos to organized in one afternoon. My mom couldn\'t believe the transformation!"',
     videoUrl: '/lovable-uploads/sister-story-new.mp4',
   },
   {
-    title: 'Eid-Ready in Seconds',
-    description: 'When the outfit is pressed and the mehendi is fresh — your jewelry should be just as ready. No last-minute hunts.',
+    title: 'A Sister\'s Must-Have',
+    description: '"Every desi girl needs this. It\'s changed how I store and display my jewelry. No more tangled mess!"',
     videoUrl: 'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/sister/bingewithanbu_.mp4',
   },
 ];
