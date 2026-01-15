@@ -37,12 +37,12 @@ const Culture = () => {
         backgroundColor: '#ff0077'
       }}>
           {/* Paisley pattern overlay */}
-          <div className="absolute inset-0 opacity-20" style={{
+          <div className="absolute inset-0 opacity-15" style={{
           backgroundImage: `url(${cultureHeroSide})`,
           backgroundSize: '300px auto',
           backgroundPosition: 'center',
           backgroundRepeat: 'repeat',
-          backgroundAttachment: 'fixed',
+          backgroundAttachment: 'scroll',
           filter: 'brightness(0)'
         }} />
           {/* Bottom fade to blend the seam */}
@@ -159,13 +159,12 @@ const Culture = () => {
             >
               {/* Paisley pattern overlay */}
               <div 
-                className="absolute inset-0 opacity-30"
+                className="absolute inset-0 opacity-20"
                 style={{
                   backgroundImage: `url(${cultureHeroSide})`,
                   backgroundSize: '400px auto',
                   backgroundPosition: 'center',
-                  backgroundRepeat: 'repeat',
-                  filter: 'brightness(0.6)'
+                  backgroundRepeat: 'repeat'
                 }}
               />
               
@@ -193,10 +192,10 @@ const Culture = () => {
               <img 
                 src={sisNeededThisProduct} 
                 alt="Sister Storage bangle box with beautiful henna hands design"
-                className="absolute inset-0 w-full h-[150%] object-cover object-center"
+                className="absolute w-full h-[150%] object-cover object-center will-change-transform"
                 style={{ 
-                  transform: `translateY(${offset * -0.5}px)`,
-                  willChange: 'transform'
+                  top: '-25%',
+                  transform: `translateY(${offset}px)`
                 }}
               />
             </div>
