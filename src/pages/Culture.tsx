@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import cultureHeroSide from '@/assets/culture-hero-side.png';
+import sisNeededThisProduct from '@/assets/sis-needed-this-product.png';
 const features = [{
   title: 'Travel Friendly',
   description: '"Pack your bangles without the stress. TSA-approved and ready for any destination — from weddings abroad to weekend getaways."',
@@ -182,24 +183,13 @@ const Culture = () => {
               </div>
             </div>
 
-            {/* Pink Sidebar */}
-            <div 
-              className="hidden md:flex w-24 lg:w-32 flex-col items-center py-8"
-              style={{ backgroundColor: '#ff0077' }}
-            >
-              {/* Blue vertical line */}
-              <div 
-                className="w-0.5 h-full absolute right-4 lg:right-6"
-                style={{ backgroundColor: '#4A90D9' }}
+            {/* Product Image on Right */}
+            <div className="hidden md:block w-80 lg:w-96 flex-shrink-0">
+              <img 
+                src={sisNeededThisProduct} 
+                alt="Sister Storage bangle box with beautiful henna hands design"
+                className="w-full h-full object-cover"
               />
-              
-              {/* SS Logo */}
-              <span 
-                className="text-white text-2xl lg:text-3xl font-bold tracking-wider"
-                style={{ fontFamily: 'Regards, cursive' }}
-              >
-                SS
-              </span>
             </div>
           </div>
         </section>
