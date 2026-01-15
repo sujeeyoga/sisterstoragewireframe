@@ -3,6 +3,7 @@ import BaseLayout from '@/components/layout/BaseLayout';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import cultureHeroSide from '@/assets/culture-hero-side.png';
 
 const features = [
   {
@@ -46,25 +47,14 @@ const Culture = () => {
             <div className="grid grid-cols-1 md:grid-cols-[100px_1fr] gap-0 max-w-4xl w-full">
               {/* Side Decorative Strip - Hidden on mobile */}
               <div 
-                className="hidden md:block rounded-l-lg"
+                className="hidden md:block rounded-l-lg bg-white"
                 style={{
-                  backgroundImage: 'linear-gradient(180deg, #ff0077 0%, #ff0077cc 50%, #ff0077 100%)',
+                  backgroundImage: `url(${cultureHeroSide})`,
                   backgroundSize: 'cover',
-                  position: 'relative',
-                  overflow: 'hidden',
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat',
                 }}
-              >
-                {/* Decorative vertical pattern */}
-                <div 
-                  className="absolute inset-0 opacity-30"
-                  style={{
-                    backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='80' viewBox='0 0 40 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 0c-6 0-12 5-12 12s6 12 12 12c4 0 8-2 10-6 1-1 2-2 4-2 2 0 4 2 4 4 0 1 0 2-1 2-3 6-10 10-17 10-11 0-20-9-20-20S9 0 20 0c7 0 13 4 17 10 1 0 1 1 1 2 0 2-2 4-4 4-2 0-3-1-4-2-2-4-6-6-10-6z' fill='%23ffffff' fill-opacity='0.5'/%3E%3Cpath d='M20 40c-6 0-12 5-12 12s6 12 12 12c4 0 8-2 10-6 1-1 2-2 4-2 2 0 4 2 4 4 0 1 0 2-1 2-3 6-10 10-17 10-11 0-20-9-20-20s9-20 20-20c7 0 13 4 17 10 1 0 1 1 1 2 0 2-2 4-4 4-2 0-3-1-4-2-2-4-6-6-10-6z' fill='%23ffffff' fill-opacity='0.5'/%3E%3C/svg%3E")`,
-                    backgroundRepeat: 'repeat-y',
-                    backgroundSize: '40px auto',
-                    backgroundPosition: 'center',
-                  }}
-                />
-              </div>
+              />
               
               {/* Content Box */}
               <div className="bg-background border-4 border-primary p-8 md:p-12 lg:p-16">
