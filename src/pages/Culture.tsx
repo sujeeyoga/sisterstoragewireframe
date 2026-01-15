@@ -53,6 +53,13 @@ const Culture = () => {
               filter: 'brightness(0)',
             }}
           />
+          {/* Bottom fade to blend the seam */}
+          <div 
+            className="absolute bottom-0 left-0 right-0 h-24 pointer-events-none"
+            style={{
+              background: 'linear-gradient(to bottom, transparent, #ff0077)',
+            }}
+          />
           
         <div className="container mx-auto px-4 relative z-10">
           <div className="flex justify-center">
