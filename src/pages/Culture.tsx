@@ -49,6 +49,7 @@ const Culture = () => {
               backgroundSize: '300px auto',
               backgroundPosition: 'center',
               backgroundRepeat: 'repeat',
+              backgroundAttachment: 'fixed',
               filter: 'brightness(0)',
             }}
           />
