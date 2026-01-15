@@ -50,9 +50,9 @@ const Culture = () => {
                 className="hidden md:block rounded-l-lg bg-white"
                 style={{
                   backgroundImage: `url(${cultureHeroSide})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  backgroundRepeat: 'no-repeat',
+                  backgroundSize: '100% auto',
+                  backgroundPosition: 'top center',
+                  backgroundRepeat: 'repeat-y',
                 }}
               />
               
