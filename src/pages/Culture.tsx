@@ -39,7 +39,7 @@ const Culture = () => {
       
       <div className="min-h-screen">
         {/* Hero Section */}
-        <section className="relative bg-primary py-16 md:py-24 overflow-hidden">
+        <section className="relative py-16 md:py-24 overflow-hidden" style={{ backgroundColor: '#ff0077' }}>
           {/* Paisley Pattern Overlay */}
           <div 
             className="absolute inset-0 opacity-10 pointer-events-none"
