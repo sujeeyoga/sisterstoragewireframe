@@ -39,13 +39,13 @@ const Culture = () => {
         backgroundColor: '#ff0077'
       }}>
           {/* Shimmering Paisley pattern overlay */}
-          <div className="absolute inset-0 opacity-20 animate-shimmer-slow" style={{
+          <div className="absolute inset-0 opacity-15 animate-shimmer-slow" style={{
           backgroundImage: `url(${cultureHeroSide})`,
           backgroundSize: '300px auto',
           backgroundPosition: 'center',
           backgroundRepeat: 'repeat',
           backgroundAttachment: 'scroll',
-          filter: 'brightness(1.2) contrast(1.1)'
+          filter: 'brightness(0)'
         }} />
           {/* Bottom fade to blend the seam */}
           <div className="absolute bottom-0 left-0 right-0 h-24 pointer-events-none" style={{
