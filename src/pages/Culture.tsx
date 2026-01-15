@@ -49,6 +49,7 @@ const Culture = () => {
               backgroundSize: 'contain',
               backgroundPosition: 'center',
               backgroundRepeat: 'no-repeat',
+              filter: 'brightness(0) saturate(100%) invert(15%) sepia(95%) saturate(6000%) hue-rotate(325deg) brightness(95%) contrast(105%)',
             }}
           />
           
