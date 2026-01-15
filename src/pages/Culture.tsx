@@ -145,6 +145,64 @@ const Culture = () => {
             </div>
           </div>
         </section>
+
+        {/* Sis, You Needed This Section */}
+        <section className="relative overflow-hidden">
+          <div className="flex">
+            {/* Main Orange Section with Paisley */}
+            <div 
+              className="flex-1 relative py-20 md:py-32 px-8 md:px-16"
+              style={{ backgroundColor: '#E86A33' }}
+            >
+              {/* Paisley pattern overlay */}
+              <div 
+                className="absolute inset-0 opacity-30"
+                style={{
+                  backgroundImage: `url(${cultureHeroSide})`,
+                  backgroundSize: '400px auto',
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'repeat',
+                  filter: 'brightness(0.6)'
+                }}
+              />
+              
+              {/* Text Content */}
+              <div className="relative z-10 max-w-2xl">
+                <h2 className="text-white">
+                  <span 
+                    className="text-5xl md:text-7xl lg:text-8xl block leading-tight"
+                    style={{ fontFamily: 'Regards, cursive' }}
+                  >
+                    Sis,
+                  </span>
+                  <span className="text-2xl md:text-4xl lg:text-5xl font-semibold uppercase tracking-wide block mt-2">
+                    YOU <span className="italic font-normal">NEEDED</span> THIS.
+                  </span>
+                </h2>
+              </div>
+            </div>
+
+            {/* Pink Sidebar */}
+            <div 
+              className="hidden md:flex w-24 lg:w-32 flex-col items-center py-8"
+              style={{ backgroundColor: '#ff0077' }}
+            >
+              {/* Blue vertical line */}
+              <div 
+                className="w-0.5 h-full absolute right-4 lg:right-6"
+                style={{ backgroundColor: '#4A90D9' }}
+              />
+              
+              {/* SS Logo */}
+              <span 
+                className="text-white text-2xl lg:text-3xl font-bold tracking-wider"
+                style={{ fontFamily: 'Regards, cursive' }}
+              >
+                SS
+              </span>
+            </div>
+          </div>
+        </section>
       </div>
     </BaseLayout>;
 };
