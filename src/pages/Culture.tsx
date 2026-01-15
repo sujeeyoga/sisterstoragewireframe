@@ -43,7 +43,7 @@ const Culture = () => {
         <section className="relative py-16 md:py-24 overflow-hidden" style={{ backgroundColor: '#ff0077' }}>
           {/* Paisley pattern overlay */}
           <div 
-            className="absolute inset-0 opacity-40"
+            className="absolute inset-0 opacity-20"
             style={{
               backgroundImage: `url(${cultureHeroSide})`,
               backgroundSize: '300px auto',
