@@ -39,7 +39,7 @@ const Culture = () => {
         backgroundColor: '#ff0077'
       }}>
           {/* Shimmering Paisley pattern overlay */}
-          <div className="absolute inset-0 opacity-15 animate-shimmer-slow" style={{
+          <div className="absolute inset-0 opacity-15" style={{
           backgroundImage: `url(${cultureHeroSide})`,
           backgroundSize: '300px auto',
           backgroundPosition: 'center',
