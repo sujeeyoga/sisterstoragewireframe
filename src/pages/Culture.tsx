@@ -9,17 +9,17 @@ const features = [
   {
     title: 'No More Tangled Bangles',
     description: 'Remember digging through that drawer? Yeah, we fixed that. Your bangles stay organized, untangled, and ready for any celebration.',
-    videoUrl: '',
+    videoUrl: 'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/videos/1760062793750-171q1r.mp4',
   },
   {
     title: 'Pass It Down, Not Around',
     description: 'Grandma\'s gold deserves better than a shoebox. Keep your heirlooms safe and beautiful for the next generation.',
-    videoUrl: '',
+    videoUrl: '/lovable-uploads/sister-story-new.mp4',
   },
   {
     title: 'Eid-Ready in Seconds',
     description: 'When the outfit is pressed and the mehendi is fresh — your jewelry should be just as ready. No last-minute hunts.',
-    videoUrl: '',
+    videoUrl: 'https://attczdhexkpxpyqyasgz.supabase.co/storage/v1/object/public/sister/bingewithanbu_.mp4',
   },
 ];
 
