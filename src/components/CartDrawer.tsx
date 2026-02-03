@@ -331,7 +331,7 @@ const CartDrawer = () => {
                               className="text-xs text-muted-foreground hover:text-primary mb-1 flex items-center gap-1"
                               onClick={() => setIsOpen(false)}
                             >
-                              <span className="capitalize">Sleeve: {item.sleeve}</span>
+                              <span className="capitalize">Sleeve: {item.sleeve === 'pregnancy' ? 'Baby Shower' : item.sleeve}</span>
                               <span className="text-primary">• Change</span>
                             </Link>
                           )}
