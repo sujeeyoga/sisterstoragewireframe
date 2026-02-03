@@ -36,8 +36,10 @@ interface ProductInfoProps {
 
 const ProductInfo = ({ product, quantity, setQuantity, selectedSleeve, setSelectedSleeve, onAddToCart, onBuyNow }: ProductInfoProps) => {
   // Extract rod count for individual products
-  const rodCount = product.attributes?.rodCount?.[0];
+  const rodCountValue = product.attributes?.rodCount?.[0];
+  const rodCount = String(rodCountValue || '');
   const showRodCount = rodCount && product.category !== 'bundles';
+  const isSingleRodProduct = rodCount === "1";
   const isOpenBox =
     product.category === 'open-box' ||
     product.categories?.includes('open-box') ||
@@ -123,7 +125,7 @@ const ProductInfo = ({ product, quantity, setQuantity, selectedSleeve, setSelect
       {/* Quantity & Stock Section */}
       <div className="space-y-2">
         {/* Show sleeve selector only for single rod products */}
-        {rodCount === "1" && (
+        {isSingleRodProduct && (
           <SleeveSelector
             selectedSleeve={selectedSleeve}
             setSelectedSleeve={setSelectedSleeve}
