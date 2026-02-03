@@ -37,7 +37,7 @@ interface ProductInfoProps {
 const ProductInfo = ({ product, quantity, setQuantity, selectedSleeve, setSelectedSleeve, onAddToCart, onBuyNow }: ProductInfoProps) => {
   // Extract rod count for individual products
   const rodCountValue = product.attributes?.rodCount?.[0];
-  const rodCount = String(rodCountValue || '');
+  const rodCount = rodCountValue !== undefined ? String(rodCountValue) : undefined;
   const showRodCount = rodCount && product.category !== 'bundles';
   const isSingleRodProduct = rodCount === "1";
   const isOpenBox =
