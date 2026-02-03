@@ -90,37 +90,48 @@ export interface Product {
 export function transformProduct(dbProduct: any): Product {
   const images = Array.isArray(dbProduct.images) ? dbProduct.images : [];
   const categories = Array.isArray(dbProduct.categories) ? dbProduct.categories : [];
-  const attributes = Array.isArray(dbProduct.attributes) ? dbProduct.attributes : [];
+  
+  // Handle attributes - can be either an array of {name, options} or a direct map {rodCount: ['1'], ...}
+  const rawAttributes = dbProduct.attributes;
+  let attributesMap: Record<string, string[]> = {};
+  
+  if (Array.isArray(rawAttributes)) {
+    // Legacy format: [{name: 'rod count', options: ['1']}, ...]
+    rawAttributes.forEach((attr: any) => {
+      attributesMap[attr.name.toLowerCase()] = attr.options;
+    });
+  } else if (rawAttributes && typeof rawAttributes === 'object') {
+    // New format: {rodCount: ['1'], size: ['Small', 'Travel'], ...}
+    Object.entries(rawAttributes).forEach(([key, value]) => {
+      // Normalize key to lowercase and handle camelCase
+      const normalizedKey = key.toLowerCase();
+      attributesMap[normalizedKey] = Array.isArray(value) ? value.map(String) : [String(value)];
+    });
+  }
   
   const primaryImage = images[0]?.src || '';
   const category = categories[0]?.slug || 'uncategorized';
-  
-  // Extract attributes
-  const attributesMap: Record<string, string[]> = {};
-  attributes.forEach((attr: any) => {
-    attributesMap[attr.name.toLowerCase()] = attr.options;
-  });
 
   // Get features from attributes or meta_data
   const metaData = dbProduct.meta_data || {};
   const features = metaData.features || 
-    attributes.map((attr: any) => `${attr.name}: ${attr.options.join(', ')}`);
+    Object.entries(attributesMap).map(([name, options]) => `${name}: ${(options as string[]).join(', ')}`);
 
   // Extract taxonomy from database attributes
   const extractTaxonomy = () => {
     const categorySlugs = categories.map((cat: any) => cat.slug);
     
-    // Extract specific attributes for filtering
-    const rodCount = attributesMap['rod count'] || attributesMap['rods'];
+    // Extract specific attributes for filtering (check both formats)
+    const rodCount = attributesMap['rodcount'] || attributesMap['rod count'] || attributesMap['rods'];
     const size = attributesMap['size'];
-    const useCase = attributesMap['use case'] || attributesMap['use'];
-    const bundleSize = attributesMap['bundle size'];
+    const useCase = attributesMap['usecase'] || attributesMap['use case'] || attributesMap['use'];
+    const bundleSize = attributesMap['bundlesize'] || attributesMap['bundle size'];
     
     return {
       categorySlugs,
       attributes: {
-        rodCount: rodCount?.[0],
-        size: size?.[0],
+        rodCount: rodCount,  // Keep as array for consistency
+        size: size,
         useCase,
         bundleSize: bundleSize?.[0],
       },
