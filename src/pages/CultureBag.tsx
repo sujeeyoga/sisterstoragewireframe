@@ -63,6 +63,9 @@ const CultureBag = () => {
       <Helmet>
         <title>Culture Bag for Sarees | Saree Storage Organizer | Sister Storage</title>
         <meta name="description" content="The Culture Bag is a cotton blend saree storage organizer with clear window and back compartment. 42cm × 37cm, olive green. Keep your sarees protected and organized." />
+        <link rel="preload" as="image" href={images[0].src} />
+        <link rel="preload" as="video" href="/lovable-uploads/lose-the-mess.mov" />
+        <link rel="preload" as="video" href="/lovable-uploads/culture-bag-teaser.mp4" />
       </Helmet>
 
       <div className="pb-16 pt-12">
@@ -86,6 +89,7 @@ const CultureBag = () => {
                   className="w-full h-full object-cover"
                   loading="eager"
                   fetchPriority="high"
+                  decoding="async"
                 />
               </div>
               {/* Thumbnails */}
@@ -98,7 +102,7 @@ const CultureBag = () => {
                       selectedImage === i ? "border-[hsl(var(--brand-pink))] ring-1 ring-[hsl(var(--brand-pink))]" : "border-transparent opacity-70 hover:opacity-100"
                     }`}
                   >
-                    <img src={img.src} alt={img.alt} className="w-full h-full object-cover" loading="lazy" />
+                    <img src={img.src} alt={img.alt} className="w-full h-full object-cover" loading="lazy" decoding="async" />
                   </button>
                 ))}
               </div>
@@ -111,6 +115,7 @@ const CultureBag = () => {
                   loop
                   muted
                   playsInline
+                  preload="auto"
                   className="w-full rounded-lg"
                 />
               </div>
@@ -247,6 +252,7 @@ const CultureBag = () => {
                 loop
                 muted
                 playsInline
+                preload="auto"
                 className="w-full rounded-lg"
               />
             </div>
