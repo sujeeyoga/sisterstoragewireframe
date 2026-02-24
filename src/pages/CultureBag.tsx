@@ -19,7 +19,7 @@ const images = [
 ];
 
 const features = [
-  "Designed specifically for folded sarees",
+  "Made for Saree's",
   "Cotton blend construction for breathability and structure",
   "Structured design for neat stacking",
   "Clear front window for visibility",
@@ -178,7 +178,7 @@ const CultureBag = () => {
 
               {/* Short Description */}
               <div className="space-y-3 text-foreground/80 text-[15px] leading-relaxed">
-                <p>Designed specifically for folded sarees.</p>
+                <p>Made for Saree's.</p>
                 <p>
                   Made with a cotton blend for breathability and structure, it holds its shape, stacks neatly,
                   and helps create more closet space — and who doesn't want that?
