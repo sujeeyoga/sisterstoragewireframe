@@ -27,8 +27,14 @@ const features = [
   "42cm × 37cm — compact and closet-friendly",
 ];
 
+const bundles = [
+  { id: "culture-bag-saree-bundle-5", name: "Culture Bag – For Sarees (Bundle of 5)", price: 24.5, qty: 5 },
+  { id: "culture-bag-saree-bundle-10", name: "Culture Bag – For Sarees (Bundle of 10)", price: 45, qty: 10 },
+];
+
 const CultureBag = () => {
   const [selectedImage, setSelectedImage] = useState(0);
+  const [selectedBundle, setSelectedBundle] = useState(1);
   const { addItem, setIsOpen } = useCart();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -41,13 +47,14 @@ const CultureBag = () => {
   }, []);
 
   const handleAddToCart = () => {
+    const bundle = bundles[selectedBundle];
     addItem({
-      id: "culture-bag-saree-bundle-10",
-      name: "Culture Bag – For Sarees (Bundle of 10)",
-      price: 45,
+      id: bundle.id,
+      name: bundle.name,
+      price: bundle.price,
       image: images[0].src,
     });
-    toast({ title: "Added to cart", description: "Culture Bag – Bundle of 10 added to your cart" });
+    toast({ title: "Added to cart", description: `${bundle.name} added to your cart` });
     setIsOpen(true);
   };
 
@@ -118,8 +125,26 @@ const CultureBag = () => {
                 </h1>
                 <p className="text-sm text-muted-foreground mb-3">42cm × 37cm | Olive Green</p>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-3xl font-black text-foreground">$45</span>
-                  <span className="text-sm text-muted-foreground">/ bundle of 10</span>
+                  <span className="text-3xl font-black text-foreground">${bundles[selectedBundle].price.toFixed(2)}</span>
+                  <span className="text-sm text-muted-foreground">/ bundle of {bundles[selectedBundle].qty}</span>
+                </div>
+
+                {/* Bundle Selector */}
+                <div className="flex gap-3 mt-3">
+                  {bundles.map((bundle, i) => (
+                    <button
+                      key={bundle.id}
+                      onClick={() => setSelectedBundle(i)}
+                      className={`flex-1 rounded-lg border-2 p-3 text-center transition-all ${
+                        selectedBundle === i
+                          ? "border-[hsl(var(--brand-pink))] bg-[hsl(var(--brand-pink)/0.05)]"
+                          : "border-border hover:border-muted-foreground/40"
+                      }`}
+                    >
+                      <span className="block text-base font-bold text-foreground">${bundle.price.toFixed(2)}</span>
+                      <span className="block text-xs text-muted-foreground">Bundle of {bundle.qty}</span>
+                    </button>
+                  ))}
                 </div>
               </div>
 
