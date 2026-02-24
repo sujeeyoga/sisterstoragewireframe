@@ -254,48 +254,55 @@ const CultureBag = () => {
           </div>
 
           {/* Long Description Section */}
-          <section className="max-w-3xl mx-auto space-y-6 text-foreground/80 leading-relaxed">
-            <h2 className="text-3xl font-black uppercase text-foreground text-center mb-8">
-              Make Space For Culture.
-            </h2>
+          <section className="max-w-6xl mx-auto pt-16 mt-16 border-t border-border">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              {/* Left: Text */}
+              <div className="space-y-6 text-foreground/80 leading-relaxed">
+                <h2 className="text-3xl font-black uppercase text-foreground">
+                  Make Space For Culture.
+                </h2>
+                <p>
+                  Your sarees deserve a dedicated space that protects the fabric and keeps everything together.
+                </p>
+                <p>
+                  The Culture Bag is thoughtfully designed for folded sarees, giving them structure, visibility,
+                  and an intentional place in your closet.
+                </p>
+                <p>
+                  Made with a cotton blend for breathability and structure, it supports fabric integrity while
+                  holding its shape and stacking neatly. The compact design helps maximize your shelves and
+                  creates more closet space — and who doesn't want that?
+                </p>
+                <p>
+                  The clear front window lets you instantly see which saree is inside, and the additional back
+                  compartment keeps your blouse, underskirt, or matching pieces stored together in one place.
+                </p>
+              </div>
 
-            <p>
-              Your sarees deserve a dedicated space that protects the fabric and keeps everything together.
-            </p>
-            <p>
-              The Culture Bag is thoughtfully designed for folded sarees, giving them structure, visibility,
-              and an intentional place in your closet.
-            </p>
-
-            {/* Video */}
-            <div className="rounded-lg overflow-hidden my-4 relative">
-              {!video2Loaded && (
-                <div className="aspect-video bg-muted animate-pulse rounded-lg" />
-              )}
-              <video
-                src="/lovable-uploads/culture-bag-teaser.mp4"
-                autoPlay
-                loop
-                muted
-                playsInline
-                preload="auto"
-                className={`w-full rounded-lg transition-opacity duration-300 ${video2Loaded ? 'opacity-100' : 'opacity-0'}`}
-                onLoadedData={() => setVideo2Loaded(true)}
-              />
+              {/* Right: Video */}
+              <div className="rounded-lg overflow-hidden relative">
+                {!video2Loaded && (
+                  <div className="aspect-video bg-muted animate-pulse rounded-lg" />
+                )}
+                <video
+                  src="/lovable-uploads/culture-bag-teaser.mp4"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  preload="auto"
+                  className={`w-full rounded-lg transition-opacity duration-300 ${video2Loaded ? 'opacity-100' : 'opacity-0'}`}
+                  onLoadedData={() => setVideo2Loaded(true)}
+                />
+              </div>
             </div>
 
-            <p>
-              Made with a cotton blend for breathability and structure, it supports fabric integrity while
-              holding its shape and stacking neatly. The compact design helps maximize your shelves and
-              creates more closet space — and who doesn't want that?
-            </p>
-            <p>
-              The clear front window lets you instantly see which saree is inside, and the additional back
-              compartment keeps your blouse, underskirt, or matching pieces stored together in one place.
-            </p>
-            <p className="font-semibold text-foreground text-lg">No more pulling everything out to find the right blouse.</p>
-            <p className="font-semibold text-foreground text-lg">No more last-minute searching before an event.</p>
-            <p className="font-semibold text-foreground text-lg">Everything stays together — exactly how it should.</p>
+            {/* Bold closing statements */}
+            <div className="max-w-3xl mx-auto text-center mt-12 space-y-3">
+              <p className="font-semibold text-foreground text-lg">No more pulling everything out to find the right blouse.</p>
+              <p className="font-semibold text-foreground text-lg">No more last-minute searching before an event.</p>
+              <p className="font-semibold text-foreground text-lg">Everything stays together — exactly how it should.</p>
+            </div>
           </section>
 
           {/* Bottom Add to Cart */}
