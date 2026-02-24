@@ -47,6 +47,7 @@ import CustomerLogin from "./pages/CustomerLogin";
 import CustomerDashboard from "./pages/CustomerDashboard";
 import CustomerOrderDetail from "./pages/CustomerOrderDetail";
 import Culture from "./pages/Culture";
+import CultureBag from "./pages/CultureBag";
 
 const queryClient = new QueryClient();
 
@@ -101,6 +102,7 @@ const App = () => {
               <Route path="/hero-gallery-demo" element={<ProtectedRoutes><PageTransition><HeroGalleryDemo /></PageTransition></ProtectedRoutes>} />
               <Route path="/our-story" element={<ProtectedRoutes><PageTransition><OurStory /></PageTransition></ProtectedRoutes>} />
               <Route path="/culture" element={<ProtectedRoutes><PageTransition><Culture /></PageTransition></ProtectedRoutes>} />
+              <Route path="/culture-bag" element={<ProtectedRoutes><PageTransition><CultureBag /></PageTransition></ProtectedRoutes>} />
               <Route path="/admin/*" element={<AdminProtectedRoute><Admin /></AdminProtectedRoute>} />
               <Route path="/admin/emails" element={<AdminProtectedRoute><AdminEmails /></AdminProtectedRoute>} />
               <Route path="/admin/email-testing" element={<AdminProtectedRoute><AdminEmailTesting /></AdminProtectedRoute>} />
