@@ -35,12 +35,17 @@ const bundles = [
 const CultureBag = () => {
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedBundle, setSelectedBundle] = useState(1);
+  const [mainImageLoaded, setMainImageLoaded] = useState(false);
+  const [thumbsLoaded, setThumbsLoaded] = useState<Record<number, boolean>>({});
+  const [video1Loaded, setVideo1Loaded] = useState(false);
+  const [video2Loaded, setVideo2Loaded] = useState(false);
   const { addItem, setIsOpen } = useCart();
   const { toast } = useToast();
   const navigate = useNavigate();
 
   useEffect(() => {
     const timer = setInterval(() => {
+      setMainImageLoaded(false);
       setSelectedImage((prev) => (prev + 1) % images.length);
     }, 3000);
     return () => clearInterval(timer);
@@ -82,14 +87,18 @@ const CultureBag = () => {
             {/* Image Gallery */}
             <div className="space-y-4">
               {/* Main Image */}
-              <div className="aspect-square overflow-hidden rounded-lg bg-muted">
+              <div className="aspect-square overflow-hidden rounded-lg bg-muted relative">
+                {!mainImageLoaded && (
+                  <div className="absolute inset-0 bg-muted animate-pulse rounded-lg" />
+                )}
                 <img
                   src={images[selectedImage].src}
                   alt={images[selectedImage].alt}
-                  className="w-full h-full object-cover"
+                  className={`w-full h-full object-cover transition-opacity duration-300 ${mainImageLoaded ? 'opacity-100' : 'opacity-0'}`}
                   loading="eager"
                   fetchPriority="high"
                   decoding="async"
+                  onLoad={() => setMainImageLoaded(true)}
                 />
               </div>
               {/* Thumbnails */}
@@ -102,13 +111,26 @@ const CultureBag = () => {
                       selectedImage === i ? "border-[hsl(var(--brand-pink))] ring-1 ring-[hsl(var(--brand-pink))]" : "border-transparent opacity-70 hover:opacity-100"
                     }`}
                   >
-                    <img src={img.src} alt={img.alt} className="w-full h-full object-cover" loading="lazy" decoding="async" />
+                    {!thumbsLoaded[i] && (
+                      <div className="absolute inset-0 bg-muted animate-pulse rounded-md" />
+                    )}
+                    <img
+                      src={img.src}
+                      alt={img.alt}
+                      className={`w-full h-full object-cover transition-opacity duration-300 ${thumbsLoaded[i] ? 'opacity-100' : 'opacity-0'}`}
+                      loading="lazy"
+                      decoding="async"
+                      onLoad={() => setThumbsLoaded(prev => ({ ...prev, [i]: true }))}
+                    />
                   </button>
                 ))}
               </div>
 
               {/* Video Teaser */}
-              <div className="rounded-lg overflow-hidden mt-4">
+              <div className="rounded-lg overflow-hidden mt-4 relative">
+                {!video1Loaded && (
+                  <div className="aspect-video bg-muted animate-pulse rounded-lg" />
+                )}
                 <video
                   src="/lovable-uploads/lose-the-mess.mov"
                   autoPlay
@@ -116,7 +138,8 @@ const CultureBag = () => {
                   muted
                   playsInline
                   preload="auto"
-                  className="w-full rounded-lg"
+                  className={`w-full rounded-lg transition-opacity duration-300 ${video1Loaded ? 'opacity-100' : 'opacity-0'}`}
+                  onLoadedData={() => setVideo1Loaded(true)}
                 />
               </div>
             </div>
@@ -245,7 +268,10 @@ const CultureBag = () => {
             </p>
 
             {/* Video */}
-            <div className="rounded-lg overflow-hidden my-4">
+            <div className="rounded-lg overflow-hidden my-4 relative">
+              {!video2Loaded && (
+                <div className="aspect-video bg-muted animate-pulse rounded-lg" />
+              )}
               <video
                 src="/lovable-uploads/culture-bag-teaser.mp4"
                 autoPlay
@@ -253,7 +279,8 @@ const CultureBag = () => {
                 muted
                 playsInline
                 preload="auto"
-                className="w-full rounded-lg"
+                className={`w-full rounded-lg transition-opacity duration-300 ${video2Loaded ? 'opacity-100' : 'opacity-0'}`}
+                onLoadedData={() => setVideo2Loaded(true)}
               />
             </div>
 
