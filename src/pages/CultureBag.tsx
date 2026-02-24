@@ -5,7 +5,7 @@ import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ShoppingBag, Check, AlertTriangle, Sparkles } from "lucide-react";
+import { ShoppingBag, Check, AlertTriangle } from "lucide-react";
 
 const images = [
   { src: "/lovable-uploads/culture-bag-front.jpeg", alt: "Culture Bag front view with saree visible through clear window" },
@@ -162,8 +162,8 @@ const CultureBag = () => {
 
               {/* Features */}
               <div className="pt-4 border-t border-border">
-                <h3 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wide mb-4">
-                  <Sparkles className="h-4 w-4 text-[hsl(var(--brand-pink))]" /> Features
+                <h3 className="text-sm font-bold uppercase tracking-wide mb-4">
+                  Features
                 </h3>
                 <ul className="space-y-2.5">
                   {features.map((f, i) => (
@@ -177,8 +177,8 @@ const CultureBag = () => {
 
               {/* Best Practice Tip */}
               <div className="bg-muted/50 rounded-lg p-5 border border-border">
-                <h4 className="text-sm font-bold mb-2 flex items-center gap-2">
-                  <Sparkles className="h-4 w-4 text-[hsl(var(--brand-pink))]" /> Best Practice Tip
+                <h4 className="text-sm font-bold mb-2">
+                  Best Practice Tip
                 </h4>
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   Regardless of how you store your sarees, it's recommended to take them out occasionally,
