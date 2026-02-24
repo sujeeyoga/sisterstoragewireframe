@@ -99,7 +99,7 @@ const CultureBag = () => {
               {/* Video Teaser */}
               <div className="rounded-lg overflow-hidden mt-4">
                 <video
-                  src="/lovable-uploads/culture-bag-teaser.mp4"
+                  src="/lovable-uploads/lose-the-mess.mov"
                   autoPlay
                   loop
                   muted
@@ -217,7 +217,7 @@ const CultureBag = () => {
             {/* Video */}
             <div className="rounded-lg overflow-hidden my-4">
               <video
-                src="/lovable-uploads/lose-the-mess.mov"
+                src="/lovable-uploads/culture-bag-teaser.mp4"
                 autoPlay
                 loop
                 muted
