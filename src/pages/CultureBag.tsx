@@ -270,6 +270,18 @@ const CultureBag = () => {
             <p className="font-semibold text-foreground text-lg">No more last-minute searching before an event.</p>
             <p className="font-semibold text-foreground text-lg">Everything stays together — exactly how it should.</p>
           </section>
+
+          {/* Bottom Add to Cart */}
+          <div className="max-w-md mx-auto mt-12">
+            <Button
+              size="lg"
+              className="w-full h-14 text-base font-bold uppercase tracking-wide"
+              onClick={handleAddToCart}
+            >
+              <ShoppingBag className="mr-2 h-5 w-5" />
+              Add to Cart — ${bundles[selectedBundle].price.toFixed(2)}
+            </Button>
+          </div>
         </div>
       </div>
     </Layout>
