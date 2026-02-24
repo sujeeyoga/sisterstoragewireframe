@@ -213,6 +213,19 @@ const CultureBag = () => {
               The Culture Bag is thoughtfully designed for folded sarees, giving them structure, visibility,
               and an intentional place in your closet.
             </p>
+
+            {/* Video */}
+            <div className="rounded-lg overflow-hidden my-4">
+              <video
+                src="/lovable-uploads/lose-the-mess.mov"
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full rounded-lg"
+              />
+            </div>
+
             <p>
               Made with a cotton blend for breathability and structure, it supports fabric integrity while
               holding its shape and stacking neatly. The compact design helps maximize your shelves and
