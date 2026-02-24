@@ -44,7 +44,7 @@ const CultureBag = () => {
     addItem({
       id: "culture-bag-saree-bundle-10",
       name: "Culture Bag – For Sarees (Bundle of 10)",
-      price: 40,
+      price: 45,
       image: images[0].src,
     });
     toast({ title: "Added to cart", description: "Culture Bag – Bundle of 10 added to your cart" });
@@ -118,7 +118,7 @@ const CultureBag = () => {
                 </h1>
                 <p className="text-sm text-muted-foreground mb-3">42cm × 37cm | Olive Green</p>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-3xl font-black text-foreground">$40</span>
+                  <span className="text-3xl font-black text-foreground">$45</span>
                   <span className="text-sm text-muted-foreground">/ bundle of 10</span>
                 </div>
               </div>
