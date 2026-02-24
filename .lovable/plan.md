@@ -1,45 +1,27 @@
 
+## Improve the "Make Space For Culture" Section on Desktop
 
-## Update Sleeve Selector: Baby Shower Label + Enlarged Image Preview
+The bottom description section currently feels narrow and text-heavy on desktop, with the video stretching full width within a narrow container. Here's the plan to make it more visually engaging and better structured:
 
-### Changes Overview
+### Changes to `src/pages/CultureBag.tsx`
 
-**1. Rename "Pregnancy" to "Baby Shower"**
-- Update the label in the `sleeveOptions` array from "Pregnancy" to "Baby Shower"
+**1. Wider section with two-column layout for text + video**
+- Change the section from `max-w-3xl` to `max-w-6xl` to use more of the desktop screen
+- Place the intro text and video side-by-side in a `grid grid-cols-1 lg:grid-cols-2` layout
+- Left column: heading + intro paragraphs
+- Right column: the teaser video
 
-**2. Add Large Image Preview on Click**
-- When a sleeve is selected, show an enlarged version of the image in a modal/dialog
-- Use the existing Radix Dialog component for a clean popup experience
-- Clicking the thumbnail will both select the sleeve AND open the larger preview
+**2. Bold closing statements as a centered block**
+- Keep the three "No more..." statements below the grid as a centered, impactful text block
+- Add spacing and visual separation from the content above
 
-### Technical Implementation
+**3. Better vertical rhythm**
+- Add top padding/margin to separate this section from the product grid above
+- Add a subtle top border or extra spacing to create a clear visual break
 
-**File: `src/components/product/SleeveSelector.tsx`**
+### Technical Details
 
-```tsx
-// Update label
-{ value: "pregnancy", label: "Baby Shower", image: pregnancySleeve }
-
-// Add state for enlarged image modal
-const [enlargedImage, setEnlargedImage] = useState<{image: string, label: string} | null>(null);
-
-// On click: select sleeve + open enlarged view
-onClick={() => {
-  setSelectedSleeve(option.value);
-  setEnlargedImage({ image: option.image, label: option.label });
-}}
-
-// Add Dialog component for enlarged preview
-<Dialog open={!!enlargedImage} onOpenChange={() => setEnlargedImage(null)}>
-  <DialogContent className="max-w-md">
-    <img src={enlargedImage?.image} alt={enlargedImage?.label} className="w-full rounded-lg" />
-    <p className="text-center font-semibold">{enlargedImage?.label}</p>
-  </DialogContent>
-</Dialog>
-```
-
-### Result
-- "Pregnancy" becomes "Baby Shower"
-- Clicking any sleeve thumbnail opens a large, detailed view of the sleeve design
-- Users can see the intricate details before confirming their selection
-
+- Wrap the heading, intro paragraphs, and video in a two-column grid (`lg:grid-cols-2 gap-12 items-center`)
+- Move the video into the right column so it sits beside the text on desktop
+- The remaining body text and bold statements stay below the grid, centered at `max-w-3xl`
+- On mobile, everything stacks vertically as before (single column fallback)
