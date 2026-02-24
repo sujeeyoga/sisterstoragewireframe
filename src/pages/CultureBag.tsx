@@ -35,12 +35,12 @@ const CultureBag = () => {
 
   const handleAddToCart = () => {
     addItem({
-      id: "culture-bag-saree",
-      name: "Culture Bag – For Sarees",
-      price: 0, // Price TBD
+      id: "culture-bag-saree-bundle-10",
+      name: "Culture Bag – For Sarees (Bundle of 10)",
+      price: 40,
       image: images[0].src,
     });
-    toast({ title: "Added to cart", description: "Culture Bag – For Sarees added to your cart" });
+    toast({ title: "Added to cart", description: "Culture Bag – Bundle of 10 added to your cart" });
     setIsOpen(true);
   };
 
@@ -109,7 +109,11 @@ const CultureBag = () => {
                 <h1 className="text-4xl lg:text-5xl font-black uppercase tracking-tight text-foreground mb-2">
                   Culture Bag
                 </h1>
-                <p className="text-sm text-muted-foreground">42cm × 37cm | Olive Green</p>
+                <p className="text-sm text-muted-foreground mb-3">42cm × 37cm | Olive Green</p>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-3xl font-black text-foreground">$40</span>
+                  <span className="text-sm text-muted-foreground">/ bundle of 10</span>
+                </div>
               </div>
 
               {/* Short Description */}
