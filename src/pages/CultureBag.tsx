@@ -256,7 +256,7 @@ const CultureBag = () => {
           {/* Long Description Section */}
           <section className="max-w-3xl mx-auto space-y-6 text-foreground/80 leading-relaxed">
             <h2 className="text-3xl font-black uppercase text-foreground text-center mb-8">
-              Keep the culture. Store it with care.
+              Make Space For Culture.
             </h2>
 
             <p>
