@@ -29,9 +29,6 @@ const CultureBagPromo: React.FC<CultureBagPromoProps> = ({ variant = "shop" }) =
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-foreground uppercase tracking-tight">
               Culture Bag
             </h2>
-            <p className="text-base text-muted-foreground mt-2">
-              Saree storage, designed with intention
-            </p>
           </div>
         )}
 
@@ -52,7 +49,7 @@ const CultureBagPromo: React.FC<CultureBagPromoProps> = ({ variant = "shop" }) =
         )}
 
         {/* Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-10 items-center">
+        <div className={`grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-10 items-center ${isHomepage ? "lg:grid-cols-3" : ""}`}>
           {/* Image */}
           <Link to="/culture-bag" className="block rounded-2xl overflow-hidden group">
             <img
@@ -63,6 +60,20 @@ const CultureBagPromo: React.FC<CultureBagPromoProps> = ({ variant = "shop" }) =
               decoding="async"
             />
           </Link>
+
+          {/* Video (homepage only) */}
+          {isHomepage && (
+            <div className="rounded-2xl overflow-hidden">
+              <video
+                src="/lovable-uploads/culture-bag-teaser.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full aspect-[4/3] object-cover rounded-2xl"
+              />
+            </div>
+          )}
 
           {/* Text + CTA */}
           <div className="space-y-5">
