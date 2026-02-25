@@ -1,27 +1,31 @@
 
-## Improve the "Make Space For Culture" Section on Desktop
 
-The bottom description section currently feels narrow and text-heavy on desktop, with the video stretching full width within a narrow container. Here's the plan to make it more visually engaging and better structured:
+## Remove Fade-In Effects from Culture Bag Page
+
+Remove all opacity transition effects on images and videos so they appear instantly when loaded, while keeping the gray loading skeletons.
 
 ### Changes to `src/pages/CultureBag.tsx`
 
-**1. Wider section with two-column layout for text + video**
-- Change the section from `max-w-3xl` to `max-w-6xl` to use more of the desktop screen
-- Place the intro text and video side-by-side in a `grid grid-cols-1 lg:grid-cols-2` layout
-- Left column: heading + intro paragraphs
-- Right column: the teaser video
+1. **Main image**: Remove `transition-opacity duration-300` and the conditional `opacity-0`/`opacity-100` classes. Always show `opacity-100`.
 
-**2. Bold closing statements as a centered block**
-- Keep the three "No more..." statements below the grid as a centered, impactful text block
-- Add spacing and visual separation from the content above
+2. **Thumbnail images**: Same — remove the opacity transition classes.
 
-**3. Better vertical rhythm**
-- Add top padding/margin to separate this section from the product grid above
-- Add a subtle top border or extra spacing to create a clear visual break
+3. **Video 1 (Lose the Mess)**: Remove `transition-opacity duration-300` and conditional opacity classes.
 
-### Technical Details
+4. **Video 2 (Culture Bag teaser)**: Same treatment.
 
-- Wrap the heading, intro paragraphs, and video in a two-column grid (`lg:grid-cols-2 gap-12 items-center`)
-- Move the video into the right column so it sits beside the text on desktop
-- The remaining body text and bold statements stay below the grid, centered at `max-w-3xl`
-- On mobile, everything stacks vertically as before (single column fallback)
+5. **Keep loading skeletons**: The gray pulsing placeholders remain so there's no layout shift, but the media just pops in instantly instead of fading.
+
+### Technical Detail
+
+For each media element, change classes like:
+```
+className={`... transition-opacity duration-300 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+```
+to:
+```
+className={`... ${loaded ? 'opacity-100' : 'opacity-0'}`}
+```
+
+Or simply always render at full opacity and rely on the skeleton underneath disappearing naturally. The loading state tracking and skeletons stay intact.
+
