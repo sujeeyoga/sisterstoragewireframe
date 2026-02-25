@@ -3,6 +3,7 @@ import { Product } from "@/types/product";
 import BundleCard from "./BundleCard";
 import SimpleProductCard from "./SimpleProductCard";
 import LaunchCardsSection from "./LaunchCardsSection";
+import CultureBagPromo from "./CultureBagPromo";
 import { useSiteTexts } from "@/hooks/useSiteTexts";
 
 interface ShopProductSectionsProps {
@@ -126,7 +127,10 @@ const ShopProductSections = ({ products }: ShopProductSectionsProps) => {
         </section>
       )}
       
-      {/* Section 4: Upcoming Collections */}
+      {/* Section 4: Culture Bag */}
+      <CultureBagPromo variant="shop" />
+      
+      {/* Section 5: Upcoming Collections */}
       <LaunchCardsSection />
       
       {/* Empty State */}
