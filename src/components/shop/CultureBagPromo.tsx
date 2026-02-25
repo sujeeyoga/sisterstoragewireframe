@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
@@ -9,6 +9,7 @@ interface CultureBagPromoProps {
 
 const CultureBagPromo: React.FC<CultureBagPromoProps> = ({ variant = "shop" }) => {
   const isHomepage = variant === "homepage";
+  const [videoLoaded, setVideoLoaded] = useState(false);
 
   return (
     <section
@@ -63,7 +64,10 @@ const CultureBagPromo: React.FC<CultureBagPromoProps> = ({ variant = "shop" }) =
 
           {/* Video (homepage only) */}
           {isHomepage && (
-            <div className="rounded-2xl overflow-hidden">
+            <div className="rounded-2xl overflow-hidden relative">
+              {!videoLoaded && (
+                <div className="aspect-[4/3] bg-muted animate-pulse rounded-2xl" />
+              )}
               <video
                 src="/lovable-uploads/culture-bag-teaser.mp4"
                 autoPlay
@@ -71,6 +75,7 @@ const CultureBagPromo: React.FC<CultureBagPromoProps> = ({ variant = "shop" }) =
                 muted
                 playsInline
                 className="w-full aspect-[4/3] object-cover rounded-2xl"
+                onLoadedData={() => setVideoLoaded(true)}
               />
             </div>
           )}
