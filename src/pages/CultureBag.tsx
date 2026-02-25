@@ -229,27 +229,27 @@ const CultureBag = () => {
               </div>
 
               {/* Best Practice Tip */}
-              <div className="bg-muted/50 rounded-lg p-5 border border-border">
-                <h4 className="text-sm font-bold mb-2">
-                  Best Practice Tip
-                </h4>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  Regardless of how you store your sarees, it's recommended to take them out occasionally,
-                  refold them, and allow them to air — especially heirloom silk pieces. This helps preserve
-                  fabric quality and prevent long-term creasing.
-                </p>
-              </div>
-
-              {/* Care Notes */}
-              <div className="bg-destructive/5 rounded-lg p-5 border border-destructive/20">
-                <h4 className="text-sm font-bold mb-2 flex items-center gap-2">
-                  <AlertTriangle className="h-4 w-4 text-destructive" /> Care Notes
-                </h4>
-                <ul className="space-y-1.5 text-sm text-muted-foreground">
-                  <li>• Avoid storing in moist, wet, or high-heat conditions</li>
-                  <li>• Not recommended for very heavy brocade sarees</li>
-                </ul>
-              </div>
+              <details className="bg-muted/50 rounded-lg border border-border">
+                <summary className="text-sm font-bold cursor-pointer p-5 select-none">
+                  Best Practice Tip & Care Notes
+                </summary>
+                <div className="px-5 pb-5 space-y-4">
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Regardless of how you store your sarees, it's recommended to take them out occasionally,
+                    refold them, and allow them to air — especially heirloom silk pieces. This helps preserve
+                    fabric quality and prevent long-term creasing.
+                  </p>
+                  <div className="pt-2 border-t border-border">
+                    <h4 className="text-sm font-bold mb-2 flex items-center gap-2">
+                      <AlertTriangle className="h-4 w-4 text-destructive" /> Care Notes
+                    </h4>
+                    <ul className="space-y-1.5 text-sm text-muted-foreground">
+                      <li>• Avoid storing in moist, wet, or high-heat conditions</li>
+                      <li>• Not recommended for very heavy brocade sarees</li>
+                    </ul>
+                  </div>
+                </div>
+              </details>
             </div>
           </div>
 
