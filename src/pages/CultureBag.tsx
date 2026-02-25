@@ -94,7 +94,7 @@ const CultureBag = () => {
                 <img
                   src={images[selectedImage].src}
                   alt={images[selectedImage].alt}
-                  className={`w-full h-full object-cover transition-opacity duration-300 ${mainImageLoaded ? 'opacity-100' : 'opacity-0'}`}
+                  className="w-full h-full object-cover"
                   loading="eager"
                   fetchPriority="high"
                   decoding="async"
@@ -117,7 +117,7 @@ const CultureBag = () => {
                     <img
                       src={img.src}
                       alt={img.alt}
-                      className={`w-full h-full object-cover transition-opacity duration-300 ${thumbsLoaded[i] ? 'opacity-100' : 'opacity-0'}`}
+                      className="w-full h-full object-cover"
                       loading="lazy"
                       decoding="async"
                       onLoad={() => setThumbsLoaded(prev => ({ ...prev, [i]: true }))}
@@ -138,7 +138,7 @@ const CultureBag = () => {
                   muted
                   playsInline
                   preload="auto"
-                  className={`w-full rounded-lg transition-opacity duration-300 ${video1Loaded ? 'opacity-100' : 'opacity-0'}`}
+                  className="w-full rounded-lg"
                   onLoadedData={() => setVideo1Loaded(true)}
                 />
               </div>
@@ -291,7 +291,7 @@ const CultureBag = () => {
                   muted
                   playsInline
                   preload="auto"
-                  className={`w-full rounded-lg transition-opacity duration-300 ${video2Loaded ? 'opacity-100' : 'opacity-0'}`}
+                  className="w-full rounded-lg"
                   onLoadedData={() => setVideo2Loaded(true)}
                 />
               </div>
