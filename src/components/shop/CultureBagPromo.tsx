@@ -89,10 +89,12 @@ const CultureBagPromo: React.FC<CultureBagPromoProps> = ({ variant = "shop" }) =
               and closet-friendly.
             </p>
 
-            <div className="flex items-baseline gap-3">
-              <span className="text-2xl font-black text-foreground">From $24.50</span>
-              <span className="text-sm text-muted-foreground">/ bundle of 5</span>
-            </div>
+            {!isHomepage && (
+              <div className="flex items-baseline gap-3">
+                <span className="text-2xl font-black text-foreground">From $24.50</span>
+                <span className="text-sm text-muted-foreground">/ bundle of 5</span>
+              </div>
+            )}
 
             <div className="flex gap-3 pt-1">
               <Button asChild size="lg" className="font-bold uppercase tracking-wide">
