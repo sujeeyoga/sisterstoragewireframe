@@ -4,6 +4,7 @@ import Hero from "@/components/Hero";
 import CommunityStoriesCarousels from "@/components/community/CommunityStoriesCarousels";
 import BestSeller from "@/components/BestSeller";
 import OrganizationGallery from "@/components/OrganizationGallery";
+import CultureBagPromo from "@/components/shop/CultureBagPromo";
 import PromotionalBanner from "@/components/PromotionalBanner";
 import { SEO } from "@/components/SEO";
 import { FAQSchema } from "@/components/seo/FAQSchema";
@@ -85,6 +86,9 @@ const Index = () => {
         
         {/* Best Sellers - Product carousel */}
         <BestSeller />
+        
+        {/* New Product — Culture Bag */}
+        <CultureBagPromo variant="homepage" />
         
         {/* Organization Gallery - Photo grid */}
         <OrganizationGallery />
