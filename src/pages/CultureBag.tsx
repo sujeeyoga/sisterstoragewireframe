@@ -89,7 +89,7 @@ const CultureBag = () => {
               {/* Main Image */}
               <div className="aspect-square overflow-hidden rounded-lg bg-muted relative">
                 {!mainImageLoaded && (
-                  <div className="absolute inset-0 bg-muted animate-pulse rounded-lg" />
+                  <div className="absolute inset-0 bg-muted rounded-lg" />
                 )}
                 <img
                   src={images[selectedImage].src}
@@ -112,7 +112,7 @@ const CultureBag = () => {
                     }`}
                   >
                     {!thumbsLoaded[i] && (
-                      <div className="absolute inset-0 bg-muted animate-pulse rounded-md" />
+                      <div className="absolute inset-0 bg-muted rounded-md" />
                     )}
                     <img
                       src={img.src}
@@ -129,7 +129,7 @@ const CultureBag = () => {
               {/* Video Teaser */}
               <div className="rounded-lg overflow-hidden mt-4 relative">
                 {!video1Loaded && (
-                  <div className="aspect-video bg-muted animate-pulse rounded-lg" />
+                  <div className="aspect-video bg-muted rounded-lg" />
                 )}
                 <video
                   src="/lovable-uploads/lose-the-mess.mov"
