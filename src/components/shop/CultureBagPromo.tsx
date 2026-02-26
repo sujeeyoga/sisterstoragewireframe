@@ -10,6 +10,7 @@ interface CultureBagPromoProps {
 const CultureBagPromo: React.FC<CultureBagPromoProps> = ({ variant = "shop" }) => {
   const isHomepage = variant === "homepage";
   const [videoLoaded, setVideoLoaded] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   return (
     <section
@@ -52,13 +53,17 @@ const CultureBagPromo: React.FC<CultureBagPromoProps> = ({ variant = "shop" }) =
         {/* Content Grid */}
         <div className={`grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-10 items-center ${isHomepage ? "lg:grid-cols-3" : ""}`}>
           {/* Image */}
-          <Link to="/culture-bag" className="block rounded-2xl overflow-hidden group">
+          <Link to="/culture-bag" className="block rounded-2xl overflow-hidden group relative">
+            {!imageLoaded && (
+              <div className="aspect-[4/3] bg-muted animate-pulse rounded-2xl" />
+            )}
             <img
               src="/lovable-uploads/culture-bag-front.jpeg"
               alt="Culture Bag for Sarees — cotton blend organizer with clear window"
-              className="w-full aspect-[4/3] object-cover group-hover:scale-105 transition-transform duration-500"
+              className={`w-full aspect-[4/3] object-cover group-hover:scale-105 transition-transform duration-500 ${!imageLoaded ? 'absolute inset-0' : ''}`}
               loading="lazy"
               decoding="async"
+              onLoad={() => setImageLoaded(true)}
             />
           </Link>
 
