@@ -135,7 +135,7 @@ const CultureBag = () => {
                   loop
                   muted
                   playsInline
-                  preload="none"
+                  preload="metadata"
                   className="w-full rounded-lg"
                   onLoadedData={() => setVideo1Loaded(true)}
                 />
@@ -288,7 +288,7 @@ const CultureBag = () => {
                   loop
                   muted
                   playsInline
-                  preload="none"
+                  preload="metadata"
                   className="w-full rounded-lg"
                   onLoadedData={() => setVideo2Loaded(true)}
                 />
