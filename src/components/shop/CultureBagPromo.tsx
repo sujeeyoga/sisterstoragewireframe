@@ -55,7 +55,7 @@ const CultureBagPromo: React.FC<CultureBagPromoProps> = ({ variant = "shop" }) =
           {/* Image */}
           <Link to="/culture-bag" className="block rounded-2xl overflow-hidden group relative">
             {!imageLoaded && (
-              <div className="aspect-[4/3] bg-muted animate-pulse rounded-2xl" />
+              <div className="aspect-[4/3] bg-muted rounded-2xl" />
             )}
             <img
               src="/lovable-uploads/culture-bag-front.jpeg"
@@ -71,7 +71,7 @@ const CultureBagPromo: React.FC<CultureBagPromoProps> = ({ variant = "shop" }) =
           {isHomepage && (
             <div className="rounded-2xl overflow-hidden relative">
               {!videoLoaded && (
-                <div className="aspect-[4/3] bg-muted animate-pulse rounded-2xl" />
+                <div className="aspect-[4/3] bg-muted rounded-2xl" />
               )}
               <video
                 src="/lovable-uploads/culture-bag-teaser.mp4"
