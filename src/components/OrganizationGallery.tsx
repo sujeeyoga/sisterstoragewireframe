@@ -48,8 +48,7 @@ const OrganizationGallery = () => {
               src={galleryImages[0].src}
               alt={galleryImages[0].alt}
               className="w-full h-full object-cover block md:group-hover:scale-105 transition-transform duration-500 ease-out"
-              loading="eager"
-              fetchPriority="high"
+              loading="lazy"
               sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
               onLoad={() => setLoadedImages(prev => ({ ...prev, 0: true }))}
             />
@@ -67,8 +66,7 @@ const OrganizationGallery = () => {
               src={galleryImages[1].src}
               alt={galleryImages[1].alt}
               className="w-full h-full object-cover block md:group-hover:scale-105 transition-transform duration-500 ease-out"
-              loading="eager"
-              fetchPriority="high"
+              loading="lazy"
               sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
               onLoad={() => setLoadedImages(prev => ({ ...prev, 1: true }))}
           />
@@ -86,8 +84,7 @@ const OrganizationGallery = () => {
               src={galleryImages[2].src}
               alt={galleryImages[2].alt}
               className="w-full h-full object-cover block md:group-hover:scale-105 transition-transform duration-500 ease-out"
-              loading="eager"
-              fetchPriority="high"
+              loading="lazy"
               sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
               onLoad={() => setLoadedImages(prev => ({ ...prev, 2: true }))}
             />

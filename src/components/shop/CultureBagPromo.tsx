@@ -79,6 +79,7 @@ const CultureBagPromo: React.FC<CultureBagPromoProps> = ({ variant = "shop" }) =
                 loop
                 muted
                 playsInline
+                preload="none"
                 className="w-full aspect-[4/3] object-cover rounded-2xl"
                 onLoadedData={() => setVideoLoaded(true)}
               />

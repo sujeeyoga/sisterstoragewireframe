@@ -9,49 +9,12 @@ import PromotionalBanner from "@/components/PromotionalBanner";
 import { SEO } from "@/components/SEO";
 import { FAQSchema } from "@/components/seo/FAQSchema";
 import { homepageFAQs } from "@/data/homepage-faqs";
-import { burstPreloadImages, burstPreloadVideos } from "@/lib/burstImagePreloader";
 
 const Index = () => {
-  // Ensure body scroll is enabled and burst load all homepage images
+  // Ensure body scroll is enabled
   useEffect(() => {
     document.body.style.overflow = '';
     document.body.style.paddingRight = '';
-    
-    // Burst load all homepage images in parallel
-    const homepageImages = [
-      // Organization Gallery
-      '/lovable-uploads/e1ae51b5-7916-4137-825e-7f197dff06a3.png',
-      '/lovable-uploads/2a4c457a-7695-47d3-9912-ab2900c6ea25.png',
-      '/lovable-uploads/0e5fe1c0-12f8-439f-94d5-ec1da8ca09c8.png',
-      // Best Seller Bundles
-      '/src/assets/optimized/starter-set.jpg',
-      '/src/assets/optimized/sister-staples.jpg',
-      '/src/assets/optimized/family-set.jpg',
-      // Instagram Posts
-      'https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-23-scaled.jpg',
-      'https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-31-scaled.jpg',
-      'https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-13-scaled.jpg',
-    ];
-    
-    // Burst load homepage videos in parallel with images
-    const homepageVideos = [
-      '/lovable-uploads/sister-story-new.mp4',
-      '/lovable-uploads/sister-story-brown-girls-bangles.mp4'
-    ];
-    
-    // Load images and videos in parallel for fastest load time
-    Promise.all([
-      burstPreloadImages({
-        images: homepageImages,
-        priority: 'high',
-        onProgress: (loaded, total) => {
-          console.log(`📸 Loaded ${loaded}/${total} images`);
-        }
-      }),
-      burstPreloadVideos(homepageVideos)
-    ]).then(() => {
-      console.log('✅ All homepage media burst loaded (images + videos)');
-    });
   }, []);
 
   const structuredData = {
