@@ -7,9 +7,10 @@ import { cn } from '@/lib/utils';
 import AddToCartBar from '@/components/cart/AddToCartBar';
 import { useIntersectionObserver } from '@/hooks/use-intersection-observer';
 import { useIsMobile } from '@/hooks/use-mobile';
-import starterSetImg from '@/assets/optimized/starter-set.jpg';
-import familySetImg from '@/assets/optimized/family-set.jpg';
-import sisterStaplesImg from '@/assets/optimized/sister-staples.jpg';
+// Use URL strings instead of ES6 imports to prevent Vite preloading these below-fold images
+const starterSetImg = '/src/assets/optimized/starter-set.jpg';
+const familySetImg = '/src/assets/optimized/family-set.jpg';
+const sisterStaplesImg = '/src/assets/optimized/sister-staples.jpg';
 const buyCards = [{
   id: "bundle-1",
   name: 'Starter Set',
@@ -132,7 +133,7 @@ const BestSeller = () => {
                     alt={`Sister Storage ${buyCards[0].name} - Premium Bangle Storage Bundle Canada`}
                     title={`Sister Storage ${buyCards[0].name}`}
                     className={cn("w-full h-full object-cover transition-opacity duration-500 scale-125", loadedImages[buyCards[0].id] ? "opacity-100" : "opacity-0")} 
-                    loading="eager"
+                    loading="lazy"
                     decoding="async"
                     sizes="(min-width: 768px) 50vw, 280px"
                     onLoad={() => handleImageLoad(buyCards[0].id)}
@@ -192,7 +193,7 @@ const BestSeller = () => {
                 <div className="relative h-full">
                   {!loadedImages[buyCards[1].id] && <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse" />}
                   
-                  <img src={buyCards[1].image} alt={`Sister Storage ${buyCards[1].name} - Premium Bangle Storage Bundle Canada`} title={`Sister Storage ${buyCards[1].name}`} className={cn("w-full h-full object-cover transition-opacity duration-500 scale-125", loadedImages[buyCards[1].id] ? "opacity-100" : "opacity-0")} loading="eager" decoding="async" onLoad={() => handleImageLoad(buyCards[1].id)} onError={() => handleImageError(buyCards[1].id)} />
+                  <img src={buyCards[1].image} alt={`Sister Storage ${buyCards[1].name} - Premium Bangle Storage Bundle Canada`} title={`Sister Storage ${buyCards[1].name}`} className={cn("w-full h-full object-cover transition-opacity duration-500 scale-125", loadedImages[buyCards[1].id] ? "opacity-100" : "opacity-0")} loading="lazy" decoding="async" onLoad={() => handleImageLoad(buyCards[1].id)} onError={() => handleImageError(buyCards[1].id)} />
                   
                   <div className={cn(
                     "absolute inset-0 flex items-center justify-center transition-opacity duration-300",

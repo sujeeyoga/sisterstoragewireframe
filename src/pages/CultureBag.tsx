@@ -69,8 +69,6 @@ const CultureBag = () => {
         <title>Culture Bag for Sarees | Saree Storage Organizer | Sister Storage</title>
         <meta name="description" content="The Culture Bag is a cotton blend saree storage organizer with clear window and back compartment. 42cm × 37cm, olive green. Keep your sarees protected and organized." />
         <link rel="preload" as="image" href={images[0].src} />
-        <link rel="preload" as="video" href="/lovable-uploads/culture-bag-teaser.mp4" />
-        <link rel="preload" as="video" href="/lovable-uploads/culture-bag-teaser.mp4" />
       </Helmet>
 
       <div className="pb-16 pt-12">
@@ -137,7 +135,7 @@ const CultureBag = () => {
                   loop
                   muted
                   playsInline
-                  preload="auto"
+                  preload="none"
                   className="w-full rounded-lg"
                   onLoadedData={() => setVideo1Loaded(true)}
                 />
@@ -290,7 +288,7 @@ const CultureBag = () => {
                   loop
                   muted
                   playsInline
-                  preload="auto"
+                  preload="none"
                   className="w-full rounded-lg"
                   onLoadedData={() => setVideo2Loaded(true)}
                 />

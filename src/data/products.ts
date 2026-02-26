@@ -1,5 +1,6 @@
 import { Product } from "@/types/product";
-import shopHeroImg from '@/assets/optimized/shop-hero.jpg';
+// Use URL string to prevent Vite preloading this 1.5MB image on every page
+const shopHeroImg = '/src/assets/optimized/shop-hero.jpg';
 
 /**
  * DEPRECATION NOTICE:
