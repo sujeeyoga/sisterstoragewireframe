@@ -7,10 +7,9 @@ import { cn } from '@/lib/utils';
 import AddToCartBar from '@/components/cart/AddToCartBar';
 import { useIntersectionObserver } from '@/hooks/use-intersection-observer';
 import { useIsMobile } from '@/hooks/use-mobile';
-// Use URL strings instead of ES6 imports to prevent Vite preloading these below-fold images
-const starterSetImg = '/src/assets/optimized/starter-set.jpg';
-const familySetImg = '/src/assets/optimized/family-set.jpg';
-const sisterStaplesImg = '/src/assets/optimized/sister-staples.jpg';
+import starterSetImg from '@/assets/optimized/starter-set.jpg';
+import familySetImg from '@/assets/optimized/family-set.jpg';
+import sisterStaplesImg from '@/assets/optimized/sister-staples.jpg';
 const buyCards = [{
   id: "bundle-1",
   name: 'Starter Set',
