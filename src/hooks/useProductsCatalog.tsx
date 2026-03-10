@@ -48,6 +48,10 @@ export const useProductsCatalog = () => {
           caption: dbProduct.short_description || '',
           funnelStage: '',
           color: '#c80056',
+          weight: dbProduct.weight || undefined,
+          length: dbProduct.length || undefined,
+          width: dbProduct.width || undefined,
+          height: dbProduct.height || undefined,
         } as Product;
       });
 
