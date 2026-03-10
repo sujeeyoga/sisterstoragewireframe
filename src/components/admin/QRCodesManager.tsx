@@ -675,6 +675,72 @@ export const QRCodesManager = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Generate Sleeve QR Dialog */}
+      <Dialog open={sleeveDialogOpen} onOpenChange={(open) => {
+        setSleeveDialogOpen(open);
+        if (!open) setSelectedProductSlug('');
+      }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Generate Product Sleeve QR</DialogTitle>
+            <DialogDescription>
+              Select a product to create a QR code for its packaging sleeve. Customers scan it to see a thank-you page with product details.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div>
+              <Label>Select Product</Label>
+              <Select value={selectedProductSlug} onValueChange={setSelectedProductSlug}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Choose a product..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {products?.map((p) => (
+                    <SelectItem key={p.slug} value={p.slug}>
+                      {p.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {selectedProductSlug && (
+              <div className="rounded-lg border border-border bg-muted/50 p-3 space-y-1 text-sm">
+                <p className="font-medium">Thank-you page URL:</p>
+                <code className="text-xs break-all text-primary">
+                  {getBaseUrl()}/thank-you/{selectedProductSlug}
+                </code>
+              </div>
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => { setSleeveDialogOpen(false); setSelectedProductSlug(''); }}>
+              Cancel
+            </Button>
+            <Button
+              disabled={!selectedProductSlug || saveMutation.isPending}
+              onClick={() => {
+                const product = products?.find(p => p.slug === selectedProductSlug);
+                if (!product) return;
+                setFormData({
+                  name: `Sleeve – ${product.name}`,
+                  destination_url: `${getBaseUrl()}/thank-you/${product.slug}`,
+                  is_active: true,
+                });
+                setSleeveDialogOpen(false);
+                setSelectedProductSlug('');
+                // Auto-save directly
+                saveMutation.mutate();
+              }}
+            >
+              {saveMutation.isPending ? 'Creating...' : 'Create Sleeve QR'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
