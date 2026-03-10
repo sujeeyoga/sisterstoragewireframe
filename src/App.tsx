@@ -48,6 +48,7 @@ import CustomerDashboard from "./pages/CustomerDashboard";
 import CustomerOrderDetail from "./pages/CustomerOrderDetail";
 import Culture from "./pages/Culture";
 import CultureBag from "./pages/CultureBag";
+import ProductThankYou from "./pages/ProductThankYou";
 
 const queryClient = new QueryClient();
 
@@ -116,6 +117,7 @@ const App = () => {
               <Route path="/gift" element={<ProtectedRoutes><PageTransition><Gift /></PageTransition></ProtectedRoutes>} />
               <Route path="/qr-generator" element={<ProtectedRoutes><PageTransition><QRCodeGenerator /></PageTransition></ProtectedRoutes>} />
               <Route path="/q/:shortCode" element={<QRRedirect />} />
+              <Route path="/thank-you/:productSlug" element={<PageTransition><ProductThankYou /></PageTransition>} />
               <Route path="/privacy-policy" element={<ProtectedRoutes><PageTransition><PrivacyPolicy /></PageTransition></ProtectedRoutes>} />
               <Route path="/terms-of-service" element={<ProtectedRoutes><PageTransition><TermsOfService /></PageTransition></ProtectedRoutes>} />
               <Route path="/accessibility" element={<ProtectedRoutes><PageTransition><Accessibility /></PageTransition></ProtectedRoutes>} />
