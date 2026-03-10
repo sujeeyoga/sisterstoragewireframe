@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { X, Instagram, ShoppingCart } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -10,10 +10,12 @@ export const ExitIntentPopup = () => {
   const [hasShown, setHasShown] = useState(false);
   const { items } = useCart();
   const navigate = useNavigate();
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith("/admin");
 
   useEffect(() => {
-    // Don't show if already shown this session or no items in cart
-    if (hasShown || items.length === 0) return;
+    // Don't show if already shown this session, no items in cart, or on admin pages
+    if (hasShown || items.length === 0 || isAdminRoute) return;
 
     const handleMouseLeave = (e: MouseEvent) => {
       // Detect when mouse leaves from top of viewport (user navigating away)
