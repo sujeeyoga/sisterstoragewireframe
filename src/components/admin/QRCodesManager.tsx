@@ -721,7 +721,7 @@ export const QRCodesManager = () => {
               Cancel
             </Button>
             <Button
-              disabled={!selectedProductSlug || saveMutation.isPending}
+              disabled={!selectedProductSlug}
               onClick={() => {
                 const product = products?.find(p => p.slug === selectedProductSlug);
                 if (!product) return;
@@ -732,11 +732,10 @@ export const QRCodesManager = () => {
                 });
                 setSleeveDialogOpen(false);
                 setSelectedProductSlug('');
-                // Auto-save directly
-                saveMutation.mutate();
+                setDialogOpen(true);
               }}
             >
-              {saveMutation.isPending ? 'Creating...' : 'Create Sleeve QR'}
+              Continue
             </Button>
           </DialogFooter>
         </DialogContent>
