@@ -283,6 +283,10 @@ export const QRCodesManager = () => {
             <Settings className="mr-2 h-4 w-4" />
             Settings
           </Button>
+          <Button variant="pink" onClick={() => setSleeveDialogOpen(true)}>
+            <QrCode className="mr-2 h-4 w-4" />
+            Generate Sleeve QR
+          </Button>
           <Button onClick={() => setDialogOpen(true)}>
             <Plus className="mr-2 h-4 w-4" />
             Create QR Code
