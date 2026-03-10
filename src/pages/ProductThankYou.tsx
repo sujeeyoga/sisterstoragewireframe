@@ -102,6 +102,35 @@ export default function ProductThankYou() {
                   </ul>
                 </div>
               )}
+
+              {/* Sizing / Dimensions */}
+              {(product.length || product.width || product.height) && (
+                <div>
+                  <h3 className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">
+                    Dimensions
+                  </h3>
+                  <div className="flex gap-4 text-sm text-card-foreground">
+                    {product.length != null && (
+                      <div className="flex flex-col items-center bg-muted rounded-lg px-3 py-2">
+                        <span className="text-xs text-muted-foreground">L</span>
+                        <span className="font-semibold">{product.length} cm</span>
+                      </div>
+                    )}
+                    {product.width != null && (
+                      <div className="flex flex-col items-center bg-muted rounded-lg px-3 py-2">
+                        <span className="text-xs text-muted-foreground">W</span>
+                        <span className="font-semibold">{product.width} cm</span>
+                      </div>
+                    )}
+                    {product.height != null && (
+                      <div className="flex flex-col items-center bg-muted rounded-lg px-3 py-2">
+                        <span className="text-xs text-muted-foreground">H</span>
+                        <span className="font-semibold">{product.height} cm</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
