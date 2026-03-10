@@ -60,11 +60,15 @@ export const QRCodesManager = () => {
   const [selectedQR, setSelectedQR] = useState<QRCode | null>(null);
   const [productionDomain, setProductionDomain] = useState('');
   const [linkType, setLinkType] = useState<'short' | 'direct'>('short');
+  const [sleeveDialogOpen, setSleeveDialogOpen] = useState(false);
+  const [selectedProductSlug, setSelectedProductSlug] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     destination_url: '',
     is_active: true,
   });
+
+  const { data: products } = useProductsCatalog();
 
   // Fetch production domain setting
   const { data: domainSetting } = useQuery({
