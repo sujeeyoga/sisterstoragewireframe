@@ -215,7 +215,7 @@ export const QRCodesManager = () => {
     setDialogOpen(true);
   };
 
-  const getBaseUrl = () => productionDomain || window.location.origin;
+  const getBaseUrl = () => (productionDomain || window.location.origin).replace(/\/+$/, '');
 
   const handleCopyShortUrl = (shortCode: string) => {
     const baseUrl = getBaseUrl();
