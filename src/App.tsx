@@ -48,6 +48,7 @@ import CustomerDashboard from "./pages/CustomerDashboard";
 import CustomerOrderDetail from "./pages/CustomerOrderDetail";
 import Culture from "./pages/Culture";
 import CultureBag from "./pages/CultureBag";
+import ProductThankYou from "./pages/ProductThankYou";
 
 const queryClient = new QueryClient();
 
