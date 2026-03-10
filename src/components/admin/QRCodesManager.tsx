@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useProductsCatalog } from '@/hooks/useProductsCatalog';
 import {
   Dialog,
   DialogContent,
@@ -58,11 +60,15 @@ export const QRCodesManager = () => {
   const [selectedQR, setSelectedQR] = useState<QRCode | null>(null);
   const [productionDomain, setProductionDomain] = useState('');
   const [linkType, setLinkType] = useState<'short' | 'direct'>('short');
+  const [sleeveDialogOpen, setSleeveDialogOpen] = useState(false);
+  const [selectedProductSlug, setSelectedProductSlug] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     destination_url: '',
     is_active: true,
   });
+
+  const { data: products } = useProductsCatalog();
 
   // Fetch production domain setting
   const { data: domainSetting } = useQuery({
@@ -276,6 +282,10 @@ export const QRCodesManager = () => {
           <Button variant="outline" onClick={() => setSettingsOpen(true)}>
             <Settings className="mr-2 h-4 w-4" />
             Settings
+          </Button>
+          <Button variant="pink" onClick={() => setSleeveDialogOpen(true)}>
+            <QrCode className="mr-2 h-4 w-4" />
+            Generate Sleeve QR
           </Button>
           <Button onClick={() => setDialogOpen(true)}>
             <Plus className="mr-2 h-4 w-4" />
@@ -665,6 +675,71 @@ export const QRCodesManager = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Generate Sleeve QR Dialog */}
+      <Dialog open={sleeveDialogOpen} onOpenChange={(open) => {
+        setSleeveDialogOpen(open);
+        if (!open) setSelectedProductSlug('');
+      }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Generate Product Sleeve QR</DialogTitle>
+            <DialogDescription>
+              Select a product to create a QR code for its packaging sleeve. Customers scan it to see a thank-you page with product details.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div>
+              <Label>Select Product</Label>
+              <Select value={selectedProductSlug} onValueChange={setSelectedProductSlug}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Choose a product..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {products?.map((p) => (
+                    <SelectItem key={p.slug} value={p.slug}>
+                      {p.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {selectedProductSlug && (
+              <div className="rounded-lg border border-border bg-muted/50 p-3 space-y-1 text-sm">
+                <p className="font-medium">Thank-you page URL:</p>
+                <code className="text-xs break-all text-primary">
+                  {getBaseUrl()}/thank-you/{selectedProductSlug}
+                </code>
+              </div>
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => { setSleeveDialogOpen(false); setSelectedProductSlug(''); }}>
+              Cancel
+            </Button>
+            <Button
+              disabled={!selectedProductSlug}
+              onClick={() => {
+                const product = products?.find(p => p.slug === selectedProductSlug);
+                if (!product) return;
+                setFormData({
+                  name: `Sleeve – ${product.name}`,
+                  destination_url: `${getBaseUrl()}/thank-you/${product.slug}`,
+                  is_active: true,
+                });
+                setSleeveDialogOpen(false);
+                setSelectedProductSlug('');
+                setDialogOpen(true);
+              }}
+            >
+              Continue
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
