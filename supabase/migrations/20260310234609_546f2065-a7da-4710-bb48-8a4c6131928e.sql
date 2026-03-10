@@ -1,0 +1,1 @@
+UPDATE qr_codes SET destination_url = 'https://sisterstorage.com/thank-you/large-bangle-box' WHERE id = 'e7404432-3f3f-47ac-ba85-362e945f36be';
