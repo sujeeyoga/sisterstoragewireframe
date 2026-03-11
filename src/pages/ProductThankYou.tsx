@@ -80,6 +80,16 @@ export default function ProductThankYou() {
 
             <div className="p-5 space-y-4">
               <h2 className="text-xl font-bold text-card-foreground">{product.name}</h2>
+              {(() => {
+                const parts: string[] = [];
+                const rodCount = product.attributes?.rodcount?.[0] || product.attributes?.['rod count']?.[0];
+                const size = product.attributes?.size?.[0];
+                if (rodCount) parts.push(`${rodCount} Rod${rodCount !== '1' ? 's' : ''}`);
+                if (size) parts.push(size);
+                return parts.length > 0 ? (
+                  <p className="text-sm text-muted-foreground font-medium">{parts.join(' · ')}</p>
+                ) : null;
+              })()}
 
               {cleanDescription && (
                 <p className="text-sm text-muted-foreground leading-relaxed">
