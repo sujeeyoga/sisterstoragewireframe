@@ -44,7 +44,20 @@ export const useProductsCatalog = () => {
           sku: dbProduct.id.toString(),
           features: [],
           material: '',
-          attributes: {},
+          attributes: (() => {
+            const raw = dbProduct.attributes;
+            const map: Record<string, string[]> = {};
+            if (Array.isArray(raw)) {
+              raw.forEach((attr: any) => {
+                map[attr.name?.toLowerCase()] = attr.options || [];
+              });
+            } else if (raw && typeof raw === 'object') {
+              Object.entries(raw).forEach(([key, value]) => {
+                map[key.toLowerCase()] = Array.isArray(value) ? value.map(String) : [String(value)];
+              });
+            }
+            return map;
+          })(),
           caption: dbProduct.short_description || '',
           funnelStage: '',
           color: '#c80056',
