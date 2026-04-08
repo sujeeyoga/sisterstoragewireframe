@@ -161,36 +161,38 @@ export const PageContentManager = () => {
   }
 
   return (
-    <div className="p-8">
-      <div className="mb-6 flex items-center justify-between">
+    <div className="p-4 md:p-8">
+      <div className="mb-4 md:mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Page Content</h1>
-          <p className="text-muted-foreground">
-            Edit page sections with live video previews. Changes update the site immediately.
+          <h1 className="text-2xl md:text-3xl font-bold mb-1">Page Content</h1>
+          <p className="text-muted-foreground text-sm">
+            Edit sections with video previews. Changes update instantly.
           </p>
         </div>
-        <Button onClick={() => { setShowAddForm(true); setNewItem({ ...newItem, page_slug: activeTab }); }}>
-          <Plus className="mr-2 h-4 w-4" />
-          Add Section
+        <Button size="sm" onClick={() => { setShowAddForm(true); setNewItem({ ...newItem, page_slug: activeTab }); }}>
+          <Plus className="mr-1 h-4 w-4" />
+          Add
         </Button>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="mb-6">
-          {PAGE_OPTIONS.map((page) => {
-            const count = allContent?.filter((c) => c.page_slug === page.slug).length || 0;
-            return (
-              <TabsTrigger key={page.slug} value={page.slug} className="gap-2">
-                {page.label}
-                {count > 0 && (
-                  <span className="bg-primary/10 text-primary text-xs rounded-full px-2 py-0.5">
-                    {count}
-                  </span>
-                )}
-              </TabsTrigger>
-            );
-          })}
-        </TabsList>
+        <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0">
+          <TabsList className="mb-4 md:mb-6 w-max">
+            {PAGE_OPTIONS.map((page) => {
+              const count = allContent?.filter((c) => c.page_slug === page.slug).length || 0;
+              return (
+                <TabsTrigger key={page.slug} value={page.slug} className="gap-1 text-xs md:text-sm px-2 md:px-3">
+                  {page.label}
+                  {count > 0 && (
+                    <span className="bg-primary/10 text-primary text-[10px] rounded-full px-1.5 py-0.5">
+                      {count}
+                    </span>
+                  )}
+                </TabsTrigger>
+              );
+            })}
+          </TabsList>
+        </div>
 
         {PAGE_OPTIONS.map((page) => (
           <TabsContent key={page.slug} value={page.slug}>
@@ -249,7 +251,7 @@ export const PageContentManager = () => {
                   {newItem.video_url && (
                     <div className="space-y-2">
                       <Label>Video Preview</Label>
-                      <div className="w-[200px] h-[300px] rounded-lg overflow-hidden bg-muted border">
+                      <div className="w-[120px] h-[180px] md:w-[160px] md:h-[240px] rounded-lg overflow-hidden bg-muted border">
                         <video src={newItem.video_url} className="w-full h-full object-cover" autoPlay muted loop playsInline />
                       </div>
                     </div>
@@ -280,45 +282,43 @@ export const PageContentManager = () => {
 
                 return (
                   <Card key={item.id} className={`transition-all ${!item.enabled ? 'opacity-60' : ''}`}>
-                    <CardHeader className="flex flex-row items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <GripVertical className="h-5 w-5 text-muted-foreground" />
-                        <div>
-                          <CardTitle className="text-lg flex items-center gap-2">
+                    <CardHeader className="p-3 md:p-6 flex flex-row items-center justify-between gap-2">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <GripVertical className="h-4 w-4 text-muted-foreground shrink-0 hidden sm:block" />
+                        <div className="min-w-0">
+                          <CardTitle className="text-sm md:text-lg flex items-center gap-1.5 truncate">
                             {item.title || item.section_key}
-                            {item.video_url && <Video className="h-4 w-4 text-primary" />}
+                            {item.video_url && <Video className="h-3.5 w-3.5 text-primary shrink-0" />}
                           </CardTitle>
-                          <CardDescription>{item.section_key} · Order: {item.display_order}</CardDescription>
+                          <CardDescription className="text-xs">{item.section_key} · #{item.display_order}</CardDescription>
                         </div>
                       </div>
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-1 shrink-0">
                         <Button
                           variant="ghost"
-                          size="sm"
+                          size="icon"
+                          className={`h-8 w-8 ${item.enabled ? 'text-green-600' : 'text-muted-foreground'}`}
                           onClick={() => handleToggleEnabled(item)}
-                          className={item.enabled ? 'text-green-600' : 'text-muted-foreground'}
                         >
-                          {item.enabled ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+                          {item.enabled ? <Eye className="h-3.5 w-3.5" /> : <EyeOff className="h-3.5 w-3.5" />}
                         </Button>
                         <Button
                           variant="ghost"
-                          size="sm"
+                          size="icon"
+                          className="h-8 w-8 text-destructive"
                           onClick={() => {
                             if (confirm('Delete this section?')) deleteMutation.mutate(item.id);
                           }}
-                          className="text-destructive"
                         >
-                          <Trash2 className="h-4 w-4" />
+                          <Trash2 className="h-3.5 w-3.5" />
                         </Button>
                       </div>
                     </CardHeader>
-                    <CardContent className="space-y-4">
+                    <CardContent className="p-3 pt-0 md:p-6 md:pt-0 space-y-3">
+                      {/* Compact video preview */}
                       {(isEditing ? edited.video_url : item.video_url) && (
-                        <div className="space-y-2">
-                          <Label className="text-sm font-medium flex items-center gap-2">
-                            <Video className="h-4 w-4" /> Video Preview
-                          </Label>
-                          <div className="w-[160px] h-[240px] md:w-[200px] md:h-[300px] rounded-lg overflow-hidden bg-muted border">
+                        <div className="flex items-start gap-3">
+                          <div className="w-[80px] h-[120px] md:w-[120px] md:h-[180px] rounded-lg overflow-hidden bg-muted border shrink-0">
                             <video
                               key={isEditing ? edited.video_url : item.video_url}
                               src={isEditing ? edited.video_url! : item.video_url!}
@@ -329,68 +329,75 @@ export const PageContentManager = () => {
                               playsInline
                             />
                           </div>
+                          {!isEditing && item.description && (
+                            <p className="text-xs text-muted-foreground line-clamp-4 pt-1">{item.description}</p>
+                          )}
                         </div>
                       )}
 
                       {isEditing ? (
                         <>
-                          <div className="grid gap-4 md:grid-cols-2">
-                            <div className="space-y-2">
-                              <Label>Title</Label>
-                              <Input value={edited.title || ''} onChange={(e) => handleChange(item.id, 'title', e.target.value)} />
+                          <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
+                            <div className="space-y-1">
+                              <Label className="text-xs">Title</Label>
+                              <Input className="h-9 text-sm" value={edited.title || ''} onChange={(e) => handleChange(item.id, 'title', e.target.value)} />
                             </div>
-                            <div className="space-y-2">
-                              <Label>Subtitle</Label>
-                              <Input value={edited.subtitle || ''} onChange={(e) => handleChange(item.id, 'subtitle', e.target.value)} />
-                            </div>
-                          </div>
-
-                          <div className="space-y-2">
-                            <Label>Description</Label>
-                            <Textarea value={edited.description || ''} onChange={(e) => handleChange(item.id, 'description', e.target.value)} rows={3} />
-                          </div>
-
-                          <div className="grid gap-4 md:grid-cols-2">
-                            <div className="space-y-2">
-                              <Label className="flex items-center gap-2"><Video className="h-4 w-4" /> Video URL</Label>
-                              <Input value={edited.video_url || ''} onChange={(e) => handleChange(item.id, 'video_url', e.target.value)} />
-                            </div>
-                            <div className="space-y-2">
-                              <Label>Image URL</Label>
-                              <Input value={edited.image_url || ''} onChange={(e) => handleChange(item.id, 'image_url', e.target.value)} />
+                            <div className="space-y-1">
+                              <Label className="text-xs">Subtitle</Label>
+                              <Input className="h-9 text-sm" value={edited.subtitle || ''} onChange={(e) => handleChange(item.id, 'subtitle', e.target.value)} />
                             </div>
                           </div>
 
-                          <div className="grid gap-4 md:grid-cols-2">
-                            <div className="space-y-2">
-                              <Label>Button Text</Label>
-                              <Input value={edited.button_text || ''} onChange={(e) => handleChange(item.id, 'button_text', e.target.value)} />
+                          <div className="space-y-1">
+                            <Label className="text-xs">Description</Label>
+                            <Textarea className="text-sm" value={edited.description || ''} onChange={(e) => handleChange(item.id, 'description', e.target.value)} rows={2} />
+                          </div>
+
+                          <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
+                            <div className="space-y-1">
+                              <Label className="text-xs flex items-center gap-1"><Video className="h-3 w-3" /> Video URL</Label>
+                              <Input className="h-9 text-sm" value={edited.video_url || ''} onChange={(e) => handleChange(item.id, 'video_url', e.target.value)} />
                             </div>
-                            <div className="space-y-2">
-                              <Label>Display Order</Label>
-                              <Input type="number" value={edited.display_order} onChange={(e) => handleChange(item.id, 'display_order', parseInt(e.target.value) || 0)} />
+                            <div className="space-y-1">
+                              <Label className="text-xs">Image URL</Label>
+                              <Input className="h-9 text-sm" value={edited.image_url || ''} onChange={(e) => handleChange(item.id, 'image_url', e.target.value)} />
+                            </div>
+                          </div>
+
+                          <div className="grid gap-3 grid-cols-2">
+                            <div className="space-y-1">
+                              <Label className="text-xs">Button Text</Label>
+                              <Input className="h-9 text-sm" value={edited.button_text || ''} onChange={(e) => handleChange(item.id, 'button_text', e.target.value)} />
+                            </div>
+                            <div className="space-y-1">
+                              <Label className="text-xs">Order</Label>
+                              <Input className="h-9 text-sm" type="number" value={edited.display_order} onChange={(e) => handleChange(item.id, 'display_order', parseInt(e.target.value) || 0)} />
                             </div>
                           </div>
 
                           <div className="flex gap-2">
-                            <Button onClick={() => handleSave(item.id)} size="sm">
-                              <Save className="mr-2 h-4 w-4" /> Save Changes
+                            <Button onClick={() => handleSave(item.id)} size="sm" className="text-xs h-8">
+                              <Save className="mr-1 h-3.5 w-3.5" /> Save
                             </Button>
-                            <Button variant="outline" onClick={() => setEditingId(null)} size="sm">Cancel</Button>
+                            <Button variant="outline" onClick={() => setEditingId(null)} size="sm" className="text-xs h-8">Cancel</Button>
                           </div>
                         </>
                       ) : (
                         <>
-                          <div className="grid gap-2 md:grid-cols-2 text-sm">
-                            {item.title && <div><span className="text-muted-foreground">Title:</span> {item.title}</div>}
-                            {item.subtitle && <div><span className="text-muted-foreground">Subtitle:</span> {item.subtitle}</div>}
-                            {item.button_text && <div><span className="text-muted-foreground">Button:</span> {item.button_text}</div>}
-                          </div>
-                          {item.description && (
-                            <p className="text-sm text-muted-foreground line-clamp-2">{item.description}</p>
+                          {!item.video_url && (
+                            <>
+                              <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
+                                {item.title && <div><span className="text-muted-foreground">Title:</span> {item.title}</div>}
+                                {item.subtitle && <div><span className="text-muted-foreground">Sub:</span> {item.subtitle}</div>}
+                                {item.button_text && <div><span className="text-muted-foreground">Btn:</span> {item.button_text}</div>}
+                              </div>
+                              {item.description && (
+                                <p className="text-xs text-muted-foreground line-clamp-2">{item.description}</p>
+                              )}
+                            </>
                           )}
-                          <Button variant="outline" onClick={() => handleEdit(item)} size="sm">
-                            <Edit2 className="mr-2 h-4 w-4" /> Edit
+                          <Button variant="outline" onClick={() => handleEdit(item)} size="sm" className="text-xs h-8">
+                            <Edit2 className="mr-1 h-3.5 w-3.5" /> Edit
                           </Button>
                         </>
                       )}
