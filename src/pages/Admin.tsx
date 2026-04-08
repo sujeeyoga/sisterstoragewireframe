@@ -47,6 +47,7 @@ import { TrackingBackfillTool } from '@/components/admin/TrackingBackfillTool';
 import { FlashSalesManager } from '@/components/admin/FlashSalesManager';
 import ReviewsManager from '@/components/admin/ReviewsManager';
 import { ShippingThresholdsPanel } from '@/components/admin/ShippingThresholdsPanel';
+import { PageContentManager } from '@/components/admin/PageContentManager';
 
 const Admin = () => {
   const { notification, clearNotification } = useOrderNotifications();
@@ -100,6 +101,7 @@ const Admin = () => {
         <Route path="bulk-shipping-refund" element={<BulkShippingRefundTool />} />
         <Route path="sections" element={<SectionsManager />} />
         <Route path="pages" element={<PagesManager />} />
+        <Route path="page-content" element={<PageContentManager />} />
         <Route path="texts" element={<TextsManager />} />
         <Route path="hero-images" element={<HeroImagesManager />} />
         <Route path="optimize-images" element={<BulkImageOptimizer />} />

@@ -47,6 +47,7 @@ const menuGroups = [
     label: 'Content',
     items: [
       { title: 'Pages', url: '/admin/pages', icon: FileText, end: false },
+      { title: 'Page Content', url: '/admin/page-content', icon: Film, end: false },
       { title: 'Sections', url: '/admin/sections', icon: Layout, end: false },
       { title: 'Site Content', url: '/admin/texts', icon: Type, end: false },
       { title: 'QR Codes', url: '/admin/qr-codes', icon: QrCode, end: false },
