@@ -380,19 +380,20 @@ export const AdminDashboard = () => {
       </Card>
 
       {/* Header with Date Range Selector */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex flex-col gap-3">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Dashboard</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl sm:text-3xl font-bold mb-1">Dashboard</h1>
+          <p className="text-sm text-muted-foreground">
             Real-time overview of your store performance
           </p>
         </div>
         
         {/* Date Range Selector */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 -mx-4 px-4 sm:mx-0 sm:px-0 sm:gap-2">
           <Button
             variant={dateRange === 'today' ? 'default' : 'outline'}
             size="sm"
+            className="text-xs sm:text-sm shrink-0"
             onClick={() => setDateRange('today')}
           >
             Today
@@ -400,6 +401,7 @@ export const AdminDashboard = () => {
           <Button
             variant={dateRange === '7d' ? 'default' : 'outline'}
             size="sm"
+            className="text-xs sm:text-sm shrink-0"
             onClick={() => setDateRange('7d')}
           >
             7 Days
@@ -407,6 +409,7 @@ export const AdminDashboard = () => {
           <Button
             variant={dateRange === '30d' ? 'default' : 'outline'}
             size="sm"
+            className="text-xs sm:text-sm shrink-0"
             onClick={() => setDateRange('30d')}
           >
             30 Days
@@ -414,6 +417,7 @@ export const AdminDashboard = () => {
           <Button
             variant={dateRange === '90d' ? 'default' : 'outline'}
             size="sm"
+            className="text-xs sm:text-sm shrink-0"
             onClick={() => setDateRange('90d')}
           >
             90 Days
@@ -425,9 +429,9 @@ export const AdminDashboard = () => {
               <Button
                 variant={dateRange === 'custom' ? 'default' : 'outline'}
                 size="sm"
-                className="gap-2"
+                className="gap-1.5 text-xs sm:text-sm shrink-0"
               >
-                <Calendar className="h-4 w-4" />
+                <Calendar className="h-3.5 w-3.5" />
                 Custom
               </Button>
             </PopoverTrigger>
