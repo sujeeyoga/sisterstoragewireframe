@@ -503,6 +503,54 @@ export type Database = {
         }
         Relationships: []
       }
+      page_content: {
+        Row: {
+          button_text: string | null
+          created_at: string | null
+          description: string | null
+          display_order: number
+          enabled: boolean
+          id: string
+          image_url: string | null
+          page_slug: string
+          section_key: string
+          subtitle: string | null
+          title: string | null
+          updated_at: string | null
+          video_url: string | null
+        }
+        Insert: {
+          button_text?: string | null
+          created_at?: string | null
+          description?: string | null
+          display_order?: number
+          enabled?: boolean
+          id?: string
+          image_url?: string | null
+          page_slug: string
+          section_key: string
+          subtitle?: string | null
+          title?: string | null
+          updated_at?: string | null
+          video_url?: string | null
+        }
+        Update: {
+          button_text?: string | null
+          created_at?: string | null
+          description?: string | null
+          display_order?: number
+          enabled?: boolean
+          id?: string
+          image_url?: string | null
+          page_slug?: string
+          section_key?: string
+          subtitle?: string | null
+          title?: string | null
+          updated_at?: string | null
+          video_url?: string | null
+        }
+        Relationships: []
+      }
       page_performance: {
         Row: {
           accessibility_score: number | null
