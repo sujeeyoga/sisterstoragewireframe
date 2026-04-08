@@ -350,7 +350,7 @@ export const AdminDashboard = () => {
 
   return (
     <>
-    <div className="container mx-auto p-4 md:p-6 lg:p-8 space-y-6 md:space-y-8 max-w-[1600px] overflow-x-hidden">
+    <div className="w-full mx-auto p-4 md:p-6 lg:p-8 space-y-6 md:space-y-8 max-w-[1600px] overflow-x-hidden">
       {/* Coming Soon Toggle */}
       <Card className="border-primary/20 bg-primary/5">
         <CardContent className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-4">
@@ -510,7 +510,7 @@ export const AdminDashboard = () => {
       </div>
 
       {/* Revenue & Orders KPIs */}
-      <div className="grid gap-3 grid-cols-2 md:grid-cols-2 lg:grid-cols-5">
+      <div className="grid gap-3 grid-cols-2 lg:grid-cols-5">
         {/* Live Visitors Card */}
         <Link to="/admin/analytics/visitors" className="block">
           <Card className="hover:shadow-lg transition-shadow cursor-pointer">
