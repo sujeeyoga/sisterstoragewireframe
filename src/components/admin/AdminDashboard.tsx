@@ -353,14 +353,14 @@ export const AdminDashboard = () => {
     <div className="container mx-auto p-4 md:p-6 lg:p-8 space-y-6 md:space-y-8 max-w-[1600px]">
       {/* Coming Soon Toggle */}
       <Card className="border-primary/20 bg-primary/5">
-        <CardContent className="flex items-center justify-between py-4">
-          <div>
-            <h3 className="font-semibold text-lg">Coming Soon Page</h3>
-            <p className="text-sm text-muted-foreground">
+        <CardContent className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-4">
+          <div className="min-w-0">
+            <h3 className="font-semibold text-base sm:text-lg">Coming Soon Page</h3>
+            <p className="text-xs sm:text-sm text-muted-foreground">
               Show a "Coming Soon" page to all visitors (admins can still access)
             </p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 shrink-0">
             {isLoadingComingSoon ? (
               <Skeleton className="h-6 w-11" />
             ) : (
