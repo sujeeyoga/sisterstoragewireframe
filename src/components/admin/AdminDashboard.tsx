@@ -350,7 +350,7 @@ export const AdminDashboard = () => {
 
   return (
     <>
-    <div className="container mx-auto p-4 md:p-6 lg:p-8 space-y-6 md:space-y-8 max-w-[1600px]">
+    <div className="container mx-auto p-4 md:p-6 lg:p-8 space-y-6 md:space-y-8 max-w-[1600px] overflow-x-hidden">
       {/* Coming Soon Toggle */}
       <Card className="border-primary/20 bg-primary/5">
         <CardContent className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-4">
