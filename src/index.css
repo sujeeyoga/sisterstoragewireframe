@@ -14,6 +14,10 @@
 @tailwind utilities;
 
 @layer base {
+  html, body {
+    overflow-x: hidden;
+  }
+
   :root {
     /* Primary branding colors */
     --brand-pink: 340 97% 50%;
