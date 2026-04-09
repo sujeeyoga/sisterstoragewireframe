@@ -119,7 +119,7 @@ export const ShippingAudit = () => {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="text-sm text-muted-foreground">
             {isLoading ? (
               'Loading orders...'
@@ -127,7 +127,7 @@ export const ShippingAudit = () => {
               `${freeShippingOrders?.length || 0} orders with free shipping found`
             )}
           </div>
-          <Button onClick={runAudit} disabled={auditing || isLoading}>
+          <Button onClick={runAudit} disabled={auditing || isLoading} className="w-full sm:w-auto">
             {auditing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Run Audit
           </Button>
@@ -135,12 +135,12 @@ export const ShippingAudit = () => {
 
         {auditResults.length > 0 && (
           <div className="space-y-2">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-3">
               <h3 className="font-medium">Potential Issues</h3>
-              <Badge variant="destructive">{auditResults.length}</Badge>
+              <Badge variant="destructive" className="shrink-0">{auditResults.length}</Badge>
             </div>
-            <div className="rounded-md border">
-              <table className="w-full text-sm">
+            <div className="overflow-x-auto rounded-md border">
+              <table className="w-full min-w-[680px] text-sm">
                 <thead>
                   <tr className="border-b bg-muted/50">
                     <th className="p-2 text-left font-medium">Order</th>
