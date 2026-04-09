@@ -510,7 +510,7 @@ export const AdminDashboard = () => {
       </div>
 
       {/* Revenue & Orders KPIs */}
-      <div className="grid gap-3 grid-cols-1 xs:grid-cols-2 lg:grid-cols-5">
+      <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
         {/* Live Visitors Card */}
         <Link to="/admin/analytics/visitors" className="block">
           <Card className="hover:shadow-lg transition-shadow cursor-pointer">
