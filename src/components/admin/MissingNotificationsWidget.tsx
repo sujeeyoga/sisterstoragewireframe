@@ -83,24 +83,24 @@ export function MissingNotificationsWidget() {
         {hasIssues ? (
           <>
             {(stats?.noTracking || 0) > 0 && (
-              <div className="flex items-center justify-between p-3 bg-background border border-amber-200 rounded-lg">
-                <div className="flex items-center gap-2">
-                  <Package className="h-4 w-4 text-amber-600" />
-                  <span className="text-sm font-medium">Missing tracking numbers</span>
+              <div className="flex flex-col gap-3 rounded-lg border border-amber-200 bg-background p-3 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex min-w-0 items-center gap-2">
+                  <Package className="h-4 w-4 shrink-0 text-amber-600" />
+                  <span className="text-sm font-medium leading-snug">Missing tracking numbers</span>
                 </div>
-                <Badge variant="secondary" className="bg-amber-100 text-amber-800">
+                <Badge variant="secondary" className="w-fit shrink-0 bg-amber-100 text-amber-800">
                   {stats?.noTracking}
                 </Badge>
               </div>
             )}
 
             {(stats?.noNotification || 0) > 0 && (
-              <div className="flex items-center justify-between p-3 bg-background border border-amber-200 rounded-lg">
-                <div className="flex items-center gap-2">
-                  <Mail className="h-4 w-4 text-amber-600" />
-                  <span className="text-sm font-medium">Missing notifications</span>
+              <div className="flex flex-col gap-3 rounded-lg border border-amber-200 bg-background p-3 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex min-w-0 items-center gap-2">
+                  <Mail className="h-4 w-4 shrink-0 text-amber-600" />
+                  <span className="text-sm font-medium leading-snug">Missing notifications</span>
                 </div>
-                <Badge variant="secondary" className="bg-amber-100 text-amber-800">
+                <Badge variant="secondary" className="w-fit shrink-0 bg-amber-100 text-amber-800">
                   {stats?.noNotification}
                 </Badge>
               </div>
