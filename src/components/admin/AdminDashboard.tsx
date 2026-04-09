@@ -510,7 +510,7 @@ export const AdminDashboard = () => {
       </div>
 
       {/* Revenue & Orders KPIs */}
-      <div className="grid gap-3 grid-cols-2 lg:grid-cols-5">
+      <div className="grid gap-3 grid-cols-1 xs:grid-cols-2 lg:grid-cols-5">
         {/* Live Visitors Card */}
         <Link to="/admin/analytics/visitors" className="block">
           <Card className="hover:shadow-lg transition-shadow cursor-pointer">
@@ -670,7 +670,7 @@ export const AdminDashboard = () => {
       </div>
 
       {/* Order Status & Fulfillment Breakdown */}
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
