@@ -214,6 +214,14 @@ export const SectionsManager = () => {
                     </Button>
                   )}
                 </div>
+
+                <SectionPreview
+                  title={editedSection.title}
+                  subtitle={editedSection.subtitle}
+                  categoryFilter={editedSection.category_filter}
+                  layoutColumns={editedSection.layout_columns}
+                  visible={editedSection.visible}
+                />
               </CardContent>
             </Card>
           );
