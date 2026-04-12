@@ -30,6 +30,7 @@ export function HeroImagesManager() {
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([]);
   const [loading, setLoading] = useState(true);
   const [showImagePicker, setShowImagePicker] = useState(false);
+  const [previewIndex, setPreviewIndex] = useState(0);
   const { toast } = useToast();
 
   useEffect(() => {
