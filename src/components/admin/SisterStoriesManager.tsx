@@ -277,33 +277,51 @@ export const SisterStoriesManager = () => {
                   />
                 </div>
 
-                <div>
-                  <Label htmlFor="video_url">Video URL *</Label>
-                  <Input
-                    id="video_url"
-                    value={formData.video_url}
-                    onChange={(e) =>
-                      setFormData({ ...formData, video_url: e.target.value })
-                    }
-                    placeholder="https://..."
-                    required
+                {/* Video Upload or URL */}
+                <div className="space-y-3 rounded-lg border p-3 bg-muted/30">
+                  <Label className="text-sm font-semibold">Video Source</Label>
+                  <VideoUploaderInline
+                    onUploadComplete={(videoUrl, videoPath) => {
+                      setFormData({ ...formData, video_url: videoUrl, video_path: videoPath });
+                    }}
                   />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Use videos from the Videos library or sister storage bucket
-                  </p>
-                </div>
-
-                <div>
-                  <Label htmlFor="video_path">Video Path *</Label>
-                  <Input
-                    id="video_path"
-                    value={formData.video_path}
-                    onChange={(e) =>
-                      setFormData({ ...formData, video_path: e.target.value })
-                    }
-                    placeholder="filename.mp4"
-                    required
-                  />
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <span className="w-full border-t" />
+                    </div>
+                    <div className="relative flex justify-center text-xs uppercase">
+                      <span className="bg-background px-2 text-muted-foreground">or paste URL</span>
+                    </div>
+                  </div>
+                  <div>
+                    <Label htmlFor="video_url">Video URL *</Label>
+                    <Input
+                      id="video_url"
+                      value={formData.video_url}
+                      onChange={(e) =>
+                        setFormData({ ...formData, video_url: e.target.value })
+                      }
+                      placeholder="https://..."
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="video_path">Video Path *</Label>
+                    <Input
+                      id="video_path"
+                      value={formData.video_path}
+                      onChange={(e) =>
+                        setFormData({ ...formData, video_path: e.target.value })
+                      }
+                      placeholder="sister-stories/filename.mp4"
+                      required
+                    />
+                  </div>
+                  {formData.video_url && (
+                    <div className="aspect-[9/16] w-24 rounded overflow-hidden bg-black">
+                      <video src={formData.video_url} className="w-full h-full object-cover" muted preload="metadata" />
+                    </div>
+                  )}
                 </div>
 
                 <div>
