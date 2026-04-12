@@ -30,6 +30,7 @@ export function HeroImagesManager() {
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([]);
   const [loading, setLoading] = useState(true);
   const [showImagePicker, setShowImagePicker] = useState(false);
+  const [previewIndex, setPreviewIndex] = useState(0);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -193,12 +194,72 @@ export function HeroImagesManager() {
     }
   };
 
+  const activeGalleryImages = heroImages.filter(img => img.position === 'gallery' && img.is_active);
+
+  // Auto-rotate preview
+  useEffect(() => {
+    if (activeGalleryImages.length <= 1) return;
+    const timer = setInterval(() => {
+      setPreviewIndex(prev => (prev + 1) % activeGalleryImages.length);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, [activeGalleryImages.length]);
+
   if (loading) {
     return <div className="p-4">Loading...</div>;
   }
 
   return (
     <div className="space-y-6">
+      {/* Live Hero Preview */}
+      <Card className="overflow-hidden">
+        <div className="p-4 border-b">
+          <h3 className="font-semibold flex items-center gap-2">
+            <ImageIcon className="h-4 w-4" />
+            Live Hero Preview
+          </h3>
+          <p className="text-xs text-muted-foreground mt-1">
+            Shows how active gallery images appear on the homepage
+          </p>
+        </div>
+        <div className="relative aspect-[16/9] max-h-[300px] bg-[hsl(var(--brand-pink,340_82%_52%))]">
+          {activeGalleryImages.length > 0 ? (
+            <>
+              {activeGalleryImages.map((img, index) => (
+                <img
+                  key={img.id}
+                  src={img.image_url}
+                  alt={img.alt_text || 'Hero preview'}
+                  className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
+                    index === previewIndex ? 'opacity-100' : 'opacity-0'
+                  }`}
+                />
+              ))}
+              {/* Dots */}
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+                {activeGalleryImages.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setPreviewIndex(i)}
+                    className={`w-2 h-2 rounded-full transition-all ${
+                      i === previewIndex ? 'bg-white scale-125' : 'bg-white/50'
+                    }`}
+                  />
+                ))}
+              </div>
+              {/* Image counter */}
+              <div className="absolute top-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded">
+                {previewIndex + 1} / {activeGalleryImages.length}
+              </div>
+            </>
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center text-white/70 text-sm">
+              No active gallery images
+            </div>
+          )}
+        </div>
+      </Card>
+
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-2xl font-bold">Hero Images</h2>
