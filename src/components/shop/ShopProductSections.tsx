@@ -31,6 +31,8 @@ const ShopProductSections = ({ products }: ShopProductSectionsProps) => {
     [sections]
   );
 
+  console.log('[ShopSections] isLoading:', isLoading, 'sections:', sections?.length, 'products:', products.length, 'visible:', visibleSections.length);
+
   const productsBySection = React.useMemo(() => {
     const map: Record<string, Product[]> = {};
     for (const section of visibleSections) {
