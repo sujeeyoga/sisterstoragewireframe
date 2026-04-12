@@ -5,6 +5,7 @@ import SimpleProductCard from "./SimpleProductCard";
 import LaunchCardsSection from "./LaunchCardsSection";
 import CultureBagPromo from "./CultureBagPromo";
 import { useShopSections, slugsForFilter } from "@/hooks/useShopSections";
+import { ProductsGridSkeleton } from "@/components/skeletons/ProductsGridSkeleton";
 
 interface ShopProductSectionsProps {
   products: Product[];
@@ -31,8 +32,6 @@ const ShopProductSections = ({ products }: ShopProductSectionsProps) => {
     [sections]
   );
 
-  console.log('[ShopSections] isLoading:', isLoading, 'sections:', sections?.length, 'products:', products.length, 'visible:', visibleSections.length);
-
   const productsBySection = React.useMemo(() => {
     const map: Record<string, Product[]> = {};
     for (const section of visibleSections) {
@@ -46,19 +45,23 @@ const ShopProductSections = ({ products }: ShopProductSectionsProps) => {
         map[section.id] = products.filter((p) => slugs.includes(p.category));
       }
     }
-    console.log('[ShopSections] productsBySection:', Object.entries(map).map(([id, prods]) => `${id}: ${prods.length}`));
-    console.log('[ShopSections] product categories:', products.map(p => `${p.name}: ${p.category}`));
     return map;
   }, [products, visibleSections]);
 
-  if (isLoading) return null;
+  if (isLoading) {
+    return (
+      <div className="container-custom py-8">
+        <ProductsGridSkeleton />
+      </div>
+    );
+  }
 
   const allEmpty = visibleSections.every(
     (s) => (productsBySection[s.id] || []).length === 0
   );
 
   return (
-    <div className="grid gap-8">
+    <>
       {visibleSections.map((section) => {
         const sectionProducts = productsBySection[section.id] || [];
         if (sectionProducts.length === 0) return null;
@@ -105,12 +108,12 @@ const ShopProductSections = ({ products }: ShopProductSectionsProps) => {
       <CultureBagPromo variant="shop" />
       <LaunchCardsSection />
 
-      {allEmpty && (
+      {allEmpty && !isLoading && (
         <div className="text-center py-16 text-muted-foreground uppercase tracking-wide">
           No products found.
         </div>
       )}
-    </div>
+    </>
   );
 };
 
