@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Plus, Edit, Trash2, Eye, EyeOff, GripVertical } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Plus, Edit, Trash2, Eye, EyeOff, GripVertical, Film, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { VideoUploaderInline } from './VideoUploaderInline';
 import {
   Dialog,
   DialogContent,
@@ -276,33 +277,51 @@ export const SisterStoriesManager = () => {
                   />
                 </div>
 
-                <div>
-                  <Label htmlFor="video_url">Video URL *</Label>
-                  <Input
-                    id="video_url"
-                    value={formData.video_url}
-                    onChange={(e) =>
-                      setFormData({ ...formData, video_url: e.target.value })
-                    }
-                    placeholder="https://..."
-                    required
+                {/* Video Upload or URL */}
+                <div className="space-y-3 rounded-lg border p-3 bg-muted/30">
+                  <Label className="text-sm font-semibold">Video Source</Label>
+                  <VideoUploaderInline
+                    onUploadComplete={(videoUrl, videoPath) => {
+                      setFormData({ ...formData, video_url: videoUrl, video_path: videoPath });
+                    }}
                   />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Use videos from the Videos library or sister storage bucket
-                  </p>
-                </div>
-
-                <div>
-                  <Label htmlFor="video_path">Video Path *</Label>
-                  <Input
-                    id="video_path"
-                    value={formData.video_path}
-                    onChange={(e) =>
-                      setFormData({ ...formData, video_path: e.target.value })
-                    }
-                    placeholder="filename.mp4"
-                    required
-                  />
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <span className="w-full border-t" />
+                    </div>
+                    <div className="relative flex justify-center text-xs uppercase">
+                      <span className="bg-background px-2 text-muted-foreground">or paste URL</span>
+                    </div>
+                  </div>
+                  <div>
+                    <Label htmlFor="video_url">Video URL *</Label>
+                    <Input
+                      id="video_url"
+                      value={formData.video_url}
+                      onChange={(e) =>
+                        setFormData({ ...formData, video_url: e.target.value })
+                      }
+                      placeholder="https://..."
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="video_path">Video Path *</Label>
+                    <Input
+                      id="video_path"
+                      value={formData.video_path}
+                      onChange={(e) =>
+                        setFormData({ ...formData, video_path: e.target.value })
+                      }
+                      placeholder="sister-stories/filename.mp4"
+                      required
+                    />
+                  </div>
+                  {formData.video_url && (
+                    <div className="aspect-[9/16] w-24 rounded overflow-hidden bg-black">
+                      <video src={formData.video_url} className="w-full h-full object-cover" muted preload="metadata" />
+                    </div>
+                  )}
                 </div>
 
                 <div>
@@ -348,6 +367,52 @@ export const SisterStoriesManager = () => {
           </Dialog>
         </div>
       </div>
+
+      {/* Live Carousel Preview */}
+      {(() => {
+        const activeStories = stories.filter(s => s.is_active);
+        if (activeStories.length === 0) return null;
+        return (
+          <Card className="overflow-hidden">
+            <div className="p-4 border-b">
+              <h3 className="font-semibold flex items-center gap-2">
+                <Film className="h-4 w-4" />
+                Live Carousel Preview
+              </h3>
+              <p className="text-xs text-muted-foreground mt-1">
+                {activeStories.length} active {activeStories.length === 1 ? 'story' : 'stories'} — as seen on the Culture page
+              </p>
+            </div>
+            <div className="p-4 bg-muted/30">
+              <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hide">
+                {activeStories.map((story) => (
+                  <div
+                    key={story.id}
+                    className="flex-shrink-0 snap-start w-[120px] md:w-[140px]"
+                  >
+                    <div className="aspect-[9/16] rounded-lg overflow-hidden bg-black relative group">
+                      <video
+                        src={story.video_url}
+                        className="w-full h-full object-cover"
+                        muted
+                        loop
+                        playsInline
+                        preload="metadata"
+                        onMouseEnter={(e) => (e.target as HTMLVideoElement).play().catch(() => {})}
+                        onMouseLeave={(e) => { const v = e.target as HTMLVideoElement; v.pause(); v.currentTime = 0; }}
+                      />
+                      <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-2">
+                        <p className="text-white text-[10px] font-semibold truncate">{story.title}</p>
+                        <p className="text-white/70 text-[9px] truncate">{story.author}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Card>
+        );
+      })()}
 
       {/* Stories List */}
       {loading ? (
