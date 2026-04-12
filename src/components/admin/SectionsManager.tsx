@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { GripVertical, Save } from 'lucide-react';
+import { SectionPreview } from './SectionPreview';
 
 type Section = {
   id: string;
@@ -213,6 +214,14 @@ export const SectionsManager = () => {
                     </Button>
                   )}
                 </div>
+
+                <SectionPreview
+                  title={editedSection.title}
+                  subtitle={editedSection.subtitle}
+                  categoryFilter={editedSection.category_filter}
+                  layoutColumns={editedSection.layout_columns}
+                  visible={editedSection.visible}
+                />
               </CardContent>
             </Card>
           );
