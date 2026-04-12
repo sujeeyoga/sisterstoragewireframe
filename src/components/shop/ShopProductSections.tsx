@@ -46,6 +46,8 @@ const ShopProductSections = ({ products }: ShopProductSectionsProps) => {
         map[section.id] = products.filter((p) => slugs.includes(p.category));
       }
     }
+    console.log('[ShopSections] productsBySection:', Object.entries(map).map(([id, prods]) => `${id}: ${prods.length}`));
+    console.log('[ShopSections] product categories:', products.map(p => `${p.name}: ${p.category}`));
     return map;
   }, [products, visibleSections]);
 
