@@ -16,7 +16,7 @@ const Shop = () => {
 
   return (
     <BaseLayout variant="standard" pageId="shop" spacing="normal">
-      <div className="bg-background">
+      <div className="bg-background min-h-screen">
         {featuredProduct && <HeroSection product={featuredProduct} />}
         <ProductsSection
           products={sortedProducts} 
