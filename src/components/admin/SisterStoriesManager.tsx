@@ -350,6 +350,52 @@ export const SisterStoriesManager = () => {
         </div>
       </div>
 
+      {/* Live Carousel Preview */}
+      {(() => {
+        const activeStories = stories.filter(s => s.is_active);
+        if (activeStories.length === 0) return null;
+        return (
+          <Card className="overflow-hidden">
+            <div className="p-4 border-b">
+              <h3 className="font-semibold flex items-center gap-2">
+                <Film className="h-4 w-4" />
+                Live Carousel Preview
+              </h3>
+              <p className="text-xs text-muted-foreground mt-1">
+                {activeStories.length} active {activeStories.length === 1 ? 'story' : 'stories'} — as seen on the Culture page
+              </p>
+            </div>
+            <div className="p-4 bg-muted/30">
+              <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hide">
+                {activeStories.map((story) => (
+                  <div
+                    key={story.id}
+                    className="flex-shrink-0 snap-start w-[120px] md:w-[140px]"
+                  >
+                    <div className="aspect-[9/16] rounded-lg overflow-hidden bg-black relative group">
+                      <video
+                        src={story.video_url}
+                        className="w-full h-full object-cover"
+                        muted
+                        loop
+                        playsInline
+                        preload="metadata"
+                        onMouseEnter={(e) => (e.target as HTMLVideoElement).play().catch(() => {})}
+                        onMouseLeave={(e) => { const v = e.target as HTMLVideoElement; v.pause(); v.currentTime = 0; }}
+                      />
+                      <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-2">
+                        <p className="text-white text-[10px] font-semibold truncate">{story.title}</p>
+                        <p className="text-white/70 text-[9px] truncate">{story.author}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Card>
+        );
+      })()}
+
       {/* Stories List */}
       {loading ? (
         <div className="text-center py-8">Loading stories...</div>
