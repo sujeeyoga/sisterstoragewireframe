@@ -17,6 +17,12 @@ const sectionBgMap: Record<string, string> = {
   'open-box': '#FFF5F0',
 };
 
+const colsClass: Record<number, string> = {
+  2: 'grid gap-5 sm:grid-cols-2',
+  3: 'grid gap-5 sm:grid-cols-2 lg:grid-cols-3',
+  4: 'grid gap-5 sm:grid-cols-2 lg:grid-cols-4',
+};
+
 const ShopProductSections = ({ products }: ShopProductSectionsProps) => {
   const { data: sections, isLoading } = useShopSections();
 
@@ -30,16 +36,12 @@ const ShopProductSections = ({ products }: ShopProductSectionsProps) => {
     for (const section of visibleSections) {
       const slugs = slugsForFilter(section.category_filter);
       if (slugs.length === 0) continue;
-      // For "individual-boxes" also include open-box products if that section name matches
-      const sectionName = section.name;
-      if (sectionName === 'individual-boxes') {
+      if (section.name === 'individual-boxes') {
         map[section.id] = products.filter(
           (p) => p.category === 'bangle-boxes' || p.category === 'open-box'
         );
       } else {
-        map[section.id] = products.filter((p) =>
-          slugs.includes(p.category)
-        );
+        map[section.id] = products.filter((p) => slugs.includes(p.category));
       }
     }
     return map;
@@ -60,6 +62,7 @@ const ShopProductSections = ({ products }: ShopProductSectionsProps) => {
         const cols = section.layout_columns || 3;
         const bgColor = sectionBgMap[section.name] || '#FAFAFA';
         const isBundle = section.name === 'top-bundles';
+        const gridClass = colsClass[cols] || colsClass[3];
 
         return (
           <section
@@ -81,28 +84,7 @@ const ShopProductSections = ({ products }: ShopProductSectionsProps) => {
                 </div>
               </header>
 
-              <div
-                className="grid gap-5 sm:grid-cols-2"
-                style={{
-                  gridTemplateColumns: undefined,
-                }}
-                {...(cols > 0 && {
-                  style: {
-                    display: 'grid',
-                    gap: '1.25rem',
-                    gridTemplateColumns: `repeat(1, minmax(0, 1fr))`,
-                  },
-                })}
-              >
-              {/* Use responsive inline grid */}
-              <style>{`
-                @media (min-width: 640px) {
-                  [data-section-id="${section.id}"] { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
-                }
-                @media (min-width: 1024px) {
-                  [data-section-id="${section.id}"] { grid-template-columns: repeat(${cols}, minmax(0, 1fr)) !important; }
-                }
-              `}</style>
+              <div className={gridClass}>
                 {sectionProducts.map((product) =>
                   isBundle ? (
                     <BundleCard key={product.id} product={product} isBundle />
@@ -116,13 +98,9 @@ const ShopProductSections = ({ products }: ShopProductSectionsProps) => {
         );
       })}
 
-      {/* Culture Bag Promo */}
       <CultureBagPromo variant="shop" />
-
-      {/* Upcoming Collections */}
       <LaunchCardsSection />
 
-      {/* Empty State */}
       {allEmpty && (
         <div className="text-center py-16 text-muted-foreground uppercase tracking-wide">
           No products found.
