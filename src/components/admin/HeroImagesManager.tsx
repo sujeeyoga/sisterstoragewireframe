@@ -194,12 +194,7 @@ export function HeroImagesManager() {
     }
   };
 
-  if (loading) {
-    return <div className="p-4">Loading...</div>;
-  }
-
   const activeGalleryImages = heroImages.filter(img => img.position === 'gallery' && img.is_active);
-  const [previewIndex, setPreviewIndex] = useState(0);
 
   // Auto-rotate preview
   useEffect(() => {
@@ -209,6 +204,10 @@ export function HeroImagesManager() {
     }, 3000);
     return () => clearInterval(timer);
   }, [activeGalleryImages.length]);
+
+  if (loading) {
+    return <div className="p-4">Loading...</div>;
+  }
 
   return (
     <div className="space-y-6">
