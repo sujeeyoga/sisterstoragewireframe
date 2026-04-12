@@ -82,11 +82,27 @@ const ShopProductSections = ({ products }: ShopProductSectionsProps) => {
               </header>
 
               <div
-                className={`grid gap-5 sm:grid-cols-2 lg:grid-cols-${cols}`}
+                className="grid gap-5 sm:grid-cols-2"
                 style={{
                   gridTemplateColumns: undefined,
                 }}
+                {...(cols > 0 && {
+                  style: {
+                    display: 'grid',
+                    gap: '1.25rem',
+                    gridTemplateColumns: `repeat(1, minmax(0, 1fr))`,
+                  },
+                })}
               >
+              {/* Use responsive inline grid */}
+              <style>{`
+                @media (min-width: 640px) {
+                  [data-section-id="${section.id}"] { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+                }
+                @media (min-width: 1024px) {
+                  [data-section-id="${section.id}"] { grid-template-columns: repeat(${cols}, minmax(0, 1fr)) !important; }
+                }
+              `}</style>
                 {sectionProducts.map((product) =>
                   isBundle ? (
                     <BundleCard key={product.id} product={product} isBundle />
