@@ -18,7 +18,7 @@ const ShopHeroBanner = ({ title, subtitle, bgColor }: { title: string; subtitle:
     style={bgColor && !bgColor.startsWith('bg-') ? { backgroundColor: bgColor } : undefined}
   >
     <img
-      src="https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-31-scaled.jpg"
+      src="https://sisterstorage.com/assets/hero-bg-main-Ck3XcIBP.jpg"
       alt="Sister Storage lifestyle"
       className="absolute inset-0 w-full h-full object-cover"
       loading="eager"
