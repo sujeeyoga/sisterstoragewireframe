@@ -248,9 +248,17 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const isStyledBySisters = sectionName === 'styled-by-sisters';
+  const isHero = sectionName === 'hero';
 
-  // Dialog state for add/edit
+  // Resolve bg color for inline style
+  const bgStyle = React.useMemo(() => {
+    if (!backgroundColor) return {};
+    // Extract hex from bg-[#xxx] pattern
+    const hexMatch = backgroundColor.match(/bg-\[([^\]]+)\]/);
+    if (hexMatch) return { backgroundColor: hexMatch[1] };
+    if (backgroundColor.startsWith('#')) return { backgroundColor };
+    return {};
+  }, [backgroundColor]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingStory, setEditingStory] = useState<any | null>(null);
   const [formData, setFormData] = useState<StoryFormData>({ ...emptyForm });
