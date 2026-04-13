@@ -65,6 +65,7 @@ type Section = {
   visible: boolean;
   layout_columns: number;
   category_filter: string | null;
+  product_ids: number[] | null;
 };
 
 const COLOR_PRESETS = [
