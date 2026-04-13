@@ -89,15 +89,13 @@ const bgToHex = (bg: string | null) => {
 
 const SortableSectionCard = ({
   section,
-  editingId,
   editedSections,
-  onEdit,
   onSave,
-  onCancel,
   onChange,
   onDelete,
   onDuplicate,
   productCount,
+  isSaving,
 }: {
   section: Section;
   editingId: string | null;
