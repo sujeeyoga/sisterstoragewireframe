@@ -221,6 +221,7 @@ export const SectionsManager = () => {
                   categoryFilter={editedSection.category_filter}
                   layoutColumns={editedSection.layout_columns}
                   visible={editedSection.visible}
+                  sectionName={editedSection.name}
                 />
               </CardContent>
             </Card>
