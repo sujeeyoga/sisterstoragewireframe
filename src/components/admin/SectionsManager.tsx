@@ -504,6 +504,7 @@ export const SectionsManager = () => {
                 editedSections={editedSections}
                 onSave={handleSave}
                 onChange={handleChange}
+                onReset={handleReset}
                 onDelete={setDeleteTarget}
                 onDuplicate={handleDuplicate}
                 productCount={getProductCount(section)}
