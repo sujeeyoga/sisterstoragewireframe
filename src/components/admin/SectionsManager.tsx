@@ -335,6 +335,7 @@ export const SectionsManager = () => {
           layout_columns: section.layout_columns,
           category_filter: section.category_filter,
           display_order: section.display_order,
+          product_ids: section.product_ids,
         })
         .eq('id', section.id);
       if (error) throw error;
