@@ -253,10 +253,15 @@ const SortableSectionCard = ({
           </div>
 
           {hasChanges && (
-            <Button onClick={() => onSave(section.id)} size="sm" disabled={isSaving}>
-              <Save className="mr-2 h-4 w-4" />
-              {isSaving ? 'Saving...' : 'Save & Publish'}
-            </Button>
+            <div className="flex gap-2">
+              <Button onClick={() => onSave(section.id)} size="sm" disabled={isSaving}>
+                <Save className="mr-2 h-4 w-4" />
+                {isSaving ? 'Saving...' : 'Save & Publish'}
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => onReset(section.id)}>
+                Undo Changes
+              </Button>
+            </div>
           )}
 
           <SectionPreview
