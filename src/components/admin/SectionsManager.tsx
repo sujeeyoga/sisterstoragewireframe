@@ -481,15 +481,13 @@ export const SectionsManager = () => {
               <SortableSectionCard
                 key={section.id}
                 section={section}
-                editingId={editingId}
                 editedSections={editedSections}
-                onEdit={handleEdit}
                 onSave={handleSave}
-                onCancel={() => setEditingId(null)}
                 onChange={handleChange}
                 onDelete={setDeleteTarget}
                 onDuplicate={handleDuplicate}
                 productCount={getProductCount(section)}
+                isSaving={updateMutation.isPending}
               />
             ))}
           </div>
