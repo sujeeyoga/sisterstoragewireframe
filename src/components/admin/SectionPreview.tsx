@@ -26,6 +26,7 @@ interface SectionPreviewProps {
   layoutColumns: number;
   visible: boolean;
   sectionName?: string;
+  backgroundColor?: string | null;
 }
 
 const colsClass: Record<number, string> = {
