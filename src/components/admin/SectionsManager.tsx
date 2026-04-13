@@ -335,20 +335,21 @@ export const SectionsManager = () => {
         .eq('id', section.id);
       if (error) throw error;
     },
-    onSuccess: () => {
-      toast({ title: 'Section updated successfully' });
+    onSuccess: (_, variables) => {
+      toast({ title: 'Section saved & published!' });
       queryClient.invalidateQueries({ queryKey: ['admin-sections'] });
-      setEditingId(null);
+      queryClient.invalidateQueries({ queryKey: ['shop-sections'] });
+      // Clear edited state for this section
+      setEditedSections((prev) => {
+        const next = { ...prev };
+        delete next[variables.id];
+        return next;
+      });
     },
     onError: (error) => {
       toast({ title: 'Failed to update section', description: error.message, variant: 'destructive' });
     },
   });
-
-  const handleEdit = (section: Section) => {
-    setEditingId(section.id);
-    setEditedSections((prev) => ({ ...prev, [section.id]: { ...section } }));
-  };
 
   const handleSave = (id: string) => {
     const section = editedSections[id];
