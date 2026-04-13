@@ -383,15 +383,23 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
 
             {/* Hero preview */}
             {isHero ? (
-              <div className="text-center py-6">
-                <h3 className="text-2xl md:text-3xl font-black uppercase tracking-tighter leading-[0.9] text-white">
-                  {title || 'Untitled Section'}
-                </h3>
-                {subtitle && (
-                  <p className="text-sm text-white/90 uppercase tracking-wide mt-2 font-medium">
-                    {subtitle}
-                  </p>
-                )}
+              <div className="relative text-center py-10 rounded-lg overflow-hidden">
+                <img
+                  src="https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-31-scaled.jpg"
+                  alt="Hero background"
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black/30" />
+                <div className="relative z-10">
+                  <h3 className="text-2xl md:text-3xl font-black uppercase tracking-tighter leading-[0.9] text-white drop-shadow-lg">
+                    {title || 'Untitled Section'}
+                  </h3>
+                  {subtitle && (
+                    <p className="text-sm text-white/90 uppercase tracking-wide mt-2 font-medium drop-shadow">
+                      {subtitle}
+                    </p>
+                  )}
+                </div>
               </div>
             ) : (
               <>
