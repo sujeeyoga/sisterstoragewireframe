@@ -101,6 +101,59 @@ const InlineEditableName = ({ productId, name }: { productId: number; name: stri
   );
 };
 
+// Inline editable product price on double-click
+const InlineEditablePrice = ({ productId, price }: { productId: number; price: number }) => {
+  const [editing, setEditing] = useState(false);
+  const [value, setValue] = useState(price.toFixed(2));
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const save = useCallback(async () => {
+    setEditing(false);
+    const num = parseFloat(value);
+    if (isNaN(num) || num === price) { setValue(price.toFixed(2)); return; }
+    const { error } = await supabase
+      .from('woocommerce_products')
+      .update({ price: num, regular_price: num })
+      .eq('id', productId);
+    if (error) {
+      toast({ title: 'Failed to update price', description: error.message, variant: 'destructive' });
+      setValue(price.toFixed(2));
+    } else {
+      toast({ title: 'Price updated' });
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+    }
+  }, [value, price, productId, toast, queryClient]);
+
+  if (editing) {
+    return (
+      <div className="flex items-center text-xs text-muted-foreground">
+        $<input
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          onBlur={save}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') save();
+            if (e.key === 'Escape') { setValue(price.toFixed(2)); setEditing(false); }
+          }}
+          className="w-14 bg-transparent border-b border-primary outline-none"
+          autoFocus
+        />
+      </div>
+    );
+  }
+
+  return (
+    <p
+      className="text-xs text-muted-foreground cursor-pointer hover:text-primary transition-colors"
+      onDoubleClick={() => setEditing(true)}
+      title="Double-click to edit price"
+    >
+      ${price.toFixed(2)}
+    </p>
+  );
+};
+
 const emptyForm: StoryFormData = {
   title: '',
   author: '',
