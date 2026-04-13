@@ -93,6 +93,7 @@ const SortableSectionCard = ({
   editedSections,
   onSave,
   onChange,
+  onReset,
   onDelete,
   onDuplicate,
   productCount,
