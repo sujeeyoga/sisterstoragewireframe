@@ -89,26 +89,22 @@ const bgToHex = (bg: string | null) => {
 
 const SortableSectionCard = ({
   section,
-  editingId,
   editedSections,
-  onEdit,
   onSave,
-  onCancel,
   onChange,
   onDelete,
   onDuplicate,
   productCount,
+  isSaving,
 }: {
   section: Section;
-  editingId: string | null;
   editedSections: Record<string, Section>;
-  onEdit: (s: Section) => void;
   onSave: (id: string) => void;
-  onCancel: () => void;
   onChange: (id: string, field: keyof Section, value: any) => void;
   onDelete: (s: Section) => void;
   onDuplicate: (s: Section) => void;
   productCount: number | null;
+  isSaving: boolean;
 }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id: section.id });
@@ -120,8 +116,8 @@ const SortableSectionCard = ({
     opacity: isDragging ? 0.5 : 1,
   };
 
-  const isEditing = editingId === section.id;
   const editedSection = editedSections[section.id] || section;
+  const hasChanges = JSON.stringify(editedSection) !== JSON.stringify(section);
 
   return (
     <div ref={setNodeRef} style={style}>
@@ -185,7 +181,6 @@ const SortableSectionCard = ({
               <Input
                 value={editedSection.title}
                 onChange={(e) => onChange(section.id, 'title', e.target.value)}
-                disabled={!isEditing}
               />
             </div>
             <div className="space-y-2">
@@ -193,7 +188,6 @@ const SortableSectionCard = ({
               <Input
                 value={editedSection.subtitle || ''}
                 onChange={(e) => onChange(section.id, 'subtitle', e.target.value)}
-                disabled={!isEditing}
               />
             </div>
             <div className="space-y-2">
@@ -201,7 +195,6 @@ const SortableSectionCard = ({
               <Input
                 value={editedSection.category_filter || ''}
                 onChange={(e) => onChange(section.id, 'category_filter', e.target.value)}
-                disabled={!isEditing}
               />
             </div>
             <div className="space-y-2">
@@ -210,7 +203,6 @@ const SortableSectionCard = ({
                 type="number"
                 value={editedSection.layout_columns}
                 onChange={(e) => onChange(section.id, 'layout_columns', parseInt(e.target.value))}
-                disabled={!isEditing}
               />
             </div>
             <div className="space-y-2">
@@ -220,7 +212,6 @@ const SortableSectionCard = ({
                   <Button
                     variant="outline"
                     className="w-full justify-start gap-2"
-                    disabled={!isEditing}
                   >
                     <span
                       className="h-4 w-4 rounded border"
@@ -258,23 +249,12 @@ const SortableSectionCard = ({
             </div>
           </div>
 
-          <div className="flex gap-2">
-            {isEditing ? (
-              <>
-                <Button onClick={() => onSave(section.id)} size="sm">
-                  <Save className="mr-2 h-4 w-4" />
-                  Save Changes
-                </Button>
-                <Button variant="outline" onClick={onCancel} size="sm">
-                  Cancel
-                </Button>
-              </>
-            ) : (
-              <Button variant="outline" onClick={() => onEdit(section)} size="sm">
-                Edit Section
-              </Button>
-            )}
-          </div>
+          {hasChanges && (
+            <Button onClick={() => onSave(section.id)} size="sm" disabled={isSaving}>
+              <Save className="mr-2 h-4 w-4" />
+              {isSaving ? 'Saving...' : 'Save & Publish'}
+            </Button>
+          )}
 
           <SectionPreview
             title={editedSection.title}
@@ -296,7 +276,6 @@ const SortableSectionCard = ({
 export const SectionsManager = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [editingId, setEditingId] = useState<string | null>(null);
   const [editedSections, setEditedSections] = useState<Record<string, Section>>({});
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<Section | null>(null);
@@ -356,20 +335,21 @@ export const SectionsManager = () => {
         .eq('id', section.id);
       if (error) throw error;
     },
-    onSuccess: () => {
-      toast({ title: 'Section updated successfully' });
+    onSuccess: (_, variables) => {
+      toast({ title: 'Section saved & published!' });
       queryClient.invalidateQueries({ queryKey: ['admin-sections'] });
-      setEditingId(null);
+      queryClient.invalidateQueries({ queryKey: ['shop-sections'] });
+      // Clear edited state for this section
+      setEditedSections((prev) => {
+        const next = { ...prev };
+        delete next[variables.id];
+        return next;
+      });
     },
     onError: (error) => {
       toast({ title: 'Failed to update section', description: error.message, variant: 'destructive' });
     },
   });
-
-  const handleEdit = (section: Section) => {
-    setEditingId(section.id);
-    setEditedSections((prev) => ({ ...prev, [section.id]: { ...section } }));
-  };
 
   const handleSave = (id: string) => {
     const section = editedSections[id];
@@ -501,15 +481,13 @@ export const SectionsManager = () => {
               <SortableSectionCard
                 key={section.id}
                 section={section}
-                editingId={editingId}
                 editedSections={editedSections}
-                onEdit={handleEdit}
                 onSave={handleSave}
-                onCancel={() => setEditingId(null)}
                 onChange={handleChange}
                 onDelete={setDeleteTarget}
                 onDuplicate={handleDuplicate}
                 productCount={getProductCount(section)}
+                isSaving={updateMutation.isPending}
               />
             ))}
           </div>
