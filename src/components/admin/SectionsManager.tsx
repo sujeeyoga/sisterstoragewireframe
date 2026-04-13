@@ -86,9 +86,9 @@ const bgToHex = (bg: string | null) => {
   return '#ffffff';
 };
 
-// ── Sortable Section Card ──────────────────────────────────────────
+// ── Sortable Bento Card ────────────────────────────────────────────
 
-const SortableSectionCard = ({
+const SortableBentoCard = ({
   section,
   editedSections,
   onSave,
@@ -98,6 +98,8 @@ const SortableSectionCard = ({
   onDuplicate,
   productCount,
   isSaving,
+  isExpanded,
+  onToggleExpand,
 }: {
   section: Section;
   editedSections: Record<string, Section>;
@@ -108,6 +110,8 @@ const SortableSectionCard = ({
   onDuplicate: (s: Section) => void;
   productCount: number | null;
   isSaving: boolean;
+  isExpanded: boolean;
+  onToggleExpand: () => void;
 }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id: section.id });
@@ -121,167 +125,183 @@ const SortableSectionCard = ({
 
   const editedSection = editedSections[section.id] || section;
   const hasChanges = JSON.stringify(editedSection) !== JSON.stringify(section);
+  const bgHex = bgToHex(editedSection.background_color);
+
+  // Determine bento span based on section type
+  const isHero = section.name === 'hero';
+  const isStories = section.name === 'styled-by-sisters';
+  const spanClass = isHero ? 'md:col-span-2 md:row-span-2' : isStories ? 'md:col-span-2' : '';
 
   return (
-    <div ref={setNodeRef} style={style}>
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between py-3">
-          <div className="flex items-center gap-3">
-            <button {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing touch-none">
-              <GripVertical className="h-5 w-5 text-muted-foreground" />
-            </button>
-            <CardTitle className="text-lg flex items-center gap-2">
-              {section.name}
-              {hasChanges && (
-                <span className="flex items-center gap-1">
-                  <span className="h-2 w-2 rounded-full bg-yellow-500 animate-pulse" />
-                  <span className="text-[10px] font-normal text-yellow-600">Unsaved</span>
-                </span>
-              )}
+    <div ref={setNodeRef} style={style} className={spanClass}>
+      <Card className={`h-full overflow-hidden transition-all border-2 ${hasChanges ? 'border-yellow-500/60' : 'border-transparent'} ${!editedSection.visible ? 'opacity-60' : ''} hover:shadow-lg`}>
+        {/* Visual header band */}
+        <div
+          className="relative h-3 w-full"
+          style={{ backgroundColor: bgHex }}
+        />
+
+        <CardHeader className="py-2 px-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 min-w-0">
+              <button {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing touch-none flex-shrink-0">
+                <GripVertical className="h-4 w-4 text-muted-foreground" />
+              </button>
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-sm font-semibold truncate">{section.name}</span>
+                  {hasChanges && (
+                    <span className="h-2 w-2 rounded-full bg-yellow-500 animate-pulse flex-shrink-0" />
+                  )}
+                  {!editedSection.visible && (
+                    <EyeOff className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+                  )}
+                </div>
+                <p className="text-[10px] text-muted-foreground truncate">{editedSection.title}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-1 flex-shrink-0">
               {productCount !== null && (
-                <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
-                  {productCount} {section.name === 'styled-by-sisters' ? 'stories' : 'products'}
+                <Badge variant="secondary" className="text-[9px] px-1 py-0 h-4">
+                  {productCount}
                 </Badge>
               )}
-            </CardTitle>
-          </div>
-          <div className="flex items-center gap-3">
-            <a
-              href={`/shop#section-${section.name}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-foreground transition-colors"
-              title="View on Shop"
-            >
-              <ExternalLink className="h-4 w-4" />
-            </a>
-            <button
-              onClick={() => onDuplicate(section)}
-              className="text-muted-foreground hover:text-foreground transition-colors"
-              title="Duplicate section"
-            >
-              <Copy className="h-4 w-4" />
-            </button>
-            <button
-              onClick={() => onDelete(section)}
-              className="text-muted-foreground hover:text-destructive transition-colors"
-              title="Delete section"
-            >
-              <Trash2 className="h-4 w-4" />
-            </button>
-            <div className="flex items-center gap-1.5 ml-2">
               <Switch
                 checked={editedSection.visible}
                 onCheckedChange={(checked) => {
                   onChange(section.id, 'visible', checked);
-                  // auto-save visibility toggle
-                  const updated = { ...(editedSections[section.id] || section), visible: checked };
                   supabase.from('shop_sections').update({ visible: checked }).eq('id', section.id).then(() => {});
                 }}
+                className="scale-75"
               />
-              <Label className="text-sm">Visible</Label>
             </div>
           </div>
         </CardHeader>
-        <CardContent className="space-y-4 pt-0">
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="space-y-2">
-              <Label>Title</Label>
-              <Input
-                value={editedSection.title}
-                onChange={(e) => onChange(section.id, 'title', e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Subtitle</Label>
-              <Input
-                value={editedSection.subtitle || ''}
-                onChange={(e) => onChange(section.id, 'subtitle', e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Category Filter</Label>
-              <Input
-                value={editedSection.category_filter || ''}
-                onChange={(e) => onChange(section.id, 'category_filter', e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Layout Columns</Label>
-              <Input
-                type="number"
-                value={editedSection.layout_columns}
-                onChange={(e) => onChange(section.id, 'layout_columns', parseInt(e.target.value))}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Background Color</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start gap-2"
-                  >
-                    <span
-                      className="h-4 w-4 rounded border"
-                      style={{ backgroundColor: bgToHex(editedSection.background_color) }}
-                    />
-                    <span className="text-sm truncate">{editedSection.background_color || 'bg-background'}</span>
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-56 p-3" align="start">
-                  <div className="grid grid-cols-4 gap-2 mb-3">
-                    {COLOR_PRESETS.map((preset) => (
-                      <button
-                        key={preset.value}
-                        title={preset.label}
-                        onClick={() => onChange(section.id, 'background_color', preset.value)}
-                        className="h-8 w-8 rounded border-2 transition-all hover:scale-110"
-                        style={{
-                          backgroundColor: preset.color,
-                          borderColor: editedSection.background_color === preset.value ? '#000' : '#e5e7eb',
-                        }}
-                      />
-                    ))}
-                  </div>
-                  <div className="space-y-1">
-                    <Label className="text-xs">Custom class / hex</Label>
-                    <Input
-                      value={editedSection.background_color || ''}
-                      onChange={(e) => onChange(section.id, 'background_color', e.target.value)}
-                      placeholder="bg-background or #hex"
-                      className="h-8 text-xs"
-                    />
-                  </div>
-                </PopoverContent>
-              </Popover>
-            </div>
+
+        <CardContent className="px-3 pb-3 pt-0">
+          {/* Compact preview */}
+          <div
+            className="rounded-md border overflow-hidden cursor-pointer"
+            onClick={onToggleExpand}
+          >
+            <SectionPreview
+              title={editedSection.title}
+              subtitle={editedSection.subtitle}
+              categoryFilter={editedSection.category_filter}
+              layoutColumns={editedSection.layout_columns}
+              visible={editedSection.visible}
+              sectionName={editedSection.name}
+              backgroundColor={editedSection.background_color}
+              sectionId={section.id}
+              productIds={editedSection.product_ids}
+              onProductIdsChange={(ids) => onChange(section.id, 'product_ids', ids)}
+            />
           </div>
 
-          {hasChanges && (
-            <div className="flex gap-2">
-              <Button onClick={() => onSave(section.id)} size="sm" disabled={isSaving}>
-                <Save className="mr-2 h-4 w-4" />
-                {isSaving ? 'Saving...' : 'Save & Publish'}
-              </Button>
-              <Button variant="outline" size="sm" onClick={() => onReset(section.id)}>
-                Undo Changes
-              </Button>
+          {/* Expanded edit panel */}
+          {isExpanded && (
+            <div className="mt-3 space-y-3 animate-in slide-in-from-top-2 duration-200">
+              <div className="grid gap-2 grid-cols-2">
+                <div className="space-y-1">
+                  <Label className="text-[10px] uppercase tracking-wider text-muted-foreground">Title</Label>
+                  <Input
+                    value={editedSection.title}
+                    onChange={(e) => onChange(section.id, 'title', e.target.value)}
+                    className="h-7 text-xs"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-[10px] uppercase tracking-wider text-muted-foreground">Subtitle</Label>
+                  <Input
+                    value={editedSection.subtitle || ''}
+                    onChange={(e) => onChange(section.id, 'subtitle', e.target.value)}
+                    className="h-7 text-xs"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-[10px] uppercase tracking-wider text-muted-foreground">Category</Label>
+                  <Input
+                    value={editedSection.category_filter || ''}
+                    onChange={(e) => onChange(section.id, 'category_filter', e.target.value)}
+                    className="h-7 text-xs"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-[10px] uppercase tracking-wider text-muted-foreground">Columns</Label>
+                  <Input
+                    type="number"
+                    value={editedSection.layout_columns}
+                    onChange={(e) => onChange(section.id, 'layout_columns', parseInt(e.target.value))}
+                    className="h-7 text-xs"
+                  />
+                </div>
+              </div>
+              <div className="space-y-1">
+                <Label className="text-[10px] uppercase tracking-wider text-muted-foreground">Background</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" size="sm" className="w-full justify-start gap-2 h-7 text-xs">
+                      <span className="h-3 w-3 rounded border" style={{ backgroundColor: bgHex }} />
+                      <span className="truncate">{editedSection.background_color || 'bg-background'}</span>
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-56 p-3" align="start">
+                    <div className="grid grid-cols-4 gap-2 mb-3">
+                      {COLOR_PRESETS.map((preset) => (
+                        <button
+                          key={preset.value}
+                          title={preset.label}
+                          onClick={() => onChange(section.id, 'background_color', preset.value)}
+                          className="h-8 w-8 rounded border-2 transition-all hover:scale-110"
+                          style={{
+                            backgroundColor: preset.color,
+                            borderColor: editedSection.background_color === preset.value ? 'hsl(var(--foreground))' : 'hsl(var(--border))',
+                          }}
+                        />
+                      ))}
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">Custom class / hex</Label>
+                      <Input
+                        value={editedSection.background_color || ''}
+                        onChange={(e) => onChange(section.id, 'background_color', e.target.value)}
+                        placeholder="bg-background or #hex"
+                        className="h-8 text-xs"
+                      />
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </div>
             </div>
           )}
 
-          <SectionPreview
-            title={editedSection.title}
-            subtitle={editedSection.subtitle}
-            categoryFilter={editedSection.category_filter}
-            layoutColumns={editedSection.layout_columns}
-            visible={editedSection.visible}
-            sectionName={editedSection.name}
-            backgroundColor={editedSection.background_color}
-            sectionId={section.id}
-            productIds={editedSection.product_ids}
-            onProductIdsChange={(ids) => onChange(section.id, 'product_ids', ids)}
-          />
+          {/* Action bar */}
+          <div className="flex items-center justify-between mt-2 pt-2 border-t">
+            <div className="flex gap-1">
+              <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => onDuplicate(section)} title="Duplicate">
+                <Copy className="h-3 w-3" />
+              </Button>
+              <a href={`/shop#section-${section.name}`} target="_blank" rel="noopener noreferrer">
+                <Button variant="ghost" size="icon" className="h-6 w-6" title="View on Shop">
+                  <ExternalLink className="h-3 w-3" />
+                </Button>
+              </a>
+              <Button variant="ghost" size="icon" className="h-6 w-6 text-destructive hover:text-destructive" onClick={() => onDelete(section)} title="Delete">
+                <Trash2 className="h-3 w-3" />
+              </Button>
+            </div>
+            {hasChanges && (
+              <div className="flex gap-1">
+                <Button variant="outline" size="sm" className="h-6 text-[10px] px-2" onClick={() => onReset(section.id)}>
+                  Undo
+                </Button>
+                <Button size="sm" className="h-6 text-[10px] px-2" onClick={() => onSave(section.id)} disabled={isSaving}>
+                  <Save className="h-3 w-3 mr-1" />
+                  Publish
+                </Button>
+              </div>
+            )}
+          </div>
         </CardContent>
       </Card>
     </div>
@@ -293,6 +313,7 @@ const SortableSectionCard = ({
 export const SectionsManager = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [expandedId, setExpandedId] = useState<string | null>(null);
   const [editedSections, setEditedSections] = useState<Record<string, Section>>({});
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<Section | null>(null);
@@ -499,12 +520,12 @@ export const SectionsManager = () => {
         </div>
       </div>
 
-      {/* Sortable list */}
+      {/* Sortable bento grid */}
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={sections.map((s) => s.id)} strategy={verticalListSortingStrategy}>
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-auto">
             {sections.map((section) => (
-              <SortableSectionCard
+              <SortableBentoCard
                 key={section.id}
                 section={section}
                 editedSections={editedSections}
@@ -515,6 +536,8 @@ export const SectionsManager = () => {
                 onDuplicate={handleDuplicate}
                 productCount={getProductCount(section)}
                 isSaving={updateMutation.isPending}
+                isExpanded={expandedId === section.id}
+                onToggleExpand={() => setExpandedId(expandedId === section.id ? null : section.id)}
               />
             ))}
           </div>
