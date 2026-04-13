@@ -385,7 +385,7 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
             {isHero ? (
               <div className="relative text-center py-10 rounded-lg overflow-hidden">
                 <img
-                  src="https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-31-scaled.jpg"
+                  src="https://sisterstorage.com/assets/hero-bg-main-Ck3XcIBP.jpg"
                   alt="Hero background"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
