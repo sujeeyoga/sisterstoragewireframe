@@ -241,6 +241,7 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
   layoutColumns,
   visible,
   sectionName,
+  backgroundColor,
 }) => {
   const [open, setOpen] = useState(true);
   const { data: allProducts = [] } = useProducts();
