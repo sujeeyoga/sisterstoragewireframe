@@ -276,7 +276,6 @@ const SortableSectionCard = ({
 export const SectionsManager = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [editingId, setEditingId] = useState<string | null>(null);
   const [editedSections, setEditedSections] = useState<Record<string, Section>>({});
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<Section | null>(null);
