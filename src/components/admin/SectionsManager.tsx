@@ -265,6 +265,9 @@ const SortableSectionCard = ({
             visible={editedSection.visible}
             sectionName={editedSection.name}
             backgroundColor={editedSection.background_color}
+            sectionId={section.id}
+            productIds={editedSection.product_ids}
+            onProductIdsChange={(ids) => onChange(section.id, 'product_ids', ids)}
           />
         </CardContent>
       </Card>
