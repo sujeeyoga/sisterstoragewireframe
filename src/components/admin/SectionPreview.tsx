@@ -350,11 +350,34 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
     enabled: isStyledBySisters,
   });
 
+  // Products: use explicit productIds if set, otherwise filter by category
   const products = useMemo(() => {
+    if (productIds && productIds.length > 0) {
+      return allProducts.filter((p) => productIds.includes(p.id));
+    }
     if (!categoryFilter) return [];
     const slugs = slugsForFilter(categoryFilter);
     return allProducts.filter((p) => slugs.includes(p.category));
-  }, [allProducts, categoryFilter]);
+  }, [allProducts, categoryFilter, productIds]);
+
+  // Products available to add (not already in section)
+  const availableProducts = useMemo(() => {
+    const currentIds = productIds || products.map((p) => p.id);
+    return allProducts.filter((p) => !currentIds.includes(p.id));
+  }, [allProducts, products, productIds]);
+
+  const handleRemoveProduct = (productId: number) => {
+    if (!onProductIdsChange) return;
+    const currentIds = productIds || products.map((p) => p.id);
+    onProductIdsChange(currentIds.filter((id) => id !== productId));
+  };
+
+  const handleAddProduct = (productId: number) => {
+    if (!onProductIdsChange) return;
+    const currentIds = productIds || products.map((p) => p.id);
+    onProductIdsChange([...currentIds, productId]);
+    setAddProductOpen(false);
+  };
 
   const handleEdit = (story: any) => {
     setEditingStory(story);
