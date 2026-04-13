@@ -639,7 +639,7 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
                         />
                       )}
                       <div className="p-2">
-                        <p className="text-xs font-medium truncate">{product.name}</p>
+                        <InlineEditableName productId={Number(product.id)} name={product.name} />
                         <p className="text-xs text-muted-foreground">${product.price?.toFixed(2)}</p>
                       </div>
                       {onProductIdsChange && (
