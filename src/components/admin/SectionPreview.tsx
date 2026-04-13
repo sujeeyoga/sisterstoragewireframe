@@ -12,6 +12,7 @@ import { Eye, EyeOff, ChevronDown, ChevronUp, Play, Plus, Edit, Trash2, X, Save,
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { VideoUploaderInline } from './VideoUploaderInline';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
   Dialog,
   DialogContent,
