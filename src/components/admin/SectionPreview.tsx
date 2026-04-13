@@ -27,7 +27,7 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
   layoutColumns,
   visible,
 }) => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const { data: allProducts = [] } = useProducts();
 
   const products = useMemo(() => {
