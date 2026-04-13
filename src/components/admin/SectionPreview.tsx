@@ -573,23 +573,67 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
                 </Button>
               </div>
             ) : products.length > 0 ? (
-              <div className={cn('grid gap-3', colsClass[layoutColumns] || 'grid-cols-3')}>
-                {products.slice(0, layoutColumns * 2).map((product) => (
-                  <div key={product.id} className="rounded-md border bg-card overflow-hidden">
-                    {product.images?.[0] && (
-                      <img
-                        src={product.images[0]}
-                        alt={product.name}
-                        className="w-full aspect-square object-cover"
-                        loading="lazy"
-                      />
-                    )}
-                    <div className="p-2">
-                      <p className="text-xs font-medium truncate">{product.name}</p>
-                      <p className="text-xs text-muted-foreground">${product.price?.toFixed(2)}</p>
+              <div className="space-y-3">
+                <div className={cn('grid gap-3', colsClass[layoutColumns] || 'grid-cols-3')}>
+                  {products.map((product) => (
+                    <div key={product.id} className="rounded-md border bg-card overflow-hidden relative group">
+                      {product.images?.[0] && (
+                        <img
+                          src={product.images[0]}
+                          alt={product.name}
+                          className="w-full aspect-square object-cover"
+                          loading="lazy"
+                        />
+                      )}
+                      <div className="p-2">
+                        <p className="text-xs font-medium truncate">{product.name}</p>
+                        <p className="text-xs text-muted-foreground">${product.price?.toFixed(2)}</p>
+                      </div>
+                      {onProductIdsChange && (
+                        <button
+                          onClick={() => handleRemoveProduct(Number(product.id))}
+                          className="absolute top-1 right-1 bg-destructive text-destructive-foreground rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                          title="Remove from section"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      )}
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
+                {onProductIdsChange && (
+                  <Popover open={addProductOpen} onOpenChange={setAddProductOpen}>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" size="sm" className="w-full">
+                        <Plus className="h-3.5 w-3.5 mr-1" />
+                        Add Product
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-72 max-h-64 overflow-y-auto p-2" align="start">
+                      {availableProducts.length === 0 ? (
+                        <p className="text-xs text-muted-foreground text-center py-2">No more products to add</p>
+                      ) : (
+                        <div className="space-y-1">
+                          {availableProducts.map((p) => (
+                            <button
+                              key={p.id}
+                              onClick={() => handleAddProduct(Number(p.id))}
+                              className="w-full flex items-center gap-2 p-1.5 rounded hover:bg-accent text-left"
+                            >
+                              {p.images?.[0] && (
+                                <img src={p.images[0]} alt={p.name} className="w-8 h-8 rounded object-cover" />
+                              )}
+                              <div className="min-w-0">
+                                <p className="text-xs font-medium truncate">{p.name}</p>
+                                <p className="text-[10px] text-muted-foreground">${p.price?.toFixed(2)}</p>
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </PopoverContent>
+                  </Popover>
+                )}
               </div>
             ) : (
               <p className="text-xs text-muted-foreground italic py-4 text-center">
