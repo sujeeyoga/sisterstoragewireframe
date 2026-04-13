@@ -27,6 +27,9 @@ interface SectionPreviewProps {
   visible: boolean;
   sectionName?: string;
   backgroundColor?: string | null;
+  sectionId?: string;
+  productIds?: number[] | null;
+  onProductIdsChange?: (ids: number[]) => void;
 }
 
 const colsClass: Record<number, string> = {
