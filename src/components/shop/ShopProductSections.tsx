@@ -14,15 +14,22 @@ interface ShopProductSectionsProps {
 const ShopHeroBanner = ({ title, subtitle, bgColor }: { title: string; subtitle: string | null; bgColor: string | null }) => (
   <section
     id="section-hero"
-    className={cn("w-full py-16 md:py-24", bgColor?.startsWith('bg-') ? bgColor : '')}
+    className={cn("w-full relative overflow-hidden", bgColor?.startsWith('bg-') ? bgColor : '')}
     style={bgColor && !bgColor.startsWith('bg-') ? { backgroundColor: bgColor } : undefined}
   >
-    <div className="container-custom text-center text-white">
-      <h2 className="text-4xl md:text-6xl lg:text-7xl font-black uppercase tracking-tighter leading-[0.9] mb-4">
+    <img
+      src="https://sisterstorage.com/wp-content/uploads/2025/06/Sister-Storage-Lifestyle-Home-Shoot-31-scaled.jpg"
+      alt="Sister Storage lifestyle"
+      className="absolute inset-0 w-full h-full object-cover"
+      loading="eager"
+    />
+    <div className="absolute inset-0 bg-black/30" />
+    <div className="relative z-10 container-custom text-center text-white py-20 md:py-32">
+      <h2 className="text-4xl md:text-6xl lg:text-7xl font-black uppercase tracking-tighter leading-[0.9] mb-4 drop-shadow-lg">
         {title}
       </h2>
       {subtitle && (
-        <p className="text-lg md:text-xl lg:text-2xl font-medium uppercase tracking-wide opacity-90">
+        <p className="text-lg md:text-xl lg:text-2xl font-medium uppercase tracking-wide opacity-90 drop-shadow">
           {subtitle}
         </p>
       )}
