@@ -12,6 +12,7 @@ import { Eye, EyeOff, ChevronDown, ChevronUp, Play, Plus, Edit, Trash2, X, Save,
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { VideoUploaderInline } from './VideoUploaderInline';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
   Dialog,
   DialogContent,
@@ -27,6 +28,9 @@ interface SectionPreviewProps {
   visible: boolean;
   sectionName?: string;
   backgroundColor?: string | null;
+  sectionId?: string;
+  productIds?: number[] | null;
+  onProductIdsChange?: (ids: number[]) => void;
 }
 
 const colsClass: Record<number, string> = {
@@ -242,8 +246,12 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
   visible,
   sectionName,
   backgroundColor,
+  sectionId,
+  productIds,
+  onProductIdsChange,
 }) => {
   const [open, setOpen] = useState(true);
+  const [addProductOpen, setAddProductOpen] = useState(false);
   const { data: allProducts = [] } = useProducts();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -343,11 +351,34 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
     enabled: isStyledBySisters,
   });
 
+  // Products: use explicit productIds if set, otherwise filter by category
   const products = useMemo(() => {
+    if (productIds && productIds.length > 0) {
+      return allProducts.filter((p) => productIds.includes(Number(p.id)));
+    }
     if (!categoryFilter) return [];
     const slugs = slugsForFilter(categoryFilter);
     return allProducts.filter((p) => slugs.includes(p.category));
-  }, [allProducts, categoryFilter]);
+  }, [allProducts, categoryFilter, productIds]);
+
+  // Products available to add (not already in section)
+  const availableProducts = useMemo(() => {
+    const currentIds = productIds && productIds.length > 0 ? productIds : products.map((p) => Number(p.id));
+    return allProducts.filter((p) => !currentIds.includes(Number(p.id)));
+  }, [allProducts, products, productIds]);
+
+  const handleRemoveProduct = (productId: number) => {
+    if (!onProductIdsChange) return;
+    const currentIds: number[] = productIds && productIds.length > 0 ? [...productIds] : products.map((p) => Number(p.id));
+    onProductIdsChange(currentIds.filter((id) => id !== productId));
+  };
+
+  const handleAddProduct = (productId: number) => {
+    if (!onProductIdsChange) return;
+    const currentIds: number[] = productIds && productIds.length > 0 ? [...productIds] : products.map((p) => Number(p.id));
+    onProductIdsChange([...currentIds, productId]);
+    setAddProductOpen(false);
+  };
 
   const handleEdit = (story: any) => {
     setEditingStory(story);
@@ -543,23 +574,67 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
                 </Button>
               </div>
             ) : products.length > 0 ? (
-              <div className={cn('grid gap-3', colsClass[layoutColumns] || 'grid-cols-3')}>
-                {products.slice(0, layoutColumns * 2).map((product) => (
-                  <div key={product.id} className="rounded-md border bg-card overflow-hidden">
-                    {product.images?.[0] && (
-                      <img
-                        src={product.images[0]}
-                        alt={product.name}
-                        className="w-full aspect-square object-cover"
-                        loading="lazy"
-                      />
-                    )}
-                    <div className="p-2">
-                      <p className="text-xs font-medium truncate">{product.name}</p>
-                      <p className="text-xs text-muted-foreground">${product.price?.toFixed(2)}</p>
+              <div className="space-y-3">
+                <div className={cn('grid gap-3', colsClass[layoutColumns] || 'grid-cols-3')}>
+                  {products.map((product) => (
+                    <div key={product.id} className="rounded-md border bg-card overflow-hidden relative group">
+                      {product.images?.[0] && (
+                        <img
+                          src={product.images[0]}
+                          alt={product.name}
+                          className="w-full aspect-square object-cover"
+                          loading="lazy"
+                        />
+                      )}
+                      <div className="p-2">
+                        <p className="text-xs font-medium truncate">{product.name}</p>
+                        <p className="text-xs text-muted-foreground">${product.price?.toFixed(2)}</p>
+                      </div>
+                      {onProductIdsChange && (
+                        <button
+                          onClick={() => handleRemoveProduct(Number(product.id))}
+                          className="absolute top-1 right-1 bg-destructive text-destructive-foreground rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                          title="Remove from section"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      )}
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
+                {onProductIdsChange && (
+                  <Popover open={addProductOpen} onOpenChange={setAddProductOpen}>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" size="sm" className="w-full">
+                        <Plus className="h-3.5 w-3.5 mr-1" />
+                        Add Product
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-72 max-h-64 overflow-y-auto p-2" align="start">
+                      {availableProducts.length === 0 ? (
+                        <p className="text-xs text-muted-foreground text-center py-2">No more products to add</p>
+                      ) : (
+                        <div className="space-y-1">
+                          {availableProducts.map((p) => (
+                            <button
+                              key={p.id}
+                              onClick={() => handleAddProduct(Number(p.id))}
+                              className="w-full flex items-center gap-2 p-1.5 rounded hover:bg-accent text-left"
+                            >
+                              {p.images?.[0] && (
+                                <img src={p.images[0]} alt={p.name} className="w-8 h-8 rounded object-cover" />
+                              )}
+                              <div className="min-w-0">
+                                <p className="text-xs font-medium truncate">{p.name}</p>
+                                <p className="text-[10px] text-muted-foreground">${p.price?.toFixed(2)}</p>
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </PopoverContent>
+                  </Popover>
+                )}
               </div>
             ) : (
               <p className="text-xs text-muted-foreground italic py-4 text-center">

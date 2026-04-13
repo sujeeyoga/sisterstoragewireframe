@@ -972,6 +972,7 @@ export type Database = {
           id: string
           layout_columns: number | null
           name: string
+          product_ids: number[] | null
           subtitle: string | null
           title: string
           updated_at: string | null
@@ -985,6 +986,7 @@ export type Database = {
           id?: string
           layout_columns?: number | null
           name: string
+          product_ids?: number[] | null
           subtitle?: string | null
           title: string
           updated_at?: string | null
@@ -998,6 +1000,7 @@ export type Database = {
           id?: string
           layout_columns?: number | null
           name?: string
+          product_ids?: number[] | null
           subtitle?: string | null
           title?: string
           updated_at?: string | null

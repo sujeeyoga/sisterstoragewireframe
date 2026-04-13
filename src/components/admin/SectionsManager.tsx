@@ -65,6 +65,7 @@ type Section = {
   visible: boolean;
   layout_columns: number;
   category_filter: string | null;
+  product_ids: number[] | null;
 };
 
 const COLOR_PRESETS = [
@@ -264,6 +265,9 @@ const SortableSectionCard = ({
             visible={editedSection.visible}
             sectionName={editedSection.name}
             backgroundColor={editedSection.background_color}
+            sectionId={section.id}
+            productIds={editedSection.product_ids}
+            onProductIdsChange={(ids) => onChange(section.id, 'product_ids', ids)}
           />
         </CardContent>
       </Card>
@@ -331,6 +335,7 @@ export const SectionsManager = () => {
           layout_columns: section.layout_columns,
           category_filter: section.category_filter,
           display_order: section.display_order,
+          product_ids: section.product_ids,
         })
         .eq('id', section.id);
       if (error) throw error;
