@@ -49,6 +49,58 @@ interface StoryFormData {
   is_active: boolean;
 }
 
+// Inline editable product name on double-click
+const InlineEditableName = ({ productId, name }: { productId: number; name: string }) => {
+  const [editing, setEditing] = useState(false);
+  const [value, setValue] = useState(name);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const save = useCallback(async () => {
+    setEditing(false);
+    if (value.trim() === name) return;
+    const { error } = await supabase
+      .from('woocommerce_products')
+      .update({ name: value.trim() })
+      .eq('id', productId);
+    if (error) {
+      toast({ title: 'Failed to rename', description: error.message, variant: 'destructive' });
+      setValue(name);
+    } else {
+      toast({ title: 'Product renamed' });
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+    }
+  }, [value, name, productId, toast, queryClient]);
+
+  if (editing) {
+    return (
+      <input
+        ref={inputRef}
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        onBlur={save}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') save();
+          if (e.key === 'Escape') { setValue(name); setEditing(false); }
+        }}
+        className="text-xs font-medium w-full bg-transparent border-b border-primary outline-none"
+        autoFocus
+      />
+    );
+  }
+
+  return (
+    <p
+      className="text-xs font-medium truncate cursor-pointer hover:text-primary transition-colors"
+      onDoubleClick={() => setEditing(true)}
+      title="Double-click to edit"
+    >
+      {name}
+    </p>
+  );
+};
+
 const emptyForm: StoryFormData = {
   title: '',
   author: '',
