@@ -801,13 +801,12 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
                 <div className={cn('grid gap-3', colsClass[layoutColumns] || 'grid-cols-3')}>
                   {products.map((product) => (
                     <div key={product.id} className="rounded-md border bg-card overflow-hidden relative group">
-                      {product.images?.[0] && (
-                        <img
-                          src={product.images[0]}
-                          alt={product.name}
-                          className="w-full aspect-square object-cover"
-                          loading="lazy"
-                        />
+                      {product.images?.[0] ? (
+                        <InlineEditableImage productId={Number(product.id)} src={product.images[0]} alt={product.name} />
+                      ) : (
+                        <div className="w-full aspect-square bg-muted flex items-center justify-center">
+                          <ImageIcon className="h-6 w-6 text-muted-foreground" />
+                        </div>
                       )}
                       <div className="p-2">
                         <InlineEditableName productId={Number(product.id)} name={product.name} />
