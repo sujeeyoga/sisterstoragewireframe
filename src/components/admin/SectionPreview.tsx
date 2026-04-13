@@ -101,6 +101,124 @@ const InlineEditableName = ({ productId, name }: { productId: number; name: stri
   );
 };
 
+// Inline editable product image — click overlay to upload or paste URL
+const InlineEditableImage = ({ productId, src, alt }: { productId: number; src: string; alt: string }) => {
+  const [hovering, setHovering] = useState(false);
+  const [urlMode, setUrlMode] = useState(false);
+  const [urlValue, setUrlValue] = useState('');
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const updateImage = useCallback(async (newUrl: string) => {
+    // Fetch current images array, replace first entry
+    const { data: product } = await supabase
+      .from('woocommerce_products')
+      .select('images')
+      .eq('id', productId)
+      .single();
+    const imgs: any[] = Array.isArray(product?.images) ? [...product.images] : [];
+    if (imgs.length > 0) {
+      // If items are objects with src, update src; otherwise replace string
+      if (typeof imgs[0] === 'object' && imgs[0] !== null) {
+        imgs[0] = { ...imgs[0], src: newUrl };
+      } else {
+        imgs[0] = newUrl;
+      }
+    } else {
+      imgs.push({ src: newUrl });
+    }
+    const { error } = await supabase
+      .from('woocommerce_products')
+      .update({ images: imgs })
+      .eq('id', productId);
+    if (error) {
+      toast({ title: 'Failed to update image', description: error.message, variant: 'destructive' });
+    } else {
+      toast({ title: 'Product image updated' });
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+    }
+  }, [productId, toast, queryClient]);
+
+  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const filePath = `products/${Date.now()}-${file.name}`;
+      const { error: uploadError } = await supabase.storage.from('images').upload(filePath, file, { upsert: true });
+      if (uploadError) throw uploadError;
+      const { data: urlData } = supabase.storage.from('images').getPublicUrl(filePath);
+      await updateImage(urlData.publicUrl);
+    } catch (err: any) {
+      toast({ title: 'Upload failed', description: err.message, variant: 'destructive' });
+    } finally {
+      setUploading(false);
+      if (fileRef.current) fileRef.current.value = '';
+    }
+  };
+
+  const handleUrlSave = async () => {
+    if (!urlValue.trim()) return;
+    await updateImage(urlValue.trim());
+    setUrlMode(false);
+    setUrlValue('');
+  };
+
+  return (
+    <div
+      className="relative w-full aspect-square"
+      onMouseEnter={() => setHovering(true)}
+      onMouseLeave={() => { setHovering(false); setUrlMode(false); }}
+    >
+      <img src={src} alt={alt} className="w-full h-full object-cover" loading="lazy" />
+      <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFile} />
+
+      {(hovering || uploading) && (
+        <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center gap-1.5 transition-opacity">
+          {uploading ? (
+            <span className="text-[10px] text-white">Uploading...</span>
+          ) : urlMode ? (
+            <div className="px-2 w-full space-y-1" onClick={(e) => e.stopPropagation()}>
+              <input
+                value={urlValue}
+                onChange={(e) => setUrlValue(e.target.value)}
+                placeholder="Paste image URL"
+                className="w-full text-[10px] px-1.5 py-1 rounded bg-white/90 text-foreground outline-none"
+                autoFocus
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') handleUrlSave();
+                  if (e.key === 'Escape') setUrlMode(false);
+                }}
+              />
+              <div className="flex gap-1 justify-end">
+                <button onClick={() => setUrlMode(false)} className="text-[9px] text-white/70 hover:text-white">Cancel</button>
+                <button onClick={handleUrlSave} className="text-[9px] bg-primary text-primary-foreground px-1.5 py-0.5 rounded">Save</button>
+              </div>
+            </div>
+          ) : (
+            <>
+              <button
+                onClick={() => fileRef.current?.click()}
+                className="flex items-center gap-1 text-[10px] text-white bg-white/20 hover:bg-white/30 rounded px-2 py-1"
+              >
+                <Upload className="h-3 w-3" /> Upload
+              </button>
+              <button
+                onClick={() => setUrlMode(true)}
+                className="flex items-center gap-1 text-[10px] text-white bg-white/20 hover:bg-white/30 rounded px-2 py-1"
+              >
+                <ImageIcon className="h-3 w-3" /> Paste URL
+              </button>
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
 // Inline editable product price on double-click
 const InlineEditablePrice = ({ productId, price }: { productId: number; price: number }) => {
   const [editing, setEditing] = useState(false);
@@ -683,13 +801,12 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
                 <div className={cn('grid gap-3', colsClass[layoutColumns] || 'grid-cols-3')}>
                   {products.map((product) => (
                     <div key={product.id} className="rounded-md border bg-card overflow-hidden relative group">
-                      {product.images?.[0] && (
-                        <img
-                          src={product.images[0]}
-                          alt={product.name}
-                          className="w-full aspect-square object-cover"
-                          loading="lazy"
-                        />
+                      {product.images?.[0] ? (
+                        <InlineEditableImage productId={Number(product.id)} src={product.images[0]} alt={product.name} />
+                      ) : (
+                        <div className="w-full aspect-square bg-muted flex items-center justify-center">
+                          <ImageIcon className="h-6 w-6 text-muted-foreground" />
+                        </div>
                       )}
                       <div className="p-2">
                         <InlineEditableName productId={Number(product.id)} name={product.name} />
