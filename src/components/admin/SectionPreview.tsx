@@ -449,22 +449,59 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
 
             {/* Hero preview */}
             {isHero ? (
-              <div className="relative text-center py-10 rounded-lg overflow-hidden">
-                <img
-                  src="https://sisterstorage.com/assets/hero-bg-main-Ck3XcIBP.jpg"
-                  alt="Hero background"
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-black/30" />
-                <div className="relative z-10">
-                  <h3 className="text-2xl md:text-3xl font-black uppercase tracking-tighter leading-[0.9] text-white drop-shadow-lg">
-                    {title || 'Untitled Section'}
-                  </h3>
-                  {subtitle && (
-                    <p className="text-sm text-white/90 uppercase tracking-wide mt-2 font-medium drop-shadow">
-                      {subtitle}
-                    </p>
-                  )}
+              <div className="space-y-3">
+                <div className="relative text-center py-10 rounded-lg overflow-hidden">
+                  <img
+                    src={heroImageUrl || 'https://sisterstorage.com/assets/hero-bg-main-Ck3XcIBP.jpg'}
+                    alt="Hero background"
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-black/30" />
+                  <div className="relative z-10">
+                    <h3 className="text-2xl md:text-3xl font-black uppercase tracking-tighter leading-[0.9] text-white drop-shadow-lg">
+                      {title || 'Untitled Section'}
+                    </h3>
+                    {subtitle && (
+                      <p className="text-sm text-white/90 uppercase tracking-wide mt-2 font-medium drop-shadow">
+                        {subtitle}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Hero image edit controls */}
+                <div className="flex items-center gap-2">
+                  <label className="cursor-pointer">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleHeroImageUpload}
+                      disabled={heroImageUploading}
+                    />
+                    <Button variant="outline" size="sm" asChild disabled={heroImageUploading}>
+                      <span>
+                        <Upload className="h-3.5 w-3.5 mr-1" />
+                        {heroImageUploading ? 'Uploading...' : 'Change Image'}
+                      </span>
+                    </Button>
+                  </label>
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs">Image URL</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      value={heroImageUrl || ''}
+                      placeholder="https://..."
+                      className="text-xs h-8"
+                      onBlur={(e) => {
+                        if (e.target.value && e.target.value !== heroImageUrl) {
+                          handleHeroImageUrlChange(e.target.value);
+                        }
+                      }}
+                      onChange={() => {}}
+                    />
+                  </div>
                 </div>
               </div>
             ) : (
