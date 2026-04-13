@@ -122,7 +122,12 @@ const ShopProductSections = ({ products }: ShopProductSectionsProps) => {
     return map;
   }, [products]);
 
-  const getProductsForSection = React.useCallback((section: { name: string; category_filter: string | null }) => {
+  const getProductsForSection = React.useCallback((section: { name: string; category_filter: string | null; product_ids?: number[] | null }) => {
+    // Use explicit product_ids if set
+    if (section.product_ids && section.product_ids.length > 0) {
+      return products.filter(p => section.product_ids!.includes(Number(p.id)));
+    }
+    
     if (!section.category_filter) return [];
     const slugs = slugsForFilter(section.category_filter);
     
