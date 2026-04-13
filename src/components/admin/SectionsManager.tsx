@@ -132,6 +132,12 @@ const SortableSectionCard = ({
             </button>
             <CardTitle className="text-lg flex items-center gap-2">
               {section.name}
+              {hasChanges && (
+                <span className="flex items-center gap-1">
+                  <span className="h-2 w-2 rounded-full bg-yellow-500 animate-pulse" />
+                  <span className="text-[10px] font-normal text-yellow-600">Unsaved</span>
+                </span>
+              )}
               {productCount !== null && (
                 <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
                   {productCount} {section.name === 'styled-by-sisters' ? 'stories' : 'products'}
