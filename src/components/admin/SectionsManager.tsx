@@ -283,6 +283,7 @@ const SortableSectionCard = ({
             layoutColumns={editedSection.layout_columns}
             visible={editedSection.visible}
             sectionName={editedSection.name}
+            backgroundColor={editedSection.background_color}
           />
         </CardContent>
       </Card>

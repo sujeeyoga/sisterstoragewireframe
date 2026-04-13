@@ -26,6 +26,7 @@ interface SectionPreviewProps {
   layoutColumns: number;
   visible: boolean;
   sectionName?: string;
+  backgroundColor?: string | null;
 }
 
 const colsClass: Record<number, string> = {
@@ -240,15 +241,24 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
   layoutColumns,
   visible,
   sectionName,
+  backgroundColor,
 }) => {
   const [open, setOpen] = useState(true);
   const { data: allProducts = [] } = useProducts();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
+  const isHero = sectionName === 'hero';
   const isStyledBySisters = sectionName === 'styled-by-sisters';
 
-  // Dialog state for add/edit
+  // Resolve bg color for inline style
+  const bgStyle = React.useMemo(() => {
+    if (!backgroundColor) return {};
+    const hexMatch = backgroundColor.match(/bg-\[([^\]]+)\]/);
+    if (hexMatch) return { backgroundColor: hexMatch[1] };
+    if (backgroundColor.startsWith('#')) return { backgroundColor };
+    return {};
+  }, [backgroundColor]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingStory, setEditingStory] = useState<any | null>(null);
   const [formData, setFormData] = useState<StoryFormData>({ ...emptyForm });
@@ -360,9 +370,10 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
         <CollapsibleContent>
           <div
             className={cn(
-              'mt-3 rounded-lg border p-4 transition-opacity',
+              'mt-3 rounded-lg border p-4 transition-opacity overflow-hidden',
               !visible && 'opacity-40 grayscale'
             )}
+            style={bgStyle}
           >
             {!visible && (
               <div className="mb-2 text-xs font-medium text-destructive uppercase tracking-wide flex items-center gap-1">
@@ -370,13 +381,29 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
               </div>
             )}
 
-            <h3 className="text-lg font-bold uppercase tracking-wide text-foreground">
-              {title || 'Untitled Section'}
-            </h3>
-            {subtitle && (
-              <p className="text-xs text-muted-foreground uppercase tracking-wide mt-0.5 mb-3">
-                {subtitle}
-              </p>
+            {/* Hero preview */}
+            {isHero ? (
+              <div className="text-center py-6">
+                <h3 className="text-2xl md:text-3xl font-black uppercase tracking-tighter leading-[0.9] text-white">
+                  {title || 'Untitled Section'}
+                </h3>
+                {subtitle && (
+                  <p className="text-sm text-white/90 uppercase tracking-wide mt-2 font-medium">
+                    {subtitle}
+                  </p>
+                )}
+              </div>
+            ) : (
+              <>
+                <h3 className="text-lg font-bold uppercase tracking-wide text-foreground">
+                  {title || 'Untitled Section'}
+                </h3>
+                {subtitle && (
+                  <p className="text-xs text-muted-foreground uppercase tracking-wide mt-0.5 mb-3">
+                    {subtitle}
+                  </p>
+                )}
+              </>
             )}
 
             {/* Sister Stories carousel with inline controls */}
