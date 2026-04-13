@@ -313,6 +313,7 @@ const SortableBentoCard = ({
 export const SectionsManager = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [expandedId, setExpandedId] = useState<string | null>(null);
   const [editedSections, setEditedSections] = useState<Record<string, Section>>({});
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<Section | null>(null);
