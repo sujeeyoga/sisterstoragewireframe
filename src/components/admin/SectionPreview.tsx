@@ -353,7 +353,7 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
   // Products: use explicit productIds if set, otherwise filter by category
   const products = useMemo(() => {
     if (productIds && productIds.length > 0) {
-      return allProducts.filter((p) => productIds.includes(p.id));
+      return allProducts.filter((p) => productIds.includes(Number(p.id)));
     }
     if (!categoryFilter) return [];
     const slugs = slugsForFilter(categoryFilter);
@@ -362,19 +362,19 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
 
   // Products available to add (not already in section)
   const availableProducts = useMemo(() => {
-    const currentIds = productIds || products.map((p) => p.id);
-    return allProducts.filter((p) => !currentIds.includes(p.id));
+    const currentIds = productIds && productIds.length > 0 ? productIds : products.map((p) => Number(p.id));
+    return allProducts.filter((p) => !currentIds.includes(Number(p.id)));
   }, [allProducts, products, productIds]);
 
   const handleRemoveProduct = (productId: number) => {
     if (!onProductIdsChange) return;
-    const currentIds = productIds || products.map((p) => p.id);
+    const currentIds: number[] = productIds && productIds.length > 0 ? [...productIds] : products.map((p) => Number(p.id));
     onProductIdsChange(currentIds.filter((id) => id !== productId));
   };
 
   const handleAddProduct = (productId: number) => {
     if (!onProductIdsChange) return;
-    const currentIds = productIds || products.map((p) => p.id);
+    const currentIds: number[] = productIds && productIds.length > 0 ? [...productIds] : products.map((p) => Number(p.id));
     onProductIdsChange([...currentIds, productId]);
     setAddProductOpen(false);
   };
