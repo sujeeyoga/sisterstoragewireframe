@@ -98,15 +98,13 @@ const SortableSectionCard = ({
   isSaving,
 }: {
   section: Section;
-  editingId: string | null;
   editedSections: Record<string, Section>;
-  onEdit: (s: Section) => void;
   onSave: (id: string) => void;
-  onCancel: () => void;
   onChange: (id: string, field: keyof Section, value: any) => void;
   onDelete: (s: Section) => void;
   onDuplicate: (s: Section) => void;
   productCount: number | null;
+  isSaving: boolean;
 }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id: section.id });
@@ -118,8 +116,8 @@ const SortableSectionCard = ({
     opacity: isDragging ? 0.5 : 1,
   };
 
-  const isEditing = editingId === section.id;
   const editedSection = editedSections[section.id] || section;
+  const hasChanges = JSON.stringify(editedSection) !== JSON.stringify(section);
 
   return (
     <div ref={setNodeRef} style={style}>
