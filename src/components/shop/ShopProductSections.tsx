@@ -5,37 +5,58 @@ import SimpleProductCard from "./SimpleProductCard";
 import LaunchCardsSection from "./LaunchCardsSection";
 import CultureBagPromo from "./CultureBagPromo";
 import { useShopSections, slugsForFilter } from "@/hooks/useShopSections";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 
 interface ShopProductSectionsProps {
   products: Product[];
 }
 
-const ShopHeroBanner = ({ title, subtitle, bgColor }: { title: string; subtitle: string | null; bgColor: string | null }) => (
-  <section
-    id="section-hero"
-    className={cn("w-full relative overflow-hidden", bgColor?.startsWith('bg-') ? bgColor : '')}
-    style={bgColor && !bgColor.startsWith('bg-') ? { backgroundColor: bgColor } : undefined}
-  >
-    <img
-      src="https://sisterstorage.com/assets/hero-bg-main-Ck3XcIBP.jpg"
-      alt="Sister Storage lifestyle"
-      className="absolute inset-0 w-full h-full object-cover"
-      loading="eager"
-    />
-    <div className="absolute inset-0 bg-black/30" />
-    <div className="relative z-10 container-custom text-center text-white py-20 md:py-32">
-      <h2 className="text-4xl md:text-6xl lg:text-7xl font-black uppercase tracking-tighter leading-[0.9] mb-4 drop-shadow-lg">
-        {title}
-      </h2>
-      {subtitle && (
-        <p className="text-lg md:text-xl lg:text-2xl font-medium uppercase tracking-wide opacity-90 drop-shadow">
-          {subtitle}
-        </p>
-      )}
-    </div>
-  </section>
-);
+const DEFAULT_HERO_IMAGE = 'https://sisterstorage.com/assets/hero-bg-main-Ck3XcIBP.jpg';
+
+const ShopHeroBanner = ({ title, subtitle, bgColor }: { title: string; subtitle: string | null; bgColor: string | null }) => {
+  const { data: heroImageUrl } = useQuery({
+    queryKey: ['shop-hero-image'],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('store_settings')
+        .select('setting_value')
+        .eq('setting_key', 'shop_hero_image')
+        .maybeSingle();
+      const val = data?.setting_value;
+      if (typeof val === 'object' && val !== null && 'url' in (val as any)) return (val as any).url as string;
+      return DEFAULT_HERO_IMAGE;
+    },
+    staleTime: 60000,
+  });
+
+  return (
+    <section
+      id="section-hero"
+      className={cn("w-full relative overflow-hidden", bgColor?.startsWith('bg-') ? bgColor : '')}
+      style={bgColor && !bgColor.startsWith('bg-') ? { backgroundColor: bgColor } : undefined}
+    >
+      <img
+        src={heroImageUrl || DEFAULT_HERO_IMAGE}
+        alt="Sister Storage lifestyle"
+        className="absolute inset-0 w-full h-full object-cover"
+        loading="eager"
+      />
+      <div className="absolute inset-0 bg-black/30" />
+      <div className="relative z-10 container-custom text-center text-white py-20 md:py-32">
+        <h2 className="text-4xl md:text-6xl lg:text-7xl font-black uppercase tracking-tighter leading-[0.9] mb-4 drop-shadow-lg">
+          {title}
+        </h2>
+        {subtitle && (
+          <p className="text-lg md:text-xl lg:text-2xl font-medium uppercase tracking-wide opacity-90 drop-shadow">
+            {subtitle}
+          </p>
+        )}
+      </div>
+    </section>
+  );
+};
 
 const ProductGrid = ({
   section,

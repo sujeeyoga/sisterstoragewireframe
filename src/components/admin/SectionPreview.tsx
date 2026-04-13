@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { Eye, EyeOff, ChevronDown, ChevronUp, Play, Plus, Edit, Trash2, X, Save } from 'lucide-react';
+import { Eye, EyeOff, ChevronDown, ChevronUp, Play, Plus, Edit, Trash2, X, Save, Upload, ImageIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { VideoUploaderInline } from './VideoUploaderInline';
@@ -263,6 +263,72 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
   const [editingStory, setEditingStory] = useState<any | null>(null);
   const [formData, setFormData] = useState<StoryFormData>({ ...emptyForm });
   const [saving, setSaving] = useState(false);
+  const [heroImageUploading, setHeroImageUploading] = useState(false);
+
+  // Fetch hero image URL from store_settings
+  const { data: heroImageUrl, refetch: refetchHeroImage } = useQuery({
+    queryKey: ['shop-hero-image'],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('store_settings')
+        .select('setting_value')
+        .eq('setting_key', 'shop_hero_image')
+        .maybeSingle();
+      const val = data?.setting_value;
+      if (typeof val === 'object' && val !== null && 'url' in (val as any)) return (val as any).url as string;
+      return 'https://sisterstorage.com/assets/hero-bg-main-Ck3XcIBP.jpg';
+    },
+    enabled: isHero,
+  });
+
+  const handleHeroImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setHeroImageUploading(true);
+    try {
+      const filePath = `hero/${Date.now()}-${file.name}`;
+      const { error: uploadError } = await supabase.storage.from('images').upload(filePath, file, { upsert: true });
+      if (uploadError) throw uploadError;
+      const { data: urlData } = supabase.storage.from('images').getPublicUrl(filePath);
+      const newUrl = urlData.publicUrl;
+
+      // Upsert into store_settings
+      const { data: existing } = await supabase
+        .from('store_settings')
+        .select('id')
+        .eq('setting_key', 'shop_hero_image')
+        .maybeSingle();
+
+      if (existing) {
+        await supabase.from('store_settings').update({ setting_value: { url: newUrl } as any, enabled: true }).eq('setting_key', 'shop_hero_image');
+      } else {
+        await supabase.from('store_settings').insert([{ setting_key: 'shop_hero_image', setting_value: { url: newUrl } as any, enabled: true }]);
+      }
+
+      toast({ title: 'Hero image updated' });
+      refetchHeroImage();
+    } catch (err: any) {
+      toast({ title: 'Upload failed', description: err.message, variant: 'destructive' });
+    } finally {
+      setHeroImageUploading(false);
+    }
+  };
+
+  const handleHeroImageUrlChange = async (url: string) => {
+    const { data: existing } = await supabase
+      .from('store_settings')
+      .select('id')
+      .eq('setting_key', 'shop_hero_image')
+      .maybeSingle();
+
+    if (existing) {
+      await supabase.from('store_settings').update({ setting_value: { url } as any, enabled: true }).eq('setting_key', 'shop_hero_image');
+    } else {
+      await supabase.from('store_settings').insert([{ setting_key: 'shop_hero_image', setting_value: { url } as any, enabled: true }]);
+    }
+    toast({ title: 'Hero image URL updated' });
+    refetchHeroImage();
+  };
 
   const { data: sisterStories = [], refetch: refetchStories } = useQuery({
     queryKey: ['sister-stories-preview'],
@@ -383,22 +449,59 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
 
             {/* Hero preview */}
             {isHero ? (
-              <div className="relative text-center py-10 rounded-lg overflow-hidden">
-                <img
-                  src="https://sisterstorage.com/assets/hero-bg-main-Ck3XcIBP.jpg"
-                  alt="Hero background"
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-black/30" />
-                <div className="relative z-10">
-                  <h3 className="text-2xl md:text-3xl font-black uppercase tracking-tighter leading-[0.9] text-white drop-shadow-lg">
-                    {title || 'Untitled Section'}
-                  </h3>
-                  {subtitle && (
-                    <p className="text-sm text-white/90 uppercase tracking-wide mt-2 font-medium drop-shadow">
-                      {subtitle}
-                    </p>
-                  )}
+              <div className="space-y-3">
+                <div className="relative text-center py-10 rounded-lg overflow-hidden">
+                  <img
+                    src={heroImageUrl || 'https://sisterstorage.com/assets/hero-bg-main-Ck3XcIBP.jpg'}
+                    alt="Hero background"
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-black/30" />
+                  <div className="relative z-10">
+                    <h3 className="text-2xl md:text-3xl font-black uppercase tracking-tighter leading-[0.9] text-white drop-shadow-lg">
+                      {title || 'Untitled Section'}
+                    </h3>
+                    {subtitle && (
+                      <p className="text-sm text-white/90 uppercase tracking-wide mt-2 font-medium drop-shadow">
+                        {subtitle}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Hero image edit controls */}
+                <div className="flex items-center gap-2">
+                  <label className="cursor-pointer">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleHeroImageUpload}
+                      disabled={heroImageUploading}
+                    />
+                    <Button variant="outline" size="sm" asChild disabled={heroImageUploading}>
+                      <span>
+                        <Upload className="h-3.5 w-3.5 mr-1" />
+                        {heroImageUploading ? 'Uploading...' : 'Change Image'}
+                      </span>
+                    </Button>
+                  </label>
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs">Image URL</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      value={heroImageUrl || ''}
+                      placeholder="https://..."
+                      className="text-xs h-8"
+                      onBlur={(e) => {
+                        if (e.target.value && e.target.value !== heroImageUrl) {
+                          handleHeroImageUrlChange(e.target.value);
+                        }
+                      }}
+                      onChange={() => {}}
+                    />
+                  </div>
                 </div>
               </div>
             ) : (
