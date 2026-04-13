@@ -1,9 +1,11 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { useProducts } from '@/hooks/useProducts';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 import { slugsForFilter } from '@/hooks/useShopSections';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Button } from '@/components/ui/button';
-import { Eye, EyeOff, ChevronDown, ChevronUp } from 'lucide-react';
+import { Eye, EyeOff, ChevronDown, ChevronUp, Play } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface SectionPreviewProps {
@@ -12,6 +14,7 @@ interface SectionPreviewProps {
   categoryFilter: string | null;
   layoutColumns: number;
   visible: boolean;
+  sectionName?: string;
 }
 
 const colsClass: Record<number, string> = {
@@ -20,15 +23,77 @@ const colsClass: Record<number, string> = {
   4: 'grid-cols-4',
 };
 
+const SisterStoryCard = ({ story }: { story: any }) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [playing, setPlaying] = useState(false);
+
+  return (
+    <div
+      className="relative flex-shrink-0 w-24 rounded-lg overflow-hidden border bg-card"
+      style={{ aspectRatio: '9/16' }}
+      onMouseEnter={() => {
+        videoRef.current?.play();
+        setPlaying(true);
+      }}
+      onMouseLeave={() => {
+        videoRef.current?.pause();
+        setPlaying(false);
+      }}
+    >
+      {story.thumbnail_url ? (
+        <img
+          src={story.thumbnail_url}
+          alt={story.title}
+          className={cn('absolute inset-0 w-full h-full object-cover', playing && 'opacity-0')}
+        />
+      ) : null}
+      <video
+        ref={videoRef}
+        src={story.video_url}
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        className="absolute inset-0 w-full h-full object-cover"
+      />
+      {!playing && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+          <Play className="h-4 w-4 text-white fill-white" />
+        </div>
+      )}
+      <div className="absolute bottom-0 inset-x-0 p-1.5 bg-gradient-to-t from-black/70 to-transparent">
+        <p className="text-[10px] font-medium text-white truncate">{story.author}</p>
+      </div>
+    </div>
+  );
+};
+
 export const SectionPreview: React.FC<SectionPreviewProps> = ({
   title,
   subtitle,
   categoryFilter,
   layoutColumns,
   visible,
+  sectionName,
 }) => {
   const [open, setOpen] = useState(true);
   const { data: allProducts = [] } = useProducts();
+
+  const isStyledBySisters = sectionName === 'styled-by-sisters';
+
+  const { data: sisterStories = [] } = useQuery({
+    queryKey: ['sister-stories-preview'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('sister_stories')
+        .select('*')
+        .eq('is_active', true)
+        .order('display_order');
+      if (error) throw error;
+      return data;
+    },
+    enabled: isStyledBySisters,
+  });
 
   const products = useMemo(() => {
     if (!categoryFilter) return [];
@@ -60,7 +125,6 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
             </div>
           )}
 
-          {/* Title / Subtitle */}
           <h3 className="text-lg font-bold uppercase tracking-wide text-foreground">
             {title || 'Untitled Section'}
           </h3>
@@ -70,8 +134,20 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
             </p>
           )}
 
-          {/* Product Grid */}
-          {products.length > 0 ? (
+          {/* Sister Stories carousel */}
+          {isStyledBySisters ? (
+            sisterStories.length > 0 ? (
+              <div className="flex gap-3 overflow-x-auto pb-2 mt-2">
+                {sisterStories.map((story) => (
+                  <SisterStoryCard key={story.id} story={story} />
+                ))}
+              </div>
+            ) : (
+              <p className="text-xs text-muted-foreground italic py-4 text-center">
+                No active sister stories found
+              </p>
+            )
+          ) : products.length > 0 ? (
             <div className={cn('grid gap-3', colsClass[layoutColumns] || 'grid-cols-3')}>
               {products.slice(0, layoutColumns * 2).map((product) => (
                 <div
