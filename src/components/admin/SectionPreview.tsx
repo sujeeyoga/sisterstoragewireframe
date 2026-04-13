@@ -245,8 +245,12 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
   visible,
   sectionName,
   backgroundColor,
+  sectionId,
+  productIds,
+  onProductIdsChange,
 }) => {
   const [open, setOpen] = useState(true);
+  const [addProductOpen, setAddProductOpen] = useState(false);
   const { data: allProducts = [] } = useProducts();
   const { toast } = useToast();
   const queryClient = useQueryClient();
