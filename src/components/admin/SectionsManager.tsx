@@ -103,6 +103,7 @@ const SortableSectionCard = ({
   editedSections: Record<string, Section>;
   onSave: (id: string) => void;
   onChange: (id: string, field: keyof Section, value: any) => void;
+  onReset: (id: string) => void;
   onDelete: (s: Section) => void;
   onDuplicate: (s: Section) => void;
   productCount: number | null;
