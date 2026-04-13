@@ -11,6 +11,7 @@ export interface ShopSection {
   visible: boolean;
   layout_columns: number | null;
   category_filter: string | null;
+  product_ids: number[] | null;
 }
 
 // Map DB category_filter display names to product category slugs
