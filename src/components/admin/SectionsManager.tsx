@@ -181,7 +181,6 @@ const SortableSectionCard = ({
               <Input
                 value={editedSection.title}
                 onChange={(e) => onChange(section.id, 'title', e.target.value)}
-                disabled={!isEditing}
               />
             </div>
             <div className="space-y-2">
@@ -189,7 +188,6 @@ const SortableSectionCard = ({
               <Input
                 value={editedSection.subtitle || ''}
                 onChange={(e) => onChange(section.id, 'subtitle', e.target.value)}
-                disabled={!isEditing}
               />
             </div>
             <div className="space-y-2">
@@ -197,7 +195,6 @@ const SortableSectionCard = ({
               <Input
                 value={editedSection.category_filter || ''}
                 onChange={(e) => onChange(section.id, 'category_filter', e.target.value)}
-                disabled={!isEditing}
               />
             </div>
             <div className="space-y-2">
@@ -206,7 +203,6 @@ const SortableSectionCard = ({
                 type="number"
                 value={editedSection.layout_columns}
                 onChange={(e) => onChange(section.id, 'layout_columns', parseInt(e.target.value))}
-                disabled={!isEditing}
               />
             </div>
             <div className="space-y-2">
@@ -216,7 +212,6 @@ const SortableSectionCard = ({
                   <Button
                     variant="outline"
                     className="w-full justify-start gap-2"
-                    disabled={!isEditing}
                   >
                     <span
                       className="h-4 w-4 rounded border"
@@ -254,23 +249,12 @@ const SortableSectionCard = ({
             </div>
           </div>
 
-          <div className="flex gap-2">
-            {isEditing ? (
-              <>
-                <Button onClick={() => onSave(section.id)} size="sm">
-                  <Save className="mr-2 h-4 w-4" />
-                  Save Changes
-                </Button>
-                <Button variant="outline" onClick={onCancel} size="sm">
-                  Cancel
-                </Button>
-              </>
-            ) : (
-              <Button variant="outline" onClick={() => onEdit(section)} size="sm">
-                Edit Section
-              </Button>
-            )}
-          </div>
+          {hasChanges && (
+            <Button onClick={() => onSave(section.id)} size="sm" disabled={isSaving}>
+              <Save className="mr-2 h-4 w-4" />
+              {isSaving ? 'Saving...' : 'Save & Publish'}
+            </Button>
+          )}
 
           <SectionPreview
             title={editedSection.title}
