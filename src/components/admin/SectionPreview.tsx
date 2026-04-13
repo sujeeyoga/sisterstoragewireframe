@@ -263,6 +263,72 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
   const [editingStory, setEditingStory] = useState<any | null>(null);
   const [formData, setFormData] = useState<StoryFormData>({ ...emptyForm });
   const [saving, setSaving] = useState(false);
+  const [heroImageUploading, setHeroImageUploading] = useState(false);
+
+  // Fetch hero image URL from store_settings
+  const { data: heroImageUrl, refetch: refetchHeroImage } = useQuery({
+    queryKey: ['shop-hero-image'],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('store_settings')
+        .select('setting_value')
+        .eq('setting_key', 'shop_hero_image')
+        .maybeSingle();
+      const val = data?.setting_value;
+      if (typeof val === 'object' && val !== null && 'url' in (val as any)) return (val as any).url as string;
+      return 'https://sisterstorage.com/assets/hero-bg-main-Ck3XcIBP.jpg';
+    },
+    enabled: isHero,
+  });
+
+  const handleHeroImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setHeroImageUploading(true);
+    try {
+      const filePath = `hero/${Date.now()}-${file.name}`;
+      const { error: uploadError } = await supabase.storage.from('images').upload(filePath, file, { upsert: true });
+      if (uploadError) throw uploadError;
+      const { data: urlData } = supabase.storage.from('images').getPublicUrl(filePath);
+      const newUrl = urlData.publicUrl;
+
+      // Upsert into store_settings
+      const { data: existing } = await supabase
+        .from('store_settings')
+        .select('id')
+        .eq('setting_key', 'shop_hero_image')
+        .maybeSingle();
+
+      if (existing) {
+        await supabase.from('store_settings').update({ setting_value: { url: newUrl } as any, enabled: true }).eq('setting_key', 'shop_hero_image');
+      } else {
+        await supabase.from('store_settings').insert([{ setting_key: 'shop_hero_image', setting_value: { url: newUrl } as any, enabled: true }]);
+      }
+
+      toast({ title: 'Hero image updated' });
+      refetchHeroImage();
+    } catch (err: any) {
+      toast({ title: 'Upload failed', description: err.message, variant: 'destructive' });
+    } finally {
+      setHeroImageUploading(false);
+    }
+  };
+
+  const handleHeroImageUrlChange = async (url: string) => {
+    const { data: existing } = await supabase
+      .from('store_settings')
+      .select('id')
+      .eq('setting_key', 'shop_hero_image')
+      .maybeSingle();
+
+    if (existing) {
+      await supabase.from('store_settings').update({ setting_value: { url } as any, enabled: true }).eq('setting_key', 'shop_hero_image');
+    } else {
+      await supabase.from('store_settings').insert([{ setting_key: 'shop_hero_image', setting_value: { url } as any, enabled: true }]);
+    }
+    toast({ title: 'Hero image URL updated' });
+    refetchHeroImage();
+  };
 
   const { data: sisterStories = [], refetch: refetchStories } = useQuery({
     queryKey: ['sister-stories-preview'],
