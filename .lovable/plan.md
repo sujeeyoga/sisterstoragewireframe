@@ -1,32 +1,47 @@
 
 
-## Problem
+## Plan: Enhanced Sections Manager
 
-The global `overflow-x: hidden` on `html` and `body` (added to fix horizontal elastic scrolling) is hiding elements in the admin dashboard. This is too aggressive — it clips the sidebar, popovers, and any content that relies on overflow being visible.
+### Overview
+Add 7 features to the Sections Manager: drag-and-drop reordering, add/delete sections, background color picker, duplicate section, product count badge, bulk visibility toggle, and link to shop page.
 
-## Solution
+### Technical Details
 
-Remove the global `overflow-x: hidden` from `html, body` and instead apply it only to the main content area of the admin dashboard, or scope it to non-admin pages.
+**1. Install @dnd-kit (drag-and-drop)**
+- Add `@dnd-kit/core` and `@dnd-kit/sortable` + `@dnd-kit/utilities`
+- Wrap sections list in `DndContext` + `SortableContext`
+- Each card becomes a sortable item; on `dragEnd`, recompute `display_order` values and batch-update all changed rows in `shop_sections`
+- Remove the manual "Display Order" number input field
 
-### Changes
+**2. Add/Delete sections**
+- Header toolbar: "Add Section" button opens a dialog with fields for `name`, `title`, `subtitle`, `category_filter`, `layout_columns`
+- Insert into `shop_sections` with `display_order` set to max+1
+- Each card gets a "Delete" button (with confirmation dialog) that deletes from `shop_sections`
 
-**1. `src/index.css`** — Remove the blanket `overflow-x: hidden` from `html, body`
+**3. Background color picker**
+- Replace the raw text input with a popover containing preset Tailwind bg color swatches (e.g. `bg-background`, `bg-white`, `bg-gray-50`, `bg-stone-100`, `bg-pink-50`, `bg-orange-50`) plus a custom hex input
+- Show a small color swatch preview next to the label
 
-Remove lines 17-19:
-```css
-html, body {
-  overflow-x: hidden;
-}
-```
+**4. Duplicate section**
+- "Duplicate" button on each card
+- Inserts a copy with `name` appended with " (copy)", `display_order` = max+1, same field values
 
-**2. `src/components/admin/AdminDashboard.tsx`** — Add `overflow-x-hidden` to the dashboard's root container div (line 353) so only the dashboard content prevents horizontal scroll, not the entire page.
+**5. Product count badge**
+- In `SectionPreview`, use the already-fetched `products` array length to render a `Badge` next to the section title showing e.g. "4 products"
+- For `styled-by-sisters`, show story count instead
 
-Change the container div to:
-```tsx
-<div className="container mx-auto p-4 md:p-6 lg:p-8 space-y-6 md:space-y-8 max-w-[1600px] overflow-x-hidden">
-```
+**6. Bulk visibility toggle**
+- Add "Hide All" / "Show All" buttons in the page header
+- Batch-update all `shop_sections` rows' `visible` field
 
-**3. `src/components/admin/AdminLayout.tsx`** — Add `overflow-x-hidden` to the `<main>` element to prevent horizontal scroll within the admin content area without affecting the sidebar or global layout.
+**7. Link to shop page**
+- Add an "View on Shop" button/link on each card
+- Links to `/shop#section-{name}` (using the section `name` as an anchor)
 
-This approach scopes the overflow restriction to the content area only, preserving sidebar visibility and popover rendering.
+### Files Modified
+- `package.json` — add `@dnd-kit/core`, `@dnd-kit/sortable`, `@dnd-kit/utilities`
+- `src/components/admin/SectionsManager.tsx` — major rewrite: DnD wrapper, add/delete/duplicate mutations, bulk toggle, header toolbar, color picker, view-on-shop link, product count badge
+- `src/components/admin/SectionPreview.tsx` — expose product/story count for badge display
+
+### No database changes needed — all features use the existing `shop_sections` table schema.
 
