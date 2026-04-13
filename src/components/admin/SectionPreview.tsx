@@ -249,11 +249,11 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
   const queryClient = useQueryClient();
 
   const isHero = sectionName === 'hero';
+  const isStyledBySisters = sectionName === 'styled-by-sisters';
 
   // Resolve bg color for inline style
   const bgStyle = React.useMemo(() => {
     if (!backgroundColor) return {};
-    // Extract hex from bg-[#xxx] pattern
     const hexMatch = backgroundColor.match(/bg-\[([^\]]+)\]/);
     if (hexMatch) return { backgroundColor: hexMatch[1] };
     if (backgroundColor.startsWith('#')) return { backgroundColor };
