@@ -368,6 +368,14 @@ export const SectionsManager = () => {
     if (section) updateMutation.mutate(section);
   };
 
+  const handleReset = (id: string) => {
+    setEditedSections((prev) => {
+      const next = { ...prev };
+      delete next[id];
+      return next;
+    });
+  };
+
   const handleChange = (id: string, field: keyof Section, value: any) => {
     setEditedSections((prev) => {
       const current = prev[id] || sections.find((s) => s.id === id)!;
