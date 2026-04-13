@@ -93,6 +93,7 @@ const SortableSectionCard = ({
   editedSections,
   onSave,
   onChange,
+  onReset,
   onDelete,
   onDuplicate,
   productCount,
@@ -102,6 +103,7 @@ const SortableSectionCard = ({
   editedSections: Record<string, Section>;
   onSave: (id: string) => void;
   onChange: (id: string, field: keyof Section, value: any) => void;
+  onReset: (id: string) => void;
   onDelete: (s: Section) => void;
   onDuplicate: (s: Section) => void;
   productCount: number | null;
@@ -251,10 +253,15 @@ const SortableSectionCard = ({
           </div>
 
           {hasChanges && (
-            <Button onClick={() => onSave(section.id)} size="sm" disabled={isSaving}>
-              <Save className="mr-2 h-4 w-4" />
-              {isSaving ? 'Saving...' : 'Save & Publish'}
-            </Button>
+            <div className="flex gap-2">
+              <Button onClick={() => onSave(section.id)} size="sm" disabled={isSaving}>
+                <Save className="mr-2 h-4 w-4" />
+                {isSaving ? 'Saving...' : 'Save & Publish'}
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => onReset(section.id)}>
+                Undo Changes
+              </Button>
+            </div>
           )}
 
           <SectionPreview
@@ -359,6 +366,14 @@ export const SectionsManager = () => {
   const handleSave = (id: string) => {
     const section = editedSections[id];
     if (section) updateMutation.mutate(section);
+  };
+
+  const handleReset = (id: string) => {
+    setEditedSections((prev) => {
+      const next = { ...prev };
+      delete next[id];
+      return next;
+    });
   };
 
   const handleChange = (id: string, field: keyof Section, value: any) => {
@@ -489,6 +504,7 @@ export const SectionsManager = () => {
                 editedSections={editedSections}
                 onSave={handleSave}
                 onChange={handleChange}
+                onReset={handleReset}
                 onDelete={setDeleteTarget}
                 onDuplicate={handleDuplicate}
                 productCount={getProductCount(section)}
