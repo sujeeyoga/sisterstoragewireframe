@@ -28,6 +28,12 @@ const menuGroups = [
       { title: 'Profit Analytics', url: '/admin/analytics/profit', icon: Wallet, end: false },
       { title: 'Visitor Analytics', url: '/admin/analytics/visitors', icon: Globe, end: false },
       { title: 'Shipping Analytics', url: '/admin/analytics/shipping', icon: Ship, end: false },
+      { title: 'Conversion', url: '/admin/analytics/conversion', icon: TrendingUp, end: false },
+      { title: 'Sales Reports', url: '/admin/analytics/sales', icon: DollarSign, end: false },
+      { title: 'Product Reports', url: '/admin/analytics/products', icon: Package, end: false },
+      { title: 'Customer Reports', url: '/admin/analytics/customers', icon: Users, end: false },
+      { title: 'Abandoned Carts', url: '/admin/analytics/abandoned-checkouts', icon: ShoppingCart, end: false },
+      { title: 'Active Carts', url: '/admin/analytics/active-carts', icon: ShoppingCart, end: false },
     ]
   },
   {
@@ -40,7 +46,11 @@ const menuGroups = [
       { title: 'Reviews', url: '/admin/reviews', icon: Star, end: false },
       { title: 'Flash Sales', url: '/admin/flash-sales', icon: Zap, end: false },
       { title: 'Shipping Thresholds', url: '/admin/shipping-thresholds', icon: Truck, end: false },
+      { title: 'Shipping Zones', url: '/admin/shipping-zones', icon: MapPin, end: false },
+      { title: 'Shipping', url: '/admin/shipping', icon: Ship, end: false },
       { title: 'Bulk Shipping Refund', url: '/admin/bulk-shipping-refund', icon: DollarSign, end: false },
+      { title: 'Launch Cards', url: '/admin/launch-cards', icon: Sparkles, end: false },
+      { title: 'Waitlist Signups', url: '/admin/waitlist-signups', icon: Users, end: false },
     ]
   },
   {
@@ -50,7 +60,10 @@ const menuGroups = [
       { title: 'Page Content', url: '/admin/page-content', icon: Film, end: false },
       { title: 'Sections', url: '/admin/sections', icon: Layout, end: false },
       { title: 'Site Content', url: '/admin/texts', icon: Type, end: false },
+      { title: 'Hero Images', url: '/admin/hero-images', icon: Image, end: false },
+      { title: 'Sister Stories', url: '/admin/sister-stories', icon: Video, end: false },
       { title: 'QR Codes', url: '/admin/qr-codes', icon: QrCode, end: false },
+      { title: 'Uploads', url: '/admin/uploads', icon: FolderOpen, end: false },
     ]
   },
   {
@@ -58,8 +71,11 @@ const menuGroups = [
     items: [
       { title: 'Admin Settings', url: '/admin/admin-settings', icon: Settings, end: false },
       { title: 'Store Settings', url: '/admin/store-settings', icon: Package, end: false },
+      { title: 'Shipping Settings', url: '/admin/shipping-settings', icon: Truck, end: false },
       { title: 'Email Testing', url: '/admin/email-testing', icon: Mail, end: false },
       { title: 'Location Debug', url: '/admin/location-debug', icon: MapPin, end: false },
+      { title: 'Sync', url: '/admin/sync', icon: RefreshCw, end: false },
+      { title: 'Tracking Backfill', url: '/admin/tracking-backfill', icon: PackageCheck, end: false },
     ]
   },
 ];
