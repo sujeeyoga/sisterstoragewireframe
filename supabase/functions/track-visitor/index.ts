@@ -195,14 +195,17 @@ Deno.serve(async (req) => {
     }
   } catch (error) {
     console.error('Error tracking visitor:', error);
+    // Fail silently with 200 so the client doesn't surface a blank screen / 500.
+    // The visitor_analytics table may not exist yet (e.g. after a DB reset).
     return new Response(
       JSON.stringify({
         success: false,
         error: error.message,
+        skipped: true,
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 500,
+        status: 200,
       }
     );
   }
