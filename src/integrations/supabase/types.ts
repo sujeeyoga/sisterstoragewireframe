@@ -220,7 +220,7 @@ export type Database = {
           id: string
           name: string
           priority: number | null
-          product_ids: string[] | null
+          product_ids: number[] | null
           starts_at: string
           updated_at: string | null
         }
@@ -237,7 +237,7 @@ export type Database = {
           id?: string
           name: string
           priority?: number | null
-          product_ids?: string[] | null
+          product_ids?: number[] | null
           starts_at: string
           updated_at?: string | null
         }
@@ -254,7 +254,7 @@ export type Database = {
           id?: string
           name?: string
           priority?: number | null
-          product_ids?: string[] | null
+          product_ids?: number[] | null
           starts_at?: string
           updated_at?: string | null
         }
@@ -941,7 +941,7 @@ export type Database = {
           id: string
           layout_columns: number | null
           name: string
-          product_ids: string[] | null
+          product_ids: number[] | null
           subtitle: string | null
           title: string
           updated_at: string | null
@@ -955,7 +955,7 @@ export type Database = {
           id?: string
           layout_columns?: number | null
           name: string
-          product_ids?: string[] | null
+          product_ids?: number[] | null
           subtitle?: string | null
           title: string
           updated_at?: string | null
@@ -969,7 +969,7 @@ export type Database = {
           id?: string
           layout_columns?: number | null
           name?: string
-          product_ids?: string[] | null
+          product_ids?: number[] | null
           subtitle?: string | null
           title?: string
           updated_at?: string | null
@@ -1552,7 +1552,18 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      customer_list: {
+        Row: {
+          customer_email: string | null
+          customer_name: string | null
+          customer_phone: string | null
+          first_order_date: string | null
+          last_order_date: string | null
+          order_count: number | null
+          total_spent: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       add_admin_by_email: { Args: { user_email: string }; Returns: Json }
