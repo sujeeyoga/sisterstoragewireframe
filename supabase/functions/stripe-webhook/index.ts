@@ -314,7 +314,33 @@ serve(async (req) => {
         }).catch((error) => {
           console.error("❌ CRITICAL: Exception while invoking send-email function:", error);
         });
-        
+
+        // Sync order to Shopify (fire-and-forget)
+        console.log("🛍️ Syncing order to Shopify...");
+        supabase.functions.invoke('shopify-create-order', {
+          body: {
+            orderNumber: emailData.orderNumber,
+            customerEmail,
+            customerName: emailData.customerName,
+            customerPhone: session.metadata?.customerPhone || null,
+            items: emailData.items,
+            subtotal: finalSubtotal,
+            shipping: emailData.shipping,
+            tax: emailData.tax,
+            total: emailData.total,
+            shippingAddress: emailData.shippingAddress,
+            stripeSessionId: session.id,
+          },
+        }).then(({ data: shopRes, error: shopErr }) => {
+          if (shopErr) {
+            console.error("❌ Shopify sync failed:", shopErr);
+          } else {
+            console.log("✅ Shopify sync result:", shopRes);
+          }
+        }).catch((err) => {
+          console.error("❌ Shopify sync exception:", err);
+        });
+
         // Mark any abandoned carts as recovered
         console.log("🛒 Checking for abandoned carts to mark as recovered...");
         const { data: abandonedCarts, error: cartFetchError } = await supabase
