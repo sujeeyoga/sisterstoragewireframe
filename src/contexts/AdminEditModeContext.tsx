@@ -59,7 +59,7 @@ export function AdminEditModeProvider({ children }: { children: ReactNode }) {
   const updateSiteText = async (id: string, field: string, value: string) => {
     const { error } = await supabase
       .from('site_texts')
-      .update({ [field]: value, updated_at: new Date().toISOString() })
+      .update({ [field]: value, updated_at: new Date().toISOString() } as any)
       .eq('id', id);
 
     if (error) {
