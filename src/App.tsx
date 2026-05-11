@@ -87,6 +87,8 @@ const App = () => {
             <Routes>
               {/* Public routes - always accessible */}
               <Route path="/admin-setup" element={<AdminSetup />} />
+              <Route path="/admin-signup" element={<AdminSignup />} />
+              <Route path="/signup" element={<AdminSignup />} />
               <Route path="/password-reset" element={<PasswordReset />} />
               <Route path="/payment-success" element={<PageTransition><PaymentSuccess /></PageTransition>} />
               
