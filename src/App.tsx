@@ -38,7 +38,6 @@ import PageTransition from "./components/layout/PageTransition";
 import ComingSoon from "./pages/ComingSoon";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import AdminSetup from "./pages/AdminSetup";
-import AdminSignup from "./pages/AdminSignup";
 import PasswordReset from "./pages/PasswordReset";
 import { ProtectedRoutes } from "./components/auth/ProtectedRoutes";
 import { AdminProtectedRoute } from "./components/auth/AdminProtectedRoute";
@@ -87,8 +86,6 @@ const App = () => {
             <Routes>
               {/* Public routes - always accessible */}
               <Route path="/admin-setup" element={<AdminSetup />} />
-              <Route path="/admin-signup" element={<AdminSignup />} />
-              <Route path="/signup" element={<AdminSignup />} />
               <Route path="/password-reset" element={<PasswordReset />} />
               <Route path="/payment-success" element={<PageTransition><PaymentSuccess /></PageTransition>} />
               

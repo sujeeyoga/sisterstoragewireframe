@@ -1,1 +1,0 @@
-ALTER TABLE public.shop_sections ADD COLUMN product_ids integer[] DEFAULT NULL;

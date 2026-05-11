@@ -145,10 +145,7 @@ Deno.serve(async (req: Request) => {
         .from("woocommerce_products")
         .upsert(rows, { onConflict: "id" });
 
-      if (upsertError) {
-        console.error("Product upsert error:", JSON.stringify(upsertError));
-        throw new Error(`Product upsert failed: ${upsertError.message ?? JSON.stringify(upsertError)}`);
-      }
+      if (upsertError) throw upsertError;
 
       productsProcessed += rows.length;
 
