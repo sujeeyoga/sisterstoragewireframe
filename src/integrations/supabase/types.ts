@@ -1567,6 +1567,7 @@ export type Database = {
     }
     Functions: {
       add_admin_by_email: { Args: { user_email: string }; Returns: Json }
+      claim_first_admin: { Args: never; Returns: Json }
       cleanup_old_active_carts: { Args: never; Returns: undefined }
       delete_old_visitor_analytics: { Args: never; Returns: undefined }
       get_admin_users: {
