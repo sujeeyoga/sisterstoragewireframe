@@ -163,6 +163,11 @@ serve(async (req) => {
               .eq('id', order.id);
           }
         }
+      } catch (err) {
+        console.error(`Error processing order ${order.id}:`, err);
+        errorCount++;
+      }
+    }
 
     console.log(`Sync complete. Updated: ${updatedCount}, Notified: ${notifiedCount}, Errors: ${errorCount}`);
 
