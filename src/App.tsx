@@ -38,6 +38,7 @@ import PageTransition from "./components/layout/PageTransition";
 import ComingSoon from "./pages/ComingSoon";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import AdminSetup from "./pages/AdminSetup";
+import AdminSignup from "./pages/AdminSignup";
 import PasswordReset from "./pages/PasswordReset";
 import { ProtectedRoutes } from "./components/auth/ProtectedRoutes";
 import { AdminProtectedRoute } from "./components/auth/AdminProtectedRoute";
