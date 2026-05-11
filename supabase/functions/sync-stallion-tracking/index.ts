@@ -117,49 +117,45 @@ serve(async (req) => {
         
         if (isInTransit && trackingToUse && !order.shipping_notification_sent_at) {
           console.log(`Sending shipping notification for order ${order.id}`);
-          
-          // Prepare notification data based on order source
-          // Use 'carrier' field to match send-shipping-notification interface
-          let notificationData;
-          
+
+          let invokeError: any = null;
+
           if (order.source === 'stripe') {
-            notificationData = {
-              orderId: order.id,
-              orderNumber: order.order_number,
-              customerEmail: order.customer_email,
-              customerName: order.customer_name,
-              trackingNumber: trackingToUse,
-              carrier: 'Stallion Express', // Always Stallion for this sync function
-              shippingAddress: order.shipping_address,
-              items: order.items,
-              source: 'stripe'
-            };
+            // Push fulfillment to Shopify; Shopify emails the customer
+            const { error } = await supabaseAdmin.functions.invoke('shopify-fulfill-order', {
+              body: {
+                orderNumber: order.order_number,
+                trackingNumber: trackingToUse,
+                trackingCompany: 'Stallion Express',
+                notifyCustomer: true,
+              },
+            });
+            invokeError = error;
           } else {
             const billing = order.billing as Record<string, string> | null;
-            notificationData = {
+            const notificationData = {
               orderId: order.id,
               orderNumber: order.id.toString(),
               customerEmail: billing?.email,
               customerName: `${billing?.first_name || ''} ${billing?.last_name || ''}`.trim(),
               trackingNumber: trackingToUse,
-              carrier: 'Stallion Express', // Always Stallion for this sync function
+              carrier: 'Stallion Express',
               shippingAddress: order.shipping,
               items: order.line_items,
-              source: 'woocommerce'
+              source: 'woocommerce',
             };
+            const { error } = await supabaseAdmin.functions.invoke('send-shipping-notification', {
+              body: notificationData,
+            });
+            invokeError = error;
           }
-
-          // Invoke the send-shipping-notification function
-          const { error: invokeError } = await supabaseAdmin.functions.invoke('send-shipping-notification', {
-            body: notificationData
-          });
 
           if (invokeError) {
             console.error(`Failed to send notification for order ${order.id}:`, invokeError);
           } else {
             console.log(`Shipping notification sent for order ${order.id}`);
             notifiedCount++;
-            
+
             // Mark notification as sent
             await supabaseAdmin
               .from(tableName)
@@ -167,11 +163,6 @@ serve(async (req) => {
               .eq('id', order.id);
           }
         }
-      } catch (error) {
-        console.error(`Error processing order ${order.id}:`, error);
-        errorCount++;
-      }
-    }
 
     console.log(`Sync complete. Updated: ${updatedCount}, Notified: ${notifiedCount}, Errors: ${errorCount}`);
 

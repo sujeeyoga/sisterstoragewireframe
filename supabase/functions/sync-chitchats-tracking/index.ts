@@ -102,45 +102,44 @@ serve(async (req) => {
           console.log(`Updated tracking number for order ${order.id}: ${trackingNumber}`);
         }
 
-        // Prepare email data based on order source
-        // Use 'carrier' field to match send-shipping-notification interface
-        let emailData: any;
+        // For Stripe orders → push fulfillment to Shopify (Shopify emails customer)
+        // For WooCommerce orders → keep our own shipping email
         if (order.source === 'stripe') {
-          emailData = {
-            orderId: order.id,
-            orderNumber: order.order_number,
-            customerEmail: order.customer_email,
-            customerName: order.customer_name || 'Customer',
-            trackingNumber: trackingNumber,
-            carrier: 'ChitChats', // Always ChitChats for this sync function
-            shippingAddress: order.shipping_address,
-            items: order.items || [],
-            source: 'stripe'
-          };
+          const { error: shopErr } = await supabase.functions.invoke('shopify-fulfill-order', {
+            body: {
+              orderNumber: order.order_number,
+              trackingNumber: trackingNumber,
+              trackingCompany: 'Chit Chats',
+              notifyCustomer: true,
+            },
+          });
+          if (shopErr) {
+            console.error(`Shopify fulfillment failed for order ${order.id}:`, shopErr);
+            results.push({ orderId: order.id, status: 'shopify_failed', message: shopErr.message });
+            continue;
+          }
+          console.log(`✅ Shopify fulfillment pushed for order ${order.id}`);
         } else {
           const billing = order.billing || {};
-          emailData = {
+          const emailData = {
             orderId: order.id,
             orderNumber: String(order.id),
             customerEmail: billing.email,
             customerName: `${billing.first_name || ''} ${billing.last_name || ''}`.trim() || 'Customer',
             trackingNumber: trackingNumber,
-            carrier: 'ChitChats', // Always ChitChats for this sync function
+            carrier: 'ChitChats',
             shippingAddress: order.shipping,
             items: order.line_items || [],
-            source: 'woocommerce'
+            source: 'woocommerce',
           };
-        }
-
-        // Send shipping notification
-        const { error: emailError } = await supabase.functions.invoke('send-shipping-notification', {
-          body: emailData,
-        });
-
-        if (emailError) {
-          console.error(`Failed to send notification for order ${order.id}:`, emailError);
-          results.push({ orderId: order.id, status: 'email_failed', message: emailError.message });
-          continue;
+          const { error: emailError } = await supabase.functions.invoke('send-shipping-notification', {
+            body: emailData,
+          });
+          if (emailError) {
+            console.error(`Failed to send notification for order ${order.id}:`, emailError);
+            results.push({ orderId: order.id, status: 'email_failed', message: emailError.message });
+            continue;
+          }
         }
 
         // Mark notification as sent
