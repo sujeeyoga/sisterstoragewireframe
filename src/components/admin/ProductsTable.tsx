@@ -29,7 +29,7 @@ import {
 } from '@/components/ui/tooltip';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { Edit, Trash2, Plus, Search, Eye, EyeOff, ArrowUpDown, ArrowUp, ArrowDown, RefreshCw } from 'lucide-react';
+import { Edit, Trash2, Plus, Search, Eye, EyeOff, ArrowUpDown, ArrowUp, ArrowDown, RefreshCw, Download } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { ProductFormDialog } from './ProductFormDialog';
 
@@ -205,6 +205,86 @@ export const ProductsTable = () => {
     setIsRefreshing(false);
   };
 
+  const handleExportShopify = async () => {
+    const { data, error } = await supabase
+      .from('woocommerce_products')
+      .select('*')
+      .eq('visible', true)
+      .order('name');
+
+    if (error || !data) {
+      toast({ title: 'Export failed', description: error?.message, variant: 'destructive' });
+      return;
+    }
+
+    const cols = [
+      'Handle','Title','Body (HTML)','Vendor','Type','Tags','Published',
+      'Option1 Name','Option1 Value',
+      'Variant SKU','Variant Grams','Variant Inventory Tracker','Variant Inventory Qty',
+      'Variant Inventory Policy','Variant Fulfillment Service','Variant Price','Variant Compare At Price',
+      'Variant Requires Shipping','Variant Taxable','Image Src','Image Position','Image Alt Text',
+      'Gift Card','Status'
+    ];
+
+    const esc = (v: any) => {
+      if (v === null || v === undefined) return '';
+      const s = String(v);
+      return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+    };
+
+    const rows: string[] = [cols.join(',')];
+
+    for (const p of data) {
+      const cats: any[] = Array.isArray(p.categories) ? p.categories : [];
+      const imgs: any[] = Array.isArray(p.images) ? p.images : [];
+      const imgSrcs = imgs.map((i: any) => (typeof i === 'string' ? i : i?.src)).filter(Boolean);
+      const type = cats[0]?.name || 'Uncategorized';
+      const tags = cats.map((c: any) => c?.slug).filter(Boolean).join(', ');
+      const price = p.sale_price ?? p.regular_price ?? p.price ?? '';
+      const compare = p.sale_price ? (p.regular_price ?? '') : '';
+      const grams = p.weight ? Math.round(Number(p.weight)) : '';
+      const qty = p.stock_quantity ?? 100;
+
+      const base: Record<string, any> = Object.fromEntries(cols.map(c => [c, '']));
+      Object.assign(base, {
+        'Handle': p.slug, 'Title': p.name,
+        'Body (HTML)': p.description || p.short_description || '',
+        'Vendor': 'Sister Storage', 'Type': type, 'Tags': tags, 'Published': 'TRUE',
+        'Option1 Name': 'Title', 'Option1 Value': 'Default Title',
+        'Variant SKU': p.slug, 'Variant Grams': grams,
+        'Variant Inventory Tracker': 'shopify', 'Variant Inventory Qty': qty,
+        'Variant Inventory Policy': 'deny', 'Variant Fulfillment Service': 'manual',
+        'Variant Price': price, 'Variant Compare At Price': compare,
+        'Variant Requires Shipping': 'TRUE', 'Variant Taxable': 'TRUE',
+        'Image Src': imgSrcs[0] || '', 'Image Position': imgSrcs.length ? 1 : '',
+        'Image Alt Text': imgSrcs.length ? p.name : '',
+        'Gift Card': 'FALSE', 'Status': 'active',
+      });
+      rows.push(cols.map(c => esc(base[c])).join(','));
+
+      imgSrcs.slice(1).forEach((src, i) => {
+        const extra: Record<string, any> = Object.fromEntries(cols.map(c => [c, '']));
+        extra['Handle'] = p.slug;
+        extra['Image Src'] = src;
+        extra['Image Position'] = i + 2;
+        extra['Image Alt Text'] = p.name;
+        rows.push(cols.map(c => esc(extra[c])).join(','));
+      });
+    }
+
+    const blob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `shopify-products-${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    toast({ title: 'Exported', description: `${data.length} products exported for Shopify import` });
+  };
+
   return (
     <div className="p-8">
       <div className="mb-6 flex justify-between items-center">
@@ -220,6 +300,10 @@ export const ProductsTable = () => {
           >
             <RefreshCw className={`mr-2 h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
             Refresh Cache
+          </Button>
+          <Button variant="outline" onClick={handleExportShopify}>
+            <Download className="mr-2 h-4 w-4" />
+            Export to Shopify
           </Button>
           <Button onClick={() => {
             setEditingProduct(null);
