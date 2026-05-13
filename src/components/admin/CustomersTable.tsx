@@ -12,7 +12,8 @@ import {
 } from '@/components/ui/table';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Loader2, Users, DollarSign, ShoppingCart, TrendingUp, RefreshCw } from 'lucide-react';
+import { Loader2, Users, DollarSign, ShoppingCart, TrendingUp, RefreshCw, Download } from 'lucide-react';
+import { customersToShopifyCsv, downloadCsv } from '@/lib/shopifyExport';
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 interface Customer {
