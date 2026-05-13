@@ -161,20 +161,29 @@ export function CustomersTable() {
           <Button
             onClick={async () => {
               if (!customers || customers.length === 0) return;
-              toast({ title: 'Pushing to Shopify…', description: `Sending ${customers.length} customers via Admin API. This may take a few minutes.` });
-              try {
-                const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/shopify-import`;
-                const res = await fetch(url, {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json', 'apikey': import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY, Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}` },
-                  body: JSON.stringify({ type: 'customer', items: customers }),
-                });
-                const data = await res.json();
-                toast({ title: 'Shopify import complete', description: `Created: ${data.created}, Skipped (already exist): ${data.skipped}, Errors: ${data.errors?.length || 0}` });
-                if (data.errors?.length) console.error('Shopify import errors:', data.errors);
-              } catch (e: any) {
-                toast({ title: 'Push failed', description: e?.message, variant: 'destructive' });
+              const BATCH = 100;
+              const total = customers.length;
+              toast({ title: 'Pushing to Shopify…', description: `Sending ${total} customers in batches of ${BATCH}. Keep this tab open.` });
+              const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/shopify-import`;
+              let created = 0, skipped = 0; const errors: any[] = [];
+              for (let i = 0; i < total; i += BATCH) {
+                const chunk = customers.slice(i, i + BATCH);
+                try {
+                  const res = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'apikey': import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY, Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}` },
+                    body: JSON.stringify({ type: 'customer', items: chunk }),
+                  });
+                  const data = await res.json();
+                  created += data.created || 0; skipped += data.skipped || 0;
+                  if (data.errors?.length) errors.push(...data.errors);
+                  toast({ title: `Batch ${Math.floor(i / BATCH) + 1}/${Math.ceil(total / BATCH)} done`, description: `Total created: ${created}, skipped: ${skipped}` });
+                } catch (e: any) {
+                  errors.push({ batch: i, error: e?.message });
+                }
               }
+              toast({ title: 'Shopify import complete', description: `Created: ${created}, Skipped: ${skipped}, Errors: ${errors.length}` });
+              if (errors.length) console.error('Shopify import errors:', errors);
             }}
             disabled={!customers || customers.length === 0}
           >
