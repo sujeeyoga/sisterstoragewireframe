@@ -502,63 +502,76 @@ export function OrdersList() {
           onViewModeChange={setViewMode}
         />
 
-      <div className="p-4 flex justify-end">
+      <div className="p-4 flex justify-end gap-2">
         <Button
-          variant="default"
           onClick={async () => {
-            toast.loading('Preparing Shopify export...', { id: 'shopify-export' });
+            toast.loading('Pushing all orders to Shopify…', { id: 'shopify-push' });
             try {
               const [wooRes, stripeRes] = await Promise.all([
                 supabase.from('woocommerce_orders').select('*').limit(10000),
                 supabase.from('orders').select('*').limit(10000),
               ]);
-              const woo = (wooRes.data || []).map((o: any) => ({
-                ...o,
-                source: 'woocommerce',
-                date_created: o.date_created || o.created_at,
-              })) as ExportOrder[];
+              const woo = (wooRes.data || []).map((o: any) => ({ ...o, source: 'woocommerce', date_created: o.date_created || o.created_at })) as ExportOrder[];
               const stripe = (stripeRes.data || []).map((o: any) => ({
-                id: o.id,
-                order_number: o.order_number,
-                status: o.status,
-                total: Number(o.total ?? 0),
-                subtotal: Number(o.subtotal ?? 0),
-                shipping_cost: Number(o.shipping ?? 0),
-                tax: Number(o.tax ?? 0),
-                currency: 'CAD',
-                date_created: o.created_at,
-                customer_email: o.customer_email,
-                billing: o.shipping_address
-                  ? {
-                      first_name: o.customer_name?.split(' ')[0] || '',
-                      last_name: o.customer_name?.split(' ').slice(1).join(' ') || '',
-                      email: o.customer_email,
-                      ...o.shipping_address,
-                    }
-                  : { email: o.customer_email },
+                id: o.id, order_number: o.order_number, status: o.status,
+                total: Number(o.total ?? 0), subtotal: Number(o.subtotal ?? 0),
+                shipping_cost: Number(o.shipping ?? 0), tax: Number(o.tax ?? 0),
+                currency: 'CAD', date_created: o.created_at, customer_email: o.customer_email,
+                billing: o.shipping_address ? { first_name: o.customer_name?.split(' ')[0] || '', last_name: o.customer_name?.split(' ').slice(1).join(' ') || '', email: o.customer_email, ...o.shipping_address } : { email: o.customer_email },
                 shipping: o.shipping_address || {},
                 line_items: o.items || [],
                 source: 'stripe',
-                payment_method: 'stripe',
               })) as ExportOrder[];
               const all = [...woo, ...stripe];
-              if (all.length === 0) {
-                toast.error('No orders to export', { id: 'shopify-export' });
-                return;
-              }
+              if (all.length === 0) { toast.error('No orders to push', { id: 'shopify-push' }); return; }
+
+              const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/shopify-import`;
+              const res = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'apikey': import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY, Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}` },
+                body: JSON.stringify({ type: 'order', items: all }),
+              });
+              const data = await res.json();
+              toast.success(`Pushed ${data.created} orders to Shopify`, { id: 'shopify-push', description: `Skipped: ${data.skipped || 0}, Errors: ${data.errors?.length || 0}` });
+              if (data.errors?.length) console.error('Shopify push errors:', data.errors);
+            } catch (e: any) {
+              toast.error('Push failed', { id: 'shopify-push', description: e?.message });
+            }
+          }}
+        >
+          <Download className="mr-2 h-4 w-4" />
+          Push all to Shopify (API)
+        </Button>
+        <Button
+          variant="outline"
+          onClick={async () => {
+            toast.loading('Preparing Shopify CSV...', { id: 'shopify-export' });
+            try {
+              const [wooRes, stripeRes] = await Promise.all([
+                supabase.from('woocommerce_orders').select('*').limit(10000),
+                supabase.from('orders').select('*').limit(10000),
+              ]);
+              const woo = (wooRes.data || []).map((o: any) => ({ ...o, source: 'woocommerce', date_created: o.date_created || o.created_at })) as ExportOrder[];
+              const stripe = (stripeRes.data || []).map((o: any) => ({
+                id: o.id, order_number: o.order_number, status: o.status,
+                total: Number(o.total ?? 0), subtotal: Number(o.subtotal ?? 0),
+                shipping_cost: Number(o.shipping ?? 0), tax: Number(o.tax ?? 0),
+                currency: 'CAD', date_created: o.created_at, customer_email: o.customer_email,
+                billing: o.shipping_address ? { first_name: o.customer_name?.split(' ')[0] || '', last_name: o.customer_name?.split(' ').slice(1).join(' ') || '', email: o.customer_email, ...o.shipping_address } : { email: o.customer_email },
+                shipping: o.shipping_address || {}, line_items: o.items || [], source: 'stripe',
+              })) as ExportOrder[];
+              const all = [...woo, ...stripe];
+              if (all.length === 0) { toast.error('No orders', { id: 'shopify-export' }); return; }
               const csv = ordersToShopifyCsv(all);
               downloadCsv(`shopify-orders-${new Date().toISOString().slice(0, 10)}.csv`, csv);
-              toast.success(`Exported ${all.length} orders for Shopify import`, {
-                id: 'shopify-export',
-                description: 'Use the Matrixify app on Shopify to import this CSV.',
-              });
+              toast.success(`Exported ${all.length} orders as CSV`, { id: 'shopify-export' });
             } catch (e: any) {
               toast.error('Export failed', { id: 'shopify-export', description: e?.message });
             }
           }}
         >
           <Download className="mr-2 h-4 w-4" />
-          Export all to Shopify
+          Download CSV
         </Button>
       </div>
 
