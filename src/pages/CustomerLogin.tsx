@@ -11,20 +11,10 @@ import { Phone, KeyRound, ArrowRight, AlertCircle, Mail } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const CustomerLogin = () => {
-  const [authMethod, setAuthMethod] = useState<'phone' | 'email'>('phone');
-  const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
-  const [otp, setOtp] = useState('');
-  const [step, setStep] = useState<'phone' | 'email' | 'otp' | 'email-sent'>('phone');
-  const [countdown, setCountdown] = useState(0);
+  const [step, setStep] = useState<'email' | 'email-sent'>('email');
   const navigate = useNavigate();
-  const { user, signInWithPhone, signInWithEmail, verifyOTP } = useCustomerAuth();
-
-  // Remember phone number
-  useEffect(() => {
-    const savedPhone = localStorage.getItem('customer_phone');
-    if (savedPhone) setPhone(savedPhone);
-  }, []);
+  const { user, signInWithEmail } = useCustomerAuth();
 
   // Redirect if already logged in
   useEffect(() => {
@@ -32,46 +22,6 @@ const CustomerLogin = () => {
       navigate('/customer/dashboard');
     }
   }, [user, navigate]);
-
-  // Countdown timer for resend
-  useEffect(() => {
-    if (countdown > 0) {
-      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [countdown]);
-
-  const handleSendOTP = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Format phone to E.164
-    const formattedPhone = phone.startsWith('+') ? phone : `+1${phone.replace(/\D/g, '')}`;
-    
-    try {
-      await signInWithPhone.mutateAsync(formattedPhone);
-      localStorage.setItem('customer_phone', phone);
-      setStep('otp');
-      setCountdown(60);
-    } catch (error) {
-      // Error is handled by mutation's onError
-      console.error('Failed to send OTP:', error);
-    }
-  };
-
-  const handleVerifyOTP = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    const formattedPhone = phone.startsWith('+') ? phone : `+1${phone.replace(/\D/g, '')}`;
-    await verifyOTP.mutateAsync({ phone: formattedPhone, token: otp });
-  };
-
-  const handleResendOTP = () => {
-    if (countdown === 0) {
-      const formattedPhone = phone.startsWith('+') ? phone : `+1${phone.replace(/\D/g, '')}`;
-      signInWithPhone.mutate(formattedPhone);
-      setCountdown(60);
-    }
-  };
 
   const handleSendEmail = async (e: React.FormEvent) => {
     e.preventDefault();
