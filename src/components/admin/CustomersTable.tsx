@@ -159,16 +159,40 @@ export function CustomersTable() {
         </div>
         <div className="flex gap-2">
           <Button
-            onClick={() => {
+            onClick={async () => {
               if (!customers || customers.length === 0) return;
-              const csv = customersToShopifyCsv(customers as any);
-              downloadCsv(`shopify-customers-${new Date().toISOString().slice(0,10)}.csv`, csv);
-              toast({ title: 'Export ready', description: `${customers.length} customers downloaded as Shopify-compatible CSV.` });
+              toast({ title: 'Pushing to Shopify…', description: `Sending ${customers.length} customers via Admin API. This may take a few minutes.` });
+              try {
+                const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/shopify-import`;
+                const res = await fetch(url, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json', 'apikey': import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY, Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}` },
+                  body: JSON.stringify({ type: 'customer', items: customers }),
+                });
+                const data = await res.json();
+                toast({ title: 'Shopify import complete', description: `Created: ${data.created}, Skipped (already exist): ${data.skipped}, Errors: ${data.errors?.length || 0}` });
+                if (data.errors?.length) console.error('Shopify import errors:', data.errors);
+              } catch (e: any) {
+                toast({ title: 'Push failed', description: e?.message, variant: 'destructive' });
+              }
             }}
             disabled={!customers || customers.length === 0}
           >
             <Download className="mr-2 h-4 w-4" />
-            Export to Shopify
+            Push to Shopify (API)
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => {
+              if (!customers || customers.length === 0) return;
+              const csv = customersToShopifyCsv(customers as any);
+              downloadCsv(`shopify-customers-${new Date().toISOString().slice(0,10)}.csv`, csv);
+              toast({ title: 'Export ready', description: `${customers.length} customers downloaded as CSV.` });
+            }}
+            disabled={!customers || customers.length === 0}
+          >
+            <Download className="mr-2 h-4 w-4" />
+            Download CSV
           </Button>
           <Button
             onClick={() => syncMutation.mutate()}
