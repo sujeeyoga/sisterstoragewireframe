@@ -25,26 +25,6 @@ export const useCustomerAuth = () => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const signInWithPhone = useMutation({
-    mutationFn: async (phone: string) => {
-      const { error } = await supabase.auth.signInWithOtp({
-        phone,
-        options: {
-          channel: 'sms',
-        },
-      });
-      
-      if (error) throw error;
-      return phone;
-    },
-    onSuccess: () => {
-      toast.success('Code sent! Check your phone for the verification code.');
-    },
-    onError: (error: Error) => {
-      toast.error(error.message || 'Failed to send verification code');
-    },
-  });
-
   const signInWithEmail = useMutation({
     mutationFn: async (email: string) => {
       const { error } = await supabase.auth.signInWithOtp({
@@ -65,43 +45,6 @@ export const useCustomerAuth = () => {
     },
   });
 
-  const verifyOTP = useMutation({
-    mutationFn: async ({ phone, token }: { phone: string; token: string }) => {
-      const { data, error } = await supabase.auth.verifyOtp({
-        phone,
-        token,
-        type: 'sms',
-      });
-      
-      if (error) throw error;
-
-      // Create customer profile if it doesn't exist
-      if (data.user) {
-        const { error: profileError } = await supabase
-          .from('customer_profiles')
-          .upsert({
-            phone: data.user.phone || phone,
-            email: data.user.email,
-          }, {
-            onConflict: 'phone',
-          });
-
-        if (profileError) {
-          console.error('Profile creation error:', profileError);
-        }
-      }
-      
-      return data;
-    },
-    onSuccess: () => {
-      toast.success('Successfully signed in!');
-      queryClient.invalidateQueries({ queryKey: ['customer-orders'] });
-    },
-    onError: (error: Error) => {
-      toast.error(error.message || 'Invalid verification code');
-    },
-  });
-
   const signOut = useMutation({
     mutationFn: async () => {
       const { error } = await supabase.auth.signOut();
@@ -119,9 +62,7 @@ export const useCustomerAuth = () => {
   return {
     user,
     loading,
-    signInWithPhone,
     signInWithEmail,
-    verifyOTP,
     signOut,
   };
 };

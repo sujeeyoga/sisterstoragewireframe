@@ -4,17 +4,15 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Mail, Phone, MapPin, Clock, MessageSquare } from 'lucide-react';
+import { Mail, MapPin, Clock, MessageSquare } from 'lucide-react';
 import { useSiteTexts } from '@/hooks/useSiteTexts';
 import { EditableText } from '@/components/admin/EditableText';
 
 const Contact = () => {
   const { texts: heroTexts } = useSiteTexts('contact_hero');
-  const { texts: phoneTexts } = useSiteTexts('contact_phone');
   const { texts: locationTexts } = useSiteTexts('contact_location');
   
   const heroText = heroTexts as any;
-  const phoneText = phoneTexts as any;
   const locationText = locationTexts as any;
   
   return (
@@ -89,38 +87,6 @@ const Contact = () => {
 
                 {/* Contact Information */}
                 <div className="space-y-6">
-                  {phoneText && (
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                          <Phone className="h-5 w-5 text-primary" />
-                          <EditableText
-                            siteTextId={phoneText.id}
-                            field="title"
-                            value={phoneText.title}
-                            as="span"
-                          />
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <EditableText
-                          siteTextId={phoneText.id}
-                          field="subtitle"
-                          value={phoneText.subtitle}
-                          as="p"
-                          className="font-semibold text-lg mb-2"
-                        />
-                        <EditableText
-                          siteTextId={phoneText.id}
-                          field="description"
-                          value={phoneText.description}
-                          as="p"
-                          className="text-muted-foreground whitespace-pre-line"
-                        />
-                      </CardContent>
-                    </Card>
-                  )}
-
                   <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
@@ -177,8 +143,6 @@ const Contact = () => {
                     </CardHeader>
                     <CardContent className="space-y-2">
                       <p><span className="font-medium">Email:</span> Within 24 hours</p>
-                      <p><span className="font-medium">Phone:</span> Immediate during business hours</p>
-                      <p><span className="font-medium">Live Chat:</span> 2-5 minutes (when available)</p>
                     </CardContent>
                   </Card>
                 </div>
