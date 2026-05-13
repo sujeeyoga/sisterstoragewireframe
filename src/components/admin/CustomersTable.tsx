@@ -12,7 +12,8 @@ import {
 } from '@/components/ui/table';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Loader2, Users, DollarSign, ShoppingCart, TrendingUp, RefreshCw } from 'lucide-react';
+import { Loader2, Users, DollarSign, ShoppingCart, TrendingUp, RefreshCw, Download } from 'lucide-react';
+import { customersToShopifyCsv, downloadCsv } from '@/lib/shopifyExport';
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 interface Customer {
@@ -156,14 +157,28 @@ export function CustomersTable() {
           <h1 className="text-3xl font-bold mb-2">Customers</h1>
           <p className="text-muted-foreground">View and analyze customer data from WooCommerce</p>
         </div>
-        <Button
-          onClick={() => syncMutation.mutate()}
-          disabled={isSyncing}
-          variant="outline"
-        >
-          <RefreshCw className={`mr-2 h-4 w-4 ${isSyncing ? 'animate-spin' : ''}`} />
-          {isSyncing ? 'Syncing...' : 'Sync Customers'}
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            onClick={() => {
+              if (!customers || customers.length === 0) return;
+              const csv = customersToShopifyCsv(customers as any);
+              downloadCsv(`shopify-customers-${new Date().toISOString().slice(0,10)}.csv`, csv);
+              toast({ title: 'Export ready', description: `${customers.length} customers downloaded as Shopify-compatible CSV.` });
+            }}
+            disabled={!customers || customers.length === 0}
+          >
+            <Download className="mr-2 h-4 w-4" />
+            Export to Shopify
+          </Button>
+          <Button
+            onClick={() => syncMutation.mutate()}
+            disabled={isSyncing}
+            variant="outline"
+          >
+            <RefreshCw className={`mr-2 h-4 w-4 ${isSyncing ? 'animate-spin' : ''}`} />
+            {isSyncing ? 'Syncing...' : 'Sync Customers'}
+          </Button>
+        </div>
       </div>
 
       {/* Stats Cards */}

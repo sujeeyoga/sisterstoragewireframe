@@ -12,7 +12,8 @@ import { OrdersAnalyticsSummary } from './OrdersAnalyticsSummary';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Package, RotateCcw, ArrowUpDown } from 'lucide-react';
+import { Package, RotateCcw, ArrowUpDown, Download } from 'lucide-react';
+import { ordersToShopifyCsv, downloadCsv, type ExportOrder } from '@/lib/shopifyExport';
 import {
   Pagination,
   PaginationContent,
@@ -500,6 +501,66 @@ export function OrdersList() {
           viewMode={viewMode}
           onViewModeChange={setViewMode}
         />
+
+      <div className="p-4 flex justify-end">
+        <Button
+          variant="default"
+          onClick={async () => {
+            toast.loading('Preparing Shopify export...', { id: 'shopify-export' });
+            try {
+              const [wooRes, stripeRes] = await Promise.all([
+                supabase.from('woocommerce_orders').select('*').limit(10000),
+                supabase.from('orders').select('*').limit(10000),
+              ]);
+              const woo = (wooRes.data || []).map((o: any) => ({
+                ...o,
+                source: 'woocommerce',
+                date_created: o.date_created || o.created_at,
+              })) as ExportOrder[];
+              const stripe = (stripeRes.data || []).map((o: any) => ({
+                id: o.id,
+                order_number: o.order_number,
+                status: o.status,
+                total: Number(o.total ?? 0),
+                subtotal: Number(o.subtotal ?? 0),
+                shipping_cost: Number(o.shipping ?? 0),
+                tax: Number(o.tax ?? 0),
+                currency: 'CAD',
+                date_created: o.created_at,
+                customer_email: o.customer_email,
+                billing: o.shipping_address
+                  ? {
+                      first_name: o.customer_name?.split(' ')[0] || '',
+                      last_name: o.customer_name?.split(' ').slice(1).join(' ') || '',
+                      email: o.customer_email,
+                      ...o.shipping_address,
+                    }
+                  : { email: o.customer_email },
+                shipping: o.shipping_address || {},
+                line_items: o.items || [],
+                source: 'stripe',
+                payment_method: 'stripe',
+              })) as ExportOrder[];
+              const all = [...woo, ...stripe];
+              if (all.length === 0) {
+                toast.error('No orders to export', { id: 'shopify-export' });
+                return;
+              }
+              const csv = ordersToShopifyCsv(all);
+              downloadCsv(`shopify-orders-${new Date().toISOString().slice(0, 10)}.csv`, csv);
+              toast.success(`Exported ${all.length} orders for Shopify import`, {
+                id: 'shopify-export',
+                description: 'Use the Matrixify app on Shopify to import this CSV.',
+              });
+            } catch (e: any) {
+              toast.error('Export failed', { id: 'shopify-export', description: e?.message });
+            }
+          }}
+        >
+          <Download className="mr-2 h-4 w-4" />
+          Export all to Shopify
+        </Button>
+      </div>
 
       <div className="p-4">
         <OrdersAnalyticsSummary />
