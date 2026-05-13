@@ -12,7 +12,8 @@ import { OrdersAnalyticsSummary } from './OrdersAnalyticsSummary';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Package, RotateCcw, ArrowUpDown } from 'lucide-react';
+import { Package, RotateCcw, ArrowUpDown, Download } from 'lucide-react';
+import { ordersToShopifyCsv, downloadCsv, type ExportOrder } from '@/lib/shopifyExport';
 import {
   Pagination,
   PaginationContent,
