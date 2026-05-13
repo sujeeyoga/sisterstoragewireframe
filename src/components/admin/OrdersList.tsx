@@ -526,14 +526,26 @@ export function OrdersList() {
               if (all.length === 0) { toast.error('No orders to push', { id: 'shopify-push' }); return; }
 
               const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/shopify-import`;
-              const res = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'apikey': import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY, Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}` },
-                body: JSON.stringify({ type: 'order', items: all }),
-              });
-              const data = await res.json();
-              toast.success(`Pushed ${data.created} orders to Shopify`, { id: 'shopify-push', description: `Skipped: ${data.skipped || 0}, Errors: ${data.errors?.length || 0}` });
-              if (data.errors?.length) console.error('Shopify push errors:', data.errors);
+              const BATCH = 100;
+              let created = 0; const errors: any[] = [];
+              for (let i = 0; i < all.length; i += BATCH) {
+                const chunk = all.slice(i, i + BATCH);
+                try {
+                  const res = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'apikey': import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY, Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}` },
+                    body: JSON.stringify({ type: 'order', items: chunk }),
+                  });
+                  const data = await res.json();
+                  created += data.created || 0;
+                  if (data.errors?.length) errors.push(...data.errors);
+                  toast.loading(`Pushed ${created}/${all.length} orders…`, { id: 'shopify-push' });
+                } catch (e: any) {
+                  errors.push({ batch: i, error: e?.message });
+                }
+              }
+              toast.success(`Pushed ${created} orders to Shopify`, { id: 'shopify-push', description: `Errors: ${errors.length}` });
+              if (errors.length) console.error('Shopify push errors:', errors);
             } catch (e: any) {
               toast.error('Push failed', { id: 'shopify-push', description: e?.message });
             }
