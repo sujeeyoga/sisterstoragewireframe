@@ -558,7 +558,7 @@ export function AdminSettings() {
                     variant="outline"
                     size="sm"
                     className="w-full gap-2"
-                    onClick={() => window.open('https://admin.shopify.com/store/sisterstoragefinal-6877q', '_blank', 'noopener,noreferrer')}
+                    onClick={() => window.open('https://admin.shopify.com/store/n1wiud-ns', '_blank', 'noopener,noreferrer')}
                   >
                     <ExternalLink className="h-4 w-4" />
                     Open Shopify Admin
