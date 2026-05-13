@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
-import { Shield, Users, Key, Database, Mail, Truck, Plus, X, RefreshCw } from 'lucide-react';
+import { Shield, Users, Key, Database, Mail, Truck, Plus, X, RefreshCw, ShoppingBag, ExternalLink } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { BackfillPaymentIntents } from './BackfillPaymentIntents';
 import { SearchEnginePing } from './SearchEnginePing';
