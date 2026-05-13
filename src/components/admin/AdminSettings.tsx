@@ -540,6 +540,30 @@ export function AdminSettings() {
                   </div>
                   <Button variant="outline" size="sm" className="w-full">Manage Keys</Button>
                 </div>
+
+                <div className="rounded-lg border p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-lg bg-emerald-100 dark:bg-emerald-900/20 flex items-center justify-center">
+                        <ShoppingBag className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold">Shopify</h4>
+                        <p className="text-sm text-muted-foreground">Storefront & order management</p>
+                      </div>
+                    </div>
+                    <span className="text-xs bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 px-2 py-1 rounded-full">Connected</span>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full gap-2"
+                    onClick={() => window.open('https://admin.shopify.com/store/sisterstoragefinal-6877q', '_blank', 'noopener,noreferrer')}
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                    Open Shopify Admin
+                  </Button>
+                </div>
               </div>
 
               <Separator />
