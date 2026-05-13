@@ -239,8 +239,7 @@ export function ordersToShopifyCsv(orders: ExportOrder[]): string {
       const price =
         item?.price ??
         item?.unit_price ??
-        (item?.total && qty ? Number(item.total) / Number(qty) : '') ??
-        '';
+        (item?.total && qty ? Number(item.total) / Number(qty) : '');
       const name = item?.name || item?.title || item?.product_name || (isFirst ? 'Order item' : '');
 
       rows.push({
