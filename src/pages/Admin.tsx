@@ -48,6 +48,7 @@ import { FlashSalesManager } from '@/components/admin/FlashSalesManager';
 import ReviewsManager from '@/components/admin/ReviewsManager';
 import { ShippingThresholdsPanel } from '@/components/admin/ShippingThresholdsPanel';
 import { PageContentManager } from '@/components/admin/PageContentManager';
+import { ShopifyPush } from '@/components/admin/ShopifyPush';
 
 const Admin = () => {
   const { notification, clearNotification } = useOrderNotifications();
