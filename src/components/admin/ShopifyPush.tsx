@@ -11,6 +11,25 @@ import { useToast } from '@/hooks/use-toast';
 type PushType = 'order' | 'customer';
 type Result = { created: number; skipped: number; errors: any[] } | null;
 
+// shopify-import lives in the Lovable Cloud project, not the legacy one
+const CLOUD_FN_URL = 'https://zkmxforzmhpzftbvnixi.supabase.co/functions/v1/shopify-import';
+const CLOUD_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InprbXhmb3J6bWhwemZ0YnZuaXhpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1MDA4OTAsImV4cCI6MjA5NDA3Njg5MH0.RUmXUYhyA5FXspWI7XDX82LLcVdpFFzQxpVB4wqLO9A';
+
+async function callShopifyImport(body: any) {
+  const res = await fetch(CLOUD_FN_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': CLOUD_ANON,
+      'Authorization': `Bearer ${CLOUD_ANON}`,
+    },
+    body: JSON.stringify(body),
+  });
+  const text = await res.text();
+  if (!res.ok) throw new Error(`Edge function ${res.status}: ${text.slice(0, 300)}`);
+  return JSON.parse(text);
+}
+
 export const ShopifyPush = () => {
   const { toast } = useToast();
   const [busy, setBusy] = useState<PushType | null>(null);
@@ -26,7 +45,7 @@ export const ShopifyPush = () => {
     setStopFlag(false);
     setProgress('Starting…');
     const totals = { created: 0, skipped: 0, errors: [] as any[] };
-    const PAGE = 50;
+    const PAGE = 25;
     let from = 0;
     try {
       while (true) {
@@ -44,10 +63,7 @@ export const ShopifyPush = () => {
         if (items.length === 0) { setProgress(`Done. Total created ${totals.created}, skipped ${totals.skipped}, errors ${totals.errors.length}`); break; }
 
         setProgress(`Pushing ${type}s ${from + 1}–${from + items.length}…`);
-        const { data: result, error: fnError } = await supabase.functions.invoke('shopify-import', {
-          body: { type, items },
-        });
-        if (fnError) throw fnError;
+        const result = await callShopifyImport({ type, items });
         totals.created += result.created || 0;
         totals.skipped += result.skipped || 0;
         if (result.errors?.length) totals.errors.push(...result.errors);
@@ -93,10 +109,7 @@ export const ShopifyPush = () => {
         return;
       }
 
-      const { data: result, error: fnError } = await supabase.functions.invoke('shopify-import', {
-        body: { type, items },
-      });
-      if (fnError) throw fnError;
+      const result = await callShopifyImport({ type, items });
 
       if (type === 'order') setOrderResult(result);
       else setCustomerResult(result);
