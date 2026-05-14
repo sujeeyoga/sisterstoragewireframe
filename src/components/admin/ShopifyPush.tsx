@@ -45,7 +45,7 @@ export const ShopifyPush = () => {
     setStopFlag(false);
     setProgress('Starting…');
     const totals = { created: 0, skipped: 0, errors: [] as any[] };
-    const PAGE = 50;
+    const PAGE = 25;
     let from = 0;
     try {
       while (true) {
@@ -63,10 +63,7 @@ export const ShopifyPush = () => {
         if (items.length === 0) { setProgress(`Done. Total created ${totals.created}, skipped ${totals.skipped}, errors ${totals.errors.length}`); break; }
 
         setProgress(`Pushing ${type}s ${from + 1}–${from + items.length}…`);
-        const { data: result, error: fnError } = await supabase.functions.invoke('shopify-import', {
-          body: { type, items },
-        });
-        if (fnError) throw fnError;
+        const result = await callShopifyImport({ type, items });
         totals.created += result.created || 0;
         totals.skipped += result.skipped || 0;
         if (result.errors?.length) totals.errors.push(...result.errors);
