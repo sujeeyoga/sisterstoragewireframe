@@ -18,6 +18,54 @@ export const ShopifyPush = () => {
   const [onlyPaid, setOnlyPaid] = useState(true);
   const [orderResult, setOrderResult] = useState<Result>(null);
   const [customerResult, setCustomerResult] = useState<Result>(null);
+  const [progress, setProgress] = useState<string>('');
+  const [stopFlag, setStopFlag] = useState(false);
+
+  const runPushAll = async (type: PushType) => {
+    setBusy(type);
+    setStopFlag(false);
+    setProgress('Starting…');
+    const totals = { created: 0, skipped: 0, errors: [] as any[] };
+    const PAGE = 50;
+    let from = 0;
+    try {
+      while (true) {
+        if (stopFlag) { setProgress('Stopped by user.'); break; }
+        let q = supabase.from(type === 'order' ? 'orders' : ('customers' as any))
+          .select('*')
+          .order('created_at', { ascending: true })
+          .range(from, from + PAGE - 1);
+        if (type === 'order' && onlyPaid) {
+          q = (q as any).in('status', ['completed', 'processing', 'paid']);
+        }
+        const { data, error } = await q;
+        if (error) throw error;
+        const items = data || [];
+        if (items.length === 0) { setProgress(`Done. Total created ${totals.created}, skipped ${totals.skipped}, errors ${totals.errors.length}`); break; }
+
+        setProgress(`Pushing ${type}s ${from + 1}–${from + items.length}…`);
+        const { data: result, error: fnError } = await supabase.functions.invoke('shopify-import', {
+          body: { type, items },
+        });
+        if (fnError) throw fnError;
+        totals.created += result.created || 0;
+        totals.skipped += result.skipped || 0;
+        if (result.errors?.length) totals.errors.push(...result.errors);
+
+        if (type === 'order') setOrderResult({ ...totals });
+        else setCustomerResult({ ...totals });
+
+        if (items.length < PAGE) { setProgress(`Done. Total created ${totals.created}, skipped ${totals.skipped}, errors ${totals.errors.length}`); break; }
+        from += PAGE;
+      }
+      toast({ title: 'Push all complete', description: `Created ${totals.created}, skipped ${totals.skipped}, errors ${totals.errors.length}` });
+    } catch (e: any) {
+      toast({ title: 'Push failed', description: e?.message ?? String(e), variant: 'destructive' });
+      setProgress(`Error: ${e?.message ?? String(e)}`);
+    } finally {
+      setBusy(null);
+    }
+  };
 
   const runPush = async (type: PushType) => {
     setBusy(type);
