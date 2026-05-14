@@ -11,6 +11,25 @@ import { useToast } from '@/hooks/use-toast';
 type PushType = 'order' | 'customer';
 type Result = { created: number; skipped: number; errors: any[] } | null;
 
+// shopify-import lives in the Lovable Cloud project, not the legacy one
+const CLOUD_FN_URL = 'https://zkmxforzmhpzftbvnixi.supabase.co/functions/v1/shopify-import';
+const CLOUD_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InprbXhmb3J6bWhwemZ0YnZuaXhpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1MDA4OTAsImV4cCI6MjA5NDA3Njg5MH0.RUmXUYhyA5FXspWI7XDX82LLcVdpFFzQxpVB4wqLO9A';
+
+async function callShopifyImport(body: any) {
+  const res = await fetch(CLOUD_FN_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': CLOUD_ANON,
+      'Authorization': `Bearer ${CLOUD_ANON}`,
+    },
+    body: JSON.stringify(body),
+  });
+  const text = await res.text();
+  if (!res.ok) throw new Error(`Edge function ${res.status}: ${text.slice(0, 300)}`);
+  return JSON.parse(text);
+}
+
 export const ShopifyPush = () => {
   const { toast } = useToast();
   const [busy, setBusy] = useState<PushType | null>(null);
