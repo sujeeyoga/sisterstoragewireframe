@@ -185,14 +185,21 @@ export const ShopifyPush = () => {
               Sends most-recent orders into Shopify as historical orders (no charge, no email).
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <Button onClick={() => runPush('order')} disabled={busy !== null} size="lg">
-              {busy === 'order' ? (
-                <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Pushing…</>
-              ) : (
-                <>Push {limit} orders</>
+          <CardContent className="space-y-3">
+            <div className="flex flex-wrap gap-2">
+              <Button onClick={() => runPush('order')} disabled={busy !== null} size="lg">
+                {busy === 'order' ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Pushing…</>) : (<>Push {limit} orders</>)}
+              </Button>
+              <Button onClick={() => runPushAll('order')} disabled={busy !== null} size="lg">
+                {busy === 'order' ? 'Working…' : 'Push ALL orders'}
+              </Button>
+              {busy === 'order' && (
+                <Button onClick={() => setStopFlag(true)} size="lg" variant="destructive">Stop</Button>
               )}
-            </Button>
+            </div>
+            {busy === 'order' && progress && (
+              <p className="text-xs text-muted-foreground">{progress}</p>
+            )}
             {renderResult(orderResult)}
           </CardContent>
         </Card>
