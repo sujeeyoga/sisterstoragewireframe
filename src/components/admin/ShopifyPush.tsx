@@ -109,10 +109,7 @@ export const ShopifyPush = () => {
         return;
       }
 
-      const { data: result, error: fnError } = await supabase.functions.invoke('shopify-import', {
-        body: { type, items },
-      });
-      if (fnError) throw fnError;
+      const result = await callShopifyImport({ type, items });
 
       if (type === 'order') setOrderResult(result);
       else setCustomerResult(result);
