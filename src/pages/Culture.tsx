@@ -40,7 +40,7 @@ const Culture = () => {
         {/* Hero Section */}
         <section
           className="relative py-16 md:py-24 overflow-hidden"
-          style={{ backgroundColor: '#ff0077' }}
+          style={{ backgroundColor: '#FC0079' }}
         >
           <div
             className="absolute inset-0 opacity-20"
