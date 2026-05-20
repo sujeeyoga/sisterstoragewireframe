@@ -104,6 +104,7 @@ const Admin = () => {
         <Route path="bulk-shipping-refund" element={<BulkShippingRefundTool />} />
         <Route path="sections" element={<SectionsManager />} />
         <Route path="pages" element={<PagesManager />} />
+        <Route path="branding" element={<BrandingPage />} />
         <Route path="page-content" element={<PageContentManager />} />
         <Route path="texts" element={<TextsManager />} />
         <Route path="hero-images" element={<HeroImagesManager />} />
