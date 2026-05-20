@@ -1,0 +1,133 @@
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { SisterBrand } from '@/config/sister-brand.config';
+import { Copy, Check } from 'lucide-react';
+import { useState } from 'react';
+import { useToast } from '@/hooks/use-toast';
+import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
+import { ExternalLink } from 'lucide-react';
+
+const ColorSwatch = ({ name, hex }: { name: string; hex: string }) => {
+  const [copied, setCopied] = useState(false);
+  const { toast } = useToast();
+  const copy = () => {
+    navigator.clipboard.writeText(hex);
+    setCopied(true);
+    toast({ title: 'Copied', description: `${hex} copied to clipboard` });
+    setTimeout(() => setCopied(false), 1500);
+  };
+  return (
+    <button
+      onClick={copy}
+      className="group text-left border rounded-lg overflow-hidden hover:shadow-md transition-shadow"
+    >
+      <div className="h-24 w-full" style={{ background: hex }} />
+      <div className="p-3 flex items-center justify-between bg-white">
+        <div>
+          <p className="text-sm font-medium">{name}</p>
+          <p className="text-xs text-muted-foreground font-mono">{hex}</p>
+        </div>
+        {copied ? <Check className="h-4 w-4 text-green-600" /> : <Copy className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100" />}
+      </div>
+    </button>
+  );
+};
+
+export const BrandingPage = () => {
+  const colors = Object.entries(SisterBrand.colors);
+  const weights = Object.entries(SisterBrand.typography.weights);
+
+  return (
+    <div className="p-8 max-w-[1400px] mx-auto">
+      <div className="mb-8 flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h1 className="text-3xl font-bold mb-2">Branding</h1>
+          <p className="text-muted-foreground">
+            Brand colors, typography, and voice. Click any color to copy its hex code.
+          </p>
+        </div>
+        <Button asChild variant="outline">
+          <Link to="/brand" target="_blank">
+            <ExternalLink className="mr-2 h-4 w-4" />
+            View public brand guide
+          </Link>
+        </Button>
+      </div>
+
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle>Primary Pink</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center gap-6 flex-wrap">
+            <div className="h-32 w-32 rounded-lg" style={{ background: '#FC0079' }} />
+            <div>
+              <p className="text-2xl font-bold font-mono">#FC0079</p>
+              <p className="text-muted-foreground">The standard Sister Pink used across the site.</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle>Color Palette</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {colors.map(([name, hex]) => (
+              <ColorSwatch key={name} name={name} hex={hex} />
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle>Typography</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground mb-4">
+            Primary font: <span className="font-medium text-foreground">{SisterBrand.typography.primary}</span>
+          </p>
+          <div className="space-y-3">
+            {weights.map(([name, weight]) => (
+              <div key={name} className="flex items-baseline gap-4 border-b pb-3">
+                <span className="text-xs text-muted-foreground w-24">{name} ({weight})</span>
+                <span className="text-2xl font-poppins" style={{ fontWeight: weight }}>
+                  Culture Without Clutter
+                </span>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle>Brand Voice</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div>
+            <p className="text-xs text-muted-foreground mb-1">Tagline</p>
+            <p className="text-xl font-bold">{SisterBrand.brandVoice.tagline}</p>
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground mb-1">Tone</p>
+            <p>{SisterBrand.brandVoice.tone}</p>
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground mb-2">Personality</p>
+            <div className="flex flex-wrap gap-2">
+              {SisterBrand.brandVoice.personality.map((trait) => (
+                <span key={trait} className="px-3 py-1 rounded-full text-sm text-white" style={{ background: '#FC0079' }}>
+                  {trait}
+                </span>
+              ))}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
