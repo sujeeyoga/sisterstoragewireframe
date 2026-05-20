@@ -49,6 +49,7 @@ import ReviewsManager from '@/components/admin/ReviewsManager';
 import { ShippingThresholdsPanel } from '@/components/admin/ShippingThresholdsPanel';
 import { PageContentManager } from '@/components/admin/PageContentManager';
 import { ShopifyPush } from '@/components/admin/ShopifyPush';
+import { ShopifyPushBreakdown } from '@/components/admin/ShopifyPushBreakdown';
 
 const Admin = () => {
   const { notification, clearNotification } = useOrderNotifications();
@@ -110,6 +111,7 @@ const Admin = () => {
         <Route path="migrate-images" element={<ImageMigrationTool />} />
         <Route path="sync" element={<AdminSync />} />
         <Route path="shopify-push" element={<ShopifyPush />} />
+        <Route path="shopify-push/breakdown" element={<ShopifyPushBreakdown />} />
         <Route path="admin-settings" element={<AdminSettings />} />
         <Route path="store-settings" element={<StoreSettings />} />
         <Route path="images" element={<ImageUploader />} />
