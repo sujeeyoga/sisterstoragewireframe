@@ -42,7 +42,7 @@ export const useCodeProtection = (enabled: boolean = true) => {
       console.clear();
       console.log(
         '%c⚠️ Stop!',
-        'color: #FB0657; font-size: 48px; font-weight: bold; text-shadow: 2px 2px 0 #000;'
+        'color: #FC0079; font-size: 48px; font-weight: bold; text-shadow: 2px 2px 0 #000;'
       );
       console.log(
         '%cThis browser feature is intended for developers. If someone told you to copy-paste something here to enable a feature or "hack" someone\'s account, it is a scam.',
@@ -50,7 +50,7 @@ export const useCodeProtection = (enabled: boolean = true) => {
       );
       console.log(
         '%cSister Storage - sisterstoragecanada.com',
-        'color: #FB0657; font-size: 12px;'
+        'color: #FC0079; font-size: 12px;'
       );
     };
 

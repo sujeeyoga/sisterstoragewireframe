@@ -156,7 +156,7 @@ const ctaSection = {
 };
 
 const button = {
-  backgroundColor: '#FF69B4',
+  backgroundColor: '#FC0079',
   borderRadius: '8px',
   color: '#fff',
   fontSize: '18px',
@@ -180,7 +180,7 @@ const footer = {
 };
 
 const link = {
-  color: '#FF69B4',
+  color: '#FC0079',
   textDecoration: 'underline',
 };
 

@@ -46,10 +46,10 @@ const PromotionalEmail = ({ customerName, subject, previewText, heroImage, headl
   const subheading = { color: '#666', fontSize: '18px', lineHeight: '28px', textAlign: 'center' as const, margin: '0 0 30px' };
   const bodyTextStyle = { color: '#333', fontSize: '16px', lineHeight: '26px', margin: '0 0 30px' };
   const ctaSection = { textAlign: 'center' as const, margin: '32px 0' };
-  const button = { backgroundColor: '#FF69B4', borderRadius: '8px', color: '#fff', fontSize: '16px', fontWeight: 'bold', textDecoration: 'none', textAlign: 'center' as const, display: 'inline-block', padding: '14px 32px' };
+  const button = { backgroundColor: '#FC0079', borderRadius: '8px', color: '#fff', fontSize: '16px', fontWeight: 'bold', textDecoration: 'none', textAlign: 'center' as const, display: 'inline-block', padding: '14px 32px' };
   const hr = { borderColor: '#e6e6e6', margin: '40px 0' };
   const footer = { color: '#666', fontSize: '14px', lineHeight: '24px', textAlign: 'center' as const };
-  const link = { color: '#FF69B4', textDecoration: 'underline' };
+  const link = { color: '#FC0079', textDecoration: 'underline' };
   const unsubscribe = { color: '#999', fontSize: '12px', lineHeight: '20px', textAlign: 'center' as const, marginTop: '32px' };
 
   return React.createElement(Html, null,
@@ -94,10 +94,10 @@ const AnnouncementEmail = ({ customerName, subject, previewText, image, headline
   const img = { width: '100%', height: 'auto', borderRadius: '8px' };
   const bodyTextStyle = { color: '#333', fontSize: '18px', lineHeight: '28px', margin: '0 0 30px', textAlign: 'center' as const };
   const ctaSection = { textAlign: 'center' as const, margin: '32px 0 0' };
-  const button = { backgroundColor: '#FF69B4', borderRadius: '8px', color: '#fff', fontSize: '18px', fontWeight: 'bold', textDecoration: 'none', textAlign: 'center' as const, display: 'inline-block', padding: '16px 40px' };
+  const button = { backgroundColor: '#FC0079', borderRadius: '8px', color: '#fff', fontSize: '18px', fontWeight: 'bold', textDecoration: 'none', textAlign: 'center' as const, display: 'inline-block', padding: '16px 40px' };
   const hr = { borderColor: '#e6e6e6', margin: '32px 0' };
   const footer = { color: '#666', fontSize: '14px', lineHeight: '24px', textAlign: 'center' as const };
-  const link = { color: '#FF69B4', textDecoration: 'underline' };
+  const link = { color: '#FC0079', textDecoration: 'underline' };
   const unsubscribe = { color: '#999', fontSize: '12px', lineHeight: '20px', textAlign: 'center' as const, marginTop: '32px' };
 
   return React.createElement(Html, null,

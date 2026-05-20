@@ -194,7 +194,7 @@ const ctaSection = {
 };
 
 const button = {
-  backgroundColor: '#FF69B4',
+  backgroundColor: '#FC0079',
   borderRadius: '8px',
   color: '#fff',
   fontSize: '16px',
@@ -236,12 +236,12 @@ const productName = {
 const productPrice = {
   fontSize: '16px',
   fontWeight: 'bold',
-  color: '#FF69B4',
+  color: '#FC0079',
   margin: '4px 0 8px',
 };
 
 const productLink = {
-  color: '#FF69B4',
+  color: '#FC0079',
   fontSize: '14px',
   textDecoration: 'underline',
 };
@@ -259,7 +259,7 @@ const footer = {
 };
 
 const link = {
-  color: '#FF69B4',
+  color: '#FC0079',
   textDecoration: 'underline',
 };
 
