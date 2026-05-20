@@ -12,7 +12,7 @@ export const collections = [
     id: "velvet-drawer",
     title: "Velvet Drawer Diaries",
     description: "Inside the rituals and routines that bring us calm.",
-    color: "#FE5FA4", // brandLightPink
+    color: "#FF65AF", // brandLightPink
     slug: "velvet-drawer-diaries"
   },
   {
@@ -40,7 +40,7 @@ export const collections = [
     id: "gifts",
     title: "Gifts That Hit",
     description: "What to give when you actually care.",
-    color: "#E90064", // brandPink
+    color: "#FC0079", // brandPink
     slug: "gifts-that-hit"
   },
   {
@@ -70,7 +70,7 @@ export const collections = [
     id: "made-look",
     title: "Made You Look",
     description: "Behind the designs, materials, and tiny details we obsessed over.",
-    color: "#FE5FA4", // brandLightPink
+    color: "#FF65AF", // brandLightPink
     slug: "made-you-look"
   }
 ];
@@ -131,7 +131,7 @@ export const blogPosts = [
     author: "Kavya Reddy",
     date: "June 1, 2025",
     category: "Velvet Drawer Diaries",
-    color: "#FE5FA4",
+    color: "#FF65AF",
     readingTime: "5 min",
     difficulty: "Beginner",
     mostShared: true
@@ -143,7 +143,7 @@ export const blogPosts = [
     author: "Anjali Desai",
     date: "May 28, 2025",
     category: "Gifts That Hit",
-    color: "#E90064",
+    color: "#FC0079",
     readingTime: "8 min",
     difficulty: "Beginner"
   },
@@ -177,7 +177,7 @@ export const blogPosts = [
     author: "Sister Storage Team",
     date: "May 19, 2025",
     category: "Made You Look",
-    color: "#FE5FA4",
+    color: "#FF65AF",
     readingTime: "10 min",
     difficulty: "Advanced"
   },
@@ -233,7 +233,7 @@ export const blogPosts = [
     author: "Aisha Patel",
     date: "May 4, 2025",
     category: "Velvet Drawer Diaries",
-    color: "#FE5FA4",
+    color: "#FF65AF",
     readingTime: "5 min",
     difficulty: "Beginner",
     trending: true

@@ -58,7 +58,7 @@ const FeaturedCollectionStory = ({
             </p>
             <Button 
               onClick={() => setSelectedCategory("All")} 
-              className="bg-[#E90064] hover:bg-[#FE5FA4]"
+              className="bg-[#FC0079] hover:bg-[#FF65AF]"
             >
               Back to All Categories
             </Button>

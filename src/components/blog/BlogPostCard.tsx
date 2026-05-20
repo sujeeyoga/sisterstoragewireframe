@@ -37,7 +37,7 @@ const BlogPostCard = ({ post, difficultyColors }: BlogPostCardProps) => {
       </div>
       <div className="p-6">
         <div className="flex items-center justify-between mb-3">
-          <span className="inline-block px-3 py-1 bg-[#FE5FA4] text-white rounded-full text-xs font-medium">
+          <span className="inline-block px-3 py-1 bg-[#FF65AF] text-white rounded-full text-xs font-medium">
             {post.category}
           </span>
           <div className="flex items-center gap-2">

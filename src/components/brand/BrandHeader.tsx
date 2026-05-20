@@ -36,7 +36,7 @@ const BrandHeader = () => {
           container
         >
           {SisterBrand.brandVoice.personality.map((trait) => (
-            <Badge key={trait} variant="secondary" className="bg-white text-[#E90064] px-6 py-3 text-sm font-medium font-poppins" style={{ borderRadius: '0px' }}>
+            <Badge key={trait} variant="secondary" className="bg-white text-[#FC0079] px-6 py-3 text-sm font-medium font-poppins" style={{ borderRadius: '0px' }}>
               {trait}
             </Badge>
           ))}

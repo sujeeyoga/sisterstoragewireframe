@@ -7,7 +7,7 @@ import { burstPreloadVideos } from '@/lib/burstImagePreloader';
 const instagramPosts = [
   {
     id: 1,
-    color: "#E90064",
+    color: "#FC0079",
     username: "priya_organized",
     likes: 2847,
     video: "https://dl.snapcdn.app/get?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJodHRwczovL3Njb250ZW50LmNkbmluc3RhZ3JhbS5jb20vbzEvdi90Mi9mMi9tODYvQVFNNjJ1bjZWYjFNRDQ2RGJYRWJsbU9NVDU1OFpkUFV0My1kNWpEUzVTLVhqUVlPXzNQV1R4dXNWd050d0ROUjhkY0lCRi00TTVNbm9PWTFuVVhtNm5yejo1RFdGY29WQnZTRnAxYy5tcDQ_X25jX2NhdD0xMTEmX25jX3NpZD01ZTk4NTEmX25jX2h0PXNjb250ZW50LWhlbDMtMS5jZG5pbnN0YWdyYW0uY29tJl9uY19vaGM9N2tFQTdMUU02WVVRN2tOdndFVGl5X3kmZWZnPWV5SjJaVzVqYjJSbFgzUmhaeUk2SW5od2RsOXdjbTluY21WemMybDJaUzVKVGxOVVFVZFNRVTB1UTB4SlVGTXVRekl1TnpJd0xtUmhjMmhmWW1GelpXeHBibVZmTVY5Mk1DSXNJbmh3ZGw5aGMzTmxkRjlwWkNJNk1USTJPRFkxTURBek5UQXdNREV3TkN3aWRtbGZkWE5sWTJGelpWOXBaQ0k2TVRBd085aUUsaWRIVnlZWFJwYjI1ZmN5STZNalVzSW5WeWJHeHVaMV56YjNWeVkyVWlPaUozZDNkSWJqRSZjY2I9MTctMSZ2cz0yMDY1MWU4NTE5MDY2YjYwJl9uY192cz1IQmtzRlFJWVVtbG5YM2h3ZGw5eVpXVnNjMTl3WlhKeVlXNWxiblJmYzNKZmNISnZaQzlDUmpReVJVUTVSa1l4T0VGQlJqTTRSVVUwUVVZd05rSTRSVGt3TnpZNU5WOTJhV1JsYjE5a1lYTm9hVzVwZEM1dGNEUlZBQUxJQVJJQUZRSVlPbkJoYzNOMGFISnZkV2RvWDJWMlpYSnpkRzl5WlM5SVRVNTBWbmd0T1hOeWQzQjJhV3RHUVU4ZldVcHJlRWgwVERoNFluRmZSVUZCUVVZVkFnTElBUklBS0FBWUFCc0NpQWQxYzJWZll6RTZWQmlFU2NISnZaM0psYzNOcGRtVmZjbVZqYVhCbEFURVZBQUFtMUV6eHFwUDF3QVFWQWlnQ1EzUXNGMHE1MVQ5ODdaRm9HQkprWVhOb1gySmhjMlZzYVc1bFh6RmZkakVSQUhYX0IyWG1uUUVBJl9uY19naWQ9b3k0aFU5ZXlRbjcwVWowV05RdTVFQSZfbmNfenQ9Mjgmb2g9MDBfQWZWVVNrc1dTTWNrZ2I5RnNULTZfVjg5akZUREVkMTNqRTdLcUx6enIzdTdfQSZvZT02OEE5NTA0NCIsImZpbGVuYW1lIjoiU25hcEluc3RhLnRvX0FRTTYydW42VmIxTUQ0NkRiWEVibG1PTVQ1NThaZFBVdDMtZDVqRFM1Uy1YalFZT18zUFdUeHVzVndOdHdETlI4ZGNJQkYtNE01TW5vT1kxblVYbTZucnpqNURXRmNvVkJ2U0ZwMWMubXA0IiwibmJmIjoxNzU1ODA1MTU1LCJleHAiOjE3NTU4MDg3NTUsImlhdCI6MTc1NTgwNTE1NX0.js9VlqNeFDamrXTf0XfwnVuFqw706DKFgx0R-rZ1_4w",
@@ -97,12 +97,12 @@ const InstagramUGC = () => {
     <section className="py-16 md:py-24 bg-gradient-to-br from-pink-50 via-white to-orange-50">
       <div className="container-custom">
         <div className="text-center mb-12 md:mb-16">
-          <span className="inline-block px-4 py-2 bg-[#E80065] text-white text-sm font-bold rounded-full mb-4">
+          <span className="inline-block px-4 py-2 bg-[#FC0079] text-white text-sm font-bold rounded-full mb-4">
             Community Stories
           </span>
           <h2 className="text-4xl md:text-6xl lg:text-7xl font-black text-gray-900 mt-2 mb-6 leading-tight">
             STYLED BY OUR<br />
-            <span className="text-[#E80065]">SISTERS</span>
+            <span className="text-[#FC0079]">SISTERS</span>
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto text-lg leading-relaxed">
             See how our community celebrates organizing with culture, color, and love. 
@@ -121,7 +121,7 @@ const InstagramUGC = () => {
               key={post.id}
               ref={el => reelRefs.current[index] = el}
               className={`group relative overflow-hidden rounded-2xl bg-white shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 ${
-                currentReelIndex === index ? 'ring-2 ring-[#E90064] ring-opacity-50' : ''
+                currentReelIndex === index ? 'ring-2 ring-[#FC0079] ring-opacity-50' : ''
               }`}
               style={{ animationDelay: `${index * 0.1}s` }}
             >
@@ -211,7 +211,7 @@ const InstagramUGC = () => {
         
         <div className="text-center mt-12 md:mt-16">
           <Button 
-            className="px-8 py-4 text-lg bg-gradient-to-r from-[#E90064] to-[#FF8021] hover:from-[#c50058] hover:to-[#e6721c] text-white border-none shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+            className="px-8 py-4 text-lg bg-gradient-to-r from-[#FC0079] to-[#FF8021] hover:from-[#c50058] hover:to-[#e6721c] text-white border-none shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
             asChild
           >
             <a href="https://www.instagram.com/sisterstorageinc" target="_blank" rel="noopener noreferrer" className="flex items-center space-x-3">

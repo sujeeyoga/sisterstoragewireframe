@@ -12,7 +12,7 @@ const testimonials = [
     quote: "These organizers changed my life! Now everything has a home.",
     author: "Priya S.",
     title: "Jewelry Collector",
-    color: "#E90064"
+    color: "#FC0079"
   },
   {
     id: 2,

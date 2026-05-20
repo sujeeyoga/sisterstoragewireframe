@@ -40,7 +40,7 @@ const Index = () => {
       />
       <FAQSchema faqs={homepageFAQs} />
       
-      <div className="min-h-screen bg-[#E80065] -mt-28">
+      <div className="min-h-screen bg-[#FC0079] -mt-28">
         {/* Hero Section */}
         <Hero />
         
