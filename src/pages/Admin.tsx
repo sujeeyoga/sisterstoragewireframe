@@ -111,6 +111,7 @@ const Admin = () => {
         <Route path="migrate-images" element={<ImageMigrationTool />} />
         <Route path="sync" element={<AdminSync />} />
         <Route path="shopify-push" element={<ShopifyPush />} />
+        <Route path="shopify-push/breakdown" element={<ShopifyPushBreakdown />} />
         <Route path="admin-settings" element={<AdminSettings />} />
         <Route path="store-settings" element={<StoreSettings />} />
         <Route path="images" element={<ImageUploader />} />
