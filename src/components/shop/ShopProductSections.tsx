@@ -36,6 +36,9 @@ const ShopProductSections = ({ products }: ShopProductSectionsProps) => {
 
   return (
     <div className="grid gap-8">
+      {/* Section 0: Culture Bag (featured up top) */}
+      <CultureBagPromo variant="shop" />
+
       {/* Section 1: Top-Selling Bundles */}
       {bundles.length > 0 && (
         <section className="w-full bg-[#FFF7F5]" style={{ borderRadius: '0px' }}>
