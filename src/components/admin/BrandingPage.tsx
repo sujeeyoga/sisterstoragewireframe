@@ -7,6 +7,31 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { ExternalLink } from 'lucide-react';
 
+const CopyableValue = ({ label, value }: { label: string; value: string }) => {
+  const [copied, setCopied] = useState(false);
+  const { toast } = useToast();
+  const copy = () => {
+    navigator.clipboard.writeText(value);
+    setCopied(true);
+    toast({ title: 'Copied', description: `${label} copied to clipboard` });
+    setTimeout(() => setCopied(false), 1500);
+  };
+  return (
+    <button
+      onClick={copy}
+      className="group flex items-center gap-2 text-left hover:bg-muted/50 rounded px-1 -mx-1 transition-colors"
+    >
+      <span className="text-muted-foreground">{label}:</span>
+      <span>{value}</span>
+      {copied ? (
+        <Check className="h-3 w-3 text-green-600" />
+      ) : (
+        <Copy className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+      )}
+    </button>
+  );
+};
+
 const ColorSwatch = ({ name, hex }: { name: string; hex: string }) => {
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
@@ -65,10 +90,10 @@ export const BrandingPage = () => {
               <p className="text-2xl font-bold font-mono">#FC0079</p>
               <p className="text-muted-foreground">The standard Sister Pink used across the site.</p>
               <div className="mt-3 grid grid-cols-2 gap-x-6 gap-y-1 text-sm">
-                <p><span className="text-muted-foreground">RGB:</span> 252, 0, 121</p>
-                <p><span className="text-muted-foreground">CMYK:</span> 0%, 100%, 52%, 1%</p>
-                <p><span className="text-muted-foreground">HSV:</span> 331°, 100%, 99%</p>
-                <p><span className="text-muted-foreground">HSL:</span> 331°, 100%, 49%</p>
+                <CopyableValue label="RGB" value="252, 0, 121" />
+                <CopyableValue label="CMYK" value="0%, 100%, 52%, 1%" />
+                <CopyableValue label="HSV" value="331°, 100%, 99%" />
+                <CopyableValue label="HSL" value="331°, 100%, 49%" />
               </div>
             </div>
           </div>
