@@ -7,6 +7,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { ShoppingBag, Users, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { Link } from 'react-router-dom';
 
 type PushType = 'order' | 'customer';
 type Result = { created: number; skipped: number; errors: any[] } | null;
