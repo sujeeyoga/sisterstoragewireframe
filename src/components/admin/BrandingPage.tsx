@@ -64,6 +64,7 @@ export const BrandingPage = () => {
             <div>
               <p className="text-2xl font-bold font-mono">#FC0079</p>
               <p className="text-muted-foreground">The standard Sister Pink used across the site.</p>
+              <p className="text-sm text-muted-foreground mt-1">Pantone 2062</p>
             </div>
           </div>
         </CardContent>
