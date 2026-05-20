@@ -70,9 +70,9 @@ export const SisterBrand = {
     },
     secondary: {
       bg: 'transparent',
-      color: '#E80065',
-      border: '1px solid #E80065',
-      hover: '#E80065',
+      color: '#FC0079',
+      border: '1px solid #FC0079',
+      hover: '#FC0079',
       hoverColor: '#FFFFFF',
       borderRadius: '0px',
     },
