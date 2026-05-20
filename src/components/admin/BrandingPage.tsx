@@ -90,10 +90,10 @@ export const BrandingPage = () => {
               <p className="text-2xl font-bold font-mono">#FC0079</p>
               <p className="text-muted-foreground">The standard Sister Pink used across the site.</p>
               <div className="mt-3 grid grid-cols-2 gap-x-6 gap-y-1 text-sm">
-                <p><span className="text-muted-foreground">RGB:</span> 252, 0, 121</p>
-                <p><span className="text-muted-foreground">CMYK:</span> 0%, 100%, 52%, 1%</p>
-                <p><span className="text-muted-foreground">HSV:</span> 331°, 100%, 99%</p>
-                <p><span className="text-muted-foreground">HSL:</span> 331°, 100%, 49%</p>
+                <CopyableValue label="RGB" value="252, 0, 121" />
+                <CopyableValue label="CMYK" value="0%, 100%, 52%, 1%" />
+                <CopyableValue label="HSV" value="331°, 100%, 99%" />
+                <CopyableValue label="HSL" value="331°, 100%, 49%" />
               </div>
             </div>
           </div>
