@@ -12,7 +12,7 @@ const buttonVariants = cva(
       variant: {
         default: "bg-black text-white hover:bg-[#FF8021] hover:scale-[1.03] active:scale-[0.98]",
         "primary-inverse": "bg-white text-black border border-black hover:bg-[#FF8021] hover:text-white hover:border-[#FF8021] hover:scale-[1.03] active:scale-[0.98]",
-        secondary: "bg-transparent text-[#E80065] border border-[#E80065] hover:bg-[#E80065] hover:text-white active:scale-[0.98]",
+        secondary: "bg-transparent text-[#FC0079] border border-[#FC0079] hover:bg-[#FC0079] hover:text-white active:scale-[0.98]",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
@@ -21,12 +21,12 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         disabled: "bg-[#F4F4F4] text-[#B8B0A8] cursor-not-allowed",
         // New brand variants
-        pink: "bg-[#E80065] text-white hover:bg-[#FE5FA4] hover:scale-[1.03] active:scale-[0.98]",
+        pink: "bg-[#FC0079] text-white hover:bg-[#FF65AF] hover:scale-[1.03] active:scale-[0.98]",
         orange: "bg-[#FF8021] text-white hover:bg-[#FFA51E] hover:scale-[1.03] active:scale-[0.98]",
         peach: "bg-[#FFDCBD] text-gray-800 hover:bg-[#FFCBA4] hover:scale-[1.03] active:scale-[0.98]",
         gold: "bg-[#FFA51E] text-white hover:bg-[#FFB84D] hover:scale-[1.03] active:scale-[0.98]",
         // Ghost variants
-        "ghost-pink": "bg-transparent text-[#E90064] hover:bg-[#E90064] hover:text-white active:scale-[0.98]",
+        "ghost-pink": "bg-transparent text-[#FC0079] hover:bg-[#FC0079] hover:text-white active:scale-[0.98]",
         "ghost-orange": "bg-transparent text-[#FF8021] hover:bg-[#FF8021] hover:text-white active:scale-[0.98]",
         "ghost-black": "bg-transparent text-black hover:bg-black hover:text-white active:scale-[0.98]",
         // Enhanced Buy variant - modern, responsive, with animations
