@@ -1,12 +1,12 @@
 export const SisterBrand = {
   colors: {
     // Primary brand colors
-    'Sister Pink': '#E80065',
+    'Sister Pink': '#FC0079',
     'Sister Orange': '#FF8021',
     'Sister Black': '#000000',
     'Sister Gray': '#F4F4F4',
     'Sister Peach': '#FFDCBD',
-    'Light Pink': '#FE5FA4',
+    'Light Pink': '#FF65AF',
     'Sister Gold': '#FFA51E',
     // Extended palette
     'Soft Green': '#F2FCE2',
