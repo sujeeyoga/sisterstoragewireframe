@@ -7,6 +7,31 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { ExternalLink } from 'lucide-react';
 
+const CopyableValue = ({ label, value }: { label: string; value: string }) => {
+  const [copied, setCopied] = useState(false);
+  const { toast } = useToast();
+  const copy = () => {
+    navigator.clipboard.writeText(value);
+    setCopied(true);
+    toast({ title: 'Copied', description: `${label} copied to clipboard` });
+    setTimeout(() => setCopied(false), 1500);
+  };
+  return (
+    <button
+      onClick={copy}
+      className="group flex items-center gap-2 text-left hover:bg-muted/50 rounded px-1 -mx-1 transition-colors"
+    >
+      <span className="text-muted-foreground">{label}:</span>
+      <span>{value}</span>
+      {copied ? (
+        <Check className="h-3 w-3 text-green-600" />
+      ) : (
+        <Copy className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+      )}
+    </button>
+  );
+};
+
 const ColorSwatch = ({ name, hex }: { name: string; hex: string }) => {
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
