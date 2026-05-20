@@ -40,7 +40,7 @@ const Culture = () => {
         {/* Hero Section */}
         <section
           className="relative py-16 md:py-24 overflow-hidden"
-          style={{ backgroundColor: '#ff0077' }}
+          style={{ backgroundColor: '#FC0079' }}
         >
           <div
             className="absolute inset-0 opacity-20"
@@ -53,9 +53,9 @@ const Culture = () => {
               filter: 'brightness(0) blur(1px)',
             }}
           />
-          <div className="absolute bottom-0 left-0 right-0 h-24 pointer-events-none" style={{ background: 'linear-gradient(to bottom, transparent, #ff0077)' }} />
-          <div className="absolute top-0 bottom-0 left-0 w-12 pointer-events-none" style={{ background: 'linear-gradient(to right, #ff0077, transparent)' }} />
-          <div className="absolute top-0 bottom-0 right-0 w-12 pointer-events-none" style={{ background: 'linear-gradient(to left, #ff0077, transparent)' }} />
+          <div className="absolute bottom-0 left-0 right-0 h-24 pointer-events-none" style={{ background: 'linear-gradient(to bottom, transparent, #FC0079)' }} />
+          <div className="absolute top-0 bottom-0 left-0 w-12 pointer-events-none" style={{ background: 'linear-gradient(to right, #FC0079, transparent)' }} />
+          <div className="absolute top-0 bottom-0 right-0 w-12 pointer-events-none" style={{ background: 'linear-gradient(to left, #FC0079, transparent)' }} />
 
           <div className="container mx-auto px-4 relative z-10">
             <div className="flex justify-center">
@@ -64,13 +64,13 @@ const Culture = () => {
                   <h1 className="mb-2">
                     <span
                       className="text-5xl md:text-6xl lg:text-7xl block leading-tight"
-                      style={{ fontFamily: 'Regards, cursive', color: '#ff0077' }}
+                      style={{ fontFamily: 'Regards, cursive', color: '#FC0079' }}
                     >
                       {hero?.title || 'Culture,'}
                     </span>
                     <span
                       className="text-2xl md:text-3xl lg:text-4xl font-semibold uppercase tracking-wider block mt-1"
-                      style={{ color: '#ff0077' }}
+                      style={{ color: '#FC0079' }}
                     >
                       {hero?.subtitle || 'without clutter.'}
                     </span>
@@ -150,7 +150,7 @@ const Culture = () => {
         )}
 
         {/* Elevator Culture Split Section */}
-        <section className="py-8 md:py-12 bg-[#ff0077] overflow-hidden">
+        <section className="py-8 md:py-12 bg-[#FC0079] overflow-hidden">
           <div ref={scrollRef} className="mx-auto max-w-5xl grid grid-cols-2 gap-1 px-4">
             <div className="elevator-left text-right">
               <span className="text-white text-4xl md:text-6xl lg:text-7xl" style={{ fontFamily: 'Regards, cursive' }}>
@@ -202,7 +202,7 @@ const Culture = () => {
                 style={{ transform: `translateY(${-offset * 0.1}px)` }}
               />
             </div>
-            <div className="hidden md:flex w-16 lg:w-20 flex-shrink-0 flex-col items-center justify-start py-8" style={{ backgroundColor: '#ff0077' }}>
+            <div className="hidden md:flex w-16 lg:w-20 flex-shrink-0 flex-col items-center justify-start py-8" style={{ backgroundColor: '#FC0079' }}>
               <span className="text-white text-xl lg:text-2xl font-bold tracking-wider" style={{ fontFamily: 'Regards, cursive' }}>SS</span>
             </div>
           </div>
