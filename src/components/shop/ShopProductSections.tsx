@@ -130,10 +130,7 @@ const ShopProductSections = ({ products }: ShopProductSectionsProps) => {
         </section>
       )}
       
-      {/* Section 4: Culture Bag */}
-      <CultureBagPromo variant="shop" />
-      
-      {/* Section 5: Upcoming Collections */}
+      {/* Upcoming Collections */}
       <LaunchCardsSection />
       
       {/* Empty State */}
