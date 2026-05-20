@@ -164,8 +164,17 @@ export const BrandingPage = () => {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-            {colors.map(([name, hex]) => (
-              <ColorSwatch key={name} name={name} hex={hex} />
+            {colors.map(([name, hex], i) => (
+              <ColorSwatch
+                key={name}
+                name={name}
+                hex={hex}
+                isDragging={dragIndex === i}
+                onDragStart={() => setDragIndex(i)}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={() => handleDrop(i)}
+                onDragEnd={() => setDragIndex(null)}
+              />
             ))}
           </div>
         </CardContent>
