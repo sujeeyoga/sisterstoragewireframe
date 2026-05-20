@@ -149,6 +149,14 @@ const handler = async (req: Request): Promise<Response> => {
                   </table>
                 </div>
 
+                <!-- Order Details CTA -->
+                <div style="padding: 0 32px 24px 32px; text-align: center;">
+                  <a href="https://sisterstorage.com/customer/orders/${orderId}"
+                     style="display: inline-block; background: #ec4899; color: white; padding: 12px 28px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 14px;">
+                    View Your Order Details
+                  </a>
+                </div>
+
                 <!-- Footer Message -->
                 <div style="padding: 0 32px 32px 32px;">
                   <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin: 0;">
