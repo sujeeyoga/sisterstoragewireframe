@@ -53,9 +53,9 @@ const Culture = () => {
               filter: 'brightness(0) blur(1px)',
             }}
           />
-          <div className="absolute bottom-0 left-0 right-0 h-24 pointer-events-none" style={{ background: 'linear-gradient(to bottom, transparent, #ff0077)' }} />
-          <div className="absolute top-0 bottom-0 left-0 w-12 pointer-events-none" style={{ background: 'linear-gradient(to right, #ff0077, transparent)' }} />
-          <div className="absolute top-0 bottom-0 right-0 w-12 pointer-events-none" style={{ background: 'linear-gradient(to left, #ff0077, transparent)' }} />
+          <div className="absolute bottom-0 left-0 right-0 h-24 pointer-events-none" style={{ background: 'linear-gradient(to bottom, transparent, #FC0079)' }} />
+          <div className="absolute top-0 bottom-0 left-0 w-12 pointer-events-none" style={{ background: 'linear-gradient(to right, #FC0079, transparent)' }} />
+          <div className="absolute top-0 bottom-0 right-0 w-12 pointer-events-none" style={{ background: 'linear-gradient(to left, #FC0079, transparent)' }} />
 
           <div className="container mx-auto px-4 relative z-10">
             <div className="flex justify-center">
