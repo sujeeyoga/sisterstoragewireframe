@@ -50,6 +50,7 @@ import { ShippingThresholdsPanel } from '@/components/admin/ShippingThresholdsPa
 import { PageContentManager } from '@/components/admin/PageContentManager';
 import { ShopifyPush } from '@/components/admin/ShopifyPush';
 import { ShopifyPushBreakdown } from '@/components/admin/ShopifyPushBreakdown';
+import { BrandingPage } from '@/components/admin/BrandingPage';
 
 const Admin = () => {
   const { notification, clearNotification } = useOrderNotifications();
@@ -103,6 +104,7 @@ const Admin = () => {
         <Route path="bulk-shipping-refund" element={<BulkShippingRefundTool />} />
         <Route path="sections" element={<SectionsManager />} />
         <Route path="pages" element={<PagesManager />} />
+        <Route path="branding" element={<BrandingPage />} />
         <Route path="page-content" element={<PageContentManager />} />
         <Route path="texts" element={<TextsManager />} />
         <Route path="hero-images" element={<HeroImagesManager />} />
