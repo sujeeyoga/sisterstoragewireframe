@@ -51,7 +51,7 @@ const ContentPage = () => {
       <div className="fixed top-6 left-6 z-50">
         <Link
           to="/brand"
-          className="w-12 h-12 bg-black text-white hover:bg-[#E90064] flex items-center justify-center transition-all duration-300 ease-in-out hover:scale-110 shadow-lg"
+          className="w-12 h-12 bg-black text-white hover:bg-[#FC0079] flex items-center justify-center transition-all duration-300 ease-in-out hover:scale-110 shadow-lg"
           style={{ borderRadius: '0px' }}
           aria-label="Back to brand page"
         >
@@ -78,7 +78,7 @@ const ContentPage = () => {
             {content.description}
           </AnimatedText>
 
-          <div className="bg-[#E90064] p-8 md:p-12 text-white mb-12" style={{ borderRadius: '0px' }}>
+          <div className="bg-[#FC0079] p-8 md:p-12 text-white mb-12" style={{ borderRadius: '0px' }}>
             <AnimatedText
               as="p"
               className="text-lg leading-relaxed font-poppins"
@@ -96,7 +96,7 @@ const ContentPage = () => {
           >
             <Link
               to="/brand"
-              className="inline-block bg-black text-white px-8 py-4 font-semibold uppercase font-poppins hover:bg-[#E90064] transition-colors duration-300"
+              className="inline-block bg-black text-white px-8 py-4 font-semibold uppercase font-poppins hover:bg-[#FC0079] transition-colors duration-300"
               style={{ borderRadius: '0px' }}
             >
               Back to Brand Guide

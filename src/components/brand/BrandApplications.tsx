@@ -26,7 +26,7 @@ const BrandApplications = () => {
       
       <div className="grid grid-cols-12 gap-6">
         <Card className="col-span-12 md:col-span-4 p-8 text-center" style={{ borderRadius: '0px' }}>
-          <div className="w-16 h-16 bg-[#E90064] mx-auto mb-6 flex items-center justify-center" style={{ borderRadius: '0px' }}>
+          <div className="w-16 h-16 bg-[#FC0079] mx-auto mb-6 flex items-center justify-center" style={{ borderRadius: '0px' }}>
             <Mail className="h-8 w-8 text-white" />
           </div>
           <h3 className="font-bold mb-4 font-poppins text-lg">Digital Communications</h3>

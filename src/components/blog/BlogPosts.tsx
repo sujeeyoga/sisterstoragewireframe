@@ -49,7 +49,7 @@ const BlogPosts = ({ posts, difficultyColors }: BlogPostsProps) => {
               </div>
               <div className="space-y-4">
                 <div className="flex items-center gap-2">
-                  <span className="inline-block px-3 py-1 bg-[#FE5FA4] text-white rounded-full text-sm font-medium">
+                  <span className="inline-block px-3 py-1 bg-[#FF65AF] text-white rounded-full text-sm font-medium">
                     {posts[0].category}
                   </span>
                   <span 
@@ -69,7 +69,7 @@ const BlogPosts = ({ posts, difficultyColors }: BlogPostsProps) => {
                     By {posts[0].author} • {posts[0].date}
                   </div>
                 </div>
-                <Button className="bg-[#E90064] hover:bg-[#FE5FA4] text-white mt-2" asChild>
+                <Button className="bg-[#FC0079] hover:bg-[#FF65AF] text-white mt-2" asChild>
                   <Link to={`/blog/${posts[0].id}`}>Read Article</Link>
                 </Button>
               </div>
@@ -108,10 +108,10 @@ const BlogPosts = ({ posts, difficultyColors }: BlogPostsProps) => {
                   </div>
                   <div className="p-6">
                     <div className="flex items-center gap-2 mb-3">
-                      <span className="inline-block px-3 py-1 bg-[#FE5FA4] text-white rounded-full text-xs font-medium">
+                      <span className="inline-block px-3 py-1 bg-[#FF65AF] text-white rounded-full text-xs font-medium">
                         {post.category}
                       </span>
-                      <span className="text-xs bg-[#E90064] text-white px-2 py-0.5 rounded-full">Trending</span>
+                      <span className="text-xs bg-[#FC0079] text-white px-2 py-0.5 rounded-full">Trending</span>
                     </div>
                     <h3 className="text-xl font-bold mb-2">{post.title}</h3>
                     <p className="text-gray-700 text-sm mb-4 line-clamp-2">{post.excerpt}</p>
@@ -139,7 +139,7 @@ const BlogPosts = ({ posts, difficultyColors }: BlogPostsProps) => {
                     </div>
                   </div>
                   <div className="p-6">
-                    <span className="inline-block px-3 py-1 bg-[#FE5FA4] text-white rounded-full text-xs font-medium mb-3">
+                    <span className="inline-block px-3 py-1 bg-[#FF65AF] text-white rounded-full text-xs font-medium mb-3">
                       {post.category}
                     </span>
                     <h3 className="text-xl font-bold mb-2">{post.title}</h3>
@@ -162,7 +162,7 @@ const BlogPosts = ({ posts, difficultyColors }: BlogPostsProps) => {
                   </div>
                   <h3 className="text-xl font-bold mb-2 text-center">{post.title}</h3>
                   <div className="flex justify-center mb-4">
-                    <span className="inline-block px-3 py-1 bg-[#FE5FA4] text-white rounded-full text-xs font-medium">
+                    <span className="inline-block px-3 py-1 bg-[#FF65AF] text-white rounded-full text-xs font-medium">
                       {post.category}
                     </span>
                   </div>

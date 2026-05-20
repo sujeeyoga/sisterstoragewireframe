@@ -24,7 +24,7 @@ const BrandTypography = () => {
       <div className="grid grid-cols-12 gap-8">
         <div className="col-span-12 bg-white p-12 shadow-sm" style={{ borderRadius: '0px' }}>
           <p className="text-xs text-gray-500 uppercase tracking-wide mb-4 font-poppins">Display / Hero</p>
-          <h1 className="text-4xl md:text-6xl font-bold text-[#E90064] leading-tight font-poppins">
+          <h1 className="text-4xl md:text-6xl font-bold text-[#FC0079] leading-tight font-poppins">
             Culture Without Clutter
           </h1>
         </div>

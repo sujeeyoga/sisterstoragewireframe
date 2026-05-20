@@ -38,7 +38,7 @@ const PopularTags = ({ blogPosts, collections, setSelectedCategory }: PopularTag
           const categoryPost = blogPosts.find(post => post.category === category);
           const categoryCollection = collections.find(c => c.title === category);
           const color = categoryCollection ? categoryCollection.color : 
-                      categoryPost ? categoryPost.color : "#E90064";
+                      categoryPost ? categoryPost.color : "#FC0079";
           const textDark = categoryCollection?.textDark;
           
           return (

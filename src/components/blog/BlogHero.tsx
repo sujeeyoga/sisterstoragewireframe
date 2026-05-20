@@ -24,8 +24,8 @@ const BlogHero = ({ selectedCategory, setSelectedCategory, categories }: BlogHer
               onClick={() => setSelectedCategory(category)}
               className={`px-4 py-2 rounded-full text-sm transition-all ${
                 selectedCategory === category
-                  ? "bg-[#E90064] text-white"
-                  : "bg-white border border-gray-200 text-gray-700 hover:bg-[#FE5FA4] hover:text-white hover:border-[#FE5FA4]"
+                  ? "bg-[#FC0079] text-white"
+                  : "bg-white border border-gray-200 text-gray-700 hover:bg-[#FF65AF] hover:text-white hover:border-[#FF65AF]"
               }`}
             >
               {category}

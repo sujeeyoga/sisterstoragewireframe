@@ -89,7 +89,7 @@ const BrandVoice = () => {
               "{SisterBrand.brandVoice.tone}"
             </AnimatedText>
             
-            <div className="bg-[#E90064] p-12" style={{ borderRadius: '0px' }}>
+            <div className="bg-[#FC0079] p-12" style={{ borderRadius: '0px' }}>
               <AnimatedText
                 as="h3"
                 className="text-2xl font-bold mb-6 font-poppins"

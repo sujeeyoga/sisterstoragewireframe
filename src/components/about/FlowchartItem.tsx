@@ -27,7 +27,7 @@ const FlowchartItem: React.FC<FlowchartItemProps> = ({
       <div className="flex items-start gap-6">
         {/* Circle dot */}
         <div className={`${color} h-11 w-11 rounded-full flex items-center justify-center flex-shrink-0 z-10 border-2 border-white shadow-md`}>
-          <span className="text-[#E90064] font-bold">{index + 1}</span>
+          <span className="text-[#FC0079] font-bold">{index + 1}</span>
         </div>
         
         {/* Content */}

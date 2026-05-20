@@ -1,12 +1,12 @@
 export const SisterBrand = {
   colors: {
     // Primary brand colors
-    'Sister Pink': '#E80065',
+    'Sister Pink': '#FC0079',
     'Sister Orange': '#FF8021',
     'Sister Black': '#000000',
     'Sister Gray': '#F4F4F4',
     'Sister Peach': '#FFDCBD',
-    'Light Pink': '#FE5FA4',
+    'Light Pink': '#FF65AF',
     'Sister Gold': '#FFA51E',
     // Extended palette
     'Soft Green': '#F2FCE2',
@@ -70,9 +70,9 @@ export const SisterBrand = {
     },
     secondary: {
       bg: 'transparent',
-      color: '#E80065',
-      border: '1px solid #E80065',
-      hover: '#E80065',
+      color: '#FC0079',
+      border: '1px solid #FC0079',
+      hover: '#FC0079',
       hoverColor: '#FFFFFF',
       borderRadius: '0px',
     },
