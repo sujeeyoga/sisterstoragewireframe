@@ -15,8 +15,8 @@ interface ThemeCardProps {
 
 const themeConfig = {
   promotion: {
-    backgrounds: ['#E90064', '#FE5FA4'],
-    iconColors: ['#FE5FA4', '#E90064'],
+    backgrounds: ['#FC0079', '#FF65AF'],
+    iconColors: ['#FF65AF', '#FC0079'],
     icons: [Heart, Star],
     textColor: 'text-white'
   },
@@ -34,7 +34,7 @@ const themeConfig = {
   },
   testimonial: {
     backgrounds: ['#FFDCBD', '#FDE1D3'],
-    iconColors: ['#FF8021', '#E90064'],
+    iconColors: ['#FF8021', '#FC0079'],
     icons: [Star, Star],
     textColor: 'text-black/90'
   },
@@ -46,7 +46,7 @@ const themeConfig = {
   },
   info: {
     backgrounds: ['#FFDEE2', '#D3E4FD'],
-    iconColors: ['#E90064', '#3B82F6'],
+    iconColors: ['#FC0079', '#3B82F6'],
     icons: [Info, CheckCircle],
     textColor: 'text-black/90'
   },
