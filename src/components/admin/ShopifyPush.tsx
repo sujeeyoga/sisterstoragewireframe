@@ -156,12 +156,17 @@ export const ShopifyPush = () => {
 
   return (
     <div className="p-8 max-w-4xl">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold mb-2">Push to Shopify</h1>
-        <p className="text-muted-foreground">
-          Send orders and customers from your store directly into Shopify via the Admin API.
-          No CSV, no Matrixify required.
-        </p>
+      <div className="mb-6 flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold mb-2">Push to Shopify</h1>
+          <p className="text-muted-foreground">
+            Send orders and customers from your store directly into Shopify via the Admin API.
+            No CSV, no Matrixify required.
+          </p>
+        </div>
+        <Link to="/admin/shopify-push/breakdown">
+          <Button variant="outline">View per-order breakdown →</Button>
+        </Link>
       </div>
 
       <div className="mb-6 flex items-end gap-4">
