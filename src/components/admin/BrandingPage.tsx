@@ -1,11 +1,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { SisterBrand } from '@/config/sister-brand.config';
-import { Copy, Check } from 'lucide-react';
-import { useState } from 'react';
+import { Copy, Check, GripVertical } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { ExternalLink } from 'lucide-react';
+
+const ORDER_KEY = 'branding.colorOrder.v1';
 
 const CopyableValue = ({ label, value }: { label: string; value: string }) => {
   const [copied, setCopied] = useState(false);
@@ -32,7 +34,23 @@ const CopyableValue = ({ label, value }: { label: string; value: string }) => {
   );
 };
 
-const ColorSwatch = ({ name, hex }: { name: string; hex: string }) => {
+const ColorSwatch = ({
+  name,
+  hex,
+  onDragStart,
+  onDragOver,
+  onDrop,
+  onDragEnd,
+  isDragging,
+}: {
+  name: string;
+  hex: string;
+  onDragStart: () => void;
+  onDragOver: (e: React.DragEvent) => void;
+  onDrop: () => void;
+  onDragEnd: () => void;
+  isDragging: boolean;
+}) => {
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
   const copy = () => {
@@ -42,25 +60,65 @@ const ColorSwatch = ({ name, hex }: { name: string; hex: string }) => {
     setTimeout(() => setCopied(false), 1500);
   };
   return (
-    <button
-      onClick={copy}
-      className="group text-left border rounded-lg overflow-hidden hover:shadow-md transition-shadow"
+    <div
+      draggable
+      onDragStart={onDragStart}
+      onDragOver={onDragOver}
+      onDrop={onDrop}
+      onDragEnd={onDragEnd}
+      className={`group relative border rounded-lg overflow-hidden hover:shadow-md transition-all cursor-grab active:cursor-grabbing ${isDragging ? 'opacity-40 scale-95' : ''}`}
     >
-      <div className="h-24 w-full" style={{ background: hex }} />
-      <div className="p-3 flex items-center justify-between bg-white">
-        <div>
-          <p className="text-sm font-medium">{name}</p>
-          <p className="text-xs text-muted-foreground font-mono">{hex}</p>
-        </div>
-        {copied ? <Check className="h-4 w-4 text-green-600" /> : <Copy className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100" />}
+      <div className="absolute top-1 right-1 z-10 p-1 rounded bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity">
+        <GripVertical className="h-3 w-3 text-white" />
       </div>
-    </button>
+      <button onClick={copy} className="w-full text-left">
+        <div className="h-24 w-full" style={{ background: hex }} />
+        <div className="p-3 flex items-center justify-between bg-white">
+          <div>
+            <p className="text-sm font-medium">{name}</p>
+            <p className="text-xs text-muted-foreground font-mono">{hex}</p>
+          </div>
+          {copied ? <Check className="h-4 w-4 text-green-600" /> : <Copy className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100" />}
+        </div>
+      </button>
+    </div>
   );
 };
 
 export const BrandingPage = () => {
-  const colors = Object.entries(SisterBrand.colors);
+  const baseColors = Object.entries(SisterBrand.colors);
   const weights = Object.entries(SisterBrand.typography.weights);
+
+  const [colors, setColors] = useState<[string, string][]>(() => {
+    try {
+      const saved = localStorage.getItem(ORDER_KEY);
+      if (saved) {
+        const order: string[] = JSON.parse(saved);
+        const map = new Map(baseColors);
+        const ordered = order.filter((n) => map.has(n)).map((n) => [n, map.get(n)!] as [string, string]);
+        const remaining = baseColors.filter(([n]) => !order.includes(n));
+        return [...ordered, ...remaining];
+      }
+    } catch {}
+    return baseColors;
+  });
+
+  useEffect(() => {
+    localStorage.setItem(ORDER_KEY, JSON.stringify(colors.map(([n]) => n)));
+  }, [colors]);
+
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+
+  const handleDrop = (toIndex: number) => {
+    if (dragIndex === null || dragIndex === toIndex) return;
+    setColors((prev) => {
+      const next = [...prev];
+      const [moved] = next.splice(dragIndex, 1);
+      next.splice(toIndex, 0, moved);
+      return next;
+    });
+    setDragIndex(null);
+  };
 
   return (
     <div className="p-8 max-w-[1400px] mx-auto">
@@ -106,8 +164,17 @@ export const BrandingPage = () => {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-            {colors.map(([name, hex]) => (
-              <ColorSwatch key={name} name={name} hex={hex} />
+            {colors.map(([name, hex], i) => (
+              <ColorSwatch
+                key={name}
+                name={name}
+                hex={hex}
+                isDragging={dragIndex === i}
+                onDragStart={() => setDragIndex(i)}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={() => handleDrop(i)}
+                onDragEnd={() => setDragIndex(null)}
+              />
             ))}
           </div>
         </CardContent>
