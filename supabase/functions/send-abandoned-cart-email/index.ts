@@ -84,7 +84,7 @@ const handler = async (req: Request): Promise<Response> => {
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
           </head>
           <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-            <div style="background: linear-gradient(135deg, #FF69B4, #FFB6C1); padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
+            <div style="background: linear-gradient(135deg, #FC0079, #FFB6C1); padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
               <h1 style="color: white; margin: 0; font-size: 28px;">Don't forget your items! 🛍️</h1>
             </div>
             
@@ -113,7 +113,7 @@ const handler = async (req: Request): Promise<Response> => {
                     <td colspan="2" style="padding: 15px 10px; text-align: right; font-weight: bold; font-size: 18px;">
                       Subtotal:
                     </td>
-                    <td style="padding: 15px 10px; text-align: right; font-weight: bold; font-size: 18px; color: #FF69B4;">
+                    <td style="padding: 15px 10px; text-align: right; font-weight: bold; font-size: 18px; color: #FC0079;">
                       $${subtotal.toFixed(2)}
                     </td>
                   </tr>
@@ -122,7 +122,7 @@ const handler = async (req: Request): Promise<Response> => {
               
               <div style="text-align: center; margin: 30px 0;">
                 <a href="${Deno.env.get("SUPABASE_URL")?.replace('.supabase.co', '.lovable.app') || 'https://your-site.com'}/checkout" 
-                   style="display: inline-block; background: linear-gradient(135deg, #FF69B4, #FFB6C1); color: white; padding: 16px 40px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px;">
+                   style="display: inline-block; background: linear-gradient(135deg, #FC0079, #FFB6C1); color: white; padding: 16px 40px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px;">
                   Complete Your Purchase
                 </a>
               </div>

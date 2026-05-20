@@ -62,7 +62,7 @@ const handler = async (req: Request): Promise<Response> => {
         subject: "Thank you for your review! 💖",
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-            <h1 style="color: #FF69B4;">Thank You for Your Review!</h1>
+            <h1 style="color: #FC0079;">Thank You for Your Review!</h1>
             <p>Hi ${customer_name},</p>
             <p>Thank you for taking the time to review <strong>${product_name}</strong>!</p>
             
@@ -82,7 +82,7 @@ const handler = async (req: Request): Promise<Response> => {
             <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;" />
             <p style="font-size: 12px; color: #666;">
               Sister Storage<br>
-              <a href="https://sisterstorage.com" style="color: #FF69B4;">sisterstorage.com</a>
+              <a href="https://sisterstorage.com" style="color: #FC0079;">sisterstorage.com</a>
             </p>
           </div>
         `,
@@ -97,7 +97,7 @@ const handler = async (req: Request): Promise<Response> => {
         subject: "New Product Review Submitted ⭐",
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-            <h1 style="color: #FF69B4;">New Review Awaiting Approval</h1>
+            <h1 style="color: #FC0079;">New Review Awaiting Approval</h1>
             
             <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
               <h3 style="margin-top: 0;">Review Details:</h3>
@@ -105,14 +105,14 @@ const handler = async (req: Request): Promise<Response> => {
               <p><strong>Customer:</strong> ${customer_name} (${customer_email})</p>
               <p><strong>Rating:</strong> ${'⭐'.repeat(rating)} (${rating}/5)</p>
               <p><strong>Review:</strong></p>
-              <p style="border-left: 3px solid #FF69B4; padding-left: 15px; font-style: italic;">
+              <p style="border-left: 3px solid #FC0079; padding-left: 15px; font-style: italic;">
                 ${review_text}
               </p>
             </div>
             
             <p>
               <a href="https://sisterstorage.com/admin" 
-                 style="display: inline-block; background: #FF69B4; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">
+                 style="display: inline-block; background: #FC0079; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">
                 Review in Admin Panel →
               </a>
             </p>
@@ -135,7 +135,7 @@ const handler = async (req: Request): Promise<Response> => {
         subject: "Your review has been published! 🎉",
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-            <h1 style="color: #FF69B4;">Your Review is Live! 🎉</h1>
+            <h1 style="color: #FC0079;">Your Review is Live! 🎉</h1>
             <p>Hi ${customer_name},</p>
             <p>Great news! Your review for <strong>${product_name}</strong> has been approved and is now live on our website!</p>
             
@@ -148,7 +148,7 @@ const handler = async (req: Request): Promise<Response> => {
             
             <p>
               <a href="https://sisterstorage.com/shop" 
-                 style="display: inline-block; background: #FF69B4; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">
+                 style="display: inline-block; background: #FC0079; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">
                 View Your Review →
               </a>
             </p>
