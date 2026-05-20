@@ -16,8 +16,8 @@
 @layer base {
   :root {
     /* Primary branding colors */
-    --brand-pink: 340 97% 50%;
-    --brand-pink-hover: 340 97% 40%;
+    --brand-pink: 331 100% 49%;
+    --brand-pink-hover: 331 100% 40%;
     --brand-orange: 23 100% 56%;
     --brand-orange-hover: 23 100% 46%;
     --brand-black: 0 0% 10%;
@@ -31,12 +31,12 @@
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 3.9%;
 
-    /* Primary: Brand Pink (#E80065) */
-    --primary: 336 97% 45%;
+    /* Primary: Brand Pink (#FC0079) */
+    --primary: 331 100% 49%;
     --primary-foreground: 0 0% 98%;
 
-    /* Secondary: Bright Pink (#E80065) */
-    --secondary: 336 97% 45%;
+    /* Secondary: Bright Pink (#FC0079) */
+    --secondary: 331 100% 49%;
     --secondary-foreground: 0 0% 98%;
 
     /* Muted: Light Gray */
@@ -54,22 +54,22 @@
     /* Border & Input */
     --border: 0 0% 89.8%;
     --input: 0 0% 89.8%;
-    --ring: 340 97% 50%;
+    --ring: 331 100% 49%;
 
     /* Chart colors (optional, but nice to have) */
-    --chart-1: 340 97% 50%;
+    --chart-1: 331 100% 49%;
     --chart-2: 23 100% 56%;
     --chart-3: 0 0% 10%;
-    --chart-4: 326 70% 95%;
+    --chart-4: 331 70% 95%;
     --chart-5: 0 0% 80%;
 
     /* Sidebar colors */
     --sidebar: 0 0% 100%;
     --sidebar-foreground: 0 0% 10%;
     --sidebar-border: 0 0% 89.8%;
-    --sidebar-accent: 326 70% 95%;
-    --sidebar-accent-foreground: 340 97% 20%;
-    --sidebar-ring: 340 97% 50%;
+    --sidebar-accent: 331 70% 95%;
+    --sidebar-accent-foreground: 331 100% 20%;
+    --sidebar-ring: 331 100% 49%;
 
     --radius: 0.5rem;
   }
