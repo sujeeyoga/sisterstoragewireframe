@@ -1,7 +1,7 @@
 import BaseLayout from '@/components/layout/BaseLayout';
 import { EnhancedScrollFade } from '@/components/ui/enhanced-scroll-fade';
 import { Button } from '@/components/ui/button';
-import { Mail, Phone } from 'lucide-react';
+import { Mail } from 'lucide-react';
 
 const Accessibility = () => {
   return (

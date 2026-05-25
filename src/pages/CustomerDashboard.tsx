@@ -3,11 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import BaseLayout from '@/components/layout/BaseLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useCustomerAuth, useCustomerOrders } from '@/hooks/useCustomerAuth';
 import { Card, CardContent } from '@/components/ui/card';
-import { Search, LogOut, Package, Loader2 } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import { Search, LogOut, Loader2 } from 'lucide-react';
 import { EmptyOrdersState } from '@/components/customer/EmptyOrdersState';
 import { OrderStatusBadge } from '@/components/customer/OrderStatusBadge';
 
