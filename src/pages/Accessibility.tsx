@@ -1,7 +1,7 @@
 import BaseLayout from '@/components/layout/BaseLayout';
 import { EnhancedScrollFade } from '@/components/ui/enhanced-scroll-fade';
 import { Button } from '@/components/ui/button';
-import { Mail, Phone } from 'lucide-react';
+import { Mail } from 'lucide-react';
 
 const Accessibility = () => {
   return (
@@ -71,10 +71,6 @@ const Accessibility = () => {
                         >
                           sisterstorageinc@gmail.com
                         </a>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <Phone className="h-5 w-5 text-primary" />
-                        <span>1-800-SISTERS</span>
                       </div>
                     </div>
                     <Button className="mt-4" variant="outline">

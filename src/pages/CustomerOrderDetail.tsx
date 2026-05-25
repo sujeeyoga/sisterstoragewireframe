@@ -1,32 +1,80 @@
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import BaseLayout from '@/components/layout/BaseLayout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { ArrowLeft, Package, MapPin, Truck, ExternalLink, Loader2 } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { OrderTimeline } from '@/components/customer/OrderTimeline';
 import { OrderStatusBadge } from '@/components/customer/OrderStatusBadge';
 import { ReorderButton } from '@/components/customer/ReorderButton';
+import { normalizeStripeOrder, normalizeWooOrder } from '@/hooks/useCustomerAuth';
+
+const isMissingRelationError = (error: unknown) => {
+  if (!error || typeof error !== 'object') return false;
+
+  const details = [
+    (error as { code?: string }).code,
+    (error as { message?: string }).message,
+    (error as { details?: string }).details,
+  ]
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase();
+
+  return (
+    (error as { code?: string }).code === '42P01' ||
+    (error as { code?: string }).code === 'PGRST205' ||
+    details.includes('does not exist') ||
+    details.includes('could not find the table')
+  );
+};
 
 const CustomerOrderDetail = () => {
   const { orderId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const sourceHint = new URLSearchParams(location.search).get('source');
 
   const { data: order, isLoading } = useQuery({
-    queryKey: ['order', orderId],
+    queryKey: ['order', orderId, sourceHint],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('orders')
-        .select('*')
-        .eq('id', orderId)
-        .single();
+      const queries = sourceHint === 'woocommerce'
+        ? [
+            supabase.from('woocommerce_orders').select('*').eq('id', orderId).maybeSingle(),
+            supabase.from('orders').select('*').eq('id', orderId).maybeSingle(),
+          ]
+        : sourceHint === 'stripe'
+          ? [
+              supabase.from('orders').select('*').eq('id', orderId).maybeSingle(),
+              supabase.from('woocommerce_orders').select('*').eq('id', orderId).maybeSingle(),
+            ]
+          : [
+              supabase.from('woocommerce_orders').select('*').eq('id', orderId).maybeSingle(),
+              supabase.from('orders').select('*').eq('id', orderId).maybeSingle(),
+            ];
 
-      if (error) throw error;
-      return data;
+      const [primary, secondary] = await Promise.all(queries);
+
+      const blockingError = [primary.error, secondary.error].find(
+        (error) => error && !isMissingRelationError(error)
+      );
+
+      if (blockingError) throw blockingError;
+
+      if (sourceHint === 'stripe' && primary.data) return normalizeStripeOrder(primary.data);
+      if (sourceHint === 'woocommerce' && primary.data) return normalizeWooOrder(primary.data);
+      if (sourceHint === 'stripe' && secondary.data) return normalizeWooOrder(secondary.data);
+      if (sourceHint === 'woocommerce' && secondary.data) return normalizeStripeOrder(secondary.data);
+      if (primary.data && 'line_items' in primary.data) return normalizeWooOrder(primary.data);
+      if (primary.data) return normalizeStripeOrder(primary.data);
+      if (secondary.data && 'line_items' in secondary.data) return normalizeWooOrder(secondary.data);
+      if (secondary.data) return normalizeStripeOrder(secondary.data);
+
+      return null;
     },
+    enabled: !!orderId,
   });
 
   if (isLoading) {

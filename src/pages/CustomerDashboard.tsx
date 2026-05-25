@@ -3,11 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import BaseLayout from '@/components/layout/BaseLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useCustomerAuth, useCustomerOrders } from '@/hooks/useCustomerAuth';
 import { Card, CardContent } from '@/components/ui/card';
-import { Search, LogOut, Package, Loader2 } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import { Search, LogOut, Loader2 } from 'lucide-react';
 import { EmptyOrdersState } from '@/components/customer/EmptyOrdersState';
 import { OrderStatusBadge } from '@/components/customer/OrderStatusBadge';
 
@@ -79,9 +78,9 @@ const CustomerDashboard = () => {
           <div className="space-y-4">
             {filteredOrders.map((order) => (
               <Card 
-                key={order.id} 
+                key={`${order.source}-${order.id}`}
                 className="hover:shadow-md transition-shadow cursor-pointer"
-                onClick={() => navigate(`/customer/orders/${order.id}`)}
+                onClick={() => navigate(`/customer/orders/${order.id}?source=${order.source}`)}
               >
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between mb-4">
@@ -96,9 +95,9 @@ const CustomerDashboard = () => {
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-lg">${order.total.toFixed(2)}</p>
+                        <p className="font-bold text-lg">${Number(order.total ?? 0).toFixed(2)}</p>
                       <p className="text-sm text-muted-foreground">
-                        {Array.isArray(order.items) ? order.items.length : 0} item(s)
+                          {Array.isArray(order.items) ? order.items.length : 0} item(s)
                       </p>
                     </div>
                   </div>
