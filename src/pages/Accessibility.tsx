@@ -83,8 +83,8 @@ const Accessibility = () => {
                 <section>
                   <h2 className="text-2xl font-semibold mb-4 text-primary">Alternative Assistance</h2>
                   <p className="mb-4">
-                    If you need assistance with any part of our website or would prefer to place an order 
-                    over the phone, our customer service team is ready to help during business hours.
+                    If you need assistance with any part of our website or would prefer to place an order,
+                    our customer service team is ready to help via email at sisterstorageinc@gmail.com.
                   </p>
                 </section>
               </div>
