@@ -65,8 +65,7 @@ const PrivacyPolicy = () => {
                   </p>
                   <p className="font-medium">
                     Sister Storage<br />
-                    Email: sisterstorageinc@gmail.com<br />
-                    Phone: 1-800-SISTERS
+                    Email: sisterstorageinc@gmail.com
                   </p>
                 </section>
               </div>

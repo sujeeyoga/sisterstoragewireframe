@@ -72,10 +72,6 @@ const Accessibility = () => {
                           sisterstorageinc@gmail.com
                         </a>
                       </div>
-                      <div className="flex items-center gap-3">
-                        <Phone className="h-5 w-5 text-primary" />
-                        <span>1-800-SISTERS</span>
-                      </div>
                     </div>
                     <Button className="mt-4" variant="outline">
                       <Mail className="h-4 w-4 mr-2" />
