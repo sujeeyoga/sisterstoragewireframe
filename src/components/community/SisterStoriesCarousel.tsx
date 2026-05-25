@@ -173,13 +173,43 @@ const VideoCard = ({ story, isFirst }: { story: VideoStory; isFirst: boolean }) 
   );
 };
 
+/** Preload metadata for the first video so the carousel doesn't render until at least one frame is ready */
+const preloadFirstVideo = (url: string): Promise<void> => {
+  return new Promise((resolve) => {
+    const video = document.createElement('video');
+    video.preload = 'metadata';
+    video.muted = true;
+    video.playsInline = true;
+    video.crossOrigin = 'anonymous';
+
+    const done = () => {
+      video.removeEventListener('loadeddata', done);
+      video.removeEventListener('error', done);
+      resolve();
+    };
+    // Safety timeout so we never block the UI indefinitely
+    const timeout = setTimeout(done, 4000);
+    video.addEventListener('loadeddata', () => {
+      clearTimeout(timeout);
+      done();
+    });
+    video.addEventListener('error', () => {
+      clearTimeout(timeout);
+      done();
+    });
+    video.src = normalizeVideoUrl(url);
+  });
+};
+
 export const SisterStoriesCarousel = () => {
   const [videoStories, setVideoStories] = useState<VideoStory[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [videosReady, setVideosReady] = useState(false);
 
   const fetchVideos = useCallback(async () => {
     try {
       setIsLoading(true);
+      setVideosReady(false);
       const { data, error } = await supabase
         .from('sister_stories')
         .select('*')
@@ -193,20 +223,27 @@ export const SisterStoriesCarousel = () => {
         return;
       }
 
-      setVideoStories(
-        (data || []).map((story) => ({
-          id: story.id,
-          video: story.video_url,
-          title: story.title,
-          author: story.author,
-          description: story.description || 'Organization journey shared with love',
-        }))
-      );
+      const stories = (data || []).map((story) => ({
+        id: story.id,
+        video: story.video_url,
+        title: story.title,
+        author: story.author,
+        description: story.description || 'Organization journey shared with love',
+      }));
+
+      setVideoStories(stories);
+      setIsLoading(false);
+
+      // Keep skeleton visible until the first video has at least one frame ready
+      if (stories.length > 0) {
+        await preloadFirstVideo(stories[0].video);
+      }
+      setVideosReady(true);
     } catch (error) {
       console.error('Error fetching sister stories:', error);
       setVideoStories([]);
-    } finally {
       setIsLoading(false);
+      setVideosReady(true);
     }
   }, []);
 
@@ -214,7 +251,7 @@ export const SisterStoriesCarousel = () => {
     fetchVideos();
   }, [fetchVideos]);
 
-  if (isLoading) return <StoriesCarouselSkeleton />;
+  if (isLoading || !videosReady) return <StoriesCarouselSkeleton />;
   if (videoStories.length === 0) return null;
 
   return (
