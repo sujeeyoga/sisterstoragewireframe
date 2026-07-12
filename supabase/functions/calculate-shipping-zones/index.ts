@@ -40,6 +40,33 @@ interface ShippingZone {
   rates: ShippingZoneRate[];
 }
 
+interface StaticShippingResult {
+  success: true;
+  zone: { id: string; name: string; description: string | null } | null;
+  matchedRule: { rule_type: string; rule_value: string } | null;
+  rates: Array<{
+    id: string;
+    method_name: string;
+    rate_amount: number;
+    original_rate_amount?: number;
+    is_free: boolean;
+    free_threshold: number | null;
+    display_order: number;
+  }>;
+  appliedRate: {
+    id: string;
+    method_name: string;
+    rate_amount: number;
+    original_rate_amount?: number;
+    is_free: boolean;
+    free_threshold: number | null;
+    display_order: number;
+  };
+  fallback_used: boolean;
+  rate_source: string;
+  source: string;
+}
+
 const normalizePostalCode = (postalCode: string): string => {
   return postalCode.toUpperCase().replace(/\s+/g, '');
 };
@@ -50,6 +77,111 @@ const matchesPostalPattern = (postalCode: string, pattern: string): boolean => {
   const regexPattern = normalizedPattern.replace(/\*/g, '.*');
   const regex = new RegExp(`^${regexPattern}$`);
   return regex.test(normalized);
+};
+
+const GTA_CITIES = new Set([
+  'toronto', 'north york', 'scarborough', 'etobicoke', 'york',
+  'vaughan', 'woodbridge', 'concord', 'maple', 'thornhill',
+  'richmond hill', 'markham', 'mississauga', 'brampton', 'oakville',
+  'burlington', 'milton', 'pickering', 'ajax', 'whitby', 'oshawa',
+  'aurora', 'newmarket', 'caledon', 'halton hills', 'hamilton'
+]);
+
+const isGTAAddress = (address: Address): boolean => {
+  const country = address.country?.toUpperCase().trim();
+  const province = address.province?.toUpperCase().trim();
+  const city = address.city?.toLowerCase().trim().replace(/\s+/g, ' ');
+  const postal = address.postalCode ? normalizePostalCode(address.postalCode) : '';
+
+  if (country !== 'CA' || province !== 'ON') return false;
+  if (city && GTA_CITIES.has(city)) return true;
+
+  return /^M/.test(postal) || /^L[1-9]/.test(postal);
+};
+
+const calculateStaticShipping = (address: Address, subtotal: number = 0): StaticShippingResult => {
+  const country = address.country?.toUpperCase().trim();
+  const province = address.province?.toUpperCase().trim();
+  const postal = address.postalCode ? normalizePostalCode(address.postalCode) : '';
+
+  if (isGTAAddress(address)) {
+    const isFree = subtotal >= 60;
+    const rate = {
+      id: 'static_gta_local_delivery',
+      method_name: 'GTA Local Delivery',
+      rate_amount: isFree ? 0 : 11.5,
+      original_rate_amount: 11.5,
+      is_free: isFree,
+      free_threshold: 60,
+      display_order: 1,
+    };
+
+    return {
+      success: true,
+      zone: {
+        id: 'static_toronto_gta',
+        name: 'Toronto & GTA',
+        description: 'Toronto and Greater Toronto Area delivery zone',
+      },
+      matchedRule: {
+        rule_type: postal.match(/^M|^L[1-9]/) ? 'postal_code_pattern' : 'city',
+        rule_value: postal.match(/^M/) ? 'M*' : postal.match(/^L[1-9]/) ? `${postal.slice(0, 2)}*` : address.city || 'GTA',
+      },
+      rates: [rate],
+      appliedRate: rate,
+      fallback_used: false,
+      rate_source: 'static_fallback',
+      source: 'static_fallback',
+    };
+  }
+
+  if (country === 'US') {
+    const rate = {
+      id: 'static_us_standard',
+      method_name: 'US Standard Shipping',
+      rate_amount: 30,
+      original_rate_amount: 30,
+      is_free: false,
+      free_threshold: null,
+      display_order: 1,
+    };
+
+    return {
+      success: true,
+      zone: { id: 'static_united_states', name: 'United States', description: 'Flat-rate shipping to the United States' },
+      matchedRule: { rule_type: 'country', rule_value: 'US' },
+      rates: [rate],
+      appliedRate: rate,
+      fallback_used: false,
+      rate_source: 'static_fallback',
+      source: 'static_fallback',
+    };
+  }
+
+  const rate = {
+    id: 'static_canada_standard',
+    method_name: 'Canada Standard Shipping',
+    rate_amount: 15,
+    original_rate_amount: 15,
+    is_free: false,
+    free_threshold: null,
+    display_order: 1,
+  };
+
+  return {
+    success: true,
+    zone: country === 'CA'
+      ? { id: 'static_canada_wide', name: 'Canada-Wide', description: 'Standard shipping across Canada outside GTA-specific matches' }
+      : null,
+    matchedRule: country === 'CA'
+      ? { rule_type: province ? 'province' : 'country', rule_value: province || 'CA' }
+      : null,
+    rates: [rate],
+    appliedRate: rate,
+    fallback_used: country !== 'CA',
+    rate_source: 'static_fallback',
+    source: 'static_fallback',
+  };
 };
 
 const getRulePriority = (ruleType: string): number => {
@@ -252,6 +384,9 @@ Deno.serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  let address: Address | undefined;
+  let subtotal = 0;
+
   try {
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
@@ -259,7 +394,9 @@ Deno.serve(async (req) => {
     );
 
     const requestBody = await req.json();
-    const { address, subtotal, items = [] } = requestBody;
+    const { address: requestAddress, subtotal: requestSubtotal, items = [] } = requestBody;
+    address = requestAddress;
+    subtotal = Number(requestSubtotal) || 0;
 
     // Validate required inputs
     if (!address || typeof address !== 'object') {
@@ -480,7 +617,7 @@ Deno.serve(async (req) => {
           applicableRates = matchedZone.rates.map(rate => {
             const isFree = 
               rate.free_threshold !== null && 
-              subtotal >= rate.free_threshold;
+          subtotal >= rate.free_threshold;
             
             return {
               id: rate.id,
@@ -578,6 +715,15 @@ Deno.serve(async (req) => {
       stack: error.stack,
       name: error.name
     });
+
+    if (address?.country) {
+      console.log('⚠️ Shipping database unavailable; using static shipping fallback for checkout continuity');
+      return new Response(
+        JSON.stringify(calculateStaticShipping(address, subtotal)),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     return new Response(
       JSON.stringify({ 
         success: false, 
