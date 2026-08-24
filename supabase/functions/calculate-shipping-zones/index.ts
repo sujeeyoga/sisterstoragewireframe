@@ -161,7 +161,57 @@ const isGTAAddress = (address: Address): boolean => {
 };
 
 
-const calculateStaticShipping = (address: Address, subtotal: number = 0): StaticShippingResult => {
+const buildShippingDebug = (
+  rawAddress: any,
+  address: Address,
+  subtotal: number,
+  decision: {
+    path: 'database' | 'static_fallback' | 'no_match_fallback';
+    zone_name?: string | null;
+    rule_type?: string | null;
+    rule_value?: string | null;
+    rate_source?: string;
+    applied_rate?: any;
+  }
+) => {
+  const postal = address.postalCode ? normalizePostalCode(address.postalCode) : '';
+  const fsa = postal.slice(0, 3);
+  const rate = decision.applied_rate;
+  return {
+    raw_address: {
+      country: rawAddress?.country ?? null,
+      province: rawAddress?.province ?? null,
+      city: rawAddress?.city ?? null,
+      postalCode: rawAddress?.postalCode ?? null,
+    },
+    normalized_address: {
+      country: normalizeCountry(address.country),
+      province: normalizeProvince(address.province),
+      city: address.city || null,
+      postalCode: postal || null,
+    },
+    fsa: fsa || null,
+    gta_fsa_match: fsa ? GTA_FSA_PREFIXES.has(fsa) : false,
+    toronto_m_postal: /^M\d[A-Z]/.test(postal),
+    is_gta: isGTAAddress(address),
+    decision_path: decision.path,
+    zone_name: decision.zone_name ?? null,
+    rule_type: decision.rule_type ?? null,
+    rule_value: decision.rule_value ?? null,
+    rate_source: decision.rate_source ?? decision.path,
+    subtotal,
+    free_threshold: rate?.free_threshold ?? null,
+    rate_before_threshold: rate?.original_rate_amount ?? rate?.rate_amount ?? null,
+    final_rate: rate?.rate_amount ?? null,
+  };
+};
+
+const logShippingDebug = (debug: ReturnType<typeof buildShippingDebug>) => {
+  console.log('🚚 SHIPPING_DECISION', JSON.stringify(debug));
+};
+
+const calculateStaticShipping = (address: Address, subtotal: number = 0, rawAddress: any = address): StaticShippingResult => {
+
   const country = normalizeCountry(address.country);
   const province = normalizeProvince(address.province);
 
