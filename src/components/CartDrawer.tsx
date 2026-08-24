@@ -21,7 +21,7 @@ const CartDrawer = () => {
   const drawerRef = React.useRef<HTMLDivElement>(null);
   
   // Location detection and shipping estimation
-  const { city, region, country, postalCode, isGTA, isLoading: locationLoading } = useLocationDetection();
+  const { city, region, country, postalCode, isLoading: locationLoading } = useLocationDetection();
   const { calculateShipping, fallbackSettings } = useShippingZones();
   const [estimatedShipping, setEstimatedShipping] = useState<number | null>(null);
   const [originalShippingCost, setOriginalShippingCost] = useState<number | null>(null);

@@ -142,28 +142,6 @@ const formatPostalCode = (code: string, country: string = 'CA'): string => {
   return cleaned;
 };
 
-// Check if the city/province is in GTA
-const checkIsGTA = (city?: string, province?: string): boolean => {
-  if (!city || !province) return false;
-
-  const cityLower = city.toLowerCase();
-  const provinceLower = province.toLowerCase();
-
-  // Must be in Ontario
-  if (!provinceLower.includes('on') && !provinceLower.includes('ontario')) return false;
-
-  // GTA cities
-  const gtaCities = [
-    'toronto', 'north york', 'scarborough', 'etobicoke', 'york',
-    'mississauga', 'brampton', 'markham', 'vaughan', 'richmond hill',
-    'oakville', 'burlington', 'milton', 'pickering', 'ajax',
-    'whitby', 'oshawa', 'aurora', 'newmarket', 'king city',
-    'caledon', 'georgina', 'halton hills', 'orangeville'
-  ];
-
-  return gtaCities.some(gtaCity => cityLower.includes(gtaCity));
-};
-
 const Checkout = () => {
   const navigate = useNavigate();
   const { items, subtotal, clearCart, removeItem, updateQuantity } = useCart();
