@@ -845,11 +845,20 @@ Deno.serve(async (req) => {
       }
     });
 
+    const noMatchDebug = buildShippingDebug(rawAddress, address, subtotal, {
+      path: 'no_match_fallback',
+      rate_source: 'fallback_settings',
+      applied_rate: { rate_amount: fallbackRate, original_rate_amount: fallbackRate, free_threshold: null },
+    });
+    logShippingDebug(noMatchDebug);
+
     return new Response(
       JSON.stringify({
         success: true,
+        debug: noMatchDebug,
         zone: null,
         matchedRule: null,
+
         rates: [
           {
             id: 'fallback',
