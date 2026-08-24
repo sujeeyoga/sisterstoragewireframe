@@ -815,6 +815,9 @@ Deno.serve(async (req) => {
           fallback_used: false,
           rate_source: rateSource,
           source: rateSource,
+          db_available: true,
+          db_status: 'live',
+
         }),
 
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
