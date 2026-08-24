@@ -108,6 +108,8 @@ const CartDrawer = () => {
         }
       } else {
         console.log('[CartDrawer] Skipping shipping calculation:', { locationLoading, city, country, subtotal: discountedSubtotal });
+        setEstimatedShipping(null);
+        setOriginalShippingCost(null);
       }
     };
     
@@ -524,7 +526,6 @@ const CartDrawer = () => {
                   <div className="mt-3 mb-3">
                     <FreeShippingThresholdBar
                       cartSubtotal={discountedSubtotal}
-                      isGTA={isGTA}
                       country={country || 'CA'}
                       isLoading={locationLoading}
                       cartItems={items}

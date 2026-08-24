@@ -41,7 +41,7 @@ interface ShippingNotificationRequest {
   trackingNumber: string;
   carrier?: string;
   source?: 'stripe' | 'woocommerce';
-  items: Array<{
+  items?: Array<{
     name: string;
     quantity: number;
     price?: number;
@@ -63,7 +63,7 @@ const handler = async (req: Request): Promise<Response> => {
       trackingNumber,
       carrier,
       source,
-      items,
+      items = [],
     }: ShippingNotificationRequest = await req.json();
 
     console.log("Sending shipping notification for order:", orderId);

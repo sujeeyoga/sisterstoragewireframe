@@ -5,7 +5,6 @@ import { CartItem } from '@/contexts/CartContext';
 
 interface FreeShippingThresholdBarProps {
   cartSubtotal: number;
-  isGTA: boolean;
   country: string;
   isLoading: boolean;
   cartItems: CartItem[];
@@ -16,7 +15,6 @@ interface FreeShippingThresholdBarProps {
 
 const FreeShippingThresholdBar = ({
   cartSubtotal,
-  isGTA,
   country,
   isLoading,
   cartItems,

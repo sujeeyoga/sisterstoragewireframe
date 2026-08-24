@@ -1166,7 +1166,6 @@ const Checkout = () => {
                     {/* Free Shipping Threshold Bar */}
                     <FreeShippingThresholdBar
                       cartSubtotal={discountedSubtotal}
-                      isGTA={checkIsGTA(formData.city, formData.province)}
                       country={formData.country}
                       isLoading={false}
                       cartItems={items}
