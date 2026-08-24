@@ -952,17 +952,77 @@ const Checkout = () => {
                 </CardContent>
               </Card>
 
-              {/* Zone-based Shipping Info */}
-              {matchedZone && shippingRates.length > 0 && (
-                <Card className="border-2 border-primary animate-fade-in">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-primary">
-                      <MapPin className="h-5 w-5" />
-                      Shipping to: {matchedZone.name}
-                    </CardTitle>
-                  </CardHeader>
-                </Card>
-              )}
+              {/* Zone-based Shipping Info + breakdown */}
+              {matchedZone && shippingRates.length > 0 && (() => {
+                const breakdownRate = selectedRate
+                  ?? shippingRates.reduce((prev: any, curr: any) => curr.rate_amount < prev.rate_amount ? curr : prev);
+                const rule = shippingMetadata?.matched_rule;
+                const ruleLabel = !rule
+                  ? null
+                  : rule.rule_type === 'postal_code_pattern'
+                    ? `postal code ${String(rule.rule_value).replace(/\*/g, '')}`
+                    : rule.rule_type === 'city'
+                      ? `city ${rule.rule_value}`
+                      : rule.rule_type === 'province'
+                        ? `province ${rule.rule_value}`
+                        : `country ${rule.rule_value}`;
+                const threshold = breakdownRate?.free_threshold ?? null;
+                const baseRate = breakdownRate?.original_rate_amount ?? breakdownRate?.rate_amount ?? 0;
+                const isFree = breakdownRate?.is_free || breakdownRate?.rate_amount === 0;
+                const remaining = threshold ? Math.max(0, threshold - subtotal) : 0;
+
+                return (
+                  <Card className="border-2 border-primary animate-fade-in">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2 text-primary">
+                        <MapPin className="h-5 w-5" />
+                        Shipping to: {matchedZone.name}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2 text-sm">
+                      {ruleLabel && (
+                        <div className="flex justify-between gap-4">
+                          <span className="text-muted-foreground">Matched by</span>
+                          <span className="font-medium">{ruleLabel}</span>
+                        </div>
+                      )}
+                      <div className="flex justify-between gap-4">
+                        <span className="text-muted-foreground">Rate</span>
+                        <span className="font-medium">
+                          ${Number(baseRate).toFixed(2)} flat
+                          {threshold ? ` — free over $${Number(threshold).toFixed(2)}` : ''}
+                        </span>
+                      </div>
+                      <div className="flex justify-between gap-4">
+                        <span className="text-muted-foreground">You pay</span>
+                        <span className="font-semibold">
+                          {isFree ? (
+                            <>
+                              <span className="line-through text-muted-foreground mr-2">
+                                ${Number(baseRate).toFixed(2)}
+                              </span>
+                              Free
+                            </>
+                          ) : (
+                            `$${Number(breakdownRate?.rate_amount ?? 0).toFixed(2)}`
+                          )}
+                        </span>
+                      </div>
+                      {isFree && threshold ? (
+                        <p className="text-xs text-muted-foreground">
+                          Free shipping applied — your order is over ${Number(threshold).toFixed(2)}.
+                        </p>
+                      ) : threshold && remaining > 0 ? (
+                        <p className="text-xs text-muted-foreground">
+                          Add ${remaining.toFixed(2)} more to get free shipping.
+                        </p>
+                      ) : null}
+                    </CardContent>
+                  </Card>
+                );
+              })()}
+
+
 
               {/* US Tariff Notice */}
               {formData.country === 'US' && shippingRates.length > 0 && (
