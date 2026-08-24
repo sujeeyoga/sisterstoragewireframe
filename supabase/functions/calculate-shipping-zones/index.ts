@@ -187,9 +187,14 @@ const calculateStaticShipping = (address: Address, subtotal: number = 0): Static
         description: 'Toronto and Greater Toronto Area delivery zone',
       },
       matchedRule: {
-        rule_type: postal.match(/^M|^L[1-9]/) ? 'postal_code_pattern' : 'city',
-        rule_value: postal.match(/^M/) ? 'M*' : postal.match(/^L[1-9]/) ? `${postal.slice(0, 2)}*` : address.city || 'GTA',
+        rule_type: /^M\d[A-Z]/.test(postal) || GTA_FSA_PREFIXES.has(postal.slice(0, 3)) ? 'postal_code_pattern' : 'city',
+        rule_value: /^M\d[A-Z]/.test(postal)
+          ? 'M*'
+          : GTA_FSA_PREFIXES.has(postal.slice(0, 3))
+            ? `${postal.slice(0, 3)}*`
+            : address.city || 'GTA',
       },
+
       rates: [rate],
       appliedRate: rate,
       fallback_used: false,
