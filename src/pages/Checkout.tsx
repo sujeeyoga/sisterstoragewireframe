@@ -362,8 +362,12 @@ const Checkout = () => {
       }, subtotal, items);
 
       if (result.success && result.rates) {
+        // The edge function returns `zone`/`matchedRule`; older payloads used snake_case.
+        const zone = result.zone ?? result.matched_zone ?? null;
+        const rule = result.matchedRule ?? result.matched_rule ?? null;
+
         setShippingRates(result.rates);
-        setMatchedZone(result.matched_zone);
+        setMatchedZone(zone);
         
         // Store full shipping metadata for order creation
         const selectedRate = result.rates.length > 0 
@@ -371,9 +375,9 @@ const Checkout = () => {
           : null;
         
         setShippingMetadata({
-          zone_name: result.matched_zone?.name,
-          zone_description: result.matched_zone?.description,
-          matched_rule: result.matched_rule,
+          zone_name: zone?.name,
+          zone_description: zone?.description,
+          matched_rule: rule,
           rate_method: selectedRate?.method_name,
           is_free: selectedRate?.rate_amount === 0,
           free_threshold: selectedRate?.free_threshold,
@@ -383,7 +387,9 @@ const Checkout = () => {
             (selectedRate?.free_threshold ? 'free_shipping_threshold_met' : 'free_zone') 
             : 'charged',
           source: result.source || 'database',
+          debug: result.debug || null,
         });
+
         
         // Auto-select the cheapest option
         if (result.rates.length > 0) {
