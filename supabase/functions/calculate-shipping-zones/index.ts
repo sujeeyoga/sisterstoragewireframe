@@ -520,7 +520,9 @@ Deno.serve(async (req) => {
   }
 
   let address: Address | undefined;
+  let rawAddress: any;
   let subtotal = 0;
+
 
   try {
     const supabase = createClient(
