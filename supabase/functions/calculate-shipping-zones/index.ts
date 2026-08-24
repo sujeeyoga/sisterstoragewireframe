@@ -42,8 +42,10 @@ interface ShippingZone {
 
 interface StaticShippingResult {
   success: true;
+  debug?: Record<string, unknown>;
   zone: { id: string; name: string; description: string | null } | null;
   matchedRule: { rule_type: string; rule_value: string } | null;
+
   rates: Array<{
     id: string;
     method_name: string;
@@ -161,7 +163,57 @@ const isGTAAddress = (address: Address): boolean => {
 };
 
 
-const calculateStaticShipping = (address: Address, subtotal: number = 0): StaticShippingResult => {
+const buildShippingDebug = (
+  rawAddress: any,
+  address: Address,
+  subtotal: number,
+  decision: {
+    path: 'database' | 'static_fallback' | 'no_match_fallback';
+    zone_name?: string | null;
+    rule_type?: string | null;
+    rule_value?: string | null;
+    rate_source?: string;
+    applied_rate?: any;
+  }
+) => {
+  const postal = address.postalCode ? normalizePostalCode(address.postalCode) : '';
+  const fsa = postal.slice(0, 3);
+  const rate = decision.applied_rate;
+  return {
+    raw_address: {
+      country: rawAddress?.country ?? null,
+      province: rawAddress?.province ?? null,
+      city: rawAddress?.city ?? null,
+      postalCode: rawAddress?.postalCode ?? null,
+    },
+    normalized_address: {
+      country: normalizeCountry(address.country),
+      province: normalizeProvince(address.province),
+      city: address.city || null,
+      postalCode: postal || null,
+    },
+    fsa: fsa || null,
+    gta_fsa_match: fsa ? GTA_FSA_PREFIXES.has(fsa) : false,
+    toronto_m_postal: /^M\d[A-Z]/.test(postal),
+    is_gta: isGTAAddress(address),
+    decision_path: decision.path,
+    zone_name: decision.zone_name ?? null,
+    rule_type: decision.rule_type ?? null,
+    rule_value: decision.rule_value ?? null,
+    rate_source: decision.rate_source ?? decision.path,
+    subtotal,
+    free_threshold: rate?.free_threshold ?? null,
+    rate_before_threshold: rate?.original_rate_amount ?? rate?.rate_amount ?? null,
+    final_rate: rate?.rate_amount ?? null,
+  };
+};
+
+const logShippingDebug = (debug: ReturnType<typeof buildShippingDebug>) => {
+  console.log('🚚 SHIPPING_DECISION', JSON.stringify(debug));
+};
+
+const calculateStaticShippingBase = (address: Address, subtotal: number = 0): StaticShippingResult => {
+
   const country = normalizeCountry(address.country);
   const province = normalizeProvince(address.province);
 
@@ -251,6 +303,21 @@ const calculateStaticShipping = (address: Address, subtotal: number = 0): Static
     source: 'static_fallback',
   };
 };
+
+const calculateStaticShipping = (address: Address, subtotal: number = 0, rawAddress: any = address): StaticShippingResult => {
+  const result = calculateStaticShippingBase(address, subtotal);
+  const debug = buildShippingDebug(rawAddress, address, subtotal, {
+    path: 'static_fallback',
+    zone_name: result.zone?.name ?? null,
+    rule_type: result.matchedRule?.rule_type ?? null,
+    rule_value: result.matchedRule?.rule_value ?? null,
+    rate_source: 'static_fallback',
+    applied_rate: result.appliedRate,
+  });
+  logShippingDebug(debug);
+  return { ...result, debug } as StaticShippingResult;
+};
+
 
 const getRulePriority = (ruleType: string): number => {
   const priorities = {
@@ -453,7 +520,9 @@ Deno.serve(async (req) => {
   }
 
   let address: Address | undefined;
+  let rawAddress: any;
   let subtotal = 0;
+
 
   try {
     const supabase = createClient(
@@ -491,6 +560,7 @@ Deno.serve(async (req) => {
 
     // Normalize country/province so full names ("Canada", "Ontario") match the same
     // rules as ISO codes — otherwise GTA addresses fall through to Canada-wide rates.
+    rawAddress = { ...address };
     address = {
       ...address,
       country: normalizeCountry(address.country),
@@ -499,6 +569,8 @@ Deno.serve(async (req) => {
     };
 
     console.log('Calculating shipping for address:', address, 'subtotal:', subtotal, 'items:', items.length);
+
+
 
 
     // Fetch packaging profiles from store settings
@@ -715,9 +787,20 @@ Deno.serve(async (req) => {
       // All zones now use only their database-configured free shipping thresholds
       console.log(`Using zone rates as configured in database for: ${matchedZone.name}`);
 
+      const dbDebug = buildShippingDebug(rawAddress, address, subtotal, {
+        path: 'database',
+        zone_name: matchedZone.name,
+        rule_type: matchedRule.rule_type,
+        rule_value: matchedRule.rule_value,
+        rate_source: rateSource,
+        applied_rate: applicableRates[0] || null,
+      });
+      logShippingDebug(dbDebug);
+
       return new Response(
         JSON.stringify({
           success: true,
+          debug: dbDebug,
           zone: {
             id: matchedZone.id,
             name: matchedZone.name,
@@ -733,6 +816,7 @@ Deno.serve(async (req) => {
           rate_source: rateSource,
           source: rateSource,
         }),
+
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -761,11 +845,20 @@ Deno.serve(async (req) => {
       }
     });
 
+    const noMatchDebug = buildShippingDebug(rawAddress, address, subtotal, {
+      path: 'no_match_fallback',
+      rate_source: 'fallback_settings',
+      applied_rate: { rate_amount: fallbackRate, original_rate_amount: fallbackRate, free_threshold: null },
+    });
+    logShippingDebug(noMatchDebug);
+
     return new Response(
       JSON.stringify({
         success: true,
+        debug: noMatchDebug,
         zone: null,
         matchedRule: null,
+
         rates: [
           {
             id: 'fallback',
@@ -797,8 +890,9 @@ Deno.serve(async (req) => {
     if (address?.country) {
       console.log('⚠️ Shipping database unavailable; using static shipping fallback for checkout continuity');
       return new Response(
-        JSON.stringify(calculateStaticShipping(address, subtotal)),
+        JSON.stringify(calculateStaticShipping(address, subtotal, rawAddress ?? address)),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+
       );
     }
 

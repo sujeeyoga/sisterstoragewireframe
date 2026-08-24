@@ -149,7 +149,18 @@ export const ShippingZoneTester = () => {
                     <span className="text-muted-foreground text-sm">No rates available</span>
                   )}
                 </div>
+                {result.debug && (
+                  <details className="mt-2">
+                    <summary className="cursor-pointer text-sm font-medium">
+                      Match details (raw vs normalized address, rule, rate)
+                    </summary>
+                    <pre className="mt-2 overflow-x-auto rounded bg-muted p-2 text-xs">
+                      {JSON.stringify(result.debug, null, 2)}
+                    </pre>
+                  </details>
+                )}
               </>
+
             ) : (
               <div className="text-muted-foreground">
                 <strong>No zone matched</strong>
