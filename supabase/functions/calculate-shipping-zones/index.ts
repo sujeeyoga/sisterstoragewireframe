@@ -80,28 +80,91 @@ const matchesPostalPattern = (postalCode: string, pattern: string): boolean => {
 };
 
 const GTA_CITIES = new Set([
-  'toronto', 'north york', 'scarborough', 'etobicoke', 'york',
-  'vaughan', 'woodbridge', 'concord', 'maple', 'thornhill',
-  'richmond hill', 'markham', 'mississauga', 'brampton', 'oakville',
+  'toronto', 'north york', 'scarborough', 'etobicoke', 'york', 'east york',
+  'vaughan', 'woodbridge', 'concord', 'maple', 'thornhill', 'kleinburg',
+  'richmond hill', 'markham', 'unionville', 'stouffville', 'whitchurch-stouffville',
+  'mississauga', 'brampton', 'bolton', 'oakville', 'georgetown',
   'burlington', 'milton', 'pickering', 'ajax', 'whitby', 'oshawa',
-  'aurora', 'newmarket', 'caledon', 'halton hills', 'hamilton'
+  'aurora', 'newmarket', 'king city', 'caledon', 'halton hills', 'hamilton',
+  'etobicoke north', 'downsview', 'willowdale', 'agincourt'
 ]);
 
-const isGTAAddress = (address: Address): boolean => {
-  const country = address.country?.toUpperCase().trim();
-  const province = address.province?.toUpperCase().trim();
-  const city = address.city?.toLowerCase().trim().replace(/\s+/g, ' ');
-  const postal = address.postalCode ? normalizePostalCode(address.postalCode) : '';
+// Forward Sortation Area prefixes (first 3 chars) covered by GTA local delivery.
+const GTA_FSA_PREFIXES = new Set([
+  // Durham
+  'L1B', 'L1C', 'L1E', 'L1G', 'L1H', 'L1J', 'L1K', 'L1L', 'L1M', 'L1N', 'L1P',
+  'L1R', 'L1S', 'L1T', 'L1V', 'L1W', 'L1X', 'L1Y', 'L1Z',
+  // York Region (Markham, Richmond Hill, Vaughan, Aurora, Newmarket, Stouffville)
+  'L3P', 'L3R', 'L3S', 'L3T', 'L3X', 'L3Y', 'L3Z',
+  'L4A', 'L4B', 'L4C', 'L4E', 'L4G', 'L4H', 'L4J', 'L4K', 'L4L', 'L4S',
+  'L6A', 'L6B', 'L6C', 'L6E', 'L6G',
+  // Peel (Mississauga, Brampton, Caledon)
+  'L4T', 'L4V', 'L4W', 'L4X', 'L4Y', 'L4Z',
+  'L5A', 'L5B', 'L5C', 'L5E', 'L5G', 'L5H', 'L5J', 'L5K', 'L5L', 'L5M',
+  'L5N', 'L5P', 'L5R', 'L5S', 'L5T', 'L5V', 'L5W',
+  'L6P', 'L6R', 'L6S', 'L6T', 'L6V', 'L6W', 'L6X', 'L6Y', 'L6Z', 'L7A', 'L7C',
+  // Halton (Oakville, Burlington, Milton, Halton Hills)
+  'L6H', 'L6J', 'L6K', 'L6L', 'L6M', 'L7G', 'L7L', 'L7M', 'L7N', 'L7P',
+  'L7R', 'L7S', 'L7T', 'L9T',
+  // King / Bolton / Kleinburg area
+  'L7B', 'L7E', 'L0J',
+]);
 
-  if (country !== 'CA' || province !== 'ON') return false;
-  if (city && GTA_CITIES.has(city)) return true;
-
-  return /^M/.test(postal) || /^L[1-9]/.test(postal);
+const COUNTRY_ALIASES: Record<string, string> = {
+  'CA': 'CA', 'CAN': 'CA', 'CANADA': 'CA',
+  'US': 'US', 'USA': 'US', 'U.S.': 'US', 'U.S.A.': 'US',
+  'UNITED STATES': 'US', 'UNITED STATES OF AMERICA': 'US',
 };
 
+const PROVINCE_ALIASES: Record<string, string> = {
+  'ON': 'ON', 'ONT': 'ON', 'ONTARIO': 'ON',
+  'QC': 'QC', 'QUEBEC': 'QC', 'QUÉBEC': 'QC',
+  'BC': 'BC', 'BRITISH COLUMBIA': 'BC',
+  'AB': 'AB', 'ALBERTA': 'AB',
+  'MB': 'MB', 'MANITOBA': 'MB',
+  'SK': 'SK', 'SASKATCHEWAN': 'SK',
+  'NS': 'NS', 'NOVA SCOTIA': 'NS',
+  'NB': 'NB', 'NEW BRUNSWICK': 'NB',
+  'NL': 'NL', 'NEWFOUNDLAND AND LABRADOR': 'NL', 'NEWFOUNDLAND': 'NL',
+  'PE': 'PE', 'PRINCE EDWARD ISLAND': 'PE',
+  'YT': 'YT', 'YUKON': 'YT',
+  'NT': 'NT', 'NORTHWEST TERRITORIES': 'NT',
+  'NU': 'NU', 'NUNAVUT': 'NU',
+};
+
+const normalizeCountry = (value?: string): string => {
+  const raw = (value || '').toUpperCase().replace(/\s+/g, ' ').trim();
+  return COUNTRY_ALIASES[raw] || raw;
+};
+
+const normalizeProvince = (value?: string): string => {
+  const raw = (value || '').toUpperCase().replace(/\s+/g, ' ').trim();
+  return PROVINCE_ALIASES[raw] || raw;
+};
+
+const isGTAAddress = (address: Address): boolean => {
+  const country = normalizeCountry(address.country);
+  const province = normalizeProvince(address.province);
+  const city = address.city?.toLowerCase().trim().replace(/\s+/g, ' ') || '';
+  const postal = address.postalCode ? normalizePostalCode(address.postalCode) : '';
+  const fsa = postal.slice(0, 3);
+
+  // Toronto proper is always M*, which is unambiguous even with a missing province.
+  if (country && country !== 'CA') return false;
+  if (/^M\d[A-Z]/.test(postal)) return true;
+  if (province && province !== 'ON') return false;
+
+  if (GTA_FSA_PREFIXES.has(fsa)) return true;
+  if (city && GTA_CITIES.has(city)) return true;
+
+  return false;
+};
+
+
 const calculateStaticShipping = (address: Address, subtotal: number = 0): StaticShippingResult => {
-  const country = address.country?.toUpperCase().trim();
-  const province = address.province?.toUpperCase().trim();
+  const country = normalizeCountry(address.country);
+  const province = normalizeProvince(address.province);
+
   const postal = address.postalCode ? normalizePostalCode(address.postalCode) : '';
 
   if (isGTAAddress(address)) {
@@ -124,9 +187,14 @@ const calculateStaticShipping = (address: Address, subtotal: number = 0): Static
         description: 'Toronto and Greater Toronto Area delivery zone',
       },
       matchedRule: {
-        rule_type: postal.match(/^M|^L[1-9]/) ? 'postal_code_pattern' : 'city',
-        rule_value: postal.match(/^M/) ? 'M*' : postal.match(/^L[1-9]/) ? `${postal.slice(0, 2)}*` : address.city || 'GTA',
+        rule_type: /^M\d[A-Z]/.test(postal) || GTA_FSA_PREFIXES.has(postal.slice(0, 3)) ? 'postal_code_pattern' : 'city',
+        rule_value: /^M\d[A-Z]/.test(postal)
+          ? 'M*'
+          : GTA_FSA_PREFIXES.has(postal.slice(0, 3))
+            ? `${postal.slice(0, 3)}*`
+            : address.city || 'GTA',
       },
+
       rates: [rate],
       appliedRate: rate,
       fallback_used: false,
@@ -421,7 +489,17 @@ Deno.serve(async (req) => {
       );
     }
 
+    // Normalize country/province so full names ("Canada", "Ontario") match the same
+    // rules as ISO codes — otherwise GTA addresses fall through to Canada-wide rates.
+    address = {
+      ...address,
+      country: normalizeCountry(address.country),
+      province: normalizeProvince(address.province),
+      city: address.city ? String(address.city).replace(/\s+/g, ' ').trim() : address.city,
+    };
+
     console.log('Calculating shipping for address:', address, 'subtotal:', subtotal, 'items:', items.length);
+
 
     // Fetch packaging profiles from store settings
     const { data: packagingProfilesData } = await supabase
