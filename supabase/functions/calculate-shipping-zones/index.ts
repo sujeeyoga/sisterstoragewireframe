@@ -162,8 +162,9 @@ const isGTAAddress = (address: Address): boolean => {
 
 
 const calculateStaticShipping = (address: Address, subtotal: number = 0): StaticShippingResult => {
-  const country = address.country?.toUpperCase().trim();
-  const province = address.province?.toUpperCase().trim();
+  const country = normalizeCountry(address.country);
+  const province = normalizeProvince(address.province);
+
   const postal = address.postalCode ? normalizePostalCode(address.postalCode) : '';
 
   if (isGTAAddress(address)) {
