@@ -403,7 +403,7 @@ const Checkout = () => {
           title: result.fallback_used ? 'Using Fallback Rate' : 'Shipping Rates Loaded',
           description: result.fallback_used 
             ? 'No specific zone matched. Using default rate.'
-            : `Matched to ${result.matched_zone?.name} zone.`,
+            : `Matched to ${zone?.name ?? 'standard'} zone.`,
         });
       } else {
         throw new Error('No rates available');
