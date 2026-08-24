@@ -879,6 +879,11 @@ Deno.serve(async (req) => {
           display_order: 0,
         },
         fallback_used: true,
+        db_available: true,
+        db_status: 'live',
+        rate_source: 'fallback_settings',
+        source: 'fallback_settings',
+
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
