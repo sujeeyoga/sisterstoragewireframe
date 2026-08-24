@@ -51,7 +51,7 @@ const HeroProductPrice: React.FC<HeroProductPriceProps> = ({
       </div>
       
       <p className="text-xs text-muted-foreground text-center mt-3 uppercase tracking-wide">
-        Free shipping on orders $75+
+        Free GTA shipping on orders $60+
       </p>
     </div>
   );

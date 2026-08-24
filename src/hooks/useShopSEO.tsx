@@ -21,8 +21,8 @@ export const useShopSEO = (products: Product[]) => {
       document.head.appendChild(metaDescription);
     }
     const descriptionText = products.length > 0
-      ? `Shop Sister Storage's premium bangle storage boxes. Browse ${products.length}+ dust-free, stackable organizers perfect for Indian, Pakistani & South Asian jewelry. Free shipping in Canada over $50.`
-      : "Shop premium bangle storage boxes from Sister Storage. Dust-free, stackable organizers designed for South Asian jewelry. Free shipping in Canada over $50.";
+      ? `Shop Sister Storage's premium bangle storage boxes. Browse ${products.length}+ dust-free, stackable organizers perfect for Indian, Pakistani & South Asian jewelry. Free shipping on GTA orders over $60.`
+      : "Shop premium bangle storage boxes from Sister Storage. Dust-free, stackable organizers designed for South Asian jewelry. Free shipping on GTA orders over $60.";
     metaDescription.content = descriptionText;
 
     // Set meta keywords

@@ -8,7 +8,7 @@ interface PromoBannerProps {
 
 const PromoBanner: React.FC<PromoBannerProps> = ({ 
   mainText = "Summer End Sale: 20% Off",
-  subText = "Free Shipping $75+ • Limited Time Only"
+  subText = "Free GTA Shipping $60+ • Limited Time Only"
 }) => {
   const [isVisible, setIsVisible] = useState(true);
 
