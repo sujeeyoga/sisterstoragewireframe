@@ -22,7 +22,7 @@ const ShippingFAQ = () => {
     {
       category: 'domestic',
       question: 'Do you offer free shipping in Canada?',
-      answer: 'Yes! We offer free shipping on orders over $50 CAD to most areas in the Greater Toronto Area (GTA). For Toronto proper, we offer flat-rate shipping at just $3.99. Orders outside the GTA have shipping calculated based on your location and order weight.'
+      answer: 'Yes. Orders shipping to the Greater Toronto Area qualify for free shipping over $60 CAD; below that, GTA delivery is a flat $11.50. Elsewhere in Canada shipping is a flat $15 with no free-shipping threshold. Your exact rate is calculated at checkout from your address.'
     },
     {
       category: 'domestic',
@@ -32,12 +32,12 @@ const ShippingFAQ = () => {
     {
       category: 'domestic',
       question: 'Which areas qualify for GTA free shipping?',
-      answer: 'The GTA free shipping zone includes Toronto, Mississauga, Brampton, Vaughan, Markham, Richmond Hill, Oakville, Burlington, and surrounding areas. Your shipping cost will be calculated automatically at checkout based on your postal code.'
+      answer: 'The GTA zone includes Toronto, Mississauga, Brampton, Vaughan, Markham, Richmond Hill, Oakville, Burlington, and surrounding areas. Free shipping applies to GTA orders over $60 CAD, and your exact cost is calculated automatically at checkout from your postal code.'
     },
     {
       category: 'international',
       question: 'Do you ship to the United States?',
-      answer: 'Yes, we ship to all 50 US states! Shipping typically takes 7-14 business days for delivery. Rates are calculated based on your location and package weight, starting from around $12 USD for individual items.'
+      answer: 'Yes, we ship to all 50 US states! Shipping typically takes 7-14 business days for delivery. US orders ship at a flat $30 rate, shown at checkout before you pay.'
     },
     {
       category: 'international',
@@ -62,7 +62,7 @@ const ShippingFAQ = () => {
     {
       category: 'costs',
       question: 'Can I get free shipping on international orders?',
-      answer: 'Yes! International orders over $200 CAD qualify for free shipping to the US. This is a great way to save on larger orders or when purchasing multiple items.'
+      answer: 'Not at this time. US orders ship at a flat $30 rate and there is no free-shipping threshold outside the GTA. The exact amount is always shown at checkout before you pay.'
     },
     {
       category: 'costs',
@@ -117,7 +117,7 @@ const ShippingFAQ = () => {
     <Layout>
       <SEO
         title="Shipping FAQ | Sister Storage – Canada & USA Delivery Information"
-        description="Find answers to all your shipping questions. Sister Storage ships to Canada and USA with tracking. UK shipping coming soon! Free shipping over $50 CAD (GTA) or $200 CAD (International)."
+        description="Find answers to all your shipping questions. Sister Storage ships to Canada and the USA with tracking. UK shipping coming soon! Free shipping on GTA orders over $60 CAD."
         keywords="sister storage shipping, canada shipping, usa shipping, international delivery, free shipping, bangle organizer delivery, jewelry box shipping rates"
         url="/shipping-faq"
         type="article"
@@ -197,7 +197,7 @@ const ShippingFAQ = () => {
               <Card className="p-6 text-center hover:shadow-lg transition-shadow">
                 <DollarSign className="h-8 w-8 mx-auto mb-3 text-primary" />
                 <h3 className="font-semibold mb-2">Free Shipping</h3>
-                <p className="text-sm text-muted-foreground">Over $50 CAD (GTA) or $200 CAD (International)</p>
+                <p className="text-sm text-muted-foreground">GTA orders over $60 CAD</p>
               </Card>
             </div>
 
