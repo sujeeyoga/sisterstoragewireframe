@@ -8,7 +8,7 @@ interface SaleBannerProps {}
 const REGION_MESSAGES = {
   'toronto-gta': {
     icon: BadgePercent,
-    text: 'Free Shipping Over $60 in Toronto & GTA',
+    text: 'Toronto & GTA Shipping Available',
     iconColor: 'text-brand-pink'
   },
   'canada-wide': {
@@ -18,12 +18,12 @@ const REGION_MESSAGES = {
   },
   'us-standard': {
     icon: Globe,
-    text: 'Free Medium Box with orders over $100 🎁 • Free Shipping Over $75',
+    text: 'United States Shipping Available',
     iconColor: 'text-brand-pink'
   },
   'us-west-coast': {
     icon: Zap,
-    text: 'Free Medium Box with orders over $100 🎁 • Free Shipping Over $75',
+    text: 'United States Shipping Available',
     iconColor: 'text-brand-pink'
   },
   'international': {
@@ -36,30 +36,19 @@ const REGION_MESSAGES = {
 const SaleBanner = ({}: SaleBannerProps) => {
   const { shippingZone, isLoading } = useLocationDetection();
   
-  // Check for test mode via URL parameter
-  const searchParams = new URLSearchParams(window.location.search);
-  const testRegion = searchParams.get('testRegion') as keyof typeof REGION_MESSAGES | null;
-  const forceShow = searchParams.get('showGTABanner') === 'true' || 
-                    localStorage.getItem('forceGTABanner') === 'true';
-
   // Determine which zone to display
   let activeZone: keyof typeof REGION_MESSAGES = 'international';
   
-  if (testRegion && REGION_MESSAGES[testRegion]) {
-    activeZone = testRegion;
-  } else if (shippingZone) {
+  if (shippingZone) {
     activeZone = shippingZone;
-  } else if (forceShow) {
-    activeZone = 'toronto-gta';
   }
 
-  // Don't render while loading and no test mode
-  if (isLoading && !testRegion && !forceShow) {
+  if (isLoading) {
     return null;
   }
 
   // Don't show banner for international users
-  if (activeZone === 'international' && !testRegion && !forceShow) {
+  if (activeZone === 'international') {
     return null;
   }
 
