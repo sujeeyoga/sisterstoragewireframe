@@ -42,8 +42,10 @@ interface ShippingZone {
 
 interface StaticShippingResult {
   success: true;
+  debug?: Record<string, unknown>;
   zone: { id: string; name: string; description: string | null } | null;
   matchedRule: { rule_type: string; rule_value: string } | null;
+
   rates: Array<{
     id: string;
     method_name: string;
