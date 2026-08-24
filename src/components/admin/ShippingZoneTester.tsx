@@ -121,6 +121,18 @@ export const ShippingZoneTester = () => {
             ) : result.success ? (
               <>
                 <div>
+                  <strong>Rate source:</strong>{' '}
+                  {result.db_available === false ? (
+                    <Badge variant="destructive">
+                      Code fallback in use — database rates not available
+                      {result.db_status === 'not_migrated' ? ' (tables not migrated yet)' : ''}
+                    </Badge>
+                  ) : (
+                    <Badge className="bg-green-600 hover:bg-green-600">Live database rates</Badge>
+                  )}
+                </div>
+
+                <div>
                   <strong>Matched Zone:</strong>{' '}
                   <Badge variant="secondary">{result.zone?.name || 'Unknown'}</Badge>
                 </div>
