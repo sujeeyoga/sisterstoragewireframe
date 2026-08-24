@@ -787,9 +787,20 @@ Deno.serve(async (req) => {
       // All zones now use only their database-configured free shipping thresholds
       console.log(`Using zone rates as configured in database for: ${matchedZone.name}`);
 
+      const dbDebug = buildShippingDebug(rawAddress, address, subtotal, {
+        path: 'database',
+        zone_name: matchedZone.name,
+        rule_type: matchedRule.rule_type,
+        rule_value: matchedRule.rule_value,
+        rate_source: rateSource,
+        applied_rate: applicableRates[0] || null,
+      });
+      logShippingDebug(dbDebug);
+
       return new Response(
         JSON.stringify({
           success: true,
+          debug: dbDebug,
           zone: {
             id: matchedZone.id,
             name: matchedZone.name,
@@ -805,6 +816,7 @@ Deno.serve(async (req) => {
           rate_source: rateSource,
           source: rateSource,
         }),
+
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
