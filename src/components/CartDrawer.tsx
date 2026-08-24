@@ -21,7 +21,7 @@ const CartDrawer = () => {
   const drawerRef = React.useRef<HTMLDivElement>(null);
   
   // Location detection and shipping estimation
-  const { city, region, country, postalCode, isGTA, isLoading: locationLoading } = useLocationDetection();
+  const { city, region, country, postalCode, isLoading: locationLoading } = useLocationDetection();
   const { calculateShipping, fallbackSettings } = useShippingZones();
   const [estimatedShipping, setEstimatedShipping] = useState<number | null>(null);
   const [originalShippingCost, setOriginalShippingCost] = useState<number | null>(null);
@@ -108,6 +108,8 @@ const CartDrawer = () => {
         }
       } else {
         console.log('[CartDrawer] Skipping shipping calculation:', { locationLoading, city, country, subtotal: discountedSubtotal });
+        setEstimatedShipping(null);
+        setOriginalShippingCost(null);
       }
     };
     
@@ -481,51 +483,6 @@ const CartDrawer = () => {
                     </div>
                   )}
 
-                  {/* Free Shipping Progress for Toronto - Only show when shipping is actually free or progress bar */}
-                  {isGTA && (
-                    <>
-                      {discountedSubtotal < 50 ? (
-                        <div className="bg-gradient-to-r from-pink-50 to-purple-50 border border-[hsl(var(--brand-pink))]/20 rounded-lg p-2 mb-3">
-                          <div className="flex items-start gap-2">
-                            <Truck className="h-3.5 w-3.5 text-[hsl(var(--brand-pink))] mt-0.5 flex-shrink-0" />
-                            <div className="flex-1">
-                              <p className="text-[11px] font-semibold text-[hsl(var(--brand-pink))] mb-0.5">
-                                Toronto/GTA Free Shipping
-                              </p>
-                              <p className="text-[10px] text-gray-700">
-                                Spend <span className="font-bold text-[hsl(var(--brand-pink))]">
-                                  ${(50 - discountedSubtotal).toFixed(2)} more
-                                </span> to unlock FREE shipping!
-                              </p>
-                            </div>
-                          </div>
-                          <div className="mt-1.5 w-full bg-gray-200 rounded-full h-1.5">
-                            <div 
-                              className="bg-gradient-to-r from-[hsl(var(--brand-pink))] to-purple-400 h-1.5 rounded-full transition-all duration-300"
-                              style={{ width: `${Math.min((discountedSubtotal / 50) * 100, 100)}%` }}
-                            />
-                          </div>
-                        </div>
-                      ) : estimatedShipping === 0 ? (
-                        <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-500/30 rounded-lg p-2 mb-3">
-                          <div className="flex items-center gap-2">
-                            <div className="flex-shrink-0 w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
-                              <span className="text-white text-[10px]">✓</span>
-                            </div>
-                            <div className="flex-1">
-                              <p className="text-[11px] font-bold text-green-700">
-                                🎉 FREE Shipping Unlocked!
-                              </p>
-                              <p className="text-[10px] text-green-600">
-                                For Toronto/GTA orders over $50
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      ) : null}
-                    </>
-                  )}
-
                   <div className="space-y-1.5">
                     <div className="flex justify-between text-sm text-gray-600">
                       <span>Estimated Tax</span>
@@ -549,14 +506,6 @@ const CartDrawer = () => {
                       <div className="text-right">
                         {locationLoading || shippingLoading ? (
                           <span className="text-gray-400 animate-pulse text-xs">Calculating...</span>
-                        ) : discountedSubtotal >= 289 ? (
-                          <div className="flex flex-col items-end gap-0.5">
-                            <div className="flex items-center gap-1.5">
-                              <span className="text-xs line-through text-muted-foreground">${(fallbackSettings?.fallback_rate ?? 9.99).toFixed(2)}</span>
-                              <span className="text-xs font-bold text-green-600 dark:text-green-400">FREE! 🎉</span>
-                            </div>
-                            <span className="text-[10px] text-muted-foreground">Calculated at checkout</span>
-                          </div>
                         ) : estimatedShipping === 0 && originalShippingCost && originalShippingCost > 0 ? (
                           <div className="flex flex-col items-end gap-0.5">
                             <div className="flex items-center gap-1.5">
@@ -577,7 +526,6 @@ const CartDrawer = () => {
                   <div className="mt-3 mb-3">
                     <FreeShippingThresholdBar
                       cartSubtotal={discountedSubtotal}
-                      isGTA={isGTA}
                       country={country || 'CA'}
                       isLoading={locationLoading}
                       cartItems={items}

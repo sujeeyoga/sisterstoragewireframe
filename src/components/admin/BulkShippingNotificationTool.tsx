@@ -86,6 +86,7 @@ export function BulkShippingNotificationTool() {
             orderNumber: order.order_number || String(order.id),
             trackingNumber: order.tracking_number,
             carrier: order.carrier_name || 'Carrier',
+            source: order.source,
             items: order.items || order.line_items || []
           }
         });

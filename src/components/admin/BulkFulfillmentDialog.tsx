@@ -266,6 +266,7 @@ export function BulkFulfillmentDialog({ orderIds, open, onClose, onSuccess, onRe
               orderNumber: order.order_number || String(order.id),
               trackingNumber: shipment.tracking_number,
               carrier: 'Stallion Express',
+              source: order.source,
               items: order.source === 'stripe' 
                 ? ((order as any).items || [])
                 : ((order as any).line_items || [])
