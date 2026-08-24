@@ -558,6 +558,7 @@ Deno.serve(async (req) => {
 
     // Normalize country/province so full names ("Canada", "Ontario") match the same
     // rules as ISO codes — otherwise GTA addresses fall through to Canada-wide rates.
+    rawAddress = { ...address };
     address = {
       ...address,
       country: normalizeCountry(address.country),
@@ -566,6 +567,8 @@ Deno.serve(async (req) => {
     };
 
     console.log('Calculating shipping for address:', address, 'subtotal:', subtotal, 'items:', items.length);
+
+
 
 
     // Fetch packaging profiles from store settings
