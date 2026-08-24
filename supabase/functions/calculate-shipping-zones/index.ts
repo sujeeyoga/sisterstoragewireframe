@@ -210,7 +210,7 @@ const logShippingDebug = (debug: ReturnType<typeof buildShippingDebug>) => {
   console.log('🚚 SHIPPING_DECISION', JSON.stringify(debug));
 };
 
-const calculateStaticShipping = (address: Address, subtotal: number = 0, rawAddress: any = address): StaticShippingResult => {
+const calculateStaticShippingBase = (address: Address, subtotal: number = 0): StaticShippingResult => {
 
   const country = normalizeCountry(address.country);
   const province = normalizeProvince(address.province);
