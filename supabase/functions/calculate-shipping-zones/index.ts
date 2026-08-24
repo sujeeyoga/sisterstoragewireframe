@@ -815,6 +815,9 @@ Deno.serve(async (req) => {
           fallback_used: false,
           rate_source: rateSource,
           source: rateSource,
+          db_available: true,
+          db_status: 'live',
+
         }),
 
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -876,25 +879,51 @@ Deno.serve(async (req) => {
           display_order: 0,
         },
         fallback_used: true,
+        db_available: true,
+        db_status: 'live',
+        rate_source: 'fallback_settings',
+        source: 'fallback_settings',
+
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error: any) {
-    console.error('Error calculating shipping:', error);
-    console.error('Error details:', {
-      message: error.message,
-      stack: error.stack,
-      name: error.name
-    });
+    // PGRST205 / PGRST202 / 42P01 all mean "the shipping tables do not exist yet".
+    // That is the expected state until the shipping-rate migration is applied, so we
+    // treat it as an informational switch to the in-code rates rather than an outage.
+    const code = error?.code || '';
+    const notMigrated =
+      code === 'PGRST205' ||
+      code === 'PGRST202' ||
+      code === '42P01' ||
+      /Could not find the table 'public\.shipping_/.test(error?.message || '');
+
+    if (notMigrated) {
+      console.log('ℹ️ SHIPPING_SOURCE=code_fallback — shipping tables not migrated yet:', error?.message);
+    } else {
+      console.error('🔴 SHIPPING_DB_ERROR — database reachable but shipping lookup failed:', error);
+      console.error('Error details:', {
+        message: error.message,
+        stack: error.stack,
+        name: error.name,
+        code,
+      });
+    }
 
     if (address?.country) {
-      console.log('⚠️ Shipping database unavailable; using static shipping fallback for checkout continuity');
+      const staticResult = calculateStaticShipping(address, subtotal, rawAddress ?? address);
       return new Response(
-        JSON.stringify(calculateStaticShipping(address, subtotal, rawAddress ?? address)),
+        JSON.stringify({
+          ...staticResult,
+          db_available: false,
+          db_status: notMigrated ? 'not_migrated' : 'error',
+          db_error: error?.message || null,
+        }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
 
       );
     }
+
 
     return new Response(
       JSON.stringify({ 
