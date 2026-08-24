@@ -10,6 +10,7 @@ import { OrderTimeline } from '@/components/customer/OrderTimeline';
 import { OrderStatusBadge } from '@/components/customer/OrderStatusBadge';
 import { ReorderButton } from '@/components/customer/ReorderButton';
 import { normalizeStripeOrder, normalizeWooOrder } from '@/hooks/useCustomerAuth';
+import { getTrackingUrl } from '@/lib/trackingUrl';
 
 const isMissingRelationError = (error: unknown) => {
   if (!error || typeof error !== 'object') return false;
@@ -193,7 +194,7 @@ const CustomerOrderDetail = () => {
                   <p className="text-sm text-muted-foreground">Tracking Number</p>
                   <Button variant="link" className="h-auto p-0 text-brand-pink" asChild>
                     <a 
-                      href={`https://www.google.com/search?q=${order.tracking_number}`}
+                      href={getTrackingUrl(order.carrier_name, order.tracking_number)}
                       target="_blank"
                       rel="noopener noreferrer"
                     >

@@ -43,15 +43,16 @@ const FreeShippingThresholdBar = ({
       return;
     }
 
-    // If location is unknown, use fallback threshold
+    // Do not promise a destination-specific threshold until the address is known.
     if (!city || !region || !country) {
-      setThreshold(60); // Default GTA threshold
+      setThreshold(null);
       setEstimatedShipping(null);
       return;
     }
 
     const calculate = async () => {
       setIsCalculating(true);
+      setThreshold(null);
       try {
         const result = await calculateShipping(
           { city, province: region, country, postalCode },

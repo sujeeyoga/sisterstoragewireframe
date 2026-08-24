@@ -205,6 +205,7 @@ export function StallionFulfillmentDialog({ order, open, onClose, onSuccess }: S
               orderNumber: data.order_number || String(order.id),
               trackingNumber: shipment.tracking_number,
               carrier: 'Stallion Express',
+              source: order.source,
               items: data.items || data.line_items || []
             }
           });

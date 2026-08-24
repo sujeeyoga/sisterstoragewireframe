@@ -8,18 +8,19 @@ const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
  * Returns the correct tracking URL based on the carrier
  */
 const getTrackingUrl = (carrier: string, trackingNumber: string): string => {
-  const carrierLower = carrier?.toLowerCase() || '';
+  const carrierLower = carrier?.toLowerCase().replace(/[^a-z0-9]/g, '') || '';
+  const encodedTrackingNumber = encodeURIComponent(trackingNumber.trim());
   
   if (carrierLower.includes('stallion')) {
-    return `https://www.stallionexpress.ca/tracking?tracking_number=${trackingNumber}`;
+    return `https://www.stallionexpress.ca/tracking?tracking_number=${encodedTrackingNumber}`;
   } else if (carrierLower.includes('chitchat')) {
-    return `https://chitchats.com/tracking?shipment_id=${trackingNumber}`;
-  } else if (carrierLower.includes('canada post')) {
-    return `https://www.canadapost-postescanada.ca/track-reperage/en#/search?searchFor=${trackingNumber}`;
+    return `https://chitchats.com/tracking?shipment_id=${encodedTrackingNumber}`;
+  } else if (carrierLower.includes('canadapost')) {
+    return `https://www.canadapost-postescanada.ca/track-reperage/en#/search?searchFor=${encodedTrackingNumber}`;
   } else if (carrierLower.includes('ups')) {
-    return `https://www.ups.com/track?tracknum=${trackingNumber}`;
+    return `https://www.ups.com/track?tracknum=${encodedTrackingNumber}`;
   } else if (carrierLower.includes('fedex')) {
-    return `https://www.fedex.com/fedextrack/?tracknumbers=${trackingNumber}`;
+    return `https://www.fedex.com/fedextrack/?tracknumbers=${encodedTrackingNumber}`;
   } else {
     // Generic fallback - Google search
     return `https://www.google.com/search?q=${encodeURIComponent(trackingNumber + ' tracking')}`;
@@ -39,6 +40,7 @@ interface ShippingNotificationRequest {
   orderNumber: string;
   trackingNumber: string;
   carrier?: string;
+  source?: 'stripe' | 'woocommerce';
   items: Array<{
     name: string;
     quantity: number;
@@ -60,6 +62,7 @@ const handler = async (req: Request): Promise<Response> => {
       orderNumber,
       trackingNumber,
       carrier,
+      source,
       items,
     }: ShippingNotificationRequest = await req.json();
 
@@ -133,7 +136,7 @@ const handler = async (req: Request): Promise<Response> => {
                       ${carrier || 'Shipping Carrier'}
                     </span>
                   </div>
-                  <a href="${getTrackingUrl(carrier, trackingNumber)}" 
+                   <a href="${getTrackingUrl(carrier || '', trackingNumber)}" 
                      style="display: inline-block; background: #2563eb; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 500; font-size: 14px;">
                     Track Your Package
                   </a>
@@ -151,7 +154,7 @@ const handler = async (req: Request): Promise<Response> => {
 
                 <!-- Order Details CTA -->
                 <div style="padding: 0 32px 24px 32px; text-align: center;">
-                  <a href="https://sisterstorage.com/customer/orders/${orderId}"
+                  <a href="https://sisterstorage.com/customer/orders/${encodeURIComponent(String(orderId))}?source=${source === 'woocommerce' ? 'woocommerce' : 'stripe'}"
                      style="display: inline-block; background: #ec4899; color: white; padding: 12px 28px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 14px;">
                     View Your Order Details
                   </a>
