@@ -302,6 +302,21 @@ const calculateStaticShippingBase = (address: Address, subtotal: number = 0): St
   };
 };
 
+const calculateStaticShipping = (address: Address, subtotal: number = 0, rawAddress: any = address): StaticShippingResult => {
+  const result = calculateStaticShippingBase(address, subtotal);
+  const debug = buildShippingDebug(rawAddress, address, subtotal, {
+    path: 'static_fallback',
+    zone_name: result.zone?.name ?? null,
+    rule_type: result.matchedRule?.rule_type ?? null,
+    rule_value: result.matchedRule?.rule_value ?? null,
+    rate_source: 'static_fallback',
+    applied_rate: result.appliedRate,
+  });
+  logShippingDebug(debug);
+  return { ...result, debug } as StaticShippingResult;
+};
+
+
 const getRulePriority = (ruleType: string): number => {
   const priorities = {
     postal_code_pattern: 400,
