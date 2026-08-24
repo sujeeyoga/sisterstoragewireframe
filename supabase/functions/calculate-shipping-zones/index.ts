@@ -890,8 +890,9 @@ Deno.serve(async (req) => {
     if (address?.country) {
       console.log('⚠️ Shipping database unavailable; using static shipping fallback for checkout continuity');
       return new Response(
-        JSON.stringify(calculateStaticShipping(address, subtotal)),
+        JSON.stringify(calculateStaticShipping(address, subtotal, rawAddress ?? address)),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+
       );
     }
 
