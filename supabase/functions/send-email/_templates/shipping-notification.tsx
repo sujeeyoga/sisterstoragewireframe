@@ -170,9 +170,9 @@ const text = {
 const trackingBox = {
   margin: "30px 0",
   padding: "24px",
-  backgroundColor: "#f0f7ff",
+  backgroundColor: "#fff0f7",
   borderRadius: "8px",
-  border: "2px solid #0066cc",
+  border: "2px solid #FC0079",
 };
 
 const trackingLabel = {
@@ -196,7 +196,7 @@ const buttonContainer = {
 };
 
 const button = {
-  backgroundColor: "#0066cc",
+  backgroundColor: "#FC0079",
   borderRadius: "4px",
   color: "#fff",
   fontSize: "16px",

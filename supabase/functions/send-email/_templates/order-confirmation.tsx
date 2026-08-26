@@ -249,7 +249,7 @@ export const OrderConfirmationEmail = ({
 
         <Section style={trackOrderSection}>
           <Text style={trackOrderText}>
-            Want to track your order? Sign in with your phone number to view your order status anytime.
+            Want to track your order? Sign in with your email to view your order status anytime.
           </Text>
           <a href="https://sisterstorage.com/customer/login" style={trackOrderButton}>
             Track Your Order
@@ -424,7 +424,7 @@ const customMessageText = {
 
 const trackOrderSection = {
   backgroundColor: "#fdf2f8",
-  border: "2px solid #ec4899",
+  border: "2px solid #FC0079",
   borderRadius: "8px",
   padding: "20px",
   margin: "24px 0",
@@ -439,7 +439,7 @@ const trackOrderText = {
 };
 
 const trackOrderButton = {
-  backgroundColor: "#ec4899",
+  backgroundColor: "#FC0079",
   borderRadius: "6px",
   color: "#ffffff",
   fontSize: "16px",
