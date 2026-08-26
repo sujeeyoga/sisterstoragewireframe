@@ -12,6 +12,7 @@ import {
   Text,
 } from 'npm:@react-email/components@0.0.22';
 import * as React from 'npm:react@18.3.1';
+import { getTrackingUrl } from '../../_shared/tracking-url.ts';
 
 interface DelayedTrackingEmailProps {
   customerName: string;
@@ -40,7 +41,7 @@ export const DelayedTrackingEmail = ({
   items,
   shippingAddress,
 }: DelayedTrackingEmailProps) => {
-  const trackingUrl = `https://www.google.com/search?q=${encodeURIComponent(trackingNumber)}`;
+  const trackingUrl = getTrackingUrl(carrier, trackingNumber);
 
   return (
     <Html>

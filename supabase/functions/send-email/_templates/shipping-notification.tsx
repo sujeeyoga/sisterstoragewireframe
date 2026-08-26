@@ -11,6 +11,7 @@ import {
   Link,
 } from "npm:@react-email/components@0.0.22";
 import * as React from "npm:react@18.3.1";
+import { getTrackingUrl } from "../../_shared/tracking-url.ts";
 
 interface ShippingNotificationEmailProps {
   customerName: string;
@@ -82,7 +83,7 @@ export const ShippingNotificationEmail = ({
 
         {trackingNumber && (
           <Section style={buttonContainer}>
-            <Link href={`https://www.google.com/search?q=${trackingNumber}`} style={button}>
+            <Link href={getTrackingUrl(carrier, trackingNumber)} style={button}>
               Track Your Package
             </Link>
           </Section>

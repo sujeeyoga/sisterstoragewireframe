@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4';
+import { getTrackingUrl } from '../_shared/tracking-url.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -104,42 +105,50 @@ serve(async (req) => {
 
         // For Stripe orders → push fulfillment to Shopify (Shopify emails customer)
         // For WooCommerce orders → keep our own shipping email
+        let notificationError: any = null;
+        let notificationChannel = '';
+
         if (order.source === 'stripe') {
           const { error: shopErr } = await supabase.functions.invoke('shopify-fulfill-order', {
             body: {
               orderNumber: order.order_number,
               trackingNumber: trackingNumber,
               trackingCompany: 'Chit Chats',
+              trackingUrl: getTrackingUrl('Chit Chats', trackingNumber),
               notifyCustomer: true,
             },
           });
-          if (shopErr) {
-            console.error(`Shopify fulfillment failed for order ${order.id}:`, shopErr);
-            results.push({ orderId: order.id, status: 'shopify_failed', message: shopErr.message });
-            continue;
+          notificationError = shopErr;
+          if (!shopErr) notificationChannel = 'shopify';
+        }
+
+        if (order.source === 'woocommerce' || notificationError) {
+          if (notificationError) {
+            console.warn(`Shopify notification failed for order ${order.id}; using direct email fallback`, notificationError);
           }
-          console.log(`✅ Shopify fulfillment pushed for order ${order.id}`);
-        } else {
           const billing = order.billing || {};
           const emailData = {
             orderId: order.id,
-            orderNumber: String(order.id),
-            customerEmail: billing.email,
-            customerName: `${billing.first_name || ''} ${billing.last_name || ''}`.trim() || 'Customer',
+            orderNumber: order.source === 'stripe' ? String(order.order_number || order.id) : String(order.id),
+            customerEmail: order.source === 'stripe' ? order.customer_email : billing.email,
+            customerName: order.source === 'stripe'
+              ? (order.customer_name || 'Valued Customer')
+              : (`${billing.first_name || ''} ${billing.last_name || ''}`.trim() || 'Valued Customer'),
             trackingNumber: trackingNumber,
             carrier: 'ChitChats',
-            shippingAddress: order.shipping,
-            items: order.line_items || [],
-            source: 'woocommerce',
+            items: order.source === 'stripe' ? (order.items || []) : (order.line_items || []),
+            source: order.source,
           };
           const { error: emailError } = await supabase.functions.invoke('send-shipping-notification', {
             body: emailData,
           });
+          notificationError = emailError;
           if (emailError) {
-            console.error(`Failed to send notification for order ${order.id}:`, emailError);
-            results.push({ orderId: order.id, status: 'email_failed', message: emailError.message });
+            console.error(`All notification paths failed for order ${order.id}:`, emailError);
+            results.push({ orderId: order.id, status: 'notification_failed', message: emailError.message });
             continue;
           }
+          notificationChannel = 'direct_email';
         }
 
         // Mark notification as sent
@@ -148,8 +157,8 @@ serve(async (req) => {
           .update({ shipping_notification_sent_at: new Date().toISOString() })
           .eq('id', order.id);
 
-        console.log(`Successfully sent shipping notification for order ${order.id}`);
-        results.push({ orderId: order.id, status: 'success', trackingNumber });
+        console.log(`Successfully sent shipping notification for order ${order.id} via ${notificationChannel}`);
+        results.push({ orderId: order.id, status: 'success', trackingNumber, channel: notificationChannel });
 
       } catch (error) {
         console.error(`Error processing order ${order.id}:`, error);
