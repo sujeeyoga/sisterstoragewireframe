@@ -11,6 +11,11 @@ Examples:
 Session source (first one that works):
   1. LOVABLE_BROWSER_SUPABASE_* env vars (injected when you are signed in to the preview)
   2. ~/.cache/lovable-auth/session.json (created by `lovable auth-session --json`)
+  3. dev-only `?admin_preview=1` guard bypass (default; disable with --no-bypass)
+
+You can also just open http://localhost:8080/admin/email-templates?admin_preview=1
+in the dev preview yourself - it renders the real page with the auth guard
+skipped. The bypass is compiled out of production builds.
 
 The signed-in user must have an `admin` row in `user_roles`, otherwise the guard
 renders "Access Denied".
@@ -46,15 +51,24 @@ async def main():
     ap.add_argument("--out", default="/tmp/browser/admin-preview")
     ap.add_argument("--width", type=int, default=1280)
     ap.add_argument("--height", type=int, default=1800)
+    ap.add_argument(
+        "--no-bypass", dest="bypass", action="store_false",
+        help="fail instead of using the dev-only ?admin_preview=1 guard bypass",
+    )
+    ap.set_defaults(bypass=True)
     args = ap.parse_args()
 
     key, sess, cookies, source = load_session()
-    if not key:
+    if key:
+        print(f"using session from {source}")
+    elif args.bypass:
+        print("no session found - falling back to dev-only ?admin_preview=1 bypass")
+    else:
         sys.exit(
             "No admin session available.\n"
-            "Sign in to the Lovable preview as an admin, or run: lovable auth-session --json"
+            "Sign in to the Lovable preview as an admin, run `lovable auth-session --json`,\n"
+            "or re-run without --no-bypass to use the dev-only ?admin_preview=1 mode."
         )
-    print(f"using session from {source}")
 
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
@@ -76,10 +90,14 @@ async def main():
                 await context.add_cookies(parsed)
 
         await page.goto(BASE, wait_until="domcontentloaded")
-        await page.evaluate(
-            f"window.localStorage.setItem({json.dumps(key)}, {json.dumps(sess)})"
-        )
-        await page.goto(BASE + args.route, wait_until="networkidle")
+        if key:
+            await page.evaluate(
+                f"window.localStorage.setItem({json.dumps(key)}, {json.dumps(sess)})"
+            )
+        route = args.route
+        if args.bypass:
+            route += ("&" if "?" in route else "?") + "admin_preview=1"
+        await page.goto(BASE + route, wait_until="networkidle")
         await page.wait_for_timeout(2500)
 
         body = (await page.inner_text("body"))[:400]
