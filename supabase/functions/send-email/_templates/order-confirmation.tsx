@@ -80,7 +80,7 @@ export const OrderConfirmationEmail = ({
     <Preview>Your Sister Storage order #{orderNumber} has been confirmed</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Heading style={h1}>Thank You for Your Order!</Heading>
+        <Heading style={h1}>{headline}</Heading>
         
         <Text style={text}>Hi {customerName},</Text>
         
@@ -90,10 +90,7 @@ export const OrderConfirmationEmail = ({
           </Section>
         )}
         
-        <Text style={text}>
-          We've received your order and we're getting it ready. We'll send you a shipping
-          confirmation email as soon as your order ships.
-        </Text>
+        <Text style={text}>{bodyText}</Text>
 
         <Section style={orderInfo}>
           <Row>
