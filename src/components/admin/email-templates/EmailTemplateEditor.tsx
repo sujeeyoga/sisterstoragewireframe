@@ -1,13 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, RotateCcw, Save, Send, AlertTriangle } from "lucide-react";
 import type { EmailTemplateDefinition } from "@/lib/emailTemplateCatalog";
 import { EmailTemplatePreview } from "./EmailTemplatePreview";
@@ -18,6 +11,21 @@ interface Props {
   storageAvailable: boolean;
   onSaved: () => void;
 }
+
+/** Renders {{token}} occurrences inside helper text as monospace chips. */
+const HelperText = ({ text }: { text: string }) => (
+  <p className="et-helper">
+    {text.split(/(\{\{[^}]+\}\})/g).map((part, i) =>
+      /^\{\{[^}]+\}\}$/.test(part) ? (
+        <span key={i} className="et-chip">
+          {part}
+        </span>
+      ) : (
+        <span key={i}>{part}</span>
+      )
+    )}
+  </p>
+);
 
 export const EmailTemplateEditor = ({ template, savedOverride, storageAvailable, onSaved }: Props) => {
   const { toast } = useToast();
@@ -41,7 +49,7 @@ export const EmailTemplateEditor = ({ template, savedOverride, storageAvailable,
     setBlocks({ ...defaults, ...(savedOverride?.blocks ?? {}) });
   }, [template.key, savedOverride, defaults, template.defaultSubject]);
 
-  const renderPreview = async () => {
+  const renderPreview = useCallback(async () => {
     setPreviewLoading(true);
     setPreviewError(null);
     try {
@@ -59,17 +67,17 @@ export const EmailTemplateEditor = ({ template, savedOverride, storageAvailable,
       if (!data?.html) throw new Error("No preview returned");
       setHtml(data.html);
     } catch (e: any) {
+      // Keep the last successful render on screen instead of blanking the panel.
       setPreviewError(e?.message || "Could not render this preview.");
     } finally {
       setPreviewLoading(false);
     }
-  };
+  }, [template.key, template.sampleData, subject, blocks]);
 
   useEffect(() => {
     const timer = setTimeout(renderPreview, 400);
     return () => clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [template.key, subject, JSON.stringify(blocks)]);
+  }, [renderPreview]);
 
   const handleSave = async () => {
     setSaving(true);
@@ -141,98 +149,128 @@ export const EmailTemplateEditor = ({ template, savedOverride, storageAvailable,
   };
 
   return (
-    <div className="grid gap-6 lg:grid-cols-2">
-      <div className="space-y-4">
-        <Card>
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between gap-2">
-              <CardTitle className="text-lg">{template.name}</CardTitle>
-              <Badge variant={template.audience === "customer" ? "default" : "secondary"}>
+    <>
+      <div className="space-y-[22px]">
+        <div className="et-panel">
+          <div className="et-editor">
+            <div className="flex items-center gap-3">
+              <h2 className="et-panel-title">{template.name}</h2>
+              <span className="et-badge">
                 {template.audience === "customer" ? "Customer" : "Internal"}
-              </Badge>
+              </span>
             </div>
-            <p className="text-sm text-muted-foreground">{template.trigger}</p>
-            <p className="text-xs text-muted-foreground">Recipient: {template.recipient}</p>
-          </CardHeader>
-          <CardContent className="space-y-4">
+            <p className="mt-2 text-[14px]" style={{ color: "#5F6270" }}>
+              {template.trigger}
+            </p>
+            <div className="mt-4">
+              <p className="et-meta-label">Recipient</p>
+              <p className="et-meta-value">{template.recipient}</p>
+            </div>
+
             {!storageAvailable && (
-              <Alert>
-                <AlertTriangle className="h-4 w-4" />
-                <AlertDescription className="text-sm">
-                  Saving is temporarily unavailable while the backend storage for email copy is being
-                  restored. You can still preview and send tests.
-                </AlertDescription>
-              </Alert>
-            )}
-
-            <div className="space-y-2">
-              <Label>Subject line</Label>
-              <Input value={subject} onChange={(e) => setSubject(e.target.value)} />
-              {template.subjectHelp && (
-                <p className="text-xs text-muted-foreground">{template.subjectHelp}</p>
-              )}
-            </div>
-
-            {template.blocks.length === 0 && (
-              <p className="text-sm text-muted-foreground">
-                This email has no editable text blocks — only the subject line can be changed.
-              </p>
-            )}
-
-            {template.blocks.map((block) => (
-              <div key={block.key} className="space-y-2">
-                <Label>{block.label}</Label>
-                {block.multiline ? (
-                  <Textarea
-                    rows={3}
-                    value={blocks[block.key] ?? ""}
-                    onChange={(e) => setBlocks((b) => ({ ...b, [block.key]: e.target.value }))}
-                  />
-                ) : (
-                  <Input
-                    value={blocks[block.key] ?? ""}
-                    onChange={(e) => setBlocks((b) => ({ ...b, [block.key]: e.target.value }))}
-                  />
-                )}
-                {block.helpText && (
-                  <p className="text-xs text-muted-foreground">{block.helpText}</p>
-                )}
+              <div className="et-warning">
+                <AlertTriangle className="h-4 w-4 flex-shrink-0" style={{ color: "#E88A00" }} />
+                <div>
+                  <p className="font-semibold">Saving temporarily unavailable</p>
+                  <p>You can continue editing, previewing and sending test emails.</p>
+                </div>
               </div>
-            ))}
+            )}
 
-            <div className="flex flex-wrap gap-2 pt-2">
-              <Button onClick={handleSave} disabled={saving || !storageAvailable}>
-                {saving ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Save className="h-4 w-4 mr-2" />}
-                Save copy
-              </Button>
-              <Button variant="outline" onClick={handleReset}>
-                <RotateCcw className="h-4 w-4 mr-2" />
-                Reset to default
-              </Button>
+            <div className="mt-5 space-y-5">
+              <div>
+                <label className="et-label" htmlFor="et-subject">
+                  Subject line
+                </label>
+                <input
+                  id="et-subject"
+                  className="et-input"
+                  value={subject}
+                  onChange={(e) => setSubject(e.target.value)}
+                />
+                {template.subjectHelp && <HelperText text={template.subjectHelp} />}
+              </div>
+
+              {template.blocks.length === 0 && (
+                <p className="text-[14px]" style={{ color: "#5F6270" }}>
+                  This email has no editable text blocks — only the subject line can be changed.
+                </p>
+              )}
+
+              {template.blocks.map((block) => (
+                <div key={block.key}>
+                  <label className="et-label" htmlFor={`et-${block.key}`}>
+                    {block.label}
+                  </label>
+                  {block.multiline ? (
+                    <textarea
+                      id={`et-${block.key}`}
+                      className="et-textarea"
+                      value={blocks[block.key] ?? ""}
+                      onChange={(e) => setBlocks((b) => ({ ...b, [block.key]: e.target.value }))}
+                    />
+                  ) : (
+                    <input
+                      id={`et-${block.key}`}
+                      className="et-input"
+                      value={blocks[block.key] ?? ""}
+                      onChange={(e) => setBlocks((b) => ({ ...b, [block.key]: e.target.value }))}
+                    />
+                  )}
+                  {block.helpText && <HelperText text={block.helpText} />}
+                </div>
+              ))}
             </div>
-          </CardContent>
-        </Card>
 
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base">Send a test</CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-2 sm:flex-row">
-            <Input
-              type="email"
-              placeholder="you@example.com"
-              value={testEmail}
-              onChange={(e) => setTestEmail(e.target.value)}
-            />
-            <Button onClick={handleTestSend} disabled={sending}>
-              {sending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Send className="h-4 w-4 mr-2" />}
-              Send test
-            </Button>
-          </CardContent>
-        </Card>
+            <div className="et-footer">
+              <button type="button" className="et-btn-secondary" onClick={handleReset}>
+                <RotateCcw className="h-4 w-4" />
+                Reset to default
+              </button>
+              <button
+                type="button"
+                className="et-btn-primary"
+                onClick={handleSave}
+                disabled={saving || !storageAvailable}
+              >
+                {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+                Save copy
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="et-panel">
+          <div className="p-[22px]">
+            <p className="et-eyebrow">Send a test</p>
+            <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+              <input
+                className="et-input"
+                type="email"
+                placeholder="you@example.com"
+                value={testEmail}
+                onChange={(e) => setTestEmail(e.target.value)}
+              />
+              <button
+                type="button"
+                className="et-btn-primary flex-shrink-0"
+                onClick={handleTestSend}
+                disabled={sending}
+              >
+                {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                Send test
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <EmailTemplatePreview html={html} loading={previewLoading} error={previewError} />
-    </div>
+      <EmailTemplatePreview
+        html={html}
+        loading={previewLoading}
+        error={previewError}
+        onRetry={renderPreview}
+      />
+    </>
   );
 };
