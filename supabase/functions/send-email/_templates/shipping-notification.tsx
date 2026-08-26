@@ -31,6 +31,10 @@ interface ShippingNotificationEmailProps {
     postal_code: string;
     country: string;
   };
+  headline?: string;
+  bodyText?: string;
+  ctaText?: string;
+  footerText?: string;
 }
 
 export const ShippingNotificationEmail = ({
@@ -41,19 +45,22 @@ export const ShippingNotificationEmail = ({
   estimatedDelivery,
   items,
   shippingAddress,
+  headline = "Your Order Has Shipped! 📦",
+  bodyText = "Great news! Your order has been shipped and is on its way to you.",
+  ctaText = "Track Your Package",
+  footerText = "If you have any questions about your shipment, please contact us at sisterstorageinc@gmail.com\nThank you for shopping with Sister Storage!",
 }: ShippingNotificationEmailProps) => (
   <Html>
     <Head />
     <Preview>Your Sister Storage order #{orderNumber} has shipped!</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Heading style={h1}>Your Order Has Shipped! 📦</Heading>
+        <Heading style={h1}>{headline}</Heading>
         
         <Text style={text}>Hi {customerName},</Text>
         
-        <Text style={text}>
-          Great news! Your order has been shipped and is on its way to you.
-        </Text>
+        <Text style={text}>{bodyText}</Text>
+
 
         <Section style={trackingBox}>
           <Text style={trackingLabel}>Order Number</Text>
