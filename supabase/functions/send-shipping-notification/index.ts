@@ -33,8 +33,8 @@ const ShippingNotificationSchema = z.object({
   customerName: z.string().trim().min(1).default("Valued Customer"),
   orderNumber: z.string().trim().min(1),
   trackingNumber: z.string().trim().min(5).max(200),
-  carrier: z.string().trim().min(1).max(100).optional(),
-  source: z.enum(["stripe", "woocommerce"]).optional(),
+  carrier: z.string().trim().min(1).max(100),
+  source: z.enum(["stripe", "woocommerce"]),
   items: z.array(z.object({
     name: z.string().default("Item"),
     quantity: z.coerce.number().positive().default(1),
@@ -222,22 +222,16 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Update order to mark notification as sent (background task)
     const updateTask = async () => {
-      // Try both tables since we support Stripe and WooCommerce orders
+      const tableName = source === "woocommerce" ? "woocommerce_orders" : "orders";
       const { error: orderError } = await supabase
-        .from("orders")
+        .from(tableName)
         .update({ 
           shipping_notification_sent_at: new Date().toISOString() 
         })
         .eq("id", String(orderId));
 
       if (orderError) {
-        // Try WooCommerce orders table if not found in orders
-        await supabase
-          .from("woocommerce_orders")
-          .update({ 
-            shipping_notification_sent_at: new Date().toISOString() 
-          })
-          .eq("id", orderId);
+        console.error(`Failed to mark ${source} order ${orderId} as notified:`, orderError);
       }
     };
 

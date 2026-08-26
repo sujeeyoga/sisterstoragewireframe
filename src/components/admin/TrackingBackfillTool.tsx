@@ -156,19 +156,34 @@ export function TrackingBackfillTool() {
       setProgress(((i + 1) / orders.length) * 100);
 
       try {
-        const { error } = await supabase.functions.invoke('send-shipping-notification', {
+        const carrier = order.carrier_name?.trim();
+        const trackingNumber = order.tracking_number?.trim();
+        const customerEmail = order.customer_email?.trim();
+
+        if (!customerEmail || !customerEmail.includes('@')) {
+          throw new Error('Missing a valid customer email');
+        }
+        if (!trackingNumber || trackingNumber.length < 5) {
+          throw new Error('Missing a valid tracking number');
+        }
+        if (!carrier) {
+          throw new Error('Missing carrier name');
+        }
+
+        const { data, error } = await supabase.functions.invoke('send-shipping-notification', {
           body: {
             orderId: order.id,
             orderNumber: order.source === 'stripe' ? order.order_number : order.id.toString(),
-            customerEmail: order.customer_email,
+            customerEmail,
             customerName: order.customer_name || 'Valued Customer',
-            trackingNumber: order.tracking_number,
-            carrier: order.carrier_name || 'Carrier',
+            trackingNumber,
+            carrier,
             source: order.source
           }
         });
 
         if (error) throw error;
+        if (!data?.success) throw new Error(data?.error || 'Notification was not accepted');
         success++;
       } catch (error: any) {
         failed++;
