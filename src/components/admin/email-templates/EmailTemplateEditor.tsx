@@ -262,11 +262,8 @@ export const EmailTemplateEditor = ({
                 Save copy
               </button>
             </div>
-          </div>
-        </div>
 
-        <div className="et-panel">
-          <div className="p-[22px]">
+          <div className="et-subpanel">
             <p className="et-eyebrow">Send a test</p>
             <div className="mt-3 flex flex-col gap-2 sm:flex-row">
               <input
@@ -289,14 +286,31 @@ export const EmailTemplateEditor = ({
           </div>
         </div>
       </div>
+    </div>
+  );
 
-      <EmailTemplatePreview
-        html={html}
-        loading={previewLoading}
-        error={previewError}
-        isMock={previewIsMock}
-        onRetry={renderPreview}
-      />
-    </>
+  const previewPane = (
+    <EmailTemplatePreview
+      html={html}
+      loading={previewLoading}
+      error={previewError}
+      isMock={previewIsMock}
+      onRetry={renderPreview}
+    />
+  );
+
+  if (variant === "editor") return editorPane;
+  if (variant === "preview") return previewPane;
+
+  return (
+    <ResizablePanelGroup direction="horizontal" autoSaveId="et-editor-preview">
+      <ResizablePanel defaultSize={52} minSize={30} className="et-col">
+        {editorPane}
+      </ResizablePanel>
+      <ResizableHandle withHandle className="et-handle" />
+      <ResizablePanel defaultSize={48} minSize={28} className="et-col">
+        {previewPane}
+      </ResizablePanel>
+    </ResizablePanelGroup>
   );
 };
