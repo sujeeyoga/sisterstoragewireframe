@@ -140,9 +140,71 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { type, to, data }: EmailRequest = await req.json();
+    const body = await req.json();
+    const { type, to, data } = body as EmailRequest;
+    const preview: boolean = body.preview === true;
+    const previewBlocks: Record<string, string> = body.previewBlocks || {};
+    const previewSubject: string | undefined = body.previewSubject;
 
-    console.log(`Processing ${type} email for ${to}`);
+    console.log(`Processing ${type} email for ${preview ? "PREVIEW" : to}`);
+
+    // Preview mode is admin-only: require a valid session token
+    if (preview) {
+      const authHeader = req.headers.get("Authorization") ?? "";
+      const token = authHeader.replace("Bearer ", "").trim();
+      if (!token) {
+        return new Response(JSON.stringify({ error: "Unauthorized" }), {
+          status: 401,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        });
+      }
+      const supabaseAuth = createClient(
+        Deno.env.get("SUPABASE_URL") ?? "",
+        Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+      );
+      const { data: userData, error: userError } = await supabaseAuth.auth.getUser(token);
+      if (userError || !userData?.user) {
+        return new Response(JSON.stringify({ error: "Unauthorized" }), {
+          status: 401,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        });
+      }
+    }
+
+    // Load saved admin copy overrides for this template (best effort)
+    let savedSubject: string | undefined;
+    let savedBlocks: Record<string, string> = {};
+    try {
+      const supabaseAdmin = createClient(
+        Deno.env.get("SUPABASE_URL") ?? "",
+        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+      );
+      const { data: override } = await supabaseAdmin
+        .from("email_template_overrides")
+        .select("subject, blocks")
+        .eq("template_key", type)
+        .maybeSingle();
+      if (override) {
+        savedSubject = override.subject || undefined;
+        savedBlocks = (override.blocks as Record<string, string>) || {};
+      }
+    } catch (overrideError) {
+      console.log("No template overrides available:", (overrideError as Error).message);
+    }
+
+    // Strip empty strings so defaults survive
+    const clean = (obj: Record<string, string>) =>
+      Object.fromEntries(Object.entries(obj || {}).filter(([, v]) => typeof v === "string" && v.trim() !== ""));
+
+    const blocks = { ...clean(savedBlocks), ...clean(previewBlocks) };
+
+    const interpolate = (template: string, values: Record<string, any>) =>
+      template.replace(/\{\{\s*(\w+)\s*\}\}/g, (_m, key) => String(values?.[key] ?? ""));
+
+    const applySubject = (defaultSubject: string) => {
+      const custom = previewSubject?.trim() || savedSubject?.trim();
+      return custom ? interpolate(custom, data as Record<string, any>) : defaultSubject;
+    };
 
     let html: string;
     let subject: string;
@@ -154,17 +216,18 @@ const handler = async (req: Request): Promise<Response> => {
           React.createElement(OrderConfirmationEmail, {
             ...orderData,
             customMessage: orderData.customMessage,
+            ...blocks,
           })
         );
-        subject = orderData.customSubject || `Your Sister Storage Order #${orderData.orderNumber}`;
+        subject = orderData.customSubject || applySubject(`Your Sister Storage Order #${orderData.orderNumber}`);
         break;
 
       case "shipping_notification":
         const shippingData = data as ShippingNotificationData;
         html = await renderAsync(
-          React.createElement(ShippingNotificationEmail, shippingData)
+          React.createElement(ShippingNotificationEmail, { ...shippingData, ...blocks })
         );
-        subject = `Your Order Has Shipped - Order #${shippingData.orderNumber}`;
+        subject = applySubject(`Your Order Has Shipped - Order #${shippingData.orderNumber}`);
         break;
 
       case "admin_welcome":
@@ -172,7 +235,7 @@ const handler = async (req: Request): Promise<Response> => {
         html = await renderAsync(
           React.createElement(AdminWelcomeEmail, adminData)
         );
-        subject = `Welcome to Sister Storage Admin Panel`;
+        subject = applySubject(`Welcome to Sister Storage Admin Panel`);
         break;
 
       case "admin_promotion":
@@ -180,36 +243,44 @@ const handler = async (req: Request): Promise<Response> => {
         html = await renderAsync(
           React.createElement(AdminPromotionEmail, promotionData)
         );
-        subject = `Admin Access Granted - Sister Storage`;
+        subject = applySubject(`Admin Access Granted - Sister Storage`);
         break;
 
       case "announcement":
         const announcementData = data as AnnouncementEmailData;
         html = await renderAsync(
-          React.createElement(AnnouncementEmail, announcementData)
+          React.createElement(AnnouncementEmail, { ...announcementData, ...blocks })
         );
-        subject = announcementData.subject;
+        subject = applySubject(announcementData.subject);
         break;
 
       case "promotional":
         const promoData = data as PromotionalEmailData;
         html = await renderAsync(
-          React.createElement(PromotionalEmail, promoData)
+          React.createElement(PromotionalEmail, { ...promoData, ...blocks })
         );
-        subject = promoData.subject;
+        subject = applySubject(promoData.subject);
         break;
 
       case "delayed_tracking":
         const delayedData = data as DelayedTrackingEmailData;
         html = await renderAsync(
-          React.createElement(DelayedTrackingEmail, delayedData)
+          React.createElement(DelayedTrackingEmail, { ...delayedData, ...blocks })
         );
-        subject = `Tracking Information - Order #${delayedData.orderNumber}`;
+        subject = applySubject(`Tracking Information - Order #${delayedData.orderNumber}`);
         break;
 
       default:
         throw new Error(`Unknown email type: ${type}`);
     }
+
+    if (preview) {
+      return new Response(JSON.stringify({ success: true, preview: true, html, subject }), {
+        status: 200,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+
 
     const emailResponse = await resend.emails.send({
       from: "Sister Storage <noreply@sisterstorage.com>",
