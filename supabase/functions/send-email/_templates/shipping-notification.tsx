@@ -91,7 +91,7 @@ export const ShippingNotificationEmail = ({
         {trackingNumber && (
           <Section style={buttonContainer}>
             <Link href={getTrackingUrl(carrier, trackingNumber)} style={button}>
-              Track Your Package
+              {ctaText}
             </Link>
           </Section>
         )}
