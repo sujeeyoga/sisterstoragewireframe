@@ -3,9 +3,8 @@ import { AdminLayout } from "@/components/admin/AdminLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { EMAIL_TEMPLATES } from "@/lib/emailTemplateCatalog";
 import { EmailTemplateEditor } from "@/components/admin/email-templates/EmailTemplateEditor";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
+import { EmailTemplateList } from "@/components/admin/email-templates/EmailTemplateList";
+import { Mail, Info } from "lucide-react";
 
 type Override = { subject: string | null; blocks: Record<string, string> };
 
@@ -39,50 +38,52 @@ const AdminEmailTemplates = () => {
 
   return (
     <AdminLayout>
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold">Email Templates</h1>
-          <p className="text-muted-foreground mt-1">
-            Every email that goes out to customers — preview it, edit the wording, and send yourself a test.
-          </p>
-        </div>
+      <div className="et-scope">
+        <div className="et-shell">
+          <header className="mb-6 flex items-start gap-4">
+            <span className="et-icon-tile">
+              <Mail className="h-6 w-6" />
+            </span>
+            <div>
+              <h1 className="et-title">Email Templates</h1>
+              <p className="et-subtitle">
+                Manage the emails your customers receive — preview, edit the wording, send a test.
+              </p>
+            </div>
+          </header>
 
-        <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
-          <Card className="h-fit">
-            <CardContent className="p-2">
-              {EMAIL_TEMPLATES.map((t) => {
-                const customized = Boolean(overrides[t.key]);
-                return (
-                  <button
-                    key={t.key}
-                    onClick={() => setSelected(t.key)}
-                    className={cn(
-                      "w-full rounded-md px-3 py-2 text-left transition-colors",
-                      selected === t.key ? "bg-primary/10 text-primary" : "hover:bg-muted"
-                    )}
-                  >
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-sm font-medium">{t.name}</span>
-                      {customized && (
-                        <Badge variant="outline" className="text-[10px]">
-                          Edited
-                        </Badge>
-                      )}
-                    </div>
-                    <span className="text-xs text-muted-foreground line-clamp-2">{t.trigger}</span>
-                  </button>
-                );
-              })}
-            </CardContent>
-          </Card>
+          <div className="et-workspace">
+            <EmailTemplateList
+              templates={EMAIL_TEMPLATES}
+              selected={selected}
+              edited={overrides}
+              onSelect={setSelected}
+            />
 
-          <EmailTemplateEditor
-            key={template.key}
-            template={template}
-            savedOverride={overrides[template.key] ?? null}
-            storageAvailable={storageAvailable}
-            onSaved={loadOverrides}
-          />
+            <EmailTemplateEditor
+              key={template.key}
+              template={template}
+              savedOverride={overrides[template.key] ?? null}
+              storageAvailable={storageAvailable}
+              onSaved={loadOverrides}
+            />
+          </div>
+
+          {!storageAvailable && (
+            <div className="et-status">
+              <div className="flex items-start gap-3">
+                <Info className="mt-0.5 h-4 w-4 flex-shrink-0" style={{ color: "#858895" }} />
+                <div>
+                  <p className="text-[14px] font-semibold" style={{ color: "#121426" }}>
+                    Saving unavailable
+                  </p>
+                  <p className="text-[13px]" style={{ color: "#5F6270" }}>
+                    Email copy storage is temporarily unavailable. Editing and previewing still work.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </AdminLayout>
