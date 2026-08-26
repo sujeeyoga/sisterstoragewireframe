@@ -15,7 +15,7 @@ type Override = { subject: string | null; blocks: Record<string, string> };
 type Tab = "templates" | "editor" | "preview";
 
 /** Below this width the three panes become tabs instead of resizable columns. */
-const SPLIT_MIN_WIDTH = 820;
+const SPLIT_MIN_WIDTH = 768;
 
 const useIsSplitLayout = () => {
   const [isSplit, setIsSplit] = useState(
