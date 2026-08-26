@@ -1,31 +1,10 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { Resend } from "npm:resend@2.0.0";
+import { z } from "npm:zod@3.23.8";
+import { getTrackingUrl } from "../_shared/tracking-url.ts";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
-
-/**
- * Returns the correct tracking URL based on the carrier
- */
-const getTrackingUrl = (carrier: string, trackingNumber: string): string => {
-  const carrierLower = carrier?.toLowerCase().replace(/[^a-z0-9]/g, '') || '';
-  const encodedTrackingNumber = encodeURIComponent(trackingNumber.trim());
-  
-  if (carrierLower.includes('stallion')) {
-    return `https://www.stallionexpress.ca/tracking?tracking_number=${encodedTrackingNumber}`;
-  } else if (carrierLower.includes('chitchat')) {
-    return `https://chitchats.com/tracking?shipment_id=${encodedTrackingNumber}`;
-  } else if (carrierLower.includes('canadapost')) {
-    return `https://www.canadapost-postescanada.ca/track-reperage/en#/search?searchFor=${encodedTrackingNumber}`;
-  } else if (carrierLower.includes('ups')) {
-    return `https://www.ups.com/track?tracknum=${encodedTrackingNumber}`;
-  } else if (carrierLower.includes('fedex')) {
-    return `https://www.fedex.com/fedextrack/?tracknumbers=${encodedTrackingNumber}`;
-  } else {
-    // Generic fallback - Google search
-    return `https://www.google.com/search?q=${encodeURIComponent(trackingNumber + ' tracking')}`;
-  }
-};
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -48,6 +27,21 @@ interface ShippingNotificationRequest {
   }>;
 }
 
+const ShippingNotificationSchema = z.object({
+  orderId: z.union([z.string().min(1), z.number()]),
+  customerEmail: z.string().email(),
+  customerName: z.string().trim().min(1).default("Valued Customer"),
+  orderNumber: z.string().trim().min(1),
+  trackingNumber: z.string().trim().min(5).max(200),
+  carrier: z.string().trim().min(1).max(100),
+  source: z.enum(["stripe", "woocommerce"]),
+  items: z.array(z.object({
+    name: z.string().default("Item"),
+    quantity: z.coerce.number().positive().default(1),
+    price: z.coerce.number().optional(),
+  })).optional().default([]),
+});
+
 const handler = async (req: Request): Promise<Response> => {
   // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
@@ -55,6 +49,15 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    const body = await req.json();
+    const parsed = ShippingNotificationSchema.safeParse(body);
+    if (!parsed.success) {
+      return new Response(JSON.stringify({ error: "Invalid shipping notification", fields: parsed.error.flatten().fieldErrors }), {
+        status: 400,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+
     const {
       orderId,
       customerEmail,
@@ -64,7 +67,7 @@ const handler = async (req: Request): Promise<Response> => {
       carrier,
       source,
       items = [],
-    }: ShippingNotificationRequest = await req.json();
+    }: ShippingNotificationRequest = parsed.data;
 
     console.log("Sending shipping notification for order:", orderId);
 
@@ -183,6 +186,10 @@ const handler = async (req: Request): Promise<Response> => {
       `,
     });
 
+    if (emailResponse.error || !emailResponse.data?.id) {
+      throw new Error(emailResponse.error?.message || "Email provider did not accept the shipping notification");
+    }
+
     console.log("Shipping notification sent successfully:", emailResponse);
 
     // Log email to email_logs table
@@ -215,28 +222,22 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Update order to mark notification as sent (background task)
     const updateTask = async () => {
-      // Try both tables since we support Stripe and WooCommerce orders
+      const tableName = source === "woocommerce" ? "woocommerce_orders" : "orders";
       const { error: orderError } = await supabase
-        .from("orders")
+        .from(tableName)
         .update({ 
           shipping_notification_sent_at: new Date().toISOString() 
         })
         .eq("id", String(orderId));
 
       if (orderError) {
-        // Try WooCommerce orders table if not found in orders
-        await supabase
-          .from("woocommerce_orders")
-          .update({ 
-            shipping_notification_sent_at: new Date().toISOString() 
-          })
-          .eq("id", orderId);
+        console.error(`Failed to mark ${source} order ${orderId} as notified:`, orderError);
       }
     };
 
     EdgeRuntime.waitUntil(updateTask());
 
-    return new Response(JSON.stringify(emailResponse), {
+    return new Response(JSON.stringify({ success: true, id: emailResponse.data.id }), {
       status: 200,
       headers: {
         "Content-Type": "application/json",
@@ -245,28 +246,6 @@ const handler = async (req: Request): Promise<Response> => {
     });
   } catch (error: any) {
     console.error("Error sending shipping notification:", error);
-    
-    // Log failed email attempt
-    try {
-      const { orderId, customerEmail, orderNumber } = await req.json();
-      const supabase = createClient(
-        Deno.env.get("SUPABASE_URL") ?? "",
-        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
-      );
-
-      await supabase
-        .from("email_logs")
-        .insert({
-          order_id: String(orderId),
-          recipient_email: customerEmail,
-          email_type: "shipping_notification",
-          subject: `Your order #${orderNumber} has shipped!`,
-          sent_successfully: false,
-          error_message: error.message,
-        });
-    } catch (logError) {
-      console.error("Failed to log error:", logError);
-    }
     
     return new Response(
       JSON.stringify({ error: error.message }),

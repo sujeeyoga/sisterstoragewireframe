@@ -1,6 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { getTrackingUrl } from "../_shared/tracking-url.ts";
 
 const STALLION_API_TOKEN = Deno.env.get('STALLION_EXPRESS_API_TOKEN');
 const STALLION_BASE_URL = 'https://ship.stallionexpress.ca/api/v4';
@@ -119,6 +120,7 @@ serve(async (req) => {
           console.log(`Sending shipping notification for order ${order.id}`);
 
           let invokeError: any = null;
+          let notificationChannel = '';
 
           if (order.source === 'stripe') {
             // Push fulfillment to Shopify; Shopify emails the customer
@@ -127,33 +129,42 @@ serve(async (req) => {
                 orderNumber: order.order_number,
                 trackingNumber: trackingToUse,
                 trackingCompany: 'Stallion Express',
+                trackingUrl: getTrackingUrl('Stallion Express', trackingToUse),
                 notifyCustomer: true,
               },
             });
             invokeError = error;
-          } else {
+            if (!error) notificationChannel = 'shopify';
+          }
+
+          if (order.source === 'woocommerce' || invokeError) {
+            if (invokeError) {
+              console.warn(`Shopify notification failed for order ${order.id}; using direct email fallback`, invokeError);
+            }
             const billing = order.billing as Record<string, string> | null;
             const notificationData = {
               orderId: order.id,
-              orderNumber: order.id.toString(),
-              customerEmail: billing?.email,
-              customerName: `${billing?.first_name || ''} ${billing?.last_name || ''}`.trim(),
+              orderNumber: order.source === 'stripe' ? String(order.order_number || order.id) : order.id.toString(),
+              customerEmail: order.source === 'stripe' ? order.customer_email : billing?.email,
+              customerName: order.source === 'stripe'
+                ? (order.customer_name || 'Valued Customer')
+                : (`${billing?.first_name || ''} ${billing?.last_name || ''}`.trim() || 'Valued Customer'),
               trackingNumber: trackingToUse,
               carrier: 'Stallion Express',
-              shippingAddress: order.shipping,
-              items: order.line_items,
-              source: 'woocommerce',
+              items: order.source === 'stripe' ? (order.items || []) : (order.line_items || []),
+              source: order.source,
             };
             const { error } = await supabaseAdmin.functions.invoke('send-shipping-notification', {
               body: notificationData,
             });
             invokeError = error;
+            if (!error) notificationChannel = 'direct_email';
           }
 
           if (invokeError) {
             console.error(`Failed to send notification for order ${order.id}:`, invokeError);
           } else {
-            console.log(`Shipping notification sent for order ${order.id}`);
+            console.log(`Shipping notification sent for order ${order.id} via ${notificationChannel}`);
             notifiedCount++;
 
             // Mark notification as sent

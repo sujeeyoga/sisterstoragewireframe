@@ -220,6 +220,10 @@ const handler = async (req: Request): Promise<Response> => {
       html,
     });
 
+    if (emailResponse.error || !emailResponse.data?.id) {
+      throw new Error(emailResponse.error?.message || "Email provider did not accept the message");
+    }
+
     console.log("Email sent successfully:", emailResponse);
 
     // Log the email send to email_logs table (only for order confirmations)
@@ -250,7 +254,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     return new Response(
-      JSON.stringify({ success: true, id: emailResponse.data?.id }),
+      JSON.stringify({ success: true, id: emailResponse.data.id }),
       {
         status: 200,
         headers: {
