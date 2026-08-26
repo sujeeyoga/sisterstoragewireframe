@@ -169,7 +169,7 @@ const container = {
 };
 
 const header = {
-  backgroundColor: '#FFB7C5',
+  backgroundColor: '#FC0079',
   padding: '30px 20px',
   textAlign: 'center' as const,
 };
@@ -230,7 +230,7 @@ const text = {
 
 const trackingBox = {
   backgroundColor: '#f8f9fa',
-  border: '2px solid #FFB7C5',
+  border: '2px solid #FC0079',
   borderRadius: '8px',
   padding: '24px',
   margin: '24px 20px',
@@ -260,7 +260,7 @@ const carrierText = {
 };
 
 const button = {
-  backgroundColor: '#FFB7C5',
+  backgroundColor: '#FC0079',
   borderRadius: '6px',
   color: '#fff',
   fontSize: '14px',
@@ -280,7 +280,7 @@ const sectionTitle = {
   fontSize: '16px',
   fontWeight: 'bold',
   marginBottom: '16px',
-  borderBottom: '2px solid #FFB7C5',
+  borderBottom: '2px solid #FC0079',
   paddingBottom: '8px',
 };
 
@@ -348,6 +348,6 @@ const footer = {
 };
 
 const footerLink = {
-  color: '#FFB7C5',
+  color: '#FC0079',
   textDecoration: 'none',
 };
