@@ -4,6 +4,11 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, RotateCcw, Save, Send, AlertTriangle } from "lucide-react";
 import type { EmailTemplateDefinition } from "@/lib/emailTemplateCatalog";
 import { EmailTemplatePreview } from "./EmailTemplatePreview";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
 import { renderMockEmail } from "@/lib/mockEmailRender";
 
 interface Props {
@@ -11,6 +16,8 @@ interface Props {
   savedOverride: { subject: string | null; blocks: Record<string, string> } | null;
   storageAvailable: boolean;
   onSaved: () => void;
+  /** "split" = editor + preview with a draggable splitter, otherwise a single pane. */
+  variant?: "split" | "editor" | "preview";
 }
 
 /** Renders {{token}} occurrences inside helper text as monospace chips. */
@@ -28,7 +35,13 @@ const HelperText = ({ text }: { text: string }) => (
   </p>
 );
 
-export const EmailTemplateEditor = ({ template, savedOverride, storageAvailable, onSaved }: Props) => {
+export const EmailTemplateEditor = ({
+  template,
+  savedOverride,
+  storageAvailable,
+  onSaved,
+  variant = "split",
+}: Props) => {
   const { toast } = useToast();
   const defaults = useMemo(() => {
     const d: Record<string, string> = {};
@@ -161,11 +174,10 @@ export const EmailTemplateEditor = ({ template, savedOverride, storageAvailable,
     }
   };
 
-  return (
-    <>
-      <div className="space-y-[22px]">
-        <div className="et-panel">
-          <div className="et-editor">
+  const editorPane = (
+    <div className="et-panel et-pane">
+      <div className="et-scroll">
+        <div className="et-editor">
             <div className="flex items-center gap-3">
               <h2 className="et-panel-title">{template.name}</h2>
               <span className="et-badge">
@@ -235,7 +247,7 @@ export const EmailTemplateEditor = ({ template, savedOverride, storageAvailable,
               ))}
             </div>
 
-            <div className="et-footer">
+          <div className="et-footer">
               <button type="button" className="et-btn-secondary" onClick={handleReset}>
                 <RotateCcw className="h-4 w-4" />
                 Reset to default
