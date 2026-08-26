@@ -5,10 +5,12 @@ interface EmailTemplatePreviewProps {
   html: string | null;
   loading: boolean;
   error: string | null;
+  /** True when the html came from the local sample renderer, not the backend. */
+  isMock?: boolean;
   onRetry?: () => void;
 }
 
-export const EmailTemplatePreview = ({ html, loading, error, onRetry }: EmailTemplatePreviewProps) => {
+export const EmailTemplatePreview = ({ html, loading, error, isMock = false, onRetry }: EmailTemplatePreviewProps) => {
   const [device, setDevice] = useState<"desktop" | "mobile">("desktop");
   const showSkeleton = loading && !html;
 
@@ -18,6 +20,14 @@ export const EmailTemplatePreview = ({ html, loading, error, onRetry }: EmailTem
         <div className="mb-3.5 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="et-eyebrow">Preview</span>
+            {isMock && html && (
+              <span
+                className="rounded-full px-2 py-0.5 text-[11px] font-semibold"
+                style={{ background: "#FFF1F7", color: "#FF007A" }}
+              >
+                Sample render
+              </span>
+            )}
             {loading && html && (
               <RefreshCw className="h-3.5 w-3.5 animate-spin" style={{ color: "#858895" }} />
             )}
@@ -44,7 +54,25 @@ export const EmailTemplatePreview = ({ html, loading, error, onRetry }: EmailTem
           </div>
         </div>
 
-        {error && (
+        {error && isMock && html && (
+          <div className="et-warning" style={{ marginTop: 0 }}>
+            <AlertCircle className="h-4 w-4 flex-shrink-0" style={{ color: "#E88A00" }} />
+            <div className="flex-1">
+              <p className="font-semibold">Showing a sample render</p>
+              <p>
+                The live email service isn’t reachable right now, so this is a local
+                preview of the same layout customers receive.
+              </p>
+              {onRetry && (
+                <button type="button" onClick={onRetry} className="mt-2 font-semibold underline">
+                  Try the live render
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
+        {error && !isMock && (
           <div className="et-warning" style={{ marginTop: 0 }}>
             <AlertCircle className="h-4 w-4 flex-shrink-0" style={{ color: "#E88A00" }} />
             <div className="flex-1">
