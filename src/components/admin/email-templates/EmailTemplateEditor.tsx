@@ -4,6 +4,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, RotateCcw, Save, Send, AlertTriangle } from "lucide-react";
 import type { EmailTemplateDefinition } from "@/lib/emailTemplateCatalog";
 import { EmailTemplatePreview } from "./EmailTemplatePreview";
+import { renderMockEmail } from "@/lib/mockEmailRender";
 
 interface Props {
   template: EmailTemplateDefinition;
@@ -40,6 +41,7 @@ export const EmailTemplateEditor = ({ template, savedOverride, storageAvailable,
   const [html, setHtml] = useState<string | null>(null);
   const [previewLoading, setPreviewLoading] = useState(false);
   const [previewError, setPreviewError] = useState<string | null>(null);
+  const [previewIsMock, setPreviewIsMock] = useState(false);
   const [saving, setSaving] = useState(false);
   const [testEmail, setTestEmail] = useState("");
   const [sending, setSending] = useState(false);
@@ -66,9 +68,20 @@ export const EmailTemplateEditor = ({ template, savedOverride, storageAvailable,
       if (error) throw error;
       if (!data?.html) throw new Error("No preview returned");
       setHtml(data.html);
+      setPreviewIsMock(false);
     } catch (e: any) {
-      // Keep the last successful render on screen instead of blanking the panel.
-      setPreviewError(e?.message || "Could not render this preview.");
+      // Backend unavailable (no admin session, function down): fall back to a
+      // locally rendered sample so the panel still shows the real layout.
+      setHtml(
+        renderMockEmail({
+          templateKey: template.key,
+          subject,
+          blocks,
+          data: template.sampleData,
+        })
+      );
+      setPreviewIsMock(true);
+      setPreviewError(e?.message || "Could not reach the email service.");
     } finally {
       setPreviewLoading(false);
     }
@@ -269,6 +282,7 @@ export const EmailTemplateEditor = ({ template, savedOverride, storageAvailable,
         html={html}
         loading={previewLoading}
         error={previewError}
+        isMock={previewIsMock}
         onRetry={renderPreview}
       />
     </>
