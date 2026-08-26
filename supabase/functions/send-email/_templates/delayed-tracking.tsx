@@ -32,7 +32,7 @@ interface DelayedTrackingEmailProps {
     country: string;
   };
   headline?: string;
-  apologyText?: string;
+  apologyMessage?: string;
   bodyText?: string;
   ctaText?: string;
 }
@@ -45,7 +45,7 @@ export const DelayedTrackingEmail = ({
   items,
   shippingAddress,
   headline = 'Your Package is On The Way! 📦',
-  apologyText = 'We sincerely apologize for not sending you tracking information sooner. Your order has been on its way, and we want to make sure you can track it now.',
+  apologyMessage = 'We sincerely apologize for not sending you tracking information sooner. Your order has been on its way, and we want to make sure you can track it now.',
   bodyText = 'has been shipped and may already be close to delivery! Here\'s your tracking information:',
   ctaText = 'Track Your Package',
 }: DelayedTrackingEmailProps) => {
