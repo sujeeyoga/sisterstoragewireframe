@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { isAdminPreviewMode } from "@/lib/adminPreviewMode";
 
 interface AdminProtectedRouteProps {
   children: React.ReactNode;
@@ -13,8 +14,10 @@ export const AdminProtectedRoute = ({ children }: AdminProtectedRouteProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const hasShownToast = useRef(false);
+  const previewMode = isAdminPreviewMode();
 
   useEffect(() => {
+    if (previewMode) return;
     checkAdminAccess();
 
     // Listen for auth changes
@@ -32,7 +35,7 @@ export const AdminProtectedRoute = ({ children }: AdminProtectedRouteProps) => {
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [previewMode]);
 
   // Handle access denied toast in useEffect to avoid render loop
   useEffect(() => {
@@ -93,6 +96,18 @@ export const AdminProtectedRoute = ({ children }: AdminProtectedRouteProps) => {
       setIsAdmin(false);
     }
   };
+
+  // Dev-only authenticated-less preview (never active in production builds)
+  if (previewMode) {
+    return (
+      <>
+        <div className="bg-[#FF007A] px-4 py-1.5 text-center text-xs font-medium text-white">
+          Admin UI preview mode - guard bypassed (dev only). Add ?admin_preview=0 to exit.
+        </div>
+        {children}
+      </>
+    );
+  }
 
   // Loading state
   if (isAuthenticated === null || isAdmin === null) {
