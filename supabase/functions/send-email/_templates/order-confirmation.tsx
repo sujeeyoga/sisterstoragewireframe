@@ -249,7 +249,7 @@ export const OrderConfirmationEmail = ({
 
         <Section style={trackOrderSection}>
           <Text style={trackOrderText}>
-            Want to track your order? Sign in with your phone number to view your order status anytime.
+            Want to track your order? Sign in with your email to view your order status anytime.
           </Text>
           <a href="https://sisterstorage.com/customer/login" style={trackOrderButton}>
             Track Your Order
