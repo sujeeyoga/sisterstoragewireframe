@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Monitor, RefreshCw, Smartphone, AlertCircle } from "lucide-react";
 
 interface EmailTemplatePreviewProps {
@@ -19,6 +19,23 @@ export const EmailTemplatePreview = ({
 }: EmailTemplatePreviewProps) => {
   const [device, setDevice] = useState<"desktop" | "mobile">("desktop");
   const showSkeleton = loading && !html;
+  const canvasRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
+  const frameWidth = device === "mobile" ? 390 : 620;
+
+  // Scale the email down so a real-width email always fits the current column.
+  useEffect(() => {
+    const el = canvasRef.current;
+    if (!el) return;
+    const update = () => {
+      const available = el.clientWidth - 32;
+      setScale(Math.min(1, Math.max(0.32, available / frameWidth)));
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [frameWidth]);
 
   return (
     <div className="et-panel et-pane">
@@ -87,7 +104,7 @@ export const EmailTemplatePreview = ({
           </div>
         )}
 
-        <div className="et-canvas">
+        <div className="et-canvas" ref={canvasRef}>
           {showSkeleton ? (
             <div className="et-email mx-auto w-full max-w-[620px] p-5">
               <div className="et-skeleton mx-auto h-6 w-40" />
@@ -98,12 +115,28 @@ export const EmailTemplatePreview = ({
               <div className="et-skeleton mt-5 h-24 w-full" />
             </div>
           ) : (
-            <div className="et-email" style={{ maxWidth: device === "mobile" ? 390 : 620 }}>
-              <iframe
-                title="Email preview"
-                srcDoc={html ?? ""}
-                className="block h-full min-h-[420px] w-full bg-white"
-              />
+            <div
+              style={{
+                width: frameWidth * scale,
+                height: `calc(100% / ${scale})`,
+                minHeight: 420 * scale,
+              }}
+            >
+              <div
+                className="et-email"
+                style={{
+                  width: frameWidth,
+                  height: "100%",
+                  transform: `scale(${scale})`,
+                  transformOrigin: "top left",
+                }}
+              >
+                <iframe
+                  title="Email preview"
+                  srcDoc={html ?? ""}
+                  className="block h-full min-h-[420px] w-full bg-white"
+                />
+              </div>
             </div>
           )}
         </div>
