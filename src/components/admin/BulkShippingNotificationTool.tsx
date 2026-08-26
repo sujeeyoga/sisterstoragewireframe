@@ -74,18 +74,30 @@ export function BulkShippingNotificationTool() {
       setProgress({ current: i + 1, total: ordersWithoutNotifications.length });
 
       try {
-        const customerEmail = order.customer_email || (order.source === 'woocommerce' && order.billing ? (order.billing as any).email : '');
+        const customerEmail = (order.customer_email || (order.source === 'woocommerce' && order.billing ? (order.billing as any).email : '')).trim();
         const customerName = order.customer_name || (order.source === 'woocommerce' && order.billing ? 
           `${(order.billing as any).first_name || ''} ${(order.billing as any).last_name || ''}`.trim() : 'Customer');
+        const trackingNumber = order.tracking_number?.trim();
+        const carrier = order.carrier_name?.trim();
+
+        if (!customerEmail || !customerEmail.includes('@')) {
+          throw new Error('Missing a valid customer email');
+        }
+        if (!trackingNumber || trackingNumber.length < 5) {
+          throw new Error('Missing a valid tracking number');
+        }
+        if (!carrier) {
+          throw new Error('Missing carrier name');
+        }
         
-        const { error } = await supabase.functions.invoke('send-shipping-notification', {
+        const { data, error } = await supabase.functions.invoke('send-shipping-notification', {
           body: {
             orderId: order.id,
-            customerEmail: customerEmail || '',
+            customerEmail,
             customerName: customerName || 'Customer',
             orderNumber: order.order_number || String(order.id),
-            trackingNumber: order.tracking_number,
-            carrier: order.carrier_name || 'Carrier',
+            trackingNumber,
+            carrier,
             source: order.source,
             items: order.items || order.line_items || []
           }
@@ -93,6 +105,9 @@ export function BulkShippingNotificationTool() {
 
         if (error) {
           throw error;
+        }
+        if (!data?.success) {
+          throw new Error(data?.error || 'Notification was not accepted');
         }
 
         sendResults.push({ orderId: order.id, success: true });
