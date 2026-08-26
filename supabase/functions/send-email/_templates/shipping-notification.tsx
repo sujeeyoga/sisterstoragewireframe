@@ -117,9 +117,12 @@ export const ShippingNotificationEmail = ({
         </Text>
 
         <Text style={footer}>
-          If you have any questions about your shipment, please contact us at sisterstorageinc@gmail.com
-          <br />
-          Thank you for shopping with Sister Storage!
+          {footerText.split('\n').map((line, i) => (
+            <React.Fragment key={i}>
+              {i > 0 && <br />}
+              {line}
+            </React.Fragment>
+          ))}
         </Text>
       </Container>
     </Body>
