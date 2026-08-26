@@ -37,6 +37,9 @@ interface OrderConfirmationEmailProps {
   carrierCost?: number;
   tariffFees?: number;
   customMessage?: string;
+  headline?: string;
+  bodyText?: string;
+  footerText?: string;
 }
 
 export const OrderConfirmationEmail = ({
@@ -52,6 +55,9 @@ export const OrderConfirmationEmail = ({
   carrierCost,
   tariffFees,
   customMessage,
+  headline = "Thank You for Your Order!",
+  bodyText = "We've received your order and we're getting it ready. We'll send you a shipping confirmation email as soon as your order ships.",
+  footerText = "If you have any questions, please contact us at sisterstorageinc@gmail.com\nThank you for shopping with Sister Storage!",
 }: OrderConfirmationEmailProps) => {
   const isInternational = shippingAddress.country !== 'CA' && shippingAddress.country !== 'Canada';
   const baseShippingRate = tariffFees ? shipping - tariffFees : shipping;
@@ -74,7 +80,7 @@ export const OrderConfirmationEmail = ({
     <Preview>Your Sister Storage order #{orderNumber} has been confirmed</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Heading style={h1}>Thank You for Your Order!</Heading>
+        <Heading style={h1}>{headline}</Heading>
         
         <Text style={text}>Hi {customerName},</Text>
         
@@ -84,10 +90,7 @@ export const OrderConfirmationEmail = ({
           </Section>
         )}
         
-        <Text style={text}>
-          We've received your order and we're getting it ready. We'll send you a shipping
-          confirmation email as soon as your order ships.
-        </Text>
+        <Text style={text}>{bodyText}</Text>
 
         <Section style={orderInfo}>
           <Row>
@@ -254,9 +257,12 @@ export const OrderConfirmationEmail = ({
         </Section>
 
         <Text style={footer}>
-          If you have any questions, please contact us at sisterstorageinc@gmail.com
-          <br />
-          Thank you for shopping with Sister Storage!
+          {footerText.split('\n').map((line, i) => (
+            <React.Fragment key={i}>
+              {i > 0 && <br />}
+              {line}
+            </React.Fragment>
+          ))}
         </Text>
       </Container>
     </Body>

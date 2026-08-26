@@ -31,6 +31,10 @@ interface DelayedTrackingEmailProps {
     postal_code: string;
     country: string;
   };
+  headline?: string;
+  apologyMessage?: string;
+  bodyText?: string;
+  ctaText?: string;
 }
 
 export const DelayedTrackingEmail = ({
@@ -40,6 +44,10 @@ export const DelayedTrackingEmail = ({
   carrier,
   items,
   shippingAddress,
+  headline = 'Your Package is On The Way! 📦',
+  apologyMessage = 'We sincerely apologize for not sending you tracking information sooner. Your order has been on its way, and we want to make sure you can track it now.',
+  bodyText = 'has been shipped and may already be close to delivery! Here\'s your tracking information:',
+  ctaText = 'Track Your Package',
 }: DelayedTrackingEmailProps) => {
   const trackingUrl = getTrackingUrl(carrier, trackingNumber);
 
@@ -57,20 +65,16 @@ export const DelayedTrackingEmail = ({
           {/* Apology Notice */}
           <Section style={apologyBox}>
             <Heading style={apologyTitle}>⏰ We Apologize for the Delay</Heading>
-            <Text style={apologyText}>
-              We sincerely apologize for not sending you tracking information sooner. 
-              Your order has been on its way, and we want to make sure you can track it now.
-            </Text>
+            <Text style={apologyText}>{apologyMessage}</Text>
           </Section>
 
           {/* Main Content */}
-          <Heading style={h1}>Your Package is On The Way! 📦</Heading>
+          <Heading style={h1}>{headline}</Heading>
           
           <Text style={greeting}>Hi {customerName},</Text>
           
           <Text style={text}>
-            Your order <strong>#{orderNumber}</strong> has been shipped and may already be close to delivery!
-            Here's your tracking information:
+            Your order <strong>#{orderNumber}</strong> {bodyText}
           </Text>
 
           {/* Tracking Box */}
@@ -80,7 +84,7 @@ export const DelayedTrackingEmail = ({
             <Text style={carrierText}>Carrier: {carrier}</Text>
             
             <Button style={button} href={trackingUrl}>
-              Track Your Package
+              {ctaText}
             </Button>
           </Section>
 
