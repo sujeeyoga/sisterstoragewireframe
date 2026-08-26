@@ -37,6 +37,9 @@ interface OrderConfirmationEmailProps {
   carrierCost?: number;
   tariffFees?: number;
   customMessage?: string;
+  headline?: string;
+  bodyText?: string;
+  footerText?: string;
 }
 
 export const OrderConfirmationEmail = ({
@@ -52,6 +55,9 @@ export const OrderConfirmationEmail = ({
   carrierCost,
   tariffFees,
   customMessage,
+  headline = "Thank You for Your Order!",
+  bodyText = "We've received your order and we're getting it ready. We'll send you a shipping confirmation email as soon as your order ships.",
+  footerText = "If you have any questions, please contact us at sisterstorageinc@gmail.com\nThank you for shopping with Sister Storage!",
 }: OrderConfirmationEmailProps) => {
   const isInternational = shippingAddress.country !== 'CA' && shippingAddress.country !== 'Canada';
   const baseShippingRate = tariffFees ? shipping - tariffFees : shipping;
