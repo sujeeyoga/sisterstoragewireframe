@@ -26,11 +26,11 @@ interface Props {
 }
 
 export const EmailTemplateList = ({ templates, selected, edited, onSelect }: Props) => (
-  <div className="et-panel">
+  <div className="et-panel et-pane">
     <div className="et-panel-header">
       <span className="et-eyebrow">Templates</span>
     </div>
-    <div className="py-1">
+    <div className="et-scroll py-1">
       {templates.map((t) => {
         const { icon: Icon, bg, fg } = ICONS[t.key] ?? FALLBACK;
         return (
