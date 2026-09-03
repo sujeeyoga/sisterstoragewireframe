@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { supabase } from "@/integrations/supabase/client";
+import { TRACKING_ENABLED } from "@/config/features";
 
 const PaymentSuccess = () => {
   const navigate = useNavigate();
