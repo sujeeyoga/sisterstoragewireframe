@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { useConnectionQuality } from "@/hooks/use-connection-quality";
 
 interface CultureBagPromoProps {
   variant?: "shop" | "homepage";
@@ -11,6 +12,11 @@ const CultureBagPromo: React.FC<CultureBagPromoProps> = ({ variant = "shop" }) =
   const isHomepage = variant === "homepage";
   const [videoLoaded, setVideoLoaded] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const { isSlowMobile } = useConnectionQuality();
+  const videoSrc = isSlowMobile
+    ? "/lovable-uploads/culture-bag-teaser-lite.mp4"
+    : "/lovable-uploads/culture-bag-teaser.mp4";
+
 
   return (
     <section
