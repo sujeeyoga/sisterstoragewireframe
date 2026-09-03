@@ -53,7 +53,8 @@ const PaymentSuccess = () => {
           </p>
           
           <p className="text-sm text-muted-foreground">
-            An email confirmation will be sent to you shortly with your order details.
+            An email confirmation will be sent to you shortly with your order details, and we'll
+            email your tracking number and carrier link as soon as your order ships.
           </p>
           
           {sessionId && (
