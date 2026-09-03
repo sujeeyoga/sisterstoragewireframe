@@ -32,6 +32,14 @@ const TABLES = [
   "store_settings",
   "settings",
   "admin_users",
+  "shipping_rates",
+  "shipping_zone_rates",
+  "shipping_zone_regions",
+  "shipping_zone_postal_codes",
+  "zone_rates",
+  "zone_regions",
+  "reviews",
+  "product_reviews",
 ];
 
 Deno.serve(async (req) => {
