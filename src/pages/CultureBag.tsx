@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ShoppingBag, Check, AlertTriangle } from "lucide-react";
 
 const images = [
-  { src: "/lovable-uploads/culture-bag-front.jpeg", alt: "Culture Bag front view with saree visible through clear window" },
+  { src: "/lovable-uploads/culture-bag-front.webp", alt: "Culture Bag front view with saree visible through clear window" },
   { src: "/lovable-uploads/culture-bag-stack.jpeg", alt: "Stack of Culture Bags filled with sarees" },
   { src: "/lovable-uploads/culture-bag-zippers.jpeg", alt: "Culture Bag zipper detail showing stacked bags" },
   { src: "/lovable-uploads/culture-bag-hand.jpeg", alt: "Hand opening Culture Bag back compartment" },
