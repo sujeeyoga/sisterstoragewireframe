@@ -8,6 +8,7 @@ import { useCart } from '@/contexts/CartContext';
 import EnhancedLogo from '@/components/ui/enhanced-logo';
 import FreeShippingCartIndicator from '@/components/cart/FreeShippingCartIndicator';
 import { useLocationDetection } from '@/hooks/useLocationDetection';
+import { TRACKING_ENABLED } from '@/config/features';
 
 interface NavbarProps {
   position?: number;
