@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { supabase } from "@/integrations/supabase/client";
+import { TRACKING_ENABLED } from "@/config/features";
 
 const PaymentSuccess = () => {
   const navigate = useNavigate();
@@ -53,7 +54,8 @@ const PaymentSuccess = () => {
           </p>
           
           <p className="text-sm text-muted-foreground">
-            An email confirmation will be sent to you shortly with your order details.
+            An email confirmation will be sent to you shortly with your order details, and we'll
+            email your tracking number and carrier link as soon as your order ships.
           </p>
           
           {sessionId && (
@@ -63,15 +65,17 @@ const PaymentSuccess = () => {
           )}
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-            <Button
-              onClick={() => navigate("/customer/login")}
-              className="bg-brand-pink hover:bg-brand-pink/90"
-            >
-              Track Your Order
-            </Button>
+            {TRACKING_ENABLED && (
+              <Button
+                onClick={() => navigate("/customer/login")}
+                className="bg-brand-pink hover:bg-brand-pink/90"
+              >
+                Track Your Order
+              </Button>
+            )}
             <Button
               onClick={() => navigate("/shop")}
-              variant="outline"
+              variant={TRACKING_ENABLED ? "outline" : "default"}
             >
               Continue Shopping
             </Button>

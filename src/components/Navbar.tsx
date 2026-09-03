@@ -8,6 +8,7 @@ import { useCart } from '@/contexts/CartContext';
 import EnhancedLogo from '@/components/ui/enhanced-logo';
 import FreeShippingCartIndicator from '@/components/cart/FreeShippingCartIndicator';
 import { useLocationDetection } from '@/hooks/useLocationDetection';
+import { TRACKING_ENABLED } from '@/config/features';
 
 interface NavbarProps {
   position?: number;
@@ -72,7 +73,9 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
             <Link to="/" className={`relative px-4 py-2 font-medium text-base focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] focus:ring-offset-2 min-h-[40px] flex items-center after:content-[''] after:absolute after:w-full after:h-0.5 after:bottom-1 after:left-0 after:transition-transform after:duration-300 ${location.pathname === '/' ? 'text-[hsl(var(--brand-pink))] after:bg-[hsl(var(--brand-pink))] after:scale-x-100' : 'text-black hover:text-[hsl(var(--brand-pink))] after:bg-[hsl(var(--brand-pink))] after:scale-x-0 after:origin-bottom-right hover:after:scale-x-100 hover:after:origin-bottom-left'}`}>HOME</Link>
             <Link to="/gallery" className={`relative px-3 py-2 font-medium text-base focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] after:content-[''] after:absolute after:w-full after:h-0.5 after:bottom-1 after:left-0 after:transition-transform after:duration-300 ${location.pathname === '/gallery' ? 'text-[hsl(var(--brand-pink))] after:bg-[hsl(var(--brand-pink))] after:scale-x-100' : 'text-black hover:text-[hsl(var(--brand-pink))] after:bg-[hsl(var(--brand-pink))] after:scale-x-0 after:origin-bottom-right hover:after:scale-x-100 hover:after:origin-bottom-left'}`}>GALLERY</Link>
             <Link to="/shop" className={`relative px-3 py-2 font-medium text-base focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] after:content-[''] after:absolute after:w-full after:h-0.5 after:bottom-1 after:left-0 after:transition-transform after:duration-300 ${location.pathname === '/shop' ? 'text-[hsl(var(--brand-pink))] after:bg-[hsl(var(--brand-pink))] after:scale-x-100' : 'text-black hover:text-[hsl(var(--brand-pink))] after:bg-[hsl(var(--brand-pink))] after:scale-x-0 after:origin-bottom-right hover:after:scale-x-100 hover:after:origin-bottom-left'}`}>SHOP</Link>
-            <Link to="/customer/login" className={`relative px-3 py-2 font-medium text-base focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] after:content-[''] after:absolute after:w-full after:h-0.5 after:bottom-1 after:left-0 after:transition-transform after:duration-300 ${location.pathname.startsWith('/customer') ? 'text-[hsl(var(--brand-pink))] after:bg-[hsl(var(--brand-pink))] after:scale-x-100' : 'text-black hover:text-[hsl(var(--brand-pink))] after:bg-[hsl(var(--brand-pink))] after:scale-x-0 after:origin-bottom-right hover:after:scale-x-100 hover:after:origin-bottom-left'}`}>TRACK ORDER</Link>
+            {TRACKING_ENABLED && (
+              <Link to="/customer/login" className={`relative px-3 py-2 font-medium text-base focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] after:content-[''] after:absolute after:w-full after:h-0.5 after:bottom-1 after:left-0 after:transition-transform after:duration-300 ${location.pathname.startsWith('/customer') ? 'text-[hsl(var(--brand-pink))] after:bg-[hsl(var(--brand-pink))] after:scale-x-100' : 'text-black hover:text-[hsl(var(--brand-pink))] after:bg-[hsl(var(--brand-pink))] after:scale-x-0 after:origin-bottom-right hover:after:scale-x-100 hover:after:origin-bottom-left'}`}>TRACK ORDER</Link>
+            )}
           </div>
           
           {/* Condensed menu 768-1279px */}
@@ -80,7 +83,9 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
             <Link to="/" className={`relative px-4 py-2 font-medium text-base focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] focus:ring-offset-2 min-h-[40px] flex items-center after:content-[''] after:absolute after:w-full after:h-0.5 after:bottom-1 after:left-0 after:transition-transform after:duration-300 ${location.pathname === '/' ? 'text-[hsl(var(--brand-pink))] after:bg-[hsl(var(--brand-pink))] after:scale-x-100' : 'text-black hover:text-[hsl(var(--brand-pink))] after:bg-[hsl(var(--brand-pink))] after:scale-x-0 after:origin-bottom-right hover:after:scale-x-100 hover:after:origin-bottom-left'}`}>HOME</Link>
             <Link to="/gallery" className={`relative px-3 py-2 font-medium text-base focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] after:content-[''] after:absolute after:w-full after:h-0.5 after:bottom-1 after:left-0 after:transition-transform after:duration-300 ${location.pathname === '/gallery' ? 'text-[hsl(var(--brand-pink))] after:bg-[hsl(var(--brand-pink))] after:scale-x-100' : 'text-black hover:text-[hsl(var(--brand-pink))] after:bg-[hsl(var(--brand-pink))] after:scale-x-0 after:origin-bottom-right hover:after:scale-x-100 hover:after:origin-bottom-left'}`}>GALLERY</Link>
             <Link to="/shop" className={`relative px-3 py-2 font-medium text-base focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] after:content-[''] after:absolute after:w-full after:h-0.5 after:bottom-1 after:left-0 after:transition-transform after:duration-300 ${location.pathname === '/shop' ? 'text-[hsl(var(--brand-pink))] after:bg-[hsl(var(--brand-pink))] after:scale-x-100' : 'text-black hover:text-[hsl(var(--brand-pink))] after:bg-[hsl(var(--brand-pink))] after:scale-x-0 after:origin-bottom-right hover:after:scale-x-100 hover:after:origin-bottom-left'}`}>SHOP</Link>
-            <Link to="/customer/login" className={`relative px-2 py-2 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] after:content-[''] after:absolute after:w-full after:h-0.5 after:bottom-1 after:left-0 after:transition-transform after:duration-300 ${location.pathname.startsWith('/customer') ? 'text-[hsl(var(--brand-pink))] after:bg-[hsl(var(--brand-pink))] after:scale-x-100' : 'text-black hover:text-[hsl(var(--brand-pink))] after:bg-[hsl(var(--brand-pink))] after:scale-x-0 after:origin-bottom-right hover:after:scale-x-100 hover:after:origin-bottom-left'}`}>TRACK</Link>
+            {TRACKING_ENABLED && (
+              <Link to="/customer/login" className={`relative px-2 py-2 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-pink))] after:content-[''] after:absolute after:w-full after:h-0.5 after:bottom-1 after:left-0 after:transition-transform after:duration-300 ${location.pathname.startsWith('/customer') ? 'text-[hsl(var(--brand-pink))] after:bg-[hsl(var(--brand-pink))] after:scale-x-100' : 'text-black hover:text-[hsl(var(--brand-pink))] after:bg-[hsl(var(--brand-pink))] after:scale-x-0 after:origin-bottom-right hover:after:scale-x-100 hover:after:origin-bottom-left'}`}>TRACK</Link>
+            )}
           </div>
         </div>
 
@@ -173,7 +178,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
                     { name: 'HOME', path: '/' },
                     { name: 'GALLERY', path: '/gallery' },
                     { name: 'SHOP', path: '/shop' },
-                    { name: 'TRACK ORDER', path: '/customer/login' }
+                    ...(TRACKING_ENABLED ? [{ name: 'TRACK ORDER', path: '/customer/login' }] : [])
                   ].map((item) => {
                     const isActive = location.pathname === item.path;
                     
