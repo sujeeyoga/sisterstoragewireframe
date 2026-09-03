@@ -6,6 +6,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ShoppingBag, Check, AlertTriangle } from "lucide-react";
+import { useConnectionQuality } from "@/hooks/use-connection-quality";
+
 
 const images = [
   { src: "/lovable-uploads/culture-bag-front.webp", alt: "Culture Bag front view with saree visible through clear window" },
