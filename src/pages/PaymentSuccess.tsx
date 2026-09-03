@@ -63,15 +63,17 @@ const PaymentSuccess = () => {
           )}
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-            <Button
-              onClick={() => navigate("/customer/login")}
-              className="bg-brand-pink hover:bg-brand-pink/90"
-            >
-              Track Your Order
-            </Button>
+            {TRACKING_ENABLED && (
+              <Button
+                onClick={() => navigate("/customer/login")}
+                className="bg-brand-pink hover:bg-brand-pink/90"
+              >
+                Track Your Order
+              </Button>
+            )}
             <Button
               onClick={() => navigate("/shop")}
-              variant="outline"
+              variant={TRACKING_ENABLED ? "outline" : "default"}
             >
               Continue Shopping
             </Button>
