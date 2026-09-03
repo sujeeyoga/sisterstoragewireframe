@@ -137,7 +137,8 @@ const CultureBag = () => {
                   <div className="aspect-video bg-muted rounded-lg" />
                 )}
                 <video
-                  src="/lovable-uploads/culture-bag-teaser.mp4"
+                  src={teaserSrc}
+                  key={teaserSrc}
                   autoPlay
                   loop
                   muted
@@ -290,7 +291,8 @@ const CultureBag = () => {
                   <div className="aspect-video bg-muted animate-pulse rounded-lg" />
                 )}
                 <video
-                  src="/lovable-uploads/culture-bag-teaser.mp4"
+                  src={teaserSrc}
+                  key={teaserSrc}
                   autoPlay
                   loop
                   muted
