@@ -18,6 +18,20 @@ const TABLES = [
   "email_template_overrides",
   "page_content",
   "shop_sections",
+  "order_items",
+  "woocommerce_customers",
+  "woo_orders",
+  "cart_items",
+  "checkouts",
+  "payments",
+  "stripe_orders",
+  "newsletter_subscribers",
+  "subscribers",
+  "discount_codes",
+  "discounts",
+  "store_settings",
+  "settings",
+  "admin_users",
 ];
 
 Deno.serve(async (req) => {
