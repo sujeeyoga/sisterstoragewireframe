@@ -6,6 +6,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ShoppingBag, Check, AlertTriangle } from "lucide-react";
+import { useConnectionQuality } from "@/hooks/use-connection-quality";
+
 
 const images = [
   { src: "/lovable-uploads/culture-bag-front.webp", alt: "Culture Bag front view with saree visible through clear window" },
@@ -39,7 +41,12 @@ const CultureBag = () => {
   const [thumbsLoaded, setThumbsLoaded] = useState<Record<number, boolean>>({});
   const [video1Loaded, setVideo1Loaded] = useState(false);
   const [video2Loaded, setVideo2Loaded] = useState(false);
+  const { isSlowMobile } = useConnectionQuality();
+  const teaserSrc = isSlowMobile
+    ? "/lovable-uploads/culture-bag-teaser-lite.mp4"
+    : "/lovable-uploads/culture-bag-teaser.mp4";
   const { addItem, setIsOpen } = useCart();
+
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -130,7 +137,8 @@ const CultureBag = () => {
                   <div className="aspect-video bg-muted rounded-lg" />
                 )}
                 <video
-                  src="/lovable-uploads/culture-bag-teaser.mp4"
+                  src={teaserSrc}
+                  key={teaserSrc}
                   autoPlay
                   loop
                   muted
@@ -283,7 +291,8 @@ const CultureBag = () => {
                   <div className="aspect-video bg-muted animate-pulse rounded-lg" />
                 )}
                 <video
-                  src="/lovable-uploads/culture-bag-teaser.mp4"
+                  src={teaserSrc}
+                  key={teaserSrc}
                   autoPlay
                   loop
                   muted
