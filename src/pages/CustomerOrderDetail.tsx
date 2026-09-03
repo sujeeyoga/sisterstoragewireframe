@@ -11,6 +11,7 @@ import { OrderStatusBadge } from '@/components/customer/OrderStatusBadge';
 import { ReorderButton } from '@/components/customer/ReorderButton';
 import { normalizeStripeOrder, normalizeWooOrder } from '@/hooks/useCustomerAuth';
 import { getTrackingUrl } from '@/lib/trackingUrl';
+import { TRACKING_ENABLED } from '@/config/features';
 
 const isMissingRelationError = (error: unknown) => {
   if (!error || typeof error !== 'object') return false;
