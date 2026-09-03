@@ -41,7 +41,12 @@ const CultureBag = () => {
   const [thumbsLoaded, setThumbsLoaded] = useState<Record<number, boolean>>({});
   const [video1Loaded, setVideo1Loaded] = useState(false);
   const [video2Loaded, setVideo2Loaded] = useState(false);
+  const { isSlowMobile } = useConnectionQuality();
+  const teaserSrc = isSlowMobile
+    ? "/lovable-uploads/culture-bag-teaser-lite.mp4"
+    : "/lovable-uploads/culture-bag-teaser.mp4";
   const { addItem, setIsOpen } = useCart();
+
   const { toast } = useToast();
   const navigate = useNavigate();
 
