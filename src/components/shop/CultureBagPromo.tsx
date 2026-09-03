@@ -74,12 +74,14 @@ const CultureBagPromo: React.FC<CultureBagPromoProps> = ({ variant = "shop" }) =
                 <div className="aspect-[4/3] bg-muted rounded-2xl" />
               )}
               <video
-                src="/lovable-uploads/culture-bag-teaser.mp4"
+                key={videoSrc}
+                src={videoSrc}
                 autoPlay
                 loop
                 muted
                 playsInline
-                preload="auto"
+                preload={isSlowMobile ? "metadata" : "auto"}
+
                 className="w-full aspect-[4/3] object-cover rounded-2xl"
                 onLoadedData={() => setVideoLoaded(true)}
                 onCanPlay={(e) => {
