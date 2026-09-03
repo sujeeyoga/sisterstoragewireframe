@@ -111,9 +111,15 @@ const App = () => {
               <Route path="/admin/email-templates" element={<AdminProtectedRoute><AdminEmailTemplates /></AdminProtectedRoute>} />
               
               {/* Customer portal routes */}
-              <Route path="/customer/login" element={<ProtectedRoutes><PageTransition><CustomerLogin /></PageTransition></ProtectedRoutes>} />
-              <Route path="/customer/dashboard" element={<ProtectedRoutes><PageTransition><CustomerDashboard /></PageTransition></ProtectedRoutes>} />
-              <Route path="/customer/orders/:orderId" element={<ProtectedRoutes><PageTransition><CustomerOrderDetail /></PageTransition></ProtectedRoutes>} />
+              {TRACKING_ENABLED ? (
+                <>
+                  <Route path="/customer/login" element={<ProtectedRoutes><PageTransition><CustomerLogin /></PageTransition></ProtectedRoutes>} />
+                  <Route path="/customer/dashboard" element={<ProtectedRoutes><PageTransition><CustomerDashboard /></PageTransition></ProtectedRoutes>} />
+                  <Route path="/customer/orders/:orderId" element={<ProtectedRoutes><PageTransition><CustomerOrderDetail /></PageTransition></ProtectedRoutes>} />
+                </>
+              ) : (
+                <Route path="/customer/*" element={<ProtectedRoutes><PageTransition><TrackingUnavailable /></PageTransition></ProtectedRoutes>} />
+              )}
               
               <Route path="/contact" element={<ProtectedRoutes><PageTransition><Contact /></PageTransition></ProtectedRoutes>} />
               <Route path="/gift" element={<ProtectedRoutes><PageTransition><Gift /></PageTransition></ProtectedRoutes>} />
