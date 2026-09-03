@@ -177,7 +177,7 @@ const CustomerOrderDetail = () => {
           </Card>
 
           {/* Tracking Info */}
-          {order.tracking_number && (
+          {TRACKING_ENABLED && order.tracking_number && (
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
