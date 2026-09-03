@@ -58,7 +58,7 @@ const CultureBagPromo: React.FC<CultureBagPromoProps> = ({ variant = "shop" }) =
               <div className="aspect-[4/3] bg-muted rounded-2xl" />
             )}
             <img
-              src="/lovable-uploads/culture-bag-front.jpeg"
+              src="/lovable-uploads/culture-bag-front.webp"
               alt="Culture Bag for Sarees — cotton blend organizer with clear window"
               className={`w-full aspect-[4/3] object-cover group-hover:scale-105 transition-transform duration-500 ${!imageLoaded ? 'absolute inset-0' : ''}`}
               loading="lazy"
