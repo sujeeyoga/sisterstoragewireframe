@@ -12,3 +12,15 @@
  * To turn tracking back on once the order tables are restored: set this to true.
  */
 export const TRACKING_ENABLED = false;
+
+/**
+ * US_SHIPPING_ENABLED — United States as a checkout destination.
+ *
+ * Currently OFF (requested 2026-09-04): US orders temporarily disabled.
+ * The checkout country dropdown hides "United States", and the
+ * calculate-shipping-zones edge function also rejects US addresses
+ * (it has its own matching US_SHIPPING_ENABLED switch — flip both).
+ *
+ * To re-enable US orders: set this to true and flip the edge-function flag.
+ */
+export const US_SHIPPING_ENABLED = false;

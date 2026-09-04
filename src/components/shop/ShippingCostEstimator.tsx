@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Calculator, Loader2, AlertCircle, Info } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { US_SHIPPING_ENABLED } from "@/config/features";
 import {
   Select,
   SelectContent,
@@ -109,7 +110,7 @@ export const ShippingCostEstimator = ({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="CA">Canada</SelectItem>
-              <SelectItem value="US">United States</SelectItem>
+              {US_SHIPPING_ENABLED && <SelectItem value="US">United States</SelectItem>}
               <SelectItem value="GB">United Kingdom</SelectItem>
               <SelectItem value="AU">Australia</SelectItem>
               <SelectItem value="Other">Other</SelectItem>

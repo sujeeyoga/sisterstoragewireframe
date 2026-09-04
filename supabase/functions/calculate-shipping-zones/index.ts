@@ -568,6 +568,19 @@ Deno.serve(async (req) => {
       city: address.city ? String(address.city).replace(/\s+/g, ' ').trim() : address.city,
     };
 
+    // TEMP: US shipping is disabled. Flip to true to re-enable US orders.
+    const US_SHIPPING_ENABLED = false;
+    if (!US_SHIPPING_ENABLED && address.country === 'US') {
+      console.log('🚫 US shipping disabled - rejecting US address:', address);
+      return new Response(
+        JSON.stringify({
+          error: 'We are not currently shipping to the United States. Please check back soon!',
+          us_shipping_disabled: true,
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+      );
+    }
+
     console.log('Calculating shipping for address:', address, 'subtotal:', subtotal, 'items:', items.length);
 
 
