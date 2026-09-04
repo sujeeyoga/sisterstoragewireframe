@@ -40,6 +40,7 @@ const ProductInfo = ({ product, quantity, setQuantity, selectedSleeve, setSelect
   const rodCount = rodCountValue !== undefined ? String(rodCountValue) : undefined;
   const showRodCount = rodCount && product.category !== 'bundles';
   const isSingleRodProduct = rodCount === "1";
+  const outOfStock = product.stock !== undefined && product.stock <= 0;
   const isOpenBox =
     product.category === 'open-box' ||
     product.categories?.includes('open-box') ||
