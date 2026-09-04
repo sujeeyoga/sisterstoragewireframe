@@ -117,6 +117,14 @@ const ProductDetail = () => {
   };
 
   const handleBuyNow = () => {
+    if (!canAddToCart) {
+      toast({
+        title: "Out of Stock",
+        description: "This product is currently unavailable",
+        variant: "destructive",
+      });
+      return;
+    }
     addItem({
       id: product.id,
       name: product.name,
