@@ -670,7 +670,21 @@ Deno.serve(async (req) => {
     }));
 
     // Match address to zone
-    const matchResult = matchAddressToZone(address, zones);
+    let matchResult = matchAddressToZone(address, zones);
+
+    // Safety guard: the Toronto & GTA zone must only ever serve GTA addresses.
+    // If a broad rule (e.g. country='CA') matched a non-GTA address, skip the
+    // GTA zone and re-match against the remaining zones.
+    if (matchResult && /toronto|gta/i.test(matchResult.zone.name) && !isGTAAddress(address)) {
+      console.log('⚠️ GTA zone matched a non-GTA address - skipping to next zone:', {
+        zone: matchResult.zone.name,
+        city: address.city,
+        province: address.province,
+        postalCode: address.postalCode,
+      });
+      const skippedZoneId = matchResult.zone.id;
+      matchResult = matchAddressToZone(address, zones.filter(z => z.id !== skippedZoneId));
+    }
 
     // Log unmatched addresses for monitoring
     if (!matchResult) {
