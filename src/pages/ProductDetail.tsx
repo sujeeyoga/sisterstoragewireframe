@@ -88,7 +88,8 @@ const ProductDetail = () => {
   const discountedPrice = shouldApplyStoreDiscount ? applyDiscount(product.price) : product.price;
   const displayOriginalPrice = hasProductSalePrice ? product.originalPrice : (shouldApplyStoreDiscount ? product.price : undefined);
   const hasDiscount = (hasProductSalePrice || shouldApplyStoreDiscount) && discountedPrice < (displayOriginalPrice || product.price);
-  const canAddToCart = true; // Always allow adding to cart
+  const outOfStock = product.stock !== undefined && product.stock <= 0;
+  const canAddToCart = !outOfStock;
 
   const handleAddToCart = () => {
     if (!canAddToCart) {
@@ -116,6 +117,14 @@ const ProductDetail = () => {
   };
 
   const handleBuyNow = () => {
+    if (!canAddToCart) {
+      toast({
+        title: "Out of Stock",
+        description: "This product is currently unavailable",
+        variant: "destructive",
+      });
+      return;
+    }
     addItem({
       id: product.id,
       name: product.name,
