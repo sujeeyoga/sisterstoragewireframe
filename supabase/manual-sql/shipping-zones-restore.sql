@@ -129,9 +129,15 @@ CROSS JOIN (VALUES
 WHERE z.name = 'Toronto & GTA'
 ON CONFLICT DO NOTHING;
 
-INSERT INTO public.shipping_zone_rules (zone_id, rule_type, rule_value)
-SELECT z.id, 'country', 'CA' FROM public.shipping_zones z WHERE z.name = 'Toronto & GTA'
-ON CONFLICT DO NOTHING;
+-- NOTE: Toronto & GTA must NOT have a broad country/province rule — only GTA
+-- postal (FSA) patterns above. A country='CA' rule here makes every Canadian
+-- address match the GTA zone and get GTA free shipping.
+-- Clean up any previously-seeded broad rules on the GTA zone:
+DELETE FROM public.shipping_zone_rules r
+USING public.shipping_zones z
+WHERE r.zone_id = z.id
+  AND z.name = 'Toronto & GTA'
+  AND r.rule_type IN ('country', 'province');
 
 INSERT INTO public.shipping_zone_rules (zone_id, rule_type, rule_value)
 SELECT z.id, v.rule_type, v.rule_value
