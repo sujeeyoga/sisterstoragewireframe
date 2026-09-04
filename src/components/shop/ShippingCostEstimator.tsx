@@ -109,7 +109,7 @@ export const ShippingCostEstimator = ({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="CA">Canada</SelectItem>
-              <SelectItem value="US">United States</SelectItem>
+              {US_SHIPPING_ENABLED && <SelectItem value="US">United States</SelectItem>}
               <SelectItem value="GB">United Kingdom</SelectItem>
               <SelectItem value="AU">Australia</SelectItem>
               <SelectItem value="Other">Other</SelectItem>
