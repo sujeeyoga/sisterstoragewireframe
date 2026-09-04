@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Calculator, Loader2, AlertCircle, Info } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { US_SHIPPING_ENABLED } from "@/config/features";
 import {
   Select,
   SelectContent,
