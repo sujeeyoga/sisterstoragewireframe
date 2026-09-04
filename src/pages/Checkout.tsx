@@ -111,7 +111,7 @@ const US_STATES = [
 
 const COUNTRIES = [
   { code: 'CA', name: 'Canada' },
-  { code: 'US', name: 'United States' }
+  ...(US_SHIPPING_ENABLED ? [{ code: 'US', name: 'United States' }] : [])
 ];
 
 // Validation functions
