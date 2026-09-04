@@ -162,10 +162,11 @@ const ProductInfo = ({ product, quantity, setQuantity, selectedSleeve, setSelect
             variant="buy"
             size="sm"
             onClick={onAddToCart}
+            disabled={outOfStock}
             className="w-full"
           >
             <ShoppingBag className="h-3.5 w-3.5" />
-            Add to Cart
+            {outOfStock ? "Out of Stock" : "Add to Cart"}
           </Button>
 
           {/* Buy Now Button */}
@@ -173,6 +174,7 @@ const ProductInfo = ({ product, quantity, setQuantity, selectedSleeve, setSelect
             variant="buy"
             size="sm"
             onClick={onBuyNow}
+            disabled={outOfStock}
             className="w-full"
           >
             <CreditCard className="h-3.5 w-3.5" />
