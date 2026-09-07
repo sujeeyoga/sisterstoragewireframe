@@ -123,10 +123,10 @@ const AddToCartBar: React.FC<AddToCartBarProps> = ({ product, className }) => {
         className="flex-1 min-w-[120px] font-bold text-xs py-3 shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden"
         onClick={handleAddToCart}
         type="button"
-        disabled={isAdding}
+        disabled={isAdding || soldOut}
       >
         <ShoppingBag className="h-3.5 w-3.5 mr-2 flex-shrink-0" />
-        <span className="truncate">{isAdding ? "Adding…" : "+ Cart"}</span>
+        <span className="truncate">{soldOut ? "Sold Out" : isAdding ? "Adding…" : "+ Cart"}</span>
       </Button>
 
       <Button
@@ -135,8 +135,9 @@ const AddToCartBar: React.FC<AddToCartBarProps> = ({ product, className }) => {
         className="flex-1 min-w-[100px] font-bold text-xs py-3 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden"
         onClick={handleBuyNow}
         type="button"
+        disabled={soldOut}
       >
-        <span className="truncate">Buy Now</span>
+        <span className="truncate">{soldOut ? "Sold Out" : "Buy Now"}</span>
       </Button>
     </div>
   );
