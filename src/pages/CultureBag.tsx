@@ -7,6 +7,9 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ShoppingBag, Check, AlertTriangle } from "lucide-react";
 import { useConnectionQuality } from "@/hooks/use-connection-quality";
+import { useProductsCatalog } from "@/hooks/useProductsCatalog";
+import { isSoldOut } from "@/lib/stock";
+
 
 
 const images = [
@@ -46,6 +49,8 @@ const CultureBag = () => {
     ? "/lovable-uploads/culture-bag-teaser-lite.mp4"
     : "/lovable-uploads/culture-bag-teaser.mp4";
   const { addItem, setIsOpen } = useCart();
+  const { data: catalogProducts } = useProductsCatalog();
+
 
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -58,7 +63,14 @@ const CultureBag = () => {
     return () => clearInterval(timer);
   }, []);
 
+  // If the bag exists in the catalogue and is marked sold out there, block buying.
+  const catalogMatch = catalogProducts?.find(
+    (p) => p.slug?.startsWith("culture-bag") || p.slug === bundles[selectedBundle].id
+  );
+  const soldOut = isSoldOut(catalogMatch);
+
   const handleAddToCart = () => {
+    if (soldOut) return;
     const bundle = bundles[selectedBundle];
     addItem({
       id: bundle.id,
@@ -69,6 +81,7 @@ const CultureBag = () => {
     toast({ title: "Added to cart", description: `${bundle.name} added to your cart` });
     setIsOpen(true);
   };
+
 
   return (
     <Layout>
@@ -202,21 +215,25 @@ const CultureBag = () => {
                   size="lg"
                   className="flex-1 h-14 text-base font-bold uppercase tracking-wide"
                   onClick={handleAddToCart}
+                  disabled={soldOut}
                 >
                   <ShoppingBag className="mr-2 h-5 w-5" />
-                  Add to Cart
+                  {soldOut ? "Sold Out" : "Add to Cart"}
                 </Button>
                 <Button
                   size="lg"
                   variant="outline"
                   className="h-14 text-base font-bold uppercase tracking-wide"
+                  disabled={soldOut}
                   onClick={() => {
+                    if (soldOut) return;
                     handleAddToCart();
                     navigate("/checkout");
                   }}
                 >
-                  Buy Now
+                  {soldOut ? "Sold Out" : "Buy Now"}
                 </Button>
+
               </div>
 
               {/* Features */}
@@ -318,10 +335,12 @@ const CultureBag = () => {
               size="lg"
               className="w-full h-14 text-base font-bold uppercase tracking-wide"
               onClick={handleAddToCart}
+              disabled={soldOut}
             >
               <ShoppingBag className="mr-2 h-5 w-5" />
-              Add to Cart — ${bundles[selectedBundle].price.toFixed(2)}
+              {soldOut ? "Sold Out" : `Add to Cart — $${bundles[selectedBundle].price.toFixed(2)}`}
             </Button>
+
           </div>
         </div>
       </div>
