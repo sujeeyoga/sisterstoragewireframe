@@ -6,6 +6,7 @@ import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
 import { useShowSalePricing } from "@/hooks/useShowSalePricing";
 import { Product } from "@/types/product";
+import { isSoldOut } from "@/lib/stock";
 
 interface SingleProductCardProps {
   product: Product;
@@ -20,8 +21,11 @@ const SingleProductCard = ({ product, priority = false }: SingleProductCardProps
   const rodCount = product.taxonomy?.attributes?.rodCount;
   const size = product.taxonomy?.attributes?.size;
 
+  const soldOut = isSoldOut(product);
+
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
+    if (soldOut) return;
     addItem({
       id: product.id,
       name: product.name,
@@ -103,11 +107,12 @@ const SingleProductCard = ({ product, priority = false }: SingleProductCardProps
               <Button 
                 size="sm" 
                 variant="outline"
-                className="opacity-0 group-hover:opacity-100 transition-opacity h-10 px-4 text-sm min-w-[5rem]"
+                className="opacity-0 group-hover:opacity-100 transition-opacity h-10 px-4 text-sm min-w-[5rem] disabled:opacity-100"
                 onClick={handleAddToCart}
+                disabled={soldOut}
               >
-                <ShoppingBag className="h-4 w-4 mr-1" />
-                Add
+                {!soldOut && <ShoppingBag className="h-4 w-4 mr-1" />}
+                {soldOut ? "Sold Out" : "Add"}
               </Button>
             </div>
           </div>

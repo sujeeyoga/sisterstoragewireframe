@@ -12,6 +12,7 @@ import { useInventorySettings } from "@/hooks/useInventorySettings";
 import { useShowSalePricing } from "@/hooks/useShowSalePricing";
 
 import type { Product } from "@/types/product";
+import { isSoldOut } from "@/lib/stock";
 
 
 interface ProductCardProps {
@@ -43,10 +44,21 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const showLowStock = lowStock?.showBadge && isLowStock(product.stockQuantity);
   const showPreorder = preorders?.enabled && isOutOfStock(product.stockQuantity);
   
+  const soldOut = isSoldOut(product);
+
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
+    if (soldOut) {
+      toast({
+        title: "Sold out",
+        description: `${product.name} is currently unavailable`,
+        variant: "destructive",
+      });
+      return;
+    }
+
     addItem({
       id: product.id,
       name: product.name,
