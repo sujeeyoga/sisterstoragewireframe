@@ -335,10 +335,12 @@ const CultureBag = () => {
               size="lg"
               className="w-full h-14 text-base font-bold uppercase tracking-wide"
               onClick={handleAddToCart}
+              disabled={soldOut}
             >
               <ShoppingBag className="mr-2 h-5 w-5" />
-              Add to Cart — ${bundles[selectedBundle].price.toFixed(2)}
+              {soldOut ? "Sold Out" : `Add to Cart — $${bundles[selectedBundle].price.toFixed(2)}`}
             </Button>
+
           </div>
         </div>
       </div>
