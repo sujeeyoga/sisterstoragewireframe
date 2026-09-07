@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useCart } from '@/contexts/CartContext';
 import { useProducts } from '@/hooks/useProducts';
+import { isSoldOut } from '@/lib/stock';
+
 
 const QuickAddProducts = () => {
   const { addItem, items: cartItems } = useCart();
