@@ -45,7 +45,7 @@ const AddToCartBar: React.FC<AddToCartBarProps> = ({ product, className }) => {
     e?.preventDefault();
     e?.stopPropagation();
 
-    if (isAdding) return;
+    if (isAdding || soldOut) return;
     setIsAdding(true);
 
     try {
