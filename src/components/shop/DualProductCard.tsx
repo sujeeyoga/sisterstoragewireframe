@@ -6,6 +6,7 @@ import { ShoppingBag, Star } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
 import { Product } from "@/types/product";
+import { isSoldOut } from "@/lib/stock";
 
 interface DualProductCardProps {
   products: [Product, Product?]; // Array with 1 or 2 products
@@ -16,6 +17,7 @@ const DualProductCard = ({ products }: DualProductCardProps) => {
   const { toast } = useToast();
 
   const handleAddToCart = (product: Product) => {
+    if (isSoldOut(product)) return;
     addItem({
       id: product.id,
       name: product.name,
@@ -89,9 +91,10 @@ const DualProductCard = ({ products }: DualProductCardProps) => {
               size="sm" 
               className="h-7 px-3 text-xs min-w-[3rem]"
               onClick={() => handleAddToCart(product)}
+              disabled={isSoldOut(product)}
             >
-              <ShoppingBag className="h-3 w-3 mr-1" />
-              Add
+              {!isSoldOut(product) && <ShoppingBag className="h-3 w-3 mr-1" />}
+              {isSoldOut(product) ? "Sold Out" : "Add"}
             </Button>
           </div>
         </div>
