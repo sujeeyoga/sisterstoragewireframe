@@ -82,6 +82,8 @@ const AddToCartBar: React.FC<AddToCartBarProps> = ({ product, className }) => {
     e?.preventDefault();
     e?.stopPropagation();
 
+    if (soldOut) return;
+
     try {
       // Add item to cart and proceed to checkout
       addItem({
