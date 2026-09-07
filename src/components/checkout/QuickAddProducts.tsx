@@ -90,9 +90,10 @@ const QuickAddProducts = () => {
       p.inStock && 
       p.visible
     ),
-  ].filter(Boolean); // Remove any undefined products
+  ].filter(Boolean).filter(p => !isSoldOut(p as any)); // Remove undefined and sold-out products
 
   if (allRecommendations.length === 0) return null;
+
 
   // Find first product that's not in cart and not dismissed
   let recommendedProduct = allRecommendations.find(p => 
