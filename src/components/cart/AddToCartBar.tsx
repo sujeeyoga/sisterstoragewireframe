@@ -27,6 +27,10 @@ const AddToCartBar: React.FC<AddToCartBarProps> = ({ product, className }) => {
 
   const [isAdding, setIsAdding] = useState(false); // prevent double-add
 
+  const soldOut =
+    product.inStock === false ||
+    (typeof product.stock === "number" && product.stock <= 0);
+
   const safePrice =
     typeof product.price === "number" && !Number.isNaN(product.price)
       ? product.price
