@@ -7,6 +7,9 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ShoppingBag, Check, AlertTriangle } from "lucide-react";
 import { useConnectionQuality } from "@/hooks/use-connection-quality";
+import { useProductsCatalog } from "@/hooks/useProductsCatalog";
+import { isSoldOut } from "@/lib/stock";
+
 
 
 const images = [
