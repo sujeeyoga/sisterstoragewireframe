@@ -215,21 +215,25 @@ const CultureBag = () => {
                   size="lg"
                   className="flex-1 h-14 text-base font-bold uppercase tracking-wide"
                   onClick={handleAddToCart}
+                  disabled={soldOut}
                 >
                   <ShoppingBag className="mr-2 h-5 w-5" />
-                  Add to Cart
+                  {soldOut ? "Sold Out" : "Add to Cart"}
                 </Button>
                 <Button
                   size="lg"
                   variant="outline"
                   className="h-14 text-base font-bold uppercase tracking-wide"
+                  disabled={soldOut}
                   onClick={() => {
+                    if (soldOut) return;
                     handleAddToCart();
                     navigate("/checkout");
                   }}
                 >
-                  Buy Now
+                  {soldOut ? "Sold Out" : "Buy Now"}
                 </Button>
+
               </div>
 
               {/* Features */}
