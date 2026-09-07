@@ -27,6 +27,10 @@ const AddToCartBar: React.FC<AddToCartBarProps> = ({ product, className }) => {
 
   const [isAdding, setIsAdding] = useState(false); // prevent double-add
 
+  const soldOut =
+    product.inStock === false ||
+    (typeof product.stock === "number" && product.stock <= 0);
+
   const safePrice =
     typeof product.price === "number" && !Number.isNaN(product.price)
       ? product.price
@@ -41,7 +45,7 @@ const AddToCartBar: React.FC<AddToCartBarProps> = ({ product, className }) => {
     e?.preventDefault();
     e?.stopPropagation();
 
-    if (isAdding) return;
+    if (isAdding || soldOut) return;
     setIsAdding(true);
 
     try {
@@ -77,6 +81,8 @@ const AddToCartBar: React.FC<AddToCartBarProps> = ({ product, className }) => {
   const handleBuyNow = async (e?: React.MouseEvent) => {
     e?.preventDefault();
     e?.stopPropagation();
+
+    if (soldOut) return;
 
     try {
       // Add item to cart and proceed to checkout
@@ -117,10 +123,10 @@ const AddToCartBar: React.FC<AddToCartBarProps> = ({ product, className }) => {
         className="flex-1 min-w-[120px] font-bold text-xs py-3 shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden"
         onClick={handleAddToCart}
         type="button"
-        disabled={isAdding}
+        disabled={isAdding || soldOut}
       >
         <ShoppingBag className="h-3.5 w-3.5 mr-2 flex-shrink-0" />
-        <span className="truncate">{isAdding ? "Adding…" : "+ Cart"}</span>
+        <span className="truncate">{soldOut ? "Sold Out" : isAdding ? "Adding…" : "+ Cart"}</span>
       </Button>
 
       <Button
@@ -129,8 +135,9 @@ const AddToCartBar: React.FC<AddToCartBarProps> = ({ product, className }) => {
         className="flex-1 min-w-[100px] font-bold text-xs py-3 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden"
         onClick={handleBuyNow}
         type="button"
+        disabled={soldOut}
       >
-        <span className="truncate">Buy Now</span>
+        <span className="truncate">{soldOut ? "Sold Out" : "Buy Now"}</span>
       </Button>
     </div>
   );
