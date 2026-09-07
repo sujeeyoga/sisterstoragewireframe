@@ -58,7 +58,14 @@ const CultureBag = () => {
     return () => clearInterval(timer);
   }, []);
 
+  // If the bag exists in the catalogue and is marked sold out there, block buying.
+  const catalogMatch = catalogProducts?.find(
+    (p) => p.slug?.startsWith("culture-bag") || p.slug === bundles[selectedBundle].id
+  );
+  const soldOut = isSoldOut(catalogMatch);
+
   const handleAddToCart = () => {
+    if (soldOut) return;
     const bundle = bundles[selectedBundle];
     addItem({
       id: bundle.id,
@@ -69,6 +76,7 @@ const CultureBag = () => {
     toast({ title: "Added to cart", description: `${bundle.name} added to your cart` });
     setIsOpen(true);
   };
+
 
   return (
     <Layout>
