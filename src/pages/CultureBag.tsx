@@ -49,6 +49,8 @@ const CultureBag = () => {
     ? "/lovable-uploads/culture-bag-teaser-lite.mp4"
     : "/lovable-uploads/culture-bag-teaser.mp4";
   const { addItem, setIsOpen } = useCart();
+  const { data: catalogProducts } = useProductsCatalog();
+
 
   const { toast } = useToast();
   const navigate = useNavigate();
