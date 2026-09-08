@@ -42,7 +42,7 @@ const TermsOfService = () => {
                 <section>
                   <h2 className="text-2xl font-semibold mb-4 text-primary">Shipping and Returns</h2>
                   <p className="mb-4">
-                    We ship within the United States and select international locations. Return policy allows for returns 
+                    We currently ship within Canada. United States orders are temporarily paused. Return policy allows for returns 
                     within 30 days of purchase in original condition. Custom or personalized items may not be returnable.
                   </p>
                 </section>

@@ -568,9 +568,22 @@ Deno.serve(async (req) => {
       city: address.city ? String(address.city).replace(/\s+/g, ' ').trim() : address.city,
     };
 
-    // TEMP: US shipping is disabled. Flip to true to re-enable US orders.
-    const US_SHIPPING_ENABLED = false;
-    if (!US_SHIPPING_ENABLED && address.country === 'US') {
+    // US shipping is controlled from the admin dashboard
+    // (store_settings.setting_key = 'us_shipping_enabled'). Defaults to OFF.
+    let usShippingEnabled = false;
+    try {
+      const { data: usSetting } = await supabase
+        .from('store_settings')
+        .select('setting_value')
+        .eq('setting_key', 'us_shipping_enabled')
+        .maybeSingle();
+      const v: any = usSetting?.setting_value;
+      if (typeof v === 'boolean') usShippingEnabled = v;
+      else if (v && typeof v === 'object') usShippingEnabled = Boolean(v.enabled);
+    } catch (e) {
+      console.log('Could not read us_shipping_enabled setting, defaulting to disabled', e);
+    }
+    if (!usShippingEnabled && address.country === 'US') {
       console.log('🚫 US shipping disabled - rejecting US address:', address);
       return new Response(
         JSON.stringify({
