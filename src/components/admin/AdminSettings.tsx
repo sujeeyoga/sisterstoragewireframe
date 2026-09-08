@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { ShippingDestinationsCard } from '@/components/admin/ShippingDestinationsCard';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -683,6 +684,8 @@ export function AdminSettings() {
               </div>
             </CardContent>
           </Card>
+
+          <ShippingDestinationsCard />
 
           <SearchEnginePing />
 

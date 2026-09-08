@@ -568,9 +568,44 @@ Deno.serve(async (req) => {
       city: address.city ? String(address.city).replace(/\s+/g, ' ').trim() : address.city,
     };
 
-    // TEMP: US shipping is disabled. Flip to true to re-enable US orders.
-    const US_SHIPPING_ENABLED = false;
-    if (!US_SHIPPING_ENABLED && address.country === 'US') {
+    // US shipping is controlled from the admin dashboard
+    // (store_settings.setting_key = 'us_shipping_enabled'). Defaults to OFF.
+    let usShippingEnabled = false;
+    const readUsFlag = (v: any) => {
+      if (typeof v === 'boolean') return v;
+      if (v && typeof v === 'object') return Boolean(v.enabled);
+      return false;
+    };
+    try {
+      // The storefront saves this setting in the legacy project the app reads from.
+      const legacyKey = Deno.env.get('LEGACY_SUPABASE_SERVICE_ROLE_KEY');
+      let found = false;
+      if (legacyKey) {
+        const res = await fetch(
+          'https://attczdhexkpxpyqyasgz.supabase.co/rest/v1/store_settings?setting_key=eq.us_shipping_enabled&select=setting_value',
+          { headers: { apikey: legacyKey, Authorization: `Bearer ${legacyKey}` } }
+        );
+        if (res.ok) {
+          const rows = await res.json();
+          if (Array.isArray(rows) && rows.length > 0) {
+            usShippingEnabled = readUsFlag(rows[0]?.setting_value);
+            found = true;
+          }
+        }
+      }
+      if (!found) {
+        const { data: usSetting } = await supabase
+          .from('store_settings')
+          .select('setting_value')
+          .eq('setting_key', 'us_shipping_enabled')
+          .maybeSingle();
+        if (usSetting) usShippingEnabled = readUsFlag(usSetting.setting_value);
+      }
+    } catch (e) {
+      console.log('Could not read us_shipping_enabled setting, defaulting to disabled', e);
+    }
+
+    if (!usShippingEnabled && address.country === 'US') {
       console.log('🚫 US shipping disabled - rejecting US address:', address);
       return new Response(
         JSON.stringify({

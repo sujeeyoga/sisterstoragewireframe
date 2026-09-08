@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Calculator, Loader2, AlertCircle, Info } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { US_SHIPPING_ENABLED } from "@/config/features";
+import { useUsShippingEnabled } from "@/hooks/useUsShipping";
 import {
   Select,
   SelectContent,
@@ -34,6 +34,7 @@ export const ShippingCostEstimator = ({
   const [loading, setLoading] = useState(false);
   const [estimate, setEstimate] = useState<ShippingEstimate | null>(null);
   const [error, setError] = useState("");
+  const { usShippingEnabled } = useUsShippingEnabled();
 
   const calculateShipping = async () => {
     if (!postalCode.trim()) {
@@ -110,7 +111,7 @@ export const ShippingCostEstimator = ({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="CA">Canada</SelectItem>
-              {US_SHIPPING_ENABLED && <SelectItem value="US">United States</SelectItem>}
+              {usShippingEnabled && <SelectItem value="US">United States</SelectItem>}
               <SelectItem value="GB">United Kingdom</SelectItem>
               <SelectItem value="AU">Australia</SelectItem>
               <SelectItem value="Other">Other</SelectItem>

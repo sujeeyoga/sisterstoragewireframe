@@ -1,6 +1,7 @@
 import React from 'react';
 import { BadgePercent, Truck, Globe, Zap } from 'lucide-react';
 import { useLocationDetection } from '@/hooks/useLocationDetection';
+import { useUsShippingEnabled } from '@/hooks/useUsShipping';
 
 interface SaleBannerProps {}
 
@@ -35,6 +36,7 @@ const REGION_MESSAGES = {
 
 const SaleBanner = ({}: SaleBannerProps) => {
   const { shippingZone, isLoading } = useLocationDetection();
+  const { usShippingEnabled } = useUsShippingEnabled();
   
   // Determine which zone to display
   let activeZone: keyof typeof REGION_MESSAGES = 'international';
@@ -49,6 +51,11 @@ const SaleBanner = ({}: SaleBannerProps) => {
 
   // Don't show banner for international users
   if (activeZone === 'international') {
+    return null;
+  }
+
+  // US orders are paused — don't advertise US shipping
+  if (!usShippingEnabled && (activeZone === 'us-standard' || activeZone === 'us-west-coast')) {
     return null;
   }
 

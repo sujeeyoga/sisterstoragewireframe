@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
-import { US_SHIPPING_ENABLED } from '@/config/features';
+import { useUsShippingEnabled } from '@/hooks/useUsShipping';
 import { useStoreDiscount } from '@/hooks/useStoreDiscount';
 import { useGiftOptions } from '@/hooks/useGiftOptions';
 import { useNewsletterSettings } from '@/hooks/useNewsletterSettings';
@@ -112,7 +112,7 @@ const US_STATES = [
 
 const COUNTRIES = [
   { code: 'CA', name: 'Canada' },
-  ...(US_SHIPPING_ENABLED ? [{ code: 'US', name: 'United States' }] : [])
+  { code: 'US', name: 'United States' }
 ];
 
 // Validation functions
@@ -146,6 +146,8 @@ const formatPostalCode = (code: string, country: string = 'CA'): string => {
 const Checkout = () => {
   const navigate = useNavigate();
   const { items, subtotal, clearCart, removeItem, updateQuantity } = useCart();
+  const { usShippingEnabled } = useUsShippingEnabled();
+  const availableCountries = COUNTRIES.filter((c) => c.code !== 'US' || usShippingEnabled);
   const { toast } = useToast();
   const isMobile = useIsMobile();
   const { discount, applyDiscount, getDiscountAmount } = useStoreDiscount();
@@ -661,7 +663,7 @@ const Checkout = () => {
           {/* Checkout Form */}
           <div className="lg:col-span-2 space-y-6">
             {/* US Free Gift Promotion Banner */}
-            {formData.country === 'US' && promotion?.enabled && (
+            {usShippingEnabled && formData.country === 'US' && promotion?.enabled && (
               <Card className={`border-2 ${giftQualified ? 'bg-gradient-to-r from-green-50 to-emerald-50 border-green-500 animate-fade-in' : 'bg-gradient-to-r from-purple-50 to-pink-50 border-purple-400'}`}>
                 <CardContent className="py-4">
                   {giftQualified ? (
@@ -769,7 +771,7 @@ const Checkout = () => {
                         <SelectValue placeholder="Select country" />
                       </SelectTrigger>
                       <SelectContent>
-                        {COUNTRIES.map((country) => (
+                        {availableCountries.map((country) => (
                           <SelectItem key={country.code} value={country.code}>
                             {country.name}
                           </SelectItem>
@@ -1004,7 +1006,7 @@ const Checkout = () => {
 
 
               {/* US Tariff Notice */}
-              {formData.country === 'US' && shippingRates.length > 0 && (
+              {usShippingEnabled && formData.country === 'US' && shippingRates.length > 0 && (
                 <Card className="border-2 border-amber-400 bg-amber-50 animate-fade-in">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-amber-900 text-base">

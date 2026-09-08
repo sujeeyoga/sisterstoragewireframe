@@ -37,7 +37,7 @@ const ShippingFAQ = () => {
     {
       category: 'international',
       question: 'Do you ship to the United States?',
-      answer: 'Yes, we ship to all 50 US states! Shipping typically takes 7-14 business days for delivery. US orders ship at a flat $30 rate, shown at checkout before you pay.'
+      answer: 'Not right now. United States orders are temporarily paused while we sort out cross-border shipping. Sign up for our newsletter and we will let you know as soon as US orders reopen.'
     },
     {
       category: 'international',
@@ -47,7 +47,7 @@ const ShippingFAQ = () => {
     {
       category: 'international',
       question: 'Do you ship to other countries?',
-      answer: 'Currently, we ship to Canada and the United States. UK shipping is coming soon! We are working on expanding to additional countries. If you are located elsewhere, please contact us and we will do our best to accommodate your order.'
+      answer: 'Right now we ship within Canada. United States orders are temporarily paused and UK shipping is coming soon. If you are located elsewhere, please contact us and we will do our best to accommodate your order.'
     },
     {
       category: 'international',
