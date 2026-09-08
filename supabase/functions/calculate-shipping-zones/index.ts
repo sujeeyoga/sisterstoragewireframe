@@ -571,18 +571,40 @@ Deno.serve(async (req) => {
     // US shipping is controlled from the admin dashboard
     // (store_settings.setting_key = 'us_shipping_enabled'). Defaults to OFF.
     let usShippingEnabled = false;
+    const readUsFlag = (v: any) => {
+      if (typeof v === 'boolean') return v;
+      if (v && typeof v === 'object') return Boolean(v.enabled);
+      return false;
+    };
     try {
-      const { data: usSetting } = await supabase
-        .from('store_settings')
-        .select('setting_value')
-        .eq('setting_key', 'us_shipping_enabled')
-        .maybeSingle();
-      const v: any = usSetting?.setting_value;
-      if (typeof v === 'boolean') usShippingEnabled = v;
-      else if (v && typeof v === 'object') usShippingEnabled = Boolean(v.enabled);
+      // The storefront saves this setting in the legacy project the app reads from.
+      const legacyKey = Deno.env.get('LEGACY_SUPABASE_SERVICE_ROLE_KEY');
+      let found = false;
+      if (legacyKey) {
+        const res = await fetch(
+          'https://attczdhexkpxpyqyasgz.supabase.co/rest/v1/store_settings?setting_key=eq.us_shipping_enabled&select=setting_value',
+          { headers: { apikey: legacyKey, Authorization: `Bearer ${legacyKey}` } }
+        );
+        if (res.ok) {
+          const rows = await res.json();
+          if (Array.isArray(rows) && rows.length > 0) {
+            usShippingEnabled = readUsFlag(rows[0]?.setting_value);
+            found = true;
+          }
+        }
+      }
+      if (!found) {
+        const { data: usSetting } = await supabase
+          .from('store_settings')
+          .select('setting_value')
+          .eq('setting_key', 'us_shipping_enabled')
+          .maybeSingle();
+        if (usSetting) usShippingEnabled = readUsFlag(usSetting.setting_value);
+      }
     } catch (e) {
       console.log('Could not read us_shipping_enabled setting, defaulting to disabled', e);
     }
+
     if (!usShippingEnabled && address.country === 'US') {
       console.log('🚫 US shipping disabled - rejecting US address:', address);
       return new Response(
