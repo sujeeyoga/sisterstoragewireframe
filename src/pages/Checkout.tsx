@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
-import { US_SHIPPING_ENABLED } from '@/config/features';
+import { useUsShippingEnabled } from '@/hooks/useUsShipping';
 import { useStoreDiscount } from '@/hooks/useStoreDiscount';
 import { useGiftOptions } from '@/hooks/useGiftOptions';
 import { useNewsletterSettings } from '@/hooks/useNewsletterSettings';
@@ -112,7 +112,7 @@ const US_STATES = [
 
 const COUNTRIES = [
   { code: 'CA', name: 'Canada' },
-  ...(US_SHIPPING_ENABLED ? [{ code: 'US', name: 'United States' }] : [])
+  { code: 'US', name: 'United States' }
 ];
 
 // Validation functions
