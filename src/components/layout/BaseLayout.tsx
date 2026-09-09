@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SaleBanner from "@/components/SaleBanner";
 import { DiscountBanner } from "@/components/shop/DiscountBanner";
+import AnnouncementBanner from "@/components/AnnouncementBanner";
 import useScrollDirection from "@/hooks/use-scroll-direction";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ArrowLeft } from "lucide-react";
@@ -159,6 +160,7 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({
     <div className={`min-h-screen ${getBackgroundClasses()} ${className}`} style={{ position: 'relative' }}>
       {/* Discount Banner & Sale Banner - Fixed at top */}
       <div className="fixed top-0 left-0 right-0 z-50">
+        <AnnouncementBanner />
         <DiscountBanner />
         <SaleBanner />
       </div>
