@@ -434,12 +434,24 @@ const Checkout = () => {
     }
   }, [formData.address, formData.city, formData.province, formData.postalCode, formData.country, calculateShipping, subtotal, items, toast]);
 
-  // Auto-calculate shipping when address is complete OR subtotal changes (for free shipping threshold)
+  // Drop any rates that belong to a previous address as soon as the address changes
+  useEffect(() => {
+    if (quotedAddressKey && quotedAddressKey !== addressKey) {
+      setShippingRates([]);
+      setSelectedShippingRate('');
+      setMatchedZone(null);
+      setShippingMetadata(null);
+      setQuotedAddressKey('');
+    }
+  }, [addressKey, quotedAddressKey]);
+
+  // Auto-calculate shipping when the address (city/province/postal/country) is
+  // complete or changes, or when the subtotal changes (free shipping threshold)
   useEffect(() => {
     if (isManualAddressComplete && !isLoadingRates) {
       calculateShippingZones();
     }
-  }, [isManualAddressComplete, debouncedSubtotal]);
+  }, [isManualAddressComplete, addressKey, debouncedSubtotal]);
 
   // Check if customer qualifies for free gift
   const giftQualified = qualifiesForGift(formData.country, subtotal);
