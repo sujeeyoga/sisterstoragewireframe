@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { functionsClient } from '@/integrations/supabase/functionsClient';
 import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
 
 interface TestResult {
@@ -65,7 +66,7 @@ export function CheckoutFlowTester() {
       testResults.push({ step: "Rate Calc", status: "pending", message: "Testing rate calculation..." });
       setResults([...testResults]);
 
-      const { data, error } = await supabase.functions.invoke("calculate-shipping-zones", {
+      const { data, error } = await functionsClient.functions.invoke("calculate-shipping-zones", {
         body: {
           items: [{ product_id: "test", quantity: 1, weight: 500 }],
           destination: {

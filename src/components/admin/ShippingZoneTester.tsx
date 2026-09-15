@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { supabase } from '@/integrations/supabase/client';
+import { functionsClient } from '@/integrations/supabase/functionsClient';
 import { toast } from 'sonner';
 import { Loader2, MapPin } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -24,7 +25,7 @@ export const ShippingZoneTester = () => {
     setResult(null);
 
     try {
-      const { data, error } = await supabase.functions.invoke('calculate-shipping-zones', {
+      const { data, error } = await functionsClient.functions.invoke('calculate-shipping-zones', {
         body: {
           address,
           subtotal: parseFloat(subtotal),

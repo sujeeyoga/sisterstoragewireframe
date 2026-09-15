@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { functionsClient } from '@/integrations/supabase/functionsClient';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Loader2, AlertTriangle } from 'lucide-react';
@@ -57,7 +58,7 @@ export const ShippingAudit = () => {
         if (!shippingAddress) continue;
 
         // Recalculate shipping for this address
-        const { data, error } = await supabase.functions.invoke('calculate-shipping-zones', {
+        const { data, error } = await functionsClient.functions.invoke('calculate-shipping-zones', {
           body: {
             address: {
               city: shippingAddress.city,
