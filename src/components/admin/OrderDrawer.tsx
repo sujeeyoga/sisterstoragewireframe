@@ -39,6 +39,7 @@ import { ShippingReasonBadge } from './ShippingReasonBadge';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useOrderShippingInfo } from '@/hooks/useOrderShippingInfo';
+import { fulfillShopifyOrder } from '@/lib/shopifyFulfillment';
 import { Info } from 'lucide-react';
 
 interface OrderDrawerProps {
