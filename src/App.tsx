@@ -48,6 +48,7 @@ import CustomerLogin from "./pages/CustomerLogin";
 import CustomerDashboard from "./pages/CustomerDashboard";
 import CustomerOrderDetail from "./pages/CustomerOrderDetail";
 import TrackingUnavailable from "./pages/TrackingUnavailable";
+import TrackOrder from "./pages/TrackOrder";
 import { TRACKING_ENABLED } from "./config/features";
 import Culture from "./pages/Culture";
 import CultureBag from "./pages/CultureBag";
@@ -112,6 +113,8 @@ const App = () => {
               <Route path="/admin/email-testing" element={<AdminProtectedRoute><AdminEmailTesting /></AdminProtectedRoute>} />
               <Route path="/admin/email-templates" element={<AdminProtectedRoute><AdminEmailTemplates /></AdminProtectedRoute>} />
               
+              <Route path="/track" element={<ProtectedRoutes><PageTransition><TrackOrder /></PageTransition></ProtectedRoutes>} />
+
               {/* Customer portal routes */}
               {TRACKING_ENABLED ? (
                 <>

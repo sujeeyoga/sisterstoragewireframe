@@ -84,3 +84,9 @@ verify_jwt = true
 [functions.sync-chitchats-tracking]
 verify_jwt = false
 
+
+[functions.track-order]
+verify_jwt = false
+
+[functions.repair-shipping-zones]
+verify_jwt = false

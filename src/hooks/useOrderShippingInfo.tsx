@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { functionsClient } from '@/integrations/supabase/functionsClient';
 
 interface ShippingInfo {
   zoneName: string | null;
@@ -34,7 +35,7 @@ export const useOrderShippingInfo = (shippingAddress: any, orderTotal: number) =
 
       try {
         // Calculate shipping using the edge function
-        const { data, error } = await supabase.functions.invoke('calculate-shipping-zones', {
+        const { data, error } = await functionsClient.functions.invoke('calculate-shipping-zones', {
           body: {
             address: {
               city: shippingAddress.city,

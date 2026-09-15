@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { functionsClient } from '@/integrations/supabase/functionsClient';
 import { ShippingZone, Address } from '@/lib/shippingZoneEngine';
 import { toast } from 'sonner';
 
@@ -80,7 +81,7 @@ export const useShippingZones = () => {
     subtotal: number, 
     items?: Array<{ id: string | number; quantity: number }>
   ) => {
-    const { data, error } = await supabase.functions.invoke('calculate-shipping-zones', {
+    const { data, error } = await functionsClient.functions.invoke('calculate-shipping-zones', {
       body: { 
         address, 
         subtotal,
