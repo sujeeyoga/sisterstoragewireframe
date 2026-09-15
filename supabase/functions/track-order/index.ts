@@ -54,6 +54,7 @@ Deno.serve(async (req) => {
       k.startsWith("SHOPIFY_ONLINE_ACCESS_TOKEN")
     );
     const tokenCandidates = [
+      ["SHOPIFY_TRACKING_ADMIN_TOKEN", Deno.env.get("SHOPIFY_TRACKING_ADMIN_TOKEN")],
       ["SHOPIFY_APP_AUTOMATION_TOKEN", Deno.env.get("SHOPIFY_APP_AUTOMATION_TOKEN")],
       ["SHOPIFY_ACCESS_TOKEN", Deno.env.get("SHOPIFY_ACCESS_TOKEN")],
       onlineTokenKey ? [onlineTokenKey, Deno.env.get(onlineTokenKey)] : ["", undefined],
