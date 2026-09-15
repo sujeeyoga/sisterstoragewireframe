@@ -63,7 +63,7 @@ Deno.serve(async (req) => {
     tracking: (e.node.fulfillments ?? []).flatMap((f: any) => f.trackingInfo ?? []),
   }));
 
-  return new Response(JSON.stringify({ ok: !json.errors, restCount: countBody, count: orders.length, orders, errors: json.errors ?? null }, null, 2), {
+  return new Response(JSON.stringify({ ok: !json.errors, scopes: scopeBody, restCount: countBody, count: orders.length, orders, errors: json.errors ?? null }, null, 2), {
     headers: { ...corsHeaders, "Content-Type": "application/json" },
   });
 });
