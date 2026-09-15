@@ -121,7 +121,7 @@ Deno.serve(async (req) => {
   const unfulfilled: any[] = [];
   try {
     const res = await fetch(
-      `https://${SHOPIFY_SHOP_DOMAIN}/admin/api/${API}/orders.json?status=any&fulfillment_status=unfulfilled&limit=250&fields=id,name,email,shipping_address,fulfillment_status`,
+      `https://${SHOPIFY_SHOP_DOMAIN}/admin/api/${API}/orders.json?status=any&limit=250&fields=id,name,email,shipping_address,fulfillment_status`,
       { headers: sHeaders },
     );
     const json = await res.json().catch(() => ({ orders: [] }));
@@ -189,7 +189,51 @@ Deno.serve(async (req) => {
         (f: any) => f.status === "open" || f.status === "in_progress",
       );
       if (!open.length) {
-        results.push({ carrier: s.carrier, tracking: s.trackingNumber, order: order.name, status: "already-fulfilled" });
+        // Already fulfilled (e.g. by the historical import) — attach tracking to
+        // the existing fulfillment instead of creating a new one.
+        const fRes = await fetch(
+          `https://${SHOPIFY_SHOP_DOMAIN}/admin/api/${API}/orders/${order.id}/fulfillments.json`,
+          { headers: sHeaders },
+        );
+        const fJson = await fRes.json().catch(() => ({ fulfillments: [] }));
+        const target = (fJson.fulfillments ?? []).find((f: any) => f.status !== "cancelled");
+        if (!target) {
+          results.push({ carrier: s.carrier, tracking: s.trackingNumber, order: order.name, status: "no-fulfillment-to-update" });
+          continue;
+        }
+        if (target.tracking_number === s.trackingNumber) {
+          results.push({ carrier: s.carrier, tracking: s.trackingNumber, order: order.name, status: "tracking-already-set" });
+          continue;
+        }
+        const uRes = await fetch(
+          `https://${SHOPIFY_SHOP_DOMAIN}/admin/api/${API}/fulfillments/${target.id}/update_tracking.json`,
+          {
+            method: "POST",
+            headers: sHeaders,
+            body: JSON.stringify({
+              fulfillment: {
+                notify_customer: notify,
+                tracking_info: {
+                  number: s.trackingNumber,
+                  company: s.carrier,
+                  ...(trackingUrl ? { url: trackingUrl } : {}),
+                },
+              },
+            }),
+          },
+        );
+        const uText = await uRes.text();
+        if (uRes.ok) {
+          fulfilled++;
+          results.push({ carrier: s.carrier, tracking: s.trackingNumber, order: order.name, status: "tracking-added" });
+        } else {
+          failed++;
+          results.push({
+            carrier: s.carrier, tracking: s.trackingNumber, order: order.name,
+            status: "tracking-update-failed", httpStatus: uRes.status, body: uText.slice(0, 300),
+          });
+        }
+        await sleep(600);
         continue;
       }
 
