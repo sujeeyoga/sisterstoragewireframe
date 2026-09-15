@@ -227,6 +227,30 @@ export function StallionFulfillmentDialog({ order, open, onClose, onSuccess }: S
         });
       }
 
+      // Sync fulfillment to Shopify
+      try {
+        const orderNumberForShopify = (order as any).order_number || String(order.id);
+        const shopifyResult = await fulfillShopifyOrder({
+          orderNumber: orderNumberForShopify,
+          trackingNumber: shipment.tracking_number,
+          carrier: 'Stallion Express',
+          notifyCustomer: false,
+        });
+
+        if (shopifyResult.success) {
+          toast.success(shopifyResult.alreadyFulfilled
+            ? 'Shopify order was already fulfilled.'
+            : 'Order also marked fulfilled in Shopify.');
+        } else if (!shopifyResult.notFound) {
+          toast.warning('Shipment created, but Shopify sync failed.', {
+            description: shopifyResult.error || 'You can fulfill the order manually in Shopify.',
+          });
+        }
+      } catch (shopifyError) {
+        console.error('Failed to sync Stallion fulfillment to Shopify:', shopifyError);
+        toast.warning('Shipment created, but Shopify sync failed.');
+      }
+
       setStep('confirm');
       onSuccess();
     } catch (error) {
