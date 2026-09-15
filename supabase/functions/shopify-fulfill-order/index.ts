@@ -1,7 +1,9 @@
 // Marks a Shopify order as fulfilled with tracking info.
 // Shopify will email the customer its branded shipping notification (notify_customer: true).
 
-const SHOPIFY_DOMAIN = "n1wiud-ns.myshopify.com";
+import { getShopifyAdminToken, SHOPIFY_SHOP_DOMAIN } from "../_shared/shopify-token.ts";
+
+const SHOPIFY_DOMAIN = SHOPIFY_SHOP_DOMAIN;
 const API_VERSION = "2025-07";
 
 const corsHeaders = {
@@ -36,9 +38,9 @@ async function shopify(path: string, init: RequestInit, token: string) {
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
-  const token = Deno.env.get("SHOPIFY_ACCESS_TOKEN");
+  const token = await getShopifyAdminToken();
   if (!token) {
-    return new Response(JSON.stringify({ error: "SHOPIFY_ACCESS_TOKEN not set" }), {
+    return new Response(JSON.stringify({ error: "Shopify credentials unavailable" }), {
       status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }

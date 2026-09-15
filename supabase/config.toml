@@ -98,3 +98,9 @@ verify_jwt = false
 
 [functions.shopify-sync-cart-customers]
 verify_jwt = false
+
+[functions.shopify-shipping-zones]
+verify_jwt = false
+
+[functions.shopify-sync-carrier-tracking]
+verify_jwt = false
