@@ -6,6 +6,7 @@ import { useStoreDiscount } from '@/hooks/useStoreDiscount';
 import { useGiftOptions } from '@/hooks/useGiftOptions';
 import { useNewsletterSettings } from '@/hooks/useNewsletterSettings';
 import { useAbandonedCart } from '@/hooks/useAbandonedCart';
+import { useActiveCartTracking } from '@/hooks/useActiveCartTracking';
 import { useShippingSettings } from '@/hooks/useShippingSettings';
 import { useShippingZones } from '@/hooks/useShippingZones';
 import { useFreeGiftPromotion } from '@/hooks/useFreeGiftPromotion';
@@ -216,6 +217,13 @@ const Checkout = () => {
 
   // Track abandoned carts
   const { markAsRecovered } = useAbandonedCart(formData.email || undefined);
+
+  // Attach the shopper's email to their active cart so it can be recovered
+  useActiveCartTracking(
+    items as any,
+    subtotal,
+    formData.email && formData.email.includes('@') ? formData.email : undefined,
+  );
   
   // Auto-advance to complete stage when manual address is filled
   useEffect(() => {
