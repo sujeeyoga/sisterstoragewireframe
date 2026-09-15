@@ -88,9 +88,6 @@ verify_jwt = false
 [functions.track-order]
 verify_jwt = false
 
-[functions.shopify-order-probe]
-verify_jwt = false
-
 
 
 [functions.repair-shipping-zones]
