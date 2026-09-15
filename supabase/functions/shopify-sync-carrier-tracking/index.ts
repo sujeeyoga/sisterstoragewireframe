@@ -121,7 +121,7 @@ Deno.serve(async (req) => {
   const unfulfilled: any[] = [];
   try {
     const res = await fetch(
-      `https://${SHOPIFY_SHOP_DOMAIN}/admin/api/${API}/orders.json?status=any&limit=250&fields=id,name,email,shipping_address,fulfillment_status`,
+      `https://${SHOPIFY_SHOP_DOMAIN}/admin/api/${API}/orders.json?status=any&limit=250&fields=id,name,email,shipping_address,fulfillment_status,fulfillments`,
       { headers: sHeaders },
     );
     const json = await res.json().catch(() => ({ orders: [] }));
