@@ -39,6 +39,7 @@ import { ShippingReasonBadge } from './ShippingReasonBadge';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useOrderShippingInfo } from '@/hooks/useOrderShippingInfo';
+import { fulfillShopifyOrder } from '@/lib/shopifyFulfillment';
 import { Info } from 'lucide-react';
 
 interface OrderDrawerProps {
@@ -88,6 +89,7 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
   const [editableTracking, setEditableTracking] = useState(order.tracking_number || '');
   const [editableCarrier, setEditableCarrier] = useState(order.carrier_name || 'Canada Post');
   const [isSavingTracking, setIsSavingTracking] = useState(false);
+  const [syncToShopify, setSyncToShopify] = useState(true);
 
   // Calculate order subtotal for shipping calculation
   const orderSubtotal = order.line_items?.reduce((sum: number, item: any) => 
@@ -306,6 +308,34 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
         toast.warning('Tracking saved but email notification failed. Customer may need manual notification.');
       } else {
         toast.success(`Tracking saved and shipping notification sent to ${customerEmail}`);
+      }
+
+      // 3. Sync fulfillment to Shopify if enabled
+      if (syncToShopify) {
+        const orderNumberForShopify = isStripeOrder
+          ? (order as any).order_number || order.id
+          : order.id.toString();
+
+        const shopifyResult = await fulfillShopifyOrder({
+          orderNumber: orderNumberForShopify,
+          trackingNumber: editableTracking.trim(),
+          carrier: editableCarrier,
+          notifyCustomer: false,
+        });
+
+        if (shopifyResult.success) {
+          if (shopifyResult.alreadyFulfilled) {
+            toast.success('Tracking saved. Shopify order was already fulfilled.');
+          } else {
+            toast.success('Order also marked fulfilled in Shopify.');
+          }
+        } else if (shopifyResult.notFound) {
+          toast.info('Tracking saved. No matching Shopify order found to sync.');
+        } else {
+          toast.warning('Tracking saved, but Shopify sync failed.', {
+            description: shopifyResult.error || 'You can fulfill the order manually in Shopify.',
+          });
+        }
       }
 
       // Close the drawer and trigger refresh
@@ -880,6 +910,23 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
                     </Select>
                   </div>
                 </div>
+
+                <div className="flex items-start space-x-2 rounded-md border border-border bg-muted/30 p-3">
+                  <Checkbox
+                    id="sync-to-shopify"
+                    checked={syncToShopify}
+                    onCheckedChange={(checked) => setSyncToShopify(checked as boolean)}
+                  />
+                  <div className="grid gap-1 leading-none">
+                    <Label htmlFor="sync-to-shopify" className="font-normal cursor-pointer">
+                      Mark as fulfilled in Shopify
+                    </Label>
+                    <p className="text-xs text-muted-foreground">
+                      Also updates the Shopify order with this tracking number and carrier.
+                    </p>
+                  </div>
+                </div>
+
                 <Button
                   onClick={handleSaveTrackingAndNotify}
                   disabled={isSavingTracking || !editableTracking.trim()}

@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { useChitChatsShipping } from '@/hooks/useChitChatsShipping';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { fulfillShopifyOrder } from '@/lib/shopifyFulfillment';
 import { toast } from 'sonner';
 import { Loader2, Package, Truck, Download } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -221,6 +222,31 @@ export function ChitChatsFulfillmentDialog({ order, open, onClose, onSuccess }: 
         });
       }
 
+      // Sync fulfillment to Shopify
+      try {
+        const orderNumberForShopify = (order as any).order_number || String(order.id);
+        const trackingNumberForShopify = shipment.tracking_number || shipment.id;
+        const shopifyResult = await fulfillShopifyOrder({
+          orderNumber: orderNumberForShopify,
+          trackingNumber: trackingNumberForShopify,
+          carrier: 'ChitChats',
+          notifyCustomer: false,
+        });
+
+        if (shopifyResult.success) {
+          toast.success(shopifyResult.alreadyFulfilled
+            ? 'Shopify order was already fulfilled.'
+            : 'Order also marked fulfilled in Shopify.');
+        } else if (!shopifyResult.notFound) {
+          toast.warning('Shipment created, but Shopify sync failed.', {
+            description: shopifyResult.error || 'You can fulfill the order manually in Shopify.',
+          });
+        }
+      } catch (shopifyError) {
+        console.error('Failed to sync ChitChats fulfillment to Shopify:', shopifyError);
+        toast.warning('Shipment created, but Shopify sync failed.');
+      }
+
       setStep('confirm');
       onSuccess();
     } catch (error) {
@@ -412,7 +438,7 @@ export function ChitChatsFulfillmentDialog({ order, open, onClose, onSuccess }: 
             <div className="text-center space-y-2">
               <h3 className="text-lg font-semibold">Shipment Created Successfully!</h3>
               <p className="text-muted-foreground">
-                Your international shipping label is ready to print
+                Your international shipping label is ready to print. Tracking has also been synced to Shopify if the order exists there.
               </p>
             </div>
 
