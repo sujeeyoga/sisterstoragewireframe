@@ -423,7 +423,7 @@ export function StallionFulfillmentDialog({ order, open, onClose, onSuccess }: S
             <div className="text-center space-y-2">
               <h3 className="text-lg font-semibold">Shipment Created Successfully!</h3>
               <p className="text-muted-foreground">
-                Your shipping label is ready to print
+                Your shipping label is ready to print. Tracking has also been synced to Shopify if the order exists there.
               </p>
             </div>
 
