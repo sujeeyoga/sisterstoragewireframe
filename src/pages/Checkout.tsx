@@ -169,6 +169,9 @@ const Checkout = () => {
   const [originalShippingCost, setOriginalShippingCost] = useState<number>(0);
   const [matchedZone, setMatchedZone] = useState<{ id: string; name: string } | null>(null);
   const [shippingMetadata, setShippingMetadata] = useState<any>(null);
+  // Which address the currently loaded shipping rates were quoted for.
+  // Prevents a stale (e.g. GTA free) rate from surviving an address change.
+  const [quotedAddressKey, setQuotedAddressKey] = useState<string>('');
   const [isOrderSummaryOpen, setIsOrderSummaryOpen] = useState(!isMobile);
   const [isSubtotalOpen, setIsSubtotalOpen] = useState(true);
   
@@ -247,6 +250,19 @@ const Checkout = () => {
     return taxRates[province.toUpperCase()] || 0.13; // Default to ON HST
   };
 
+  // Identity of the address the shipping quote must match
+  const buildAddressKey = (city: string, province: string, postalCode: string, country: string) =>
+    [country, province, city, postalCode]
+      .map(v => (v || '').toString().toUpperCase().replace(/\s+/g, ''))
+      .join('|');
+
+  const addressKey = buildAddressKey(
+    formData.city,
+    formData.province,
+    formData.postalCode,
+    formData.country
+  );
+
   const taxRate = getTaxRate(formData.province, formData.country);
   const discountedSubtotal = discount?.enabled ? applyDiscount(subtotal) : subtotal;
   const discountAmount = discount?.enabled ? getDiscountAmount(subtotal) : 0;
@@ -256,8 +272,12 @@ const Checkout = () => {
   const taxableAmount = discountedSubtotal + giftWrappingFee;
   const taxAmount = taxableAmount * taxRate;
   
-  // Get shipping cost from selected rate (zone-based)
-  const selectedRate = shippingRates.find(rate => rate.id === selectedShippingRate);
+  // Get shipping cost from selected rate (zone-based).
+  // A rate only counts if it was quoted for the address currently in the form.
+  const quoteIsCurrent = quotedAddressKey !== '' && quotedAddressKey === addressKey;
+  const selectedRate = quoteIsCurrent
+    ? shippingRates.find(rate => rate.id === selectedShippingRate)
+    : undefined;
   let shippingCost = selectedRate ? selectedRate.rate_amount : 0;
   
   // Track original shipping cost before free threshold
