@@ -37,6 +37,22 @@ Deno.serve(async (req) => {
     });
   }
 
+  const orderName = new URL(req.url).searchParams.get("orderName");
+  if (orderName) {
+    const listR = await fetch(`${base}/orders.json?status=any&name=${encodeURIComponent(orderName)}&limit=1`, { headers: h });
+    const listJ = await listR.json().catch(() => ({ orders: [] }));
+    const o = (listJ.orders ?? [])[0];
+    if (!o) {
+      return new Response(JSON.stringify({ found: false }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+    const foR = await fetch(`${base}/orders/${o.id}/fulfillment_orders.json`, { headers: h });
+    const foT = await foR.text();
+    return new Response(JSON.stringify({
+      order: { id: o.id, name: o.name, fulfillment_status: o.fulfillment_status, line_items: (o.line_items ?? []).map((li: any) => ({ id: li.id, title: li.title, requires_shipping: li.requires_shipping, fulfillable_quantity: li.fulfillable_quantity, fulfillment_service: li.fulfillment_service })) },
+      fulfillment_orders: { status: foR.status, body: foT.slice(0, 1500) },
+    }, null, 2), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+  }
+
   const scopesRes = await fetch(`${base}/oauth/access_scopes.json`, { headers: h });
   const scopes = await scopesRes.text();
 
