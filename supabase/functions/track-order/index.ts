@@ -69,24 +69,34 @@ Deno.serve(async (req) => {
 
     const orderName = rawOrder.replace(/^#/, "");
 
-    const res = await fetch(ADMIN_API, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Shopify-Access-Token": token,
-      },
-      body: JSON.stringify({
-        query: ORDER_QUERY,
-        variables: { query: `name:${JSON.stringify(orderName)}` },
-      }),
-    });
+    let json: any = null;
+    for (const [name, token] of tokenCandidates) {
+      const res = await fetch(ADMIN_API, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Shopify-Access-Token": token,
+        },
+        body: JSON.stringify({
+          query: ORDER_QUERY,
+          variables: { query: `name:${JSON.stringify(orderName)}` },
+        }),
+      });
 
-    if (!res.ok) {
-      console.error("Shopify lookup failed", res.status, await res.text());
+      if (!res.ok) {
+        console.error(`Shopify lookup failed with ${name}`, res.status, await res.text());
+        continue;
+      }
+
+      json = await res.json();
+      console.log(`Shopify lookup succeeded with ${name}`);
+      break;
+    }
+
+    if (!json) {
       throw new Error("We could not reach our order system. Please try again shortly.");
     }
 
-    const json = await res.json();
     if (json.errors) {
       console.error("Shopify GraphQL errors", JSON.stringify(json.errors));
       throw new Error("We could not look up that order right now. Please try again shortly.");
