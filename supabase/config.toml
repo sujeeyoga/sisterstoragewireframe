@@ -92,3 +92,6 @@ verify_jwt = false
 
 [functions.repair-shipping-zones]
 verify_jwt = false
+
+[functions.shopify-backfill-orders]
+verify_jwt = false
