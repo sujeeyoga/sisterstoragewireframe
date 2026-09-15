@@ -29,6 +29,14 @@ Deno.serve(async (req) => {
     });
   }
 
+  const orderId = new URL(req.url).searchParams.get("orderId");
+  if (orderId) {
+    const one = await fetch(`${base}/orders/${orderId}.json`, { headers: h });
+    return new Response(await one.text(), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
   const scopesRes = await fetch(`${base}/oauth/access_scopes.json`, { headers: h });
   const scopes = await scopesRes.text();
 
