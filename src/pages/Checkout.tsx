@@ -352,6 +352,13 @@ const Checkout = () => {
       return;
     }
 
+    const requestKey = buildAddressKey(
+      formData.city,
+      formData.province,
+      formData.postalCode,
+      formData.country
+    );
+
     setIsLoadingRates(true);
     try {
       // Use original subtotal for shipping threshold calculations (before discount)
@@ -368,6 +375,7 @@ const Checkout = () => {
         const rule = result.matchedRule ?? result.matched_rule ?? null;
 
         setShippingRates(result.rates);
+        setQuotedAddressKey(requestKey);
         setMatchedZone(zone);
         
         // Store full shipping metadata for order creation
@@ -411,6 +419,11 @@ const Checkout = () => {
       }
     } catch (error) {
       console.error('Error calculating shipping:', error);
+      // Never let a failed quote fall through as free shipping
+      setShippingRates([]);
+      setSelectedShippingRate('');
+      setQuotedAddressKey('');
+      setShippingMetadata(null);
       toast({
         title: 'Shipping Error',
         description: 'Unable to calculate shipping rates. Please try again.',
