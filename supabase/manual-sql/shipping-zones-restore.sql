@@ -13,7 +13,7 @@
 -- exist. If the tables ever disappear again, it silently reverts to the code rules.
 --
 -- The seeded values below intentionally mirror the in-code fallback exactly:
---   Toronto & GTA .......... $11.50, free at $60+
+--   Toronto & GTA .......... $4.99, free at $60+
 --   Ontario (non-GTA) ...... $15.00
 --   Canada-wide ............ $15.00
 --   United States .......... $30.00
@@ -158,7 +158,7 @@ INSERT INTO public.shipping_zone_rates (zone_id, method_name, rate_amount, free_
 SELECT z.id, r.method_name, r.rate_amount, r.free_threshold, true, 1
 FROM public.shipping_zones z
 JOIN (VALUES
-  ('Toronto & GTA', 'GTA Local Delivery',        11.50, 60.00),
+  ('Toronto & GTA', 'GTA Local Delivery',        4.99, 60.00),
   ('Ontario',       'Canada Standard Shipping',  15.00, NULL::numeric),
   ('Canada-Wide',   'Canada Standard Shipping',  15.00, NULL::numeric),
   ('United States', 'US Standard Shipping',      30.00, NULL::numeric)

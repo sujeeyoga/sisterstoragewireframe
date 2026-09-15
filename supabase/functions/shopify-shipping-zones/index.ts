@@ -4,7 +4,7 @@
 //   GET  ?mode=apply&confirm=yes -> rewrite the default profile's zones/rates
 //
 // Website rules mirrored here:
-//   Ontario            $11.50, free over $60
+//   Ontario            $4.99, free over $60
 //   Rest of Canada     $15.00, no free threshold
 //   International      $25.00
 //   United States      not offered (US orders are turned off)
@@ -150,7 +150,7 @@ Deno.serve(async (req) => {
         applied: false,
         note: "Add &confirm=yes to write these zones",
         planned: {
-          ontario: { rate: 11.5, freeOver: 60 },
+          ontario: { rate: 4.99, freeOver: 60 },
           restOfCanada: { rate: 15 },
           international: { rate: 25 },
           unitedStates: "not offered",
@@ -187,7 +187,7 @@ Deno.serve(async (req) => {
               {
                 name: "Standard Shipping",
                 active: true,
-                rateDefinition: { price: money(11.5) },
+                rateDefinition: { price: money(4.99) },
                 priceConditionsToCreate: [{ criteria: money(0), operator: "GREATER_THAN_OR_EQUAL_TO" }],
               },
               {

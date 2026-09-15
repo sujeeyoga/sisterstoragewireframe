@@ -34,7 +34,7 @@ export const ShippingRateSourceCard = () => {
           Where checkout gets its shipping prices
         </CardTitle>
         <CardDescription>
-          Built-in rules: Toronto &amp; GTA $11.50 (free over $60), rest of Canada $15.00 flat.
+          Built-in rules: Toronto &amp; GTA $4.99 (free over $60), rest of Canada $15.00 flat.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
