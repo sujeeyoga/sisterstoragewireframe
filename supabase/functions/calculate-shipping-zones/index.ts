@@ -696,6 +696,35 @@ Deno.serve(async (req) => {
 
     console.log('Selected packaging profile:', has4RodBox ? 'large' : 'small', packageInfo);
 
+    // Dashboard zone rates are only used when the admin has switched them on
+    // (Admin > Shipping Zones). Until then the built-in rules stay in charge.
+    let useDbRates = false;
+    try {
+      if (legacyServiceKey) {
+        const res = await fetch(
+          `${LEGACY_URL}/rest/v1/store_settings?setting_key=eq.use_database_shipping_rates&select=setting_value,enabled`,
+          { headers: { apikey: legacyServiceKey, Authorization: `Bearer ${legacyServiceKey}` } }
+        );
+        if (res.ok) {
+          const rows = await res.json();
+          const row = Array.isArray(rows) ? rows[0] : null;
+          const v = row?.setting_value;
+          useDbRates = typeof v === 'boolean' ? v : Boolean(v?.enabled ?? row?.enabled);
+        }
+      }
+    } catch (e) {
+      console.log('Could not read use_database_shipping_rates, defaulting to built-in rates', e);
+    }
+
+    if (!useDbRates) {
+      console.log('ℹ️ SHIPPING_SOURCE=code_fallback — dashboard zone rates are switched off');
+      const staticResult = calculateStaticShipping(address, subtotal, rawAddress ?? address);
+      return new Response(
+        JSON.stringify({ ...staticResult, db_available: false, db_status: 'disabled' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     // Fetch all zones with rules and rates
     const { data: zonesData, error: zonesError } = await zoneDb
       .from('shipping_zones')
