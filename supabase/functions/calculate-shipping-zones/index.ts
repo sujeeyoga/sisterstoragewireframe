@@ -922,6 +922,9 @@ Deno.serve(async (req) => {
         }
       }
 
+      // Safety net: saved rows can never give free shipping outside the GTA.
+      applicableRates = enforceRateSafety(applicableRates, address, subtotal);
+
       console.log('Matched zone:', matchedZone.name, 'rates:', applicableRates, 'source:', rateSource);
 
       // All zones now use only their database-configured free shipping thresholds
