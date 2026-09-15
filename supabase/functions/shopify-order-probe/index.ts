@@ -25,12 +25,17 @@ Deno.serve(async (req) => {
     });
   }
 
+  const countRes = await fetch(`https://${SHOP_DOMAIN}/admin/api/2025-07/orders/count.json?status=any`, {
+    headers: { "X-Shopify-Access-Token": token },
+  });
+  const countBody = await countRes.text();
+
   const res = await fetch(`https://${SHOP_DOMAIN}/admin/api/2025-07/graphql.json`, {
     method: "POST",
     headers: { "Content-Type": "application/json", "X-Shopify-Access-Token": token },
     body: JSON.stringify({
       query: `{
-        orders(first: 5, sortKey: CREATED_AT, reverse: true) {
+        orders(first: 5, sortKey: CREATED_AT, reverse: true, query: "status:any") {
           edges { node {
             name
             createdAt
@@ -42,6 +47,7 @@ Deno.serve(async (req) => {
       }`,
     }),
   });
+
   const json = await res.json();
   const orders = (json.data?.orders?.edges ?? []).map((e: any) => ({
     name: e.node.name,
