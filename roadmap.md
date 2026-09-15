@@ -10,3 +10,9 @@ Supabase project while `.env` / platform tools point at the empty Cloud project.
 - [ ] 5. Switch the app to Cloud: `src/integrations/supabase/client.ts` env vars, `supabase/config.toml` project id, redeploy edge functions, re-point secrets.
 - [ ] 6. Fix customer order-read RLS correctly (match on `auth.email()` / `auth.uid()`).
 - [ ] 7. Verify order lookups return rows, then flip `TRACKING_ENABLED` back to true.
+
+## Shopify sync work (Sep 15)
+- [x] Backfill historical Stripe orders into Shopify (623 orders)
+- [ ] A. Sync active carts into Shopify as customer records (edge fn + 15-min cron)
+- [ ] B. Update/set up shipping zones & rates in Shopify to match our rules
+- [ ] C. Add Stallion Express + Chit Chats as fulfillment/tracking sources in Shopify

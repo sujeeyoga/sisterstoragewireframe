@@ -95,3 +95,6 @@ verify_jwt = false
 
 [functions.shopify-backfill-orders]
 verify_jwt = false
+
+[functions.shopify-sync-cart-customers]
+verify_jwt = false
