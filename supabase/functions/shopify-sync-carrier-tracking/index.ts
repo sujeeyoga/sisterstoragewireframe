@@ -300,6 +300,7 @@ Deno.serve(async (req) => {
       shipments_found: shipments.length,
       fulfilled,
       unmatched,
+      alreadyInShopify,
       failed,
       carrierErrors: errors,
       results,
