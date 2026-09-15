@@ -310,6 +310,34 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
         toast.success(`Tracking saved and shipping notification sent to ${customerEmail}`);
       }
 
+      // 3. Sync fulfillment to Shopify if enabled
+      if (syncToShopify) {
+        const orderNumberForShopify = isStripeOrder
+          ? (order as any).order_number || order.id
+          : order.id.toString();
+
+        const shopifyResult = await fulfillShopifyOrder({
+          orderNumber: orderNumberForShopify,
+          trackingNumber: editableTracking.trim(),
+          carrier: editableCarrier,
+          notifyCustomer: false,
+        });
+
+        if (shopifyResult.success) {
+          if (shopifyResult.alreadyFulfilled) {
+            toast.success('Tracking saved. Shopify order was already fulfilled.');
+          } else {
+            toast.success('Order also marked fulfilled in Shopify.');
+          }
+        } else if (shopifyResult.notFound) {
+          toast.info('Tracking saved. No matching Shopify order found to sync.');
+        } else {
+          toast.warning('Tracking saved, but Shopify sync failed.', {
+            description: shopifyResult.error || 'You can fulfill the order manually in Shopify.',
+          });
+        }
+      }
+
       // Close the drawer and trigger refresh
       onClose();
     } catch (error: any) {
