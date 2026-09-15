@@ -89,6 +89,7 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
   const [editableTracking, setEditableTracking] = useState(order.tracking_number || '');
   const [editableCarrier, setEditableCarrier] = useState(order.carrier_name || 'Canada Post');
   const [isSavingTracking, setIsSavingTracking] = useState(false);
+  const [syncToShopify, setSyncToShopify] = useState(true);
 
   // Calculate order subtotal for shipping calculation
   const orderSubtotal = order.line_items?.reduce((sum: number, item: any) => 
