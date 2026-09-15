@@ -20,6 +20,15 @@ Deno.serve(async (req) => {
   const base = `https://${SHOPIFY_SHOP_DOMAIN}/admin/api/2025-07`;
   const h = { "X-Shopify-Access-Token": token, "Content-Type": "application/json" };
 
+  // Cleanup helper: DELETE /shopify-order-probe?deleteOrderId=123
+  const deleteId = new URL(req.url).searchParams.get("deleteOrderId");
+  if (deleteId) {
+    const del = await fetch(`${base}/orders/${deleteId}.json`, { method: "DELETE", headers: h });
+    return new Response(JSON.stringify({ deleted: del.status, body: await del.text() }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
   const scopesRes = await fetch(`${base}/oauth/access_scopes.json`, { headers: h });
   const scopes = await scopesRes.text();
 
