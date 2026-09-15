@@ -13,6 +13,6 @@ Supabase project while `.env` / platform tools point at the empty Cloud project.
 
 ## Shopify sync work (Sep 15)
 - [x] Backfill historical Stripe orders into Shopify (623 orders)
-- [ ] A. Sync active carts into Shopify as customer records (edge fn + 15-min cron)
-- [ ] B. Update/set up shipping zones & rates in Shopify to match our rules
-- [ ] C. Add Stallion Express + Chit Chats as fulfillment/tracking sources in Shopify
+- [ ] A. Sync active carts into Shopify as customer records — function live; blocked: no cart in the DB has an email yet (checkout now saves it going forward). Cron still to add.
+- [ ] B. Update/set up shipping zones & rates in Shopify — function live (read/apply); blocked on `write_shipping` scope (deliveryProfiles access denied).
+- [ ] C. Stallion + Chit Chats tracking into Shopify — matching works (shipments matched to orders); blocked on fulfillment-order scopes (403 on fulfillment_orders).
