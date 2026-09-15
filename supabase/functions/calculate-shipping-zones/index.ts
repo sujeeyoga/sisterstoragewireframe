@@ -925,7 +925,7 @@ Deno.serve(async (req) => {
     }
 
     // No zone matched, use fallback
-    const { data: fallbackData, error: fallbackError } = await supabase
+    const { data: fallbackData, error: fallbackError } = await zoneDb
       .from('shipping_fallback_settings')
       .select('*')
       .eq('enabled', true)
