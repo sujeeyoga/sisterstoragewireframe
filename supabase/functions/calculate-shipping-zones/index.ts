@@ -530,6 +530,15 @@ Deno.serve(async (req) => {
       Deno.env.get('SUPABASE_ANON_KEY') ?? ''
     );
 
+    // The shipping zone tables (the ones the admin dashboard edits) live in the
+    // storefront's project. Read rates from there so dashboard changes take
+    // effect at checkout immediately.
+    const LEGACY_URL = 'https://attczdhexkpxpyqyasgz.supabase.co';
+    const legacyServiceKey = Deno.env.get('LEGACY_SUPABASE_SERVICE_ROLE_KEY');
+    const zoneDb = legacyServiceKey
+      ? createClient(LEGACY_URL, legacyServiceKey, { auth: { persistSession: false } })
+      : supabase;
+
     const requestBody = await req.json();
     const { address: requestAddress, subtotal: requestSubtotal, items = [] } = requestBody;
     address = requestAddress;
