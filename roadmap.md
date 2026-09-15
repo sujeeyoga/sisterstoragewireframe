@@ -10,3 +10,9 @@ Supabase project while `.env` / platform tools point at the empty Cloud project.
 - [ ] 5. Switch the app to Cloud: `src/integrations/supabase/client.ts` env vars, `supabase/config.toml` project id, redeploy edge functions, re-point secrets.
 - [ ] 6. Fix customer order-read RLS correctly (match on `auth.email()` / `auth.uid()`).
 - [ ] 7. Verify order lookups return rows, then flip `TRACKING_ENABLED` back to true.
+
+## Shopify sync work (Sep 15)
+- [x] Backfill historical Stripe orders into Shopify (623 orders)
+- [ ] A. Sync active carts into Shopify as customer records — function live; blocked: no cart in the DB has an email yet (checkout now saves it going forward). Cron still to add.
+- [ ] B. Update/set up shipping zones & rates in Shopify — function live (read/apply); blocked on `write_shipping` scope (deliveryProfiles access denied).
+- [ ] C. Stallion + Chit Chats tracking into Shopify — matching works (shipments matched to orders); blocked on fulfillment-order scopes (403 on fulfillment_orders).
