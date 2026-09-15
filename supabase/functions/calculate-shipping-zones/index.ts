@@ -304,6 +304,46 @@ const calculateStaticShippingBase = (address: Address, subtotal: number = 0): St
   };
 };
 
+/**
+ * Permanent safety net for saved (dashboard) zone rates.
+ *
+ * Free shipping is only ever allowed for GTA addresses. Any other destination
+ * that comes back free — or at $0 / a missing amount — is corrected to the
+ * built-in flat rate so a bad saved row can never ship an order for free again.
+ */
+const enforceRateSafety = (rates: any[], address: Address, subtotal: number): any[] => {
+  const gta = isGTAAddress(address);
+  const country = normalizeCountry(address.country);
+  const floorRate = country === 'US' ? 30 : 15;
+
+  return rates.map((rate) => {
+    if (gta) return rate;
+
+    const original = Number(rate.original_rate_amount ?? rate.rate_amount) || 0;
+    const wasFree = rate.is_free || Number(rate.rate_amount) <= 0;
+    const corrected = original > 0 ? original : floorRate;
+
+    if (wasFree) {
+      console.log('🛑 SHIPPING_GUARD blocked free shipping outside the GTA', JSON.stringify({
+        method: rate.method_name,
+        city: address.city,
+        province: address.province,
+        postalCode: address.postalCode,
+        subtotal,
+        saved_threshold: rate.free_threshold ?? null,
+        charged: corrected,
+      }));
+    }
+
+    return {
+      ...rate,
+      rate_amount: corrected,
+      is_free: false,
+      free_threshold: null,
+    };
+  });
+};
+
 const calculateStaticShipping = (address: Address, subtotal: number = 0, rawAddress: any = address): StaticShippingResult => {
   const result = calculateStaticShippingBase(address, subtotal);
   const debug = buildShippingDebug(rawAddress, address, subtotal, {
