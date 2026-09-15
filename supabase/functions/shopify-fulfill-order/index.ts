@@ -1,7 +1,8 @@
 // Marks a Shopify order as fulfilled with tracking info.
-// Shopify will email the customer its branded shipping notification (notify_customer: true).
+// Does NOT email the customer by default — our own shipping notification handles that.
 
 import { getShopifyAdminToken, SHOPIFY_SHOP_DOMAIN } from "../_shared/shopify-token.ts";
+import { getTrackingUrl } from "../_shared/tracking-url.ts";
 
 const SHOPIFY_DOMAIN = SHOPIFY_SHOP_DOMAIN;
 const API_VERSION = "2025-07";
@@ -19,6 +20,19 @@ interface Body {
   trackingUrl?: string;
   notifyCustomer?: boolean;
 }
+
+const normalizeCarrier = (company?: string): string => {
+  if (!company) return "Other";
+  const lower = company.toLowerCase().replace(/[^a-z0-9]/g, "");
+  if (lower.includes("stallion")) return "Stallion Express";
+  if (lower.includes("chitchat")) return "Chit Chats";
+  if (lower.includes("canadapost")) return "Canada Post";
+  if (lower.includes("ups")) return "UPS";
+  if (lower.includes("fedex")) return "FedEx";
+  if (lower.includes("usps")) return "USPS";
+  if (lower.includes("purolator")) return "Purolator";
+  return company;
+};
 
 async function shopify(path: string, init: RequestInit, token: string) {
   const res = await fetch(`https://${SHOPIFY_DOMAIN}/admin/api/${API_VERSION}/${path}`, {
