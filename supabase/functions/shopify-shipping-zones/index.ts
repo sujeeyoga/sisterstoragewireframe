@@ -175,10 +175,10 @@ Deno.serve(async (req) => {
   const money = (amount: number) => ({ amount, currencyCode: "CAD" });
 
   const profileInput: Record<string, unknown> = {
+    zonesToDelete: existingZoneIds,
     locationGroupsToUpdate: [
       {
         id: locationGroupId,
-        zonesToDelete: existingZoneIds,
         zonesToCreate: [
           {
             name: "Ontario",
