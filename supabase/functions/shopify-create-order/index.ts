@@ -1,6 +1,8 @@
 // Creates a paid order in Shopify after a successful Stripe checkout.
 // Called fire-and-forget from stripe-webhook.
 
+import { getShopifyAdminToken } from "../_shared/shopify-token.ts";
+
 const SHOPIFY_DOMAIN = "n1wiud-ns.myshopify.com";
 const SHOPIFY_API_VERSION = "2025-07";
 
