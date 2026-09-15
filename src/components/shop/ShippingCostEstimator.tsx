@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Calculator, Loader2, AlertCircle, Info } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { functionsClient } from "@/integrations/supabase/functionsClient";
 import { toast } from "sonner";
 import { useUsShippingEnabled } from "@/hooks/useUsShipping";
 import {
@@ -47,7 +47,7 @@ export const ShippingCostEstimator = ({
     setEstimate(null);
 
     try {
-      const { data, error: funcError } = await supabase.functions.invoke(
+      const { data, error: funcError } = await functionsClient.functions.invoke(
         "calculate-shipping-zones",
         {
           body: {
