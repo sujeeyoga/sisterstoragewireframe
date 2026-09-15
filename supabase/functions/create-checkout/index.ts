@@ -320,15 +320,19 @@ serve(async (req) => {
       return sum + (discountedPrice * item.quantity);
     }, 0);
 
-    // Call calculate-shipping-zones to get accurate shipping rate with GTA free shipping logic
-    let finalShippingCost = shippingCost;
-    
-    if (shippingAddress?.city && shippingAddress?.country) {
+    // Call calculate-shipping-zones to get the authoritative shipping rate.
+    // The client-supplied shippingCost is never trusted when it is LOWER than
+    // the recalculated rate — that is how $0 shipping slipped through before.
+    let finalShippingCost = Number(shippingCost) || 0;
+    const shippingPostalCode = shippingAddress?.postal_code || shippingAddress?.postalCode || shippingAddress?.zip;
+
+    if (shippingAddress?.country && (shippingAddress?.city || shippingPostalCode)) {
       try {
         console.log('Calculating shipping via calculate-shipping-zones:', {
           city: shippingAddress.city,
           province: shippingAddress.state || shippingAddress.province,
           country: shippingAddress.country,
+          postalCode: shippingPostalCode,
           subtotal: productSubtotal
         });
 
@@ -340,7 +344,7 @@ serve(async (req) => {
                 city: shippingAddress.city,
                 province: shippingAddress.state || shippingAddress.province,
                 country: shippingAddress.country,
-                postalCode: shippingAddress.postal_code || shippingAddress.zip
+                postalCode: shippingPostalCode
               },
               subtotal: productSubtotal
             }
@@ -349,23 +353,35 @@ serve(async (req) => {
 
         if (shippingError) {
           console.error('Shipping calculation error:', shippingError);
+          throw new Error('Shipping calculation failed');
         } else if (shippingData?.appliedRate?.rate_amount !== undefined) {
-          finalShippingCost = shippingData.appliedRate.rate_amount;
+          const authoritativeRate = Number(shippingData.appliedRate.rate_amount) || 0;
+          if (authoritativeRate > finalShippingCost) {
+            console.warn('⚠️ Client shipping cost was too low - correcting', {
+              clientCost: finalShippingCost,
+              authoritativeRate,
+              zone: shippingData.zone?.name,
+            });
+          }
+          // Always charge at least the recalculated rate for this address
+          finalShippingCost = Math.max(finalShippingCost, authoritativeRate);
           console.log('✅ Shipping calculated:', {
             rate: finalShippingCost,
             source: shippingData.rate_source,
             zone: shippingData.zone?.name,
-            gtaFreeShipping: shippingData.appliedRate.gta_free_shipping_applied
           });
-          
-          if (shippingData.appliedRate.gta_free_shipping_applied) {
-            console.log('🎉 GTA FREE SHIPPING APPLIED!');
-          }
+        } else {
+          throw new Error('Shipping calculation returned no rate');
         }
       } catch (error) {
         console.error('Failed to calculate shipping:', error);
-        // Fall back to provided shipping cost
+        // Do not silently ship for free: fail the checkout so it can be retried
+        if (!finalShippingCost || finalShippingCost <= 0) {
+          throw new Error('Unable to confirm shipping cost for this address. Please try again.');
+        }
       }
+    } else if (!finalShippingCost || finalShippingCost <= 0) {
+      throw new Error('A complete shipping address is required to calculate shipping.');
     }
     
     console.log('Final shipping cost for Stripe:', finalShippingCost);
