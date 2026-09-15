@@ -198,7 +198,15 @@ Deno.serve(async (req) => {
         const fJson = await fRes.json().catch(() => ({ fulfillments: [] }));
         const target = (fJson.fulfillments ?? []).find((f: any) => f.status !== "cancelled");
         if (!target) {
-          results.push({ carrier: s.carrier, tracking: s.trackingNumber, order: order.name, status: "no-fulfillment-to-update" });
+          results.push({
+            carrier: s.carrier, tracking: s.trackingNumber, order: order.name,
+            status: "no-fulfillment-to-update",
+            debug: {
+              foStatuses: (fo.fulfillment_orders ?? []).map((f: any) => f.status),
+              fRes: fRes.status,
+              fBody: JSON.stringify(fJson).slice(0, 300),
+            },
+          });
           continue;
         }
         if (target.tracking_number === s.trackingNumber) {
