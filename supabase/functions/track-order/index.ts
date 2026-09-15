@@ -50,9 +50,13 @@ Deno.serve(async (req) => {
   }
 
   try {
+    const onlineTokenKey = Object.keys(Deno.env.toObject()).find((k) =>
+      k.startsWith("SHOPIFY_ONLINE_ACCESS_TOKEN")
+    );
     const tokenCandidates = [
       ["SHOPIFY_APP_AUTOMATION_TOKEN", Deno.env.get("SHOPIFY_APP_AUTOMATION_TOKEN")],
       ["SHOPIFY_ACCESS_TOKEN", Deno.env.get("SHOPIFY_ACCESS_TOKEN")],
+      onlineTokenKey ? [onlineTokenKey, Deno.env.get(onlineTokenKey)] : ["", undefined],
     ].filter(([, v]) => !!v) as [string, string][];
     if (tokenCandidates.length === 0) throw new Error("Order lookup is not configured");
 
