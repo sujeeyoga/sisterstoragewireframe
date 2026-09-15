@@ -44,6 +44,49 @@ const ORDER_QUERY = `
   }
 `;
 
+// Dev Dashboard apps do not expose a permanent admin token. Exchange the app's
+// client credentials for a short-lived access token instead (cached in memory).
+let cachedToken: { value: string; expiresAt: number } | null = null;
+
+const getClientCredentialsToken = async (): Promise<string | null> => {
+  const clientId = Deno.env.get("SHOPIFY_TRACKING_CLIENT_ID");
+  const clientSecret = Deno.env.get("SHOPIFY_TRACKING_CLIENT_SECRET");
+  if (!clientId || !clientSecret) return null;
+
+  if (cachedToken && cachedToken.expiresAt > Date.now() + 60_000) return cachedToken.value;
+
+  const res = await fetch(`https://${SHOP_DOMAIN}/admin/oauth/access_token`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify({
+      client_id: clientId,
+      client_secret: clientSecret,
+      grant_type: "client_credentials",
+    }),
+  });
+
+  const text = await res.text();
+  if (!res.ok) {
+    console.error("Client credentials exchange failed", res.status, text);
+    return null;
+  }
+
+  try {
+    const data = JSON.parse(text);
+    if (!data.access_token) {
+      console.error("Client credentials exchange returned no token", text);
+      return null;
+    }
+    const ttl = Number(data.expires_in) > 0 ? Number(data.expires_in) * 1000 : 23 * 60 * 60 * 1000;
+    cachedToken = { value: data.access_token, expiresAt: Date.now() + ttl };
+    console.log("Obtained Shopify token via client credentials");
+    return data.access_token;
+  } catch (_e) {
+    console.error("Could not parse client credentials response", text);
+    return null;
+  }
+};
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -53,13 +96,16 @@ Deno.serve(async (req) => {
     const onlineTokenKey = Object.keys(Deno.env.toObject()).find((k) =>
       k.startsWith("SHOPIFY_ONLINE_ACCESS_TOKEN")
     );
+    const exchangedToken = await getClientCredentialsToken();
     const tokenCandidates = [
+      exchangedToken ? ["SHOPIFY_CLIENT_CREDENTIALS", exchangedToken] : ["", undefined],
       ["SHOPIFY_TRACKING_ADMIN_TOKEN", Deno.env.get("SHOPIFY_TRACKING_ADMIN_TOKEN")],
       ["SHOPIFY_APP_AUTOMATION_TOKEN", Deno.env.get("SHOPIFY_APP_AUTOMATION_TOKEN")],
       ["SHOPIFY_ACCESS_TOKEN", Deno.env.get("SHOPIFY_ACCESS_TOKEN")],
       onlineTokenKey ? [onlineTokenKey, Deno.env.get(onlineTokenKey)] : ["", undefined],
     ].filter(([, v]) => !!v) as [string, string][];
     if (tokenCandidates.length === 0) throw new Error("Order lookup is not configured");
+
 
     const body = await req.json().catch(() => ({}));
     const rawOrder = typeof body.orderNumber === "string" ? body.orderNumber.trim() : "";
