@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Plus, Pencil, Trash2, MapPin } from 'lucide-react';
 import { ZoneEditor } from './ZoneEditor';
 import { FallbackSettings } from './FallbackSettings';
+import { ShippingRateSourceCard } from './ShippingRateSourceCard';
 import { UpdateGTAShipping } from './UpdateGTAShipping';
 import {
   AlertDialog,
@@ -59,6 +60,8 @@ export const ShippingZonesManager = () => {
           </Button>
         </div>
       </div>
+
+      <ShippingRateSourceCard />
 
       <FallbackSettings />
 

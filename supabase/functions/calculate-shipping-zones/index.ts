@@ -530,6 +530,15 @@ Deno.serve(async (req) => {
       Deno.env.get('SUPABASE_ANON_KEY') ?? ''
     );
 
+    // The shipping zone tables (the ones the admin dashboard edits) live in the
+    // storefront's project. Read rates from there so dashboard changes take
+    // effect at checkout immediately.
+    const LEGACY_URL = 'https://attczdhexkpxpyqyasgz.supabase.co';
+    const legacyServiceKey = Deno.env.get('LEGACY_SUPABASE_SERVICE_ROLE_KEY');
+    const zoneDb = legacyServiceKey
+      ? createClient(LEGACY_URL, legacyServiceKey, { auth: { persistSession: false } })
+      : supabase;
+
     const requestBody = await req.json();
     const { address: requestAddress, subtotal: requestSubtotal, items = [] } = requestBody;
     address = requestAddress;
@@ -687,8 +696,37 @@ Deno.serve(async (req) => {
 
     console.log('Selected packaging profile:', has4RodBox ? 'large' : 'small', packageInfo);
 
+    // Dashboard zone rates are only used when the admin has switched them on
+    // (Admin > Shipping Zones). Until then the built-in rules stay in charge.
+    let useDbRates = false;
+    try {
+      if (legacyServiceKey) {
+        const res = await fetch(
+          `${LEGACY_URL}/rest/v1/store_settings?setting_key=eq.use_database_shipping_rates&select=setting_value,enabled`,
+          { headers: { apikey: legacyServiceKey, Authorization: `Bearer ${legacyServiceKey}` } }
+        );
+        if (res.ok) {
+          const rows = await res.json();
+          const row = Array.isArray(rows) ? rows[0] : null;
+          const v = row?.setting_value;
+          useDbRates = typeof v === 'boolean' ? v : Boolean(v?.enabled ?? row?.enabled);
+        }
+      }
+    } catch (e) {
+      console.log('Could not read use_database_shipping_rates, defaulting to built-in rates', e);
+    }
+
+    if (!useDbRates) {
+      console.log('ℹ️ SHIPPING_SOURCE=code_fallback — dashboard zone rates are switched off');
+      const staticResult = calculateStaticShipping(address, subtotal, rawAddress ?? address);
+      return new Response(
+        JSON.stringify({ ...staticResult, db_available: false, db_status: 'disabled' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     // Fetch all zones with rules and rates
-    const { data: zonesData, error: zonesError } = await supabase
+    const { data: zonesData, error: zonesError } = await zoneDb
       .from('shipping_zones')
       .select('*')
       .eq('enabled', true)
@@ -696,13 +734,13 @@ Deno.serve(async (req) => {
 
     if (zonesError) throw zonesError;
 
-    const { data: rulesData, error: rulesError } = await supabase
+    const { data: rulesData, error: rulesError } = await zoneDb
       .from('shipping_zone_rules')
       .select('*');
 
     if (rulesError) throw rulesError;
 
-    const { data: ratesData, error: ratesError } = await supabase
+    const { data: ratesData, error: ratesError } = await zoneDb
       .from('shipping_zone_rates')
       .select('*')
       .eq('enabled', true)
@@ -887,7 +925,7 @@ Deno.serve(async (req) => {
     }
 
     // No zone matched, use fallback
-    const { data: fallbackData, error: fallbackError } = await supabase
+    const { data: fallbackData, error: fallbackError } = await zoneDb
       .from('shipping_fallback_settings')
       .select('*')
       .eq('enabled', true)
