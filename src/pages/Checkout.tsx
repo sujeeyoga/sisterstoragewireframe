@@ -560,13 +560,16 @@ const Checkout = () => {
       return;
     }
     
-    // Require shipping selection
-    if (!selectedShippingRate) {
+    // Require a shipping rate that was quoted for THIS address
+    if (!selectedShippingRate || !selectedRate || !quoteIsCurrent) {
       toast({
-        title: 'Select Shipping Method',
-        description: 'Please calculate and select a shipping method',
+        title: 'Shipping Not Calculated',
+        description: 'Please wait for shipping to be calculated for this address, then select a shipping method.',
         variant: 'destructive',
       });
+      if (isManualAddressComplete && !isLoadingRates) {
+        calculateShippingZones();
+      }
       return;
     }
 
