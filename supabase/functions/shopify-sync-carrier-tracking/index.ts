@@ -130,12 +130,27 @@ Deno.serve(async (req) => {
     errors.push(`Shopify order list failed: ${String(e)}`);
   }
 
+  // Tracking numbers already recorded in Shopify — never attach the same one twice
+  const usedTracking = new Set<string>();
+  for (const o of unfulfilled) {
+    for (const f of o.fulfillments ?? []) {
+      if (f.tracking_number) usedTracking.add(norm(f.tracking_number));
+      for (const t of f.tracking_numbers ?? []) usedTracking.add(norm(t));
+    }
+  }
+
   const results: any[] = [];
   let fulfilled = 0;
   let unmatched = 0;
   let failed = 0;
+  let alreadyInShopify = 0;
 
   for (const s of shipments) {
+    if (usedTracking.has(norm(s.trackingNumber))) {
+      alreadyInShopify++;
+      results.push({ carrier: s.carrier, tracking: s.trackingNumber, status: "already-in-shopify" });
+      continue;
+    }
     // 1. Find the order
     let order: any = null;
     if (s.email) {
