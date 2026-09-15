@@ -14,5 +14,5 @@ Supabase project while `.env` / platform tools point at the empty Cloud project.
 ## Shopify sync work (Sep 15)
 - [x] Backfill historical Stripe orders into Shopify (623 orders)
 - [ ] A. Sync active carts into Shopify as customer records — function live; blocked: no cart in the DB has an email yet (checkout now saves it going forward). Cron still to add.
-- [ ] B. Update/set up shipping zones & rates in Shopify — function live (read/apply); blocked on `write_shipping` scope (deliveryProfiles access denied).
-- [ ] C. Stallion + Chit Chats tracking into Shopify — matching works (shipments matched to orders); blocked on fulfillment-order scopes (403 on fulfillment_orders).
+- [x] B. Shipping zones applied in Shopify: Ontario $11.50 (free $60+), Rest of Canada $15, International $25, US not offered.
+- [x] C. Stallion + Chit Chats tracking pushed into Shopify — 61 of 62 shipments attached with carrier tracking links; duplicate guard added (skips tracking numbers already in Shopify). 1 shipment has no matching order.
