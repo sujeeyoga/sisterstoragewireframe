@@ -112,6 +112,8 @@ const App = () => {
               <Route path="/admin/email-testing" element={<AdminProtectedRoute><AdminEmailTesting /></AdminProtectedRoute>} />
               <Route path="/admin/email-templates" element={<AdminProtectedRoute><AdminEmailTemplates /></AdminProtectedRoute>} />
               
+              <Route path="/track" element={<ProtectedRoutes><PageTransition><TrackOrder /></PageTransition></ProtectedRoutes>} />
+
               {/* Customer portal routes */}
               {TRACKING_ENABLED ? (
                 <>
