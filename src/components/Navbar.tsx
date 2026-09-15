@@ -174,7 +174,7 @@ const Navbar = ({ position = 0 }: NavbarProps) => {
                     { name: 'HOME', path: '/' },
                     { name: 'GALLERY', path: '/gallery' },
                     { name: 'SHOP', path: '/shop' },
-                    ...(TRACKING_ENABLED ? [{ name: 'TRACK ORDER', path: '/customer/login' }] : [])
+                    { name: 'TRACK ORDER', path: '/track' }
                   ].map((item) => {
                     const isActive = location.pathname === item.path;
                     
