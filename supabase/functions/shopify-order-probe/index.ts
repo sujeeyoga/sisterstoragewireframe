@@ -25,10 +25,16 @@ Deno.serve(async (req) => {
     });
   }
 
+  const scopeRes = await fetch(`https://${SHOP_DOMAIN}/admin/oauth/access_scopes.json`, {
+    headers: { "X-Shopify-Access-Token": token },
+  });
+  const scopeBody = await scopeRes.text();
+
   const countRes = await fetch(`https://${SHOP_DOMAIN}/admin/api/2025-07/orders/count.json?status=any`, {
     headers: { "X-Shopify-Access-Token": token },
   });
   const countBody = await countRes.text();
+
 
   const res = await fetch(`https://${SHOP_DOMAIN}/admin/api/2025-07/graphql.json`, {
     method: "POST",
