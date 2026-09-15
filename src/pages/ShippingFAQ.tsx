@@ -22,7 +22,7 @@ const ShippingFAQ = () => {
     {
       category: 'domestic',
       question: 'Do you offer free shipping in Canada?',
-      answer: 'Yes. Orders shipping to the Greater Toronto Area qualify for free shipping over $60 CAD; below that, GTA delivery is a flat $11.50. Elsewhere in Canada shipping is a flat $15 with no free-shipping threshold. Your exact rate is calculated at checkout from your address.'
+      answer: 'Yes. Orders shipping to the Greater Toronto Area qualify for free shipping over $60 CAD; below that, GTA delivery is a flat $4.99. Elsewhere in Canada shipping is a flat $15 with no free-shipping threshold. Your exact rate is calculated at checkout from your address.'
     },
     {
       category: 'domestic',

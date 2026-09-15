@@ -18,7 +18,7 @@ const CORRECT_RATES: Array<{
   rate_amount: number;
   free_threshold: number | null;
 }> = [
-  { match: /toronto|gta/i, method_name: "Toronto/GTA Delivery", rate_amount: 11.5, free_threshold: 60 },
+  { match: /toronto|gta/i, method_name: "Toronto/GTA Delivery", rate_amount: 4.99, free_threshold: 60 },
   { match: /canada wide|canada-wide/i, method_name: "Canada Wide Shipping", rate_amount: 15, free_threshold: null },
   { match: /united states|^us$/i, method_name: "US Standard Shipping", rate_amount: 30, free_threshold: null },
   { match: /other regions|international/i, method_name: "Standard International Shipping", rate_amount: 25, free_threshold: null },
