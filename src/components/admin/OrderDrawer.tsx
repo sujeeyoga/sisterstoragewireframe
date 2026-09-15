@@ -910,6 +910,23 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
                     </Select>
                   </div>
                 </div>
+
+                <div className="flex items-start space-x-2 rounded-md border border-border bg-muted/30 p-3">
+                  <Checkbox
+                    id="sync-to-shopify"
+                    checked={syncToShopify}
+                    onCheckedChange={(checked) => setSyncToShopify(checked as boolean)}
+                  />
+                  <div className="grid gap-1 leading-none">
+                    <Label htmlFor="sync-to-shopify" className="font-normal cursor-pointer">
+                      Mark as fulfilled in Shopify
+                    </Label>
+                    <p className="text-xs text-muted-foreground">
+                      Also updates the Shopify order with this tracking number and carrier.
+                    </p>
+                  </div>
+                </div>
+
                 <Button
                   onClick={handleSaveTrackingAndNotify}
                   disabled={isSavingTracking || !editableTracking.trim()}
