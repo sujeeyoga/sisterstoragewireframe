@@ -107,15 +107,18 @@ Deno.serve(async (req) => {
       });
     }
 
-    // 3. Create the fulfillment with tracking + customer notification
+    // 3. Create the fulfillment with tracking
+    const carrier = normalizeCarrier(body.trackingCompany);
+    const trackingUrl = body.trackingUrl || getTrackingUrl(carrier, body.trackingNumber);
+
     const fulfillmentPayload = {
       fulfillment: {
-        message: "Shipped via " + (body.trackingCompany || "carrier"),
-        notify_customer: body.notifyCustomer !== false,
+        message: "Shipped via " + carrier,
+        notify_customer: body.notifyCustomer === true,
         tracking_info: {
           number: body.trackingNumber,
-          company: body.trackingCompany || "Other",
-          ...(body.trackingUrl ? { url: body.trackingUrl } : {}),
+          company: carrier,
+          url: trackingUrl,
         },
         line_items_by_fulfillment_order: openFOs.map((fo: any) => ({
           fulfillment_order_id: fo.id,
