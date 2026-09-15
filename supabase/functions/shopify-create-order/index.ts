@@ -54,13 +54,14 @@ Deno.serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  const token = Deno.env.get("SHOPIFY_ACCESS_TOKEN");
+  const token = await getShopifyAdminToken();
   if (!token) {
     return new Response(
-      JSON.stringify({ error: "SHOPIFY_ACCESS_TOKEN not set" }),
+      JSON.stringify({ error: "Shopify credentials not configured" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   }
+
 
   let body: RequestBody;
   try {
