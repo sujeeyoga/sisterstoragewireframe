@@ -697,7 +697,7 @@ Deno.serve(async (req) => {
     console.log('Selected packaging profile:', has4RodBox ? 'large' : 'small', packageInfo);
 
     // Fetch all zones with rules and rates
-    const { data: zonesData, error: zonesError } = await supabase
+    const { data: zonesData, error: zonesError } = await zoneDb
       .from('shipping_zones')
       .select('*')
       .eq('enabled', true)
@@ -705,13 +705,13 @@ Deno.serve(async (req) => {
 
     if (zonesError) throw zonesError;
 
-    const { data: rulesData, error: rulesError } = await supabase
+    const { data: rulesData, error: rulesError } = await zoneDb
       .from('shipping_zone_rules')
       .select('*');
 
     if (rulesError) throw rulesError;
 
-    const { data: ratesData, error: ratesError } = await supabase
+    const { data: ratesData, error: ratesError } = await zoneDb
       .from('shipping_zone_rates')
       .select('*')
       .eq('enabled', true)
