@@ -224,8 +224,8 @@ const calculateStaticShippingBase = (address: Address, subtotal: number = 0): St
     const rate = {
       id: 'static_gta_local_delivery',
       method_name: 'GTA Local Delivery',
-      rate_amount: isFree ? 0 : 11.5,
-      original_rate_amount: 11.5,
+      rate_amount: isFree ? 0 : 4.99,
+      original_rate_amount: 4.99,
       is_free: isFree,
       free_threshold: 60,
       display_order: 1,
