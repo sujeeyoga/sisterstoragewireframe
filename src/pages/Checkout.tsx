@@ -169,6 +169,9 @@ const Checkout = () => {
   const [originalShippingCost, setOriginalShippingCost] = useState<number>(0);
   const [matchedZone, setMatchedZone] = useState<{ id: string; name: string } | null>(null);
   const [shippingMetadata, setShippingMetadata] = useState<any>(null);
+  // Which address the currently loaded shipping rates were quoted for.
+  // Prevents a stale (e.g. GTA free) rate from surviving an address change.
+  const [quotedAddressKey, setQuotedAddressKey] = useState<string>('');
   const [isOrderSummaryOpen, setIsOrderSummaryOpen] = useState(!isMobile);
   const [isSubtotalOpen, setIsSubtotalOpen] = useState(true);
   
@@ -247,6 +250,19 @@ const Checkout = () => {
     return taxRates[province.toUpperCase()] || 0.13; // Default to ON HST
   };
 
+  // Identity of the address the shipping quote must match
+  const buildAddressKey = (city: string, province: string, postalCode: string, country: string) =>
+    [country, province, city, postalCode]
+      .map(v => (v || '').toString().toUpperCase().replace(/\s+/g, ''))
+      .join('|');
+
+  const addressKey = buildAddressKey(
+    formData.city,
+    formData.province,
+    formData.postalCode,
+    formData.country
+  );
+
   const taxRate = getTaxRate(formData.province, formData.country);
   const discountedSubtotal = discount?.enabled ? applyDiscount(subtotal) : subtotal;
   const discountAmount = discount?.enabled ? getDiscountAmount(subtotal) : 0;
@@ -256,8 +272,12 @@ const Checkout = () => {
   const taxableAmount = discountedSubtotal + giftWrappingFee;
   const taxAmount = taxableAmount * taxRate;
   
-  // Get shipping cost from selected rate (zone-based)
-  const selectedRate = shippingRates.find(rate => rate.id === selectedShippingRate);
+  // Get shipping cost from selected rate (zone-based).
+  // A rate only counts if it was quoted for the address currently in the form.
+  const quoteIsCurrent = quotedAddressKey !== '' && quotedAddressKey === addressKey;
+  const selectedRate = quoteIsCurrent
+    ? shippingRates.find(rate => rate.id === selectedShippingRate)
+    : undefined;
   let shippingCost = selectedRate ? selectedRate.rate_amount : 0;
   
   // Track original shipping cost before free threshold
@@ -332,6 +352,13 @@ const Checkout = () => {
       return;
     }
 
+    const requestKey = buildAddressKey(
+      formData.city,
+      formData.province,
+      formData.postalCode,
+      formData.country
+    );
+
     setIsLoadingRates(true);
     try {
       // Use original subtotal for shipping threshold calculations (before discount)
@@ -348,6 +375,7 @@ const Checkout = () => {
         const rule = result.matchedRule ?? result.matched_rule ?? null;
 
         setShippingRates(result.rates);
+        setQuotedAddressKey(requestKey);
         setMatchedZone(zone);
         
         // Store full shipping metadata for order creation
@@ -391,6 +419,11 @@ const Checkout = () => {
       }
     } catch (error) {
       console.error('Error calculating shipping:', error);
+      // Never let a failed quote fall through as free shipping
+      setShippingRates([]);
+      setSelectedShippingRate('');
+      setQuotedAddressKey('');
+      setShippingMetadata(null);
       toast({
         title: 'Shipping Error',
         description: 'Unable to calculate shipping rates. Please try again.',
@@ -401,12 +434,24 @@ const Checkout = () => {
     }
   }, [formData.address, formData.city, formData.province, formData.postalCode, formData.country, calculateShipping, subtotal, items, toast]);
 
-  // Auto-calculate shipping when address is complete OR subtotal changes (for free shipping threshold)
+  // Drop any rates that belong to a previous address as soon as the address changes
+  useEffect(() => {
+    if (quotedAddressKey && quotedAddressKey !== addressKey) {
+      setShippingRates([]);
+      setSelectedShippingRate('');
+      setMatchedZone(null);
+      setShippingMetadata(null);
+      setQuotedAddressKey('');
+    }
+  }, [addressKey, quotedAddressKey]);
+
+  // Auto-calculate shipping when the address (city/province/postal/country) is
+  // complete or changes, or when the subtotal changes (free shipping threshold)
   useEffect(() => {
     if (isManualAddressComplete && !isLoadingRates) {
       calculateShippingZones();
     }
-  }, [isManualAddressComplete, debouncedSubtotal]);
+  }, [isManualAddressComplete, addressKey, debouncedSubtotal]);
 
   // Check if customer qualifies for free gift
   const giftQualified = qualifiesForGift(formData.country, subtotal);
@@ -515,13 +560,16 @@ const Checkout = () => {
       return;
     }
     
-    // Require shipping selection
-    if (!selectedShippingRate) {
+    // Require a shipping rate that was quoted for THIS address
+    if (!selectedShippingRate || !selectedRate || !quoteIsCurrent) {
       toast({
-        title: 'Select Shipping Method',
-        description: 'Please calculate and select a shipping method',
+        title: 'Shipping Not Calculated',
+        description: 'Please wait for shipping to be calculated for this address, then select a shipping method.',
         variant: 'destructive',
       });
+      if (isManualAddressComplete && !isLoadingRates) {
+        calculateShippingZones();
+      }
       return;
     }
 
