@@ -117,15 +117,23 @@ Deno.serve(async (req) => {
     shipments.push(...r.shipments);
   }
 
-  // Unfulfilled Shopify orders, used for the name/postal fallback match
+  // Every Shopify order (paginated) — used for the name/postal fallback match and
+  // to collect tracking numbers that are already recorded.
   const unfulfilled: any[] = [];
   try {
-    const res = await fetch(
-      `https://${SHOPIFY_SHOP_DOMAIN}/admin/api/${API}/orders.json?status=any&limit=250&fields=id,name,email,shipping_address,fulfillment_status,fulfillments`,
-      { headers: sHeaders },
-    );
-    const json = await res.json().catch(() => ({ orders: [] }));
-    unfulfilled.push(...(json.orders ?? []));
+    let next: string | null =
+      `https://${SHOPIFY_SHOP_DOMAIN}/admin/api/${API}/orders.json?status=any&limit=250&fields=id,name,email,shipping_address,fulfillment_status,fulfillments`;
+    let pages = 0;
+    while (next && pages < 12) {
+      const res: Response = await fetch(next, { headers: sHeaders });
+      const json = await res.json().catch(() => ({ orders: [] }));
+      unfulfilled.push(...(json.orders ?? []));
+      const link = res.headers.get("link") ?? "";
+      const m = link.match(/<([^>]+)>;\s*rel="next"/);
+      next = m ? m[1] : null;
+      pages++;
+      if (next) await sleep(300);
+    }
   } catch (e) {
     errors.push(`Shopify order list failed: ${String(e)}`);
   }
