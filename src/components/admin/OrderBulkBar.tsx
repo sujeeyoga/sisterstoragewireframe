@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { Printer, Package, Truck, Loader2, Archive } from 'lucide-react';
+import { Printer, Package, Truck, Loader2, Archive, RefreshCw } from 'lucide-react';
 
 interface OrderBulkBarProps {
   selectedCount: number;
@@ -7,10 +7,12 @@ interface OrderBulkBarProps {
   onPrint: () => void;
   onArchive: () => void;
   onCancel: () => void;
+  onPullShopify?: () => void;
   isPrinting?: boolean;
+  isPullingShopify?: boolean;
 }
 
-export function OrderBulkBar({ selectedCount, onFulfill, onPrint, onArchive, onCancel, isPrinting }: OrderBulkBarProps) {
+export function OrderBulkBar({ selectedCount, onFulfill, onPrint, onArchive, onCancel, onPullShopify, isPrinting, isPullingShopify }: OrderBulkBarProps) {
   if (selectedCount === 0) return null;
   
   return (
@@ -48,6 +50,23 @@ export function OrderBulkBar({ selectedCount, onFulfill, onPrint, onArchive, onC
             <span className="hidden sm:inline">Archive</span>
             <span className="sm:hidden">Archive</span>
           </Button>
+          {onPullShopify && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onPullShopify}
+              disabled={isPullingShopify}
+              className="flex-1 sm:flex-none min-h-[44px]"
+            >
+              {isPullingShopify ? (
+                <Loader2 className="h-4 w-4 sm:mr-2 animate-spin" />
+              ) : (
+                <RefreshCw className="h-4 w-4 sm:mr-2" />
+              )}
+              <span className="hidden sm:inline">{isPullingShopify ? 'Pulling…' : 'Pull Shopify Tracking'}</span>
+              <span className="sm:hidden">{isPullingShopify ? '…' : 'Pull'}</span>
+            </Button>
+          )}
           <Button size="sm" onClick={onFulfill} className="flex-1 sm:flex-none min-h-[44px]">
             <Truck className="h-4 w-4 sm:mr-2" />
             <span className="hidden sm:inline">Bulk</span> Fulfill

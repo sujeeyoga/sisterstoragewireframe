@@ -50,11 +50,16 @@ Two ways to fulfil an order, both mark the matching Shopify order as fulfilled:
    Stallion Express, US orders to Chit Chats. Enter size/weight, get rates, create the
    label, download it. Tracking is saved, the customer is emailed and Shopify is
    marked fulfilled automatically.
+- If you fulfilled the order inside Shopify instead, open the order in Orders and click
+   "Pull tracking from Shopify". The tracking number and carrier will be copied back
+   automatically and the customer can track from the /track page.
+- You can also select several orders on the Orders page and use the bulk "Pull Shopify
+   Tracking" button.
 - You never need to open Shopify to fulfil. Shopify is only for double-checking.
 - If the message says "No matching Shopify order found", the local tracking was still
-  saved and the customer was still emailed.
+   saved and the customer was still emailed.
 - Order numbers look like SS-XXXXXXXX. Historical imported orders were given new
-  numbers, so older customers should be looked up by email.
+   numbers, so older customers should be looked up by email.
 
 SHIPPING (website checkout, all CAD)
 - Toronto & GTA: $4.99 flat, free over $60.

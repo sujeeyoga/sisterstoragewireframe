@@ -390,7 +390,84 @@ export function OrdersList() {
       setIsPrintingLabels(false);
     }
   };
-  
+
+  const [isPullingShopify, setIsPullingShopify] = useState(false);
+
+  const handleBulkPullShopify = async () => {
+    if (selectedOrderIds.size === 0) return;
+    setIsPullingShopify(true);
+
+    const stringIds = Array.from(selectedOrderIds).filter(id => typeof id === 'string');
+    const numberIds = Array.from(selectedOrderIds).filter(id => typeof id === 'number');
+
+    const [{ data: stripeOrders }, { data: wooOrders }] = await Promise.all([
+      stringIds.length > 0
+        ? supabase.from('orders').select('id, order_number, tracking_number').in('id', stringIds as string[])
+        : { data: [] },
+      numberIds.length > 0
+        ? supabase.from('woocommerce_orders').select('id, tracking_number').in('id', numberIds as number[])
+        : { data: [] },
+    ]);
+
+    const selected = [
+      ...(stripeOrders || []).map((o) => ({ ...o, source: 'stripe' as const })),
+      ...(wooOrders || []).map((o) => ({ ...o, source: 'woocommerce' as const })),
+    ];
+
+    let updated = 0;
+    let notFound = 0;
+    let noTracking = 0;
+    let failed = 0;
+
+    const { pullShopifyFulfillment } = await import('@/lib/shopifyFulfillmentPull');
+
+    for (const o of selected) {
+      const orderNumber = o.source === 'stripe' ? o.order_number : String(o.id);
+      if (!orderNumber) { notFound++; continue; }
+      try {
+        const result = await pullShopifyFulfillment(orderNumber);
+        if (result.success && result.trackingNumber) {
+          const table = o.source === 'stripe' ? 'orders' : 'woocommerce_orders';
+          const { error } = await supabase.from(table).update({
+            tracking_number: result.trackingNumber,
+            carrier_name: result.carrier,
+            fulfillment_status: 'fulfilled',
+            fulfilled_at: result.fulfilledAt || new Date().toISOString(),
+          }).eq('id', o.id);
+          if (error) { failed++; console.error('Bulk pull update error:', error); }
+          else { updated++; }
+        } else if (result.notFound) {
+          notFound++;
+        } else if (result.noTracking) {
+          noTracking++;
+        } else {
+          failed++;
+        }
+      } catch (e) {
+        console.error('Bulk pull exception:', e);
+        failed++;
+      }
+    }
+
+    await queryClient.invalidateQueries({ queryKey: ['admin-orders'] });
+    setSelectedOrderIds(new Set());
+
+    if (updated > 0) {
+      toast.success(`Pulled Shopify tracking for ${updated} order(s)`);
+    }
+    if (notFound > 0 || noTracking > 0 || failed > 0) {
+      toast.info('Pull summary', {
+        description: [
+          notFound > 0 ? `${notFound} not found in Shopify` : '',
+          noTracking > 0 ? `${noTracking} Shopify orders have no tracking yet` : '',
+          failed > 0 ? `${failed} failed` : '',
+        ].filter(Boolean).join(' · ') || undefined,
+      });
+    }
+
+    setIsPullingShopify(false);
+  };
+
   const toggleSelectionMode = () => {
     if (selectionMode) {
       setSelectedOrderIds(new Set());
@@ -843,7 +920,9 @@ export function OrdersList() {
           toast.success(`Archived ${count} orders`);
         }}
         onCancel={() => setSelectedOrderIds(new Set())}
+        onPullShopify={handleBulkPullShopify}
         isPrinting={isPrintingLabels}
+        isPullingShopify={isPullingShopify}
       />
       
       <OrderFilters

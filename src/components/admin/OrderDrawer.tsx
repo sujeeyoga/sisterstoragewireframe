@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   Sheet,
   SheetContent,
@@ -40,6 +40,8 @@ import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useOrderShippingInfo } from '@/hooks/useOrderShippingInfo';
 import { fulfillShopifyOrder } from '@/lib/shopifyFulfillment';
+import { applyShopifyFulfillmentToOrder } from '@/lib/shopifyFulfillmentPull';
+import { getCarrierTrackingUrl } from '@/lib/carrierTrackingUrl';
 import { Info } from 'lucide-react';
 
 interface OrderDrawerProps {
@@ -66,6 +68,7 @@ interface OrderDrawerProps {
     carrier_name?: string;
     carrier_cost_currency?: string;
     shipping_metadata?: any;
+    order_number?: string | number;
   };
   open: boolean;
   onClose: () => void;
@@ -90,6 +93,9 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
   const [editableCarrier, setEditableCarrier] = useState(order.carrier_name || 'Canada Post');
   const [isSavingTracking, setIsSavingTracking] = useState(false);
   const [syncToShopify, setSyncToShopify] = useState(true);
+  const [isPullingShopify, setIsPullingShopify] = useState(false);
+  const [pulledTrackingUrl, setPulledTrackingUrl] = useState<string | null>(null);
+  const hasAutoPulled = useRef(false);
 
   // Calculate order subtotal for shipping calculation
   const orderSubtotal = order.line_items?.reduce((sum: number, item: any) => 
@@ -161,7 +167,46 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
     setNewStatus(order.status);
     setEditableTracking(order.tracking_number || '');
     setEditableCarrier(order.carrier_name || 'Canada Post');
+    setPulledTrackingUrl(null);
+    hasAutoPulled.current = false;
   }, [order.id, order.total, order.status, order.stripe_payment_intent_id, order.tracking_number, order.carrier_name]);
+
+  // Auto-pull tracking from Shopify once when opening an order that has no tracking yet.
+  useEffect(() => {
+    if (!open || order.tracking_number || isPullingShopify || hasAutoPulled.current) return;
+    hasAutoPulled.current = true;
+    handlePullShopify(true);
+  }, [open, order.tracking_number]);
+
+  async function handlePullShopify(silent = false) {
+    if (isPullingShopify) return;
+    setIsPullingShopify(true);
+    try {
+      const result = await applyShopifyFulfillmentToOrder({
+        id: order.id,
+        source: typeof order.id === 'string' ? 'stripe' : 'woocommerce',
+        order_number: order.order_number,
+      });
+
+      if (result.success && result.trackingNumber) {
+        setEditableTracking(result.trackingNumber);
+        setEditableCarrier(result.carrier || 'Other');
+        if (result.trackingUrl) setPulledTrackingUrl(result.trackingUrl);
+        if (!silent) toast.success('Tracking synced from Shopify');
+      } else if (result.notFound) {
+        if (!silent) toast.info('No matching Shopify order found');
+      } else if (result.noTracking) {
+        if (!silent) toast.info('Shopify order exists but has no tracking yet');
+      } else if (result.error) {
+        console.error('Shopify pull failed:', result.error);
+        if (!silent) toast.error(result.error);
+      }
+    } finally {
+      setIsPullingShopify(false);
+    }
+  }
+
+  const trackingUrl = pulledTrackingUrl || getCarrierTrackingUrl(editableCarrier, editableTracking);
 
   const handleStatusUpdate = () => {
     // Phase 3: Check if trying to mark as fulfilled without tracking
@@ -879,17 +924,28 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
                         onChange={(e) => setEditableTracking(e.target.value)}
                         placeholder="Enter tracking number..."
                       />
-                      {editableTracking && validateTrackingNumber(editableTracking) && (
+                      {editableTracking && validateTrackingNumber(editableTracking) && trackingUrl && (
                         <a
-                          href={`https://www.google.com/search?q=track+${editableTracking}`}
+                          href={trackingUrl}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-blue-500 hover:underline shrink-0"
+                          title="Track shipment"
                         >
                           <ExternalLink className="h-4 w-4" />
                         </a>
                       )}
                     </div>
+                    {editableTracking && validateTrackingNumber(editableTracking) && trackingUrl && (
+                      <a
+                        href={trackingUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-blue-500 hover:underline"
+                      >
+                        Track shipment
+                      </a>
+                    )}
                   </div>
                   <div>
                     <Label>Carrier</Label>
@@ -942,6 +998,25 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
                     <>
                       <Send className="h-4 w-4 mr-2" />
                       Save Tracking & Notify Customer
+                    </>
+                  )}
+                </Button>
+
+                <Button
+                  onClick={() => handlePullShopify(false)}
+                  disabled={isPullingShopify}
+                  className="w-full"
+                  variant="outline"
+                >
+                  {isPullingShopify ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Pulling from Shopify…
+                    </>
+                  ) : (
+                    <>
+                      <RefreshCw className="h-4 w-4 mr-2" />
+                      Pull tracking from Shopify
                     </>
                   )}
                 </Button>
