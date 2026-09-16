@@ -112,7 +112,11 @@ Deno.serve(async (req) => {
 
     const result = streamText({
       model: lovable.responses("openai/gpt-6-astra"),
-      system: `${ADMIN_GUIDE}\n\nToday is ${new Date().toISOString().slice(0, 10)}. Currency is CAD.`,
+      system:
+        `${ADMIN_GUIDE}\n\nAPPROVED ADMIN PAGES (id | title | route | description):\n${ADMIN_ROUTE_LIST}\n\n` +
+        `Never write these routes as text or markdown links. Call find_admin_page instead; the app turns the tool result into a button.\n\n` +
+        `Today is ${new Date().toISOString().slice(0, 10)}. Currency is CAD.`,
+
       messages: await convertToModelMessages(messages),
       stopWhen: stepCountIs(50),
       tools: {
