@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { functionsClient } from '@/integrations/supabase/functionsClient';
@@ -76,7 +77,7 @@ export const useShippingZones = () => {
   });
 
   // Calculate shipping using edge function
-  const calculateShipping = async (
+  const calculateShipping = useCallback(async (
     address: Address, 
     subtotal: number, 
     items?: Array<{ id: string | number; quantity: number }>
@@ -91,7 +92,7 @@ export const useShippingZones = () => {
 
     if (error) throw error;
     return data;
-  };
+  }, []);
 
   // Create zone mutation
   const createZoneMutation = useMutation({
