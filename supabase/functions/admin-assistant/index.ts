@@ -165,28 +165,81 @@ Deno.serve(async (req) => {
         }),
 
         lookup_product: tool({
-          description: "Find products by name and return price and stock on hand.",
+          description:
+            "Find products by name and return price, stock on hand and a direct admin link to that product.",
           inputSchema: z.object({
             name: z.string().describe("Part of the product title"),
           }),
           execute: async ({ name }) => {
             const d = await shopify(`products.json?limit=250`);
             const needle = name.toLowerCase();
-            const matches = (d.products ?? [])
+            const shopifyMatches = (d.products ?? [])
               .filter((p: any) => String(p.title).toLowerCase().includes(needle))
-              .slice(0, 10)
-              .map((p: any) => ({
+              .slice(0, 10);
+
+            const { data: localProducts } = await db
+              .from("woocommerce_products")
+              .select("id, name")
+              .ilike("name", `%${name}%`)
+              .limit(25);
+
+            const findLocalId = (title: string) => {
+              const t = title.toLowerCase().trim();
+              const exact = (localProducts ?? []).find(
+                (p: any) => String(p.name).toLowerCase().trim() === t,
+              );
+              const partial = (localProducts ?? []).find(
+                (p: any) =>
+                  String(p.name).toLowerCase().includes(t) ||
+                  t.includes(String(p.name).toLowerCase()),
+              );
+              const id = (exact ?? partial)?.id;
+              return id !== undefined && /^[A-Za-z0-9._-]+$/.test(String(id))
+                ? String(id)
+                : null;
+            };
+
+            const matches = shopifyMatches.map((p: any) => {
+              const localId = findLocalId(String(p.title));
+              return {
                 title: p.title,
                 status: p.status,
+                adminRecordId: localId,
+                adminUrl: localId
+                  ? `/admin/products/${localId}?focus=inventory`
+                  : "/admin/products",
                 variants: (p.variants ?? []).map((v: any) => ({
                   name: v.title,
                   price: `$${v.price}`,
                   stock: v.inventory_quantity,
                 })),
-              }));
+              };
+            });
             return { matches, found: matches.length };
           },
         }),
+
+        find_admin_page: tool({
+          description:
+            "Find the admin page where a setting or task lives. Call this for every 'where do I change X' question so the admin gets a real button. Returns up to 3 approved admin pages.",
+          inputSchema: z.object({
+            query: z
+              .string()
+              .describe("What the admin wants to change, in their own words"),
+          }),
+          execute: async ({ query }) => {
+            const pages = findAdminRoutes(query, 3).map((r) => ({
+              id: r.id,
+              title: r.title,
+              description: r.description,
+              route: r.route,
+            }));
+            return pages.length
+              ? { pages }
+              : { pages: [], note: "No matching admin page. Suggest the closest section by name." };
+          },
+        }),
+
       },
       providerOptions: {
         openai: {
