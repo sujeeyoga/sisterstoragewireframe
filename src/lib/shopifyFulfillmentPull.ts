@@ -1,4 +1,5 @@
 import { functionsClient } from '@/integrations/supabase/functionsClient';
+import { supabase } from '@/integrations/supabase/client';
 
 export interface PullShopifyResult {
   success: boolean;
