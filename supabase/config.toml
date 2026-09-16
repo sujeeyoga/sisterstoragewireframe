@@ -110,3 +110,6 @@ verify_jwt = false
 
 [functions.shopify-sync-carrier-tracking]
 verify_jwt = false
+
+[functions.shopify-pull-fulfillment]
+verify_jwt = false
