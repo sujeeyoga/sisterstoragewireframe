@@ -21,7 +21,7 @@ const CartDrawer = () => {
   const drawerRef = React.useRef<HTMLDivElement>(null);
   
   // Location detection and shipping estimation
-  const { city, region, country, postalCode, isLoading: locationLoading } = useLocationDetection();
+  const { city, region, country, postalCode, isEstimated: isEstimatedLocation, isLoading: locationLoading } = useLocationDetection();
   const { calculateShipping, fallbackSettings } = useShippingZones();
   const [estimatedShipping, setEstimatedShipping] = useState<number | null>(null);
   const [originalShippingCost, setOriginalShippingCost] = useState<number | null>(null);
@@ -501,6 +501,11 @@ const CartDrawer = () => {
                             <MapPin className="h-2.5 w-2.5" />
                             <span>{city}, {country}</span>
                           </div>
+                        )}
+                        {city && country && isEstimatedLocation && (
+                          <span className="text-[10px] text-gray-400 ml-4">
+                            Estimated — confirmed at checkout
+                          </span>
                         )}
                       </div>
                       <div className="text-right">
