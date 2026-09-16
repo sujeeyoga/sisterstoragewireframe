@@ -4,6 +4,8 @@ import { createOpenAI } from "npm:@ai-sdk/openai@2";
 import { z } from "npm:zod@3.23.8";
 import { getShopifyAdminToken, SHOPIFY_SHOP_DOMAIN } from "../_shared/shopify-token.ts";
 import { ADMIN_GUIDE } from "./guide.ts";
+import { ADMIN_ROUTE_LIST, findAdminRoutes } from "./routes.ts";
+
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
