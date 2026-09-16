@@ -44,6 +44,18 @@ export const AdminDashboard = () => {
     return subDays(new Date(), days);
   };
 
+  const rangeLabel = (() => {
+    if (dateRange === 'custom' && customStartDate) {
+      const end = customEndDate || new Date();
+      return `${format(customStartDate, 'MMM d')} - ${format(end, 'MMM d')}`;
+    }
+    if (dateRange === 'today') return 'today';
+    if (dateRange === '7d') return 'last 7 days';
+    if (dateRange === '30d') return 'last 30 days';
+    if (dateRange === '90d') return 'last 90 days';
+    return 'selected range';
+  })();
+
   const getDateRangeEnd = () => {
     if (dateRange === 'custom' && customEndDate) {
       return customEndDate;
@@ -586,7 +598,7 @@ export const AdminDashboard = () => {
                   ${(stats?.netRevenue ?? 0).toFixed(2)}
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
-                  After ${(stats?.totalRefunds ?? 0).toFixed(2)} in refunds
+                  After ${(stats?.totalRefunds ?? 0).toFixed(2)} in refunds ({rangeLabel})
                 </p>
                 {stats && Object.keys(stats.currencyBreakdown).length > 1 && (
                   <div className="mt-2 pt-2 border-t">
@@ -617,7 +629,7 @@ export const AdminDashboard = () => {
               <>
                 <div className="text-2xl font-bold">{stats?.totalOrders || 0}</div>
                 <p className="text-xs text-muted-foreground mt-1">
-                  All orders (30d)
+                  All orders ({rangeLabel})
                 </p>
               </>
             )}
@@ -661,7 +673,7 @@ export const AdminDashboard = () => {
               <>
                 <div className="text-2xl font-bold">{stats?.unfulfilledOrders || 0}</div>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Need processing
+                  Need processing ({rangeLabel})
                 </p>
               </>
             )}
