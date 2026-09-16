@@ -705,7 +705,13 @@ export const ProductForm = () => {
                 </div>
               </div>
 
-              <div className="space-y-4">
+              <div
+                id="inventory-section"
+                className={`space-y-4 rounded-lg transition-all ${
+                  highlightInventory ? 'ring-2 ring-primary ring-offset-2 p-3' : ''
+                }`}
+              >
+
                 <div className="space-y-2">
                   <div className="flex items-center space-x-2">
                     <Switch
