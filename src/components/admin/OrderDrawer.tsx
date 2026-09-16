@@ -178,7 +178,7 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
     handlePullShopify(true);
   }, [open, order.tracking_number]);
 
-  const handlePullShopify = async (silent = false) => {
+  async function handlePullShopify(silent = false) {
     if (isPullingShopify) return;
     setIsPullingShopify(true);
     try {
@@ -204,7 +204,7 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
     } finally {
       setIsPullingShopify(false);
     }
-  };
+  }
 
   const trackingUrl = pulledTrackingUrl || getCarrierTrackingUrl(editableCarrier, editableTracking);
 
