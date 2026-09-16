@@ -598,7 +598,7 @@ export const AdminDashboard = () => {
                   ${(stats?.netRevenue ?? 0).toFixed(2)}
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
-                  After ${(stats?.totalRefunds ?? 0).toFixed(2)} in refunds
+                  After ${(stats?.totalRefunds ?? 0).toFixed(2)} in refunds ({rangeLabel})
                 </p>
                 {stats && Object.keys(stats.currencyBreakdown).length > 1 && (
                   <div className="mt-2 pt-2 border-t">
@@ -629,7 +629,7 @@ export const AdminDashboard = () => {
               <>
                 <div className="text-2xl font-bold">{stats?.totalOrders || 0}</div>
                 <p className="text-xs text-muted-foreground mt-1">
-                  All orders (30d)
+                  All orders ({rangeLabel})
                 </p>
               </>
             )}
@@ -673,7 +673,7 @@ export const AdminDashboard = () => {
               <>
                 <div className="text-2xl font-bold">{stats?.unfulfilledOrders || 0}</div>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Need processing
+                  Need processing ({rangeLabel})
                 </p>
               </>
             )}
