@@ -1,4 +1,4 @@
-import { LayoutDashboard, Package, Layout, RefreshCw, Settings, Users, ShoppingCart, Image, FolderOpen, FileText, Sparkles, Truck, Video, Film, LogOut, DollarSign, Type, PackageCheck, Mail, TrendingUp, Globe, Ship, QrCode, Wallet, Search, MapPin, Zap, Star, Palette, MailOpen } from 'lucide-react';
+import { LayoutDashboard, Package, Layout, RefreshCw, Settings, Users, ShoppingCart, Image, FolderOpen, FileText, Sparkles, Truck, Video, Film, LogOut, DollarSign, Type, PackageCheck, Mail, TrendingUp, Globe, Ship, QrCode, Wallet, Search, MapPin, Zap, Star, Palette, MailOpen, Bot } from 'lucide-react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
