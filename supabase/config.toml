@@ -21,6 +21,9 @@ verify_jwt = false
 [functions.track-visitor]
 verify_jwt = false
 
+[functions.admin-assistant]
+verify_jwt = false
+
 [functions.geo-locate]
 verify_jwt = false
 
