@@ -41,7 +41,7 @@ export function AdminAssistantBubble() {
             </div>
           </div>
           <div className="min-h-0 flex-1 p-2">
-            <AdminAssistantChat />
+            <AdminAssistantChat onNavigate={() => setOpen(false)} />
           </div>
         </div>
       )}
