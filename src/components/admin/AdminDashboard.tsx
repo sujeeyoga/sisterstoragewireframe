@@ -44,6 +44,18 @@ export const AdminDashboard = () => {
     return subDays(new Date(), days);
   };
 
+  const rangeLabel = (() => {
+    if (dateRange === 'custom' && customStartDate) {
+      const end = customEndDate || new Date();
+      return `${format(customStartDate, 'MMM d')} - ${format(end, 'MMM d')}`;
+    }
+    if (dateRange === 'today') return 'today';
+    if (dateRange === '7d') return 'last 7 days';
+    if (dateRange === '30d') return 'last 30 days';
+    if (dateRange === '90d') return 'last 90 days';
+    return 'selected range';
+  })();
+
   const getDateRangeEnd = () => {
     if (dateRange === 'custom' && customEndDate) {
       return customEndDate;
