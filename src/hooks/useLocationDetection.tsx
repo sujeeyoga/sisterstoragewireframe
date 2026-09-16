@@ -46,7 +46,7 @@ export const useLocationDetection = (): LocationData => {
       if (!city || !country) return false;
 
       const isGTA = checkIsGTA(city, region);
-      const locationData: LocationData = {
+      const locationData: Omit<LocationData, 'isLoading'> = {
         city,
         region,
         country,
