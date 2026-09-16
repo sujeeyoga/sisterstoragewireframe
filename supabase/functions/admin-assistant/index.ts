@@ -24,9 +24,16 @@ async function shopify(path: string): Promise<any> {
   return JSON.parse(text);
 }
 
+function orderAdminUrl(name: unknown): string {
+  const safe = String(name ?? "").trim();
+  if (!/^[A-Za-z0-9#-]{3,32}$/.test(safe)) return "/admin/orders";
+  return `/admin/orders?order=${encodeURIComponent(safe)}`;
+}
+
 function summariseOrder(o: any) {
   return {
     order_number: o.name,
+    adminUrl: orderAdminUrl(o.name),
     placed: o.created_at,
     customer: [o.customer?.first_name, o.customer?.last_name].filter(Boolean).join(" ") || null,
     email: o.email ?? null,
@@ -46,6 +53,7 @@ function summariseOrder(o: any) {
     ),
   };
 }
+
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
