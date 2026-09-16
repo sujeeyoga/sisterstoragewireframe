@@ -68,6 +68,7 @@ interface OrderDrawerProps {
     carrier_name?: string;
     carrier_cost_currency?: string;
     shipping_metadata?: any;
+    order_number?: string | number;
   };
   open: boolean;
   onClose: () => void;
