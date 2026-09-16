@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { Printer, Package, Truck, Loader2, Archive } from 'lucide-react';
+import { Printer, Package, Truck, Loader2, Archive, RefreshCw } from 'lucide-react';
 
 interface OrderBulkBarProps {
   selectedCount: number;
@@ -7,10 +7,12 @@ interface OrderBulkBarProps {
   onPrint: () => void;
   onArchive: () => void;
   onCancel: () => void;
+  onPullShopify?: () => void;
   isPrinting?: boolean;
+  isPullingShopify?: boolean;
 }
 
-export function OrderBulkBar({ selectedCount, onFulfill, onPrint, onArchive, onCancel, isPrinting }: OrderBulkBarProps) {
+export function OrderBulkBar({ selectedCount, onFulfill, onPrint, onArchive, onCancel, onPullShopify, isPrinting, isPullingShopify }: OrderBulkBarProps) {
   if (selectedCount === 0) return null;
   
   return (
