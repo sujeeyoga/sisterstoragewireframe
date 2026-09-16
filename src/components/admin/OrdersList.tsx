@@ -45,7 +45,11 @@ interface Order {
 }
 
 export function OrdersList() {
-  const [search, setSearch] = useState('');
+  const [searchParams] = useSearchParams();
+  const deepLinkOrder = searchParams.get('order') ?? '';
+  const [search, setSearch] = useState(deepLinkOrder);
+  const deepLinkHandled = useRef(false);
+
   const [activeStatus, setActiveStatus] = useState('all');
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [selectedOrderIds, setSelectedOrderIds] = useState<Set<number | string>>(new Set());
