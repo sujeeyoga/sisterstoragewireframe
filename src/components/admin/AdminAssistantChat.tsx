@@ -18,6 +18,9 @@ import {
 import { Shimmer } from '@/components/ai-elements/shimmer';
 import { Tool, ToolHeader, ToolContent, ToolInput, ToolOutput } from '@/components/ai-elements/tool';
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
+import { isApprovedAdminRoute, labelForAdminRoute } from '@/config/adminAssistantRoutes';
 import assistantMark from '@/assets/admin-assistant-mark.png';
 
 const ENDPOINT = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/admin-assistant`;
@@ -26,14 +29,70 @@ const TOOL_LABELS: Record<string, string> = {
   'tool-lookup_order': 'Looked up an order',
   'tool-store_metrics': 'Checked store numbers',
   'tool-lookup_product': 'Looked up a product',
+  'tool-find_admin_page': 'Found the right admin page',
 };
 
 const SUGGESTIONS = [
   'How do I fulfill an order?',
   'What are our shipping prices right now?',
-  'How many orders are awaiting fulfillment?',
+  'Where do I change the homepage banner?',
   'How do I turn the announcement banner on?',
 ];
+
+/** Collect approved internal admin links from this message's tool results only. */
+function collectActions(parts: any[]): string[] {
+  const hrefs: string[] = [];
+  const walk = (value: any, depth = 0) => {
+    if (!value || depth > 6) return;
+    if (Array.isArray(value)) {
+      value.forEach((v) => walk(v, depth + 1));
+      return;
+    }
+    if (typeof value !== 'object') return;
+    for (const key of ['adminUrl', 'route']) {
+      const candidate = (value as any)[key];
+      if (isApprovedAdminRoute(candidate)) hrefs.push(candidate);
+    }
+    Object.values(value).forEach((v) => walk(v, depth + 1));
+  };
+
+  for (const part of parts) {
+    if (typeof part?.type === 'string' && part.type.startsWith('tool-')) {
+      walk(part.output);
+    }
+  }
+  return Array.from(new Set(hrefs)).slice(0, 3);
+}
+
+function AssistantActions({
+  parts,
+  onNavigate,
+}: {
+  parts: any[];
+  onNavigate?: () => void;
+}) {
+  const actions = collectActions(parts);
+  if (actions.length === 0) return null;
+
+  return (
+    <div className="mt-3 flex flex-wrap gap-2">
+      {actions.map((href, i) => (
+        <Button
+          key={href}
+          asChild
+          size="sm"
+          variant={i === 0 ? 'default' : 'outline'}
+          className="gap-1"
+        >
+          <Link to={href} onClick={onNavigate}>
+            {labelForAdminRoute(href).replace(/\s*→$/, '')}
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        </Button>
+      ))}
+    </div>
+  );
+}
 
 const authedFetch: typeof fetch = async (input, init) => {
   const { data } = await supabase.auth.getSession();
@@ -46,7 +105,10 @@ const authedFetch: typeof fetch = async (input, init) => {
 
 interface AdminAssistantChatProps {
   className?: string;
+  /** Called when the admin clicks a navigation button (used to close the bubble). */
+  onNavigate?: () => void;
 }
+
 
 export function AdminAssistantChat({ className }: AdminAssistantChatProps) {
   const [input, setInput] = useState('');
