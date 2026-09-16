@@ -23,6 +23,7 @@ const menuGroups = [
     label: 'Overview',
     items: [
       { title: 'Dashboard', url: '/admin', icon: LayoutDashboard, end: true },
+      { title: 'AI Assistant', url: '/admin/assistant', icon: Bot, end: false },
       { title: 'Analytics', url: '/admin/analytics', icon: TrendingUp, end: false },
       { title: 'SEO Analytics', url: '/admin/analytics/seo', icon: Search, end: false },
       { title: 'Profit Analytics', url: '/admin/analytics/profit', icon: Wallet, end: false },
