@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
+
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -43,7 +45,11 @@ interface Order {
 }
 
 export function OrdersList() {
-  const [search, setSearch] = useState('');
+  const [searchParams] = useSearchParams();
+  const deepLinkOrder = searchParams.get('order') ?? '';
+  const [search, setSearch] = useState(deepLinkOrder);
+  const deepLinkHandled = useRef(false);
+
   const [activeStatus, setActiveStatus] = useState('all');
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [selectedOrderIds, setSelectedOrderIds] = useState<Set<number | string>>(new Set());
@@ -481,7 +487,23 @@ export function OrdersList() {
     );
   }
   
+  // Deep link: /admin/orders?order=SS-XXXX opens that order automatically
+  useEffect(() => {
+    if (!deepLinkOrder || deepLinkHandled.current) return;
+    const list = (orders as any)?.orders as Order[] | undefined;
+    if (!list?.length) return;
+    const needle = deepLinkOrder.replace(/^#/, '').toLowerCase();
+    const match = list.find(
+      (o) => String((o as any).order_number ?? '').replace(/^#/, '').toLowerCase() === needle,
+    );
+    if (match) {
+      deepLinkHandled.current = true;
+      setSelectedOrder(match);
+    }
+  }, [deepLinkOrder, orders]);
+
   return (
+
     <div className="min-h-screen bg-background pb-20">
         <OrdersHeader
           search={search}

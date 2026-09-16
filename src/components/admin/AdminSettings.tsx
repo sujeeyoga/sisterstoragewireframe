@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
+
 import { ShippingDestinationsCard } from '@/components/admin/ShippingDestinationsCard';
 import { AnnouncementBannerCard } from '@/components/admin/AnnouncementBannerCard';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -53,7 +55,14 @@ interface AddAdminResponse {
 export function AdminSettings() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [activeTab, setActiveTab] = useState('users');
+  const [searchParams] = useSearchParams();
+  const requestedTab = searchParams.get('tab');
+  const [activeTab, setActiveTab] = useState(
+    ['users', 'security', 'integrations', 'system'].includes(requestedTab ?? '')
+      ? (requestedTab as string)
+      : 'users',
+  );
+
   const [addAdminOpen, setAddAdminOpen] = useState(false);
   const [newAdminEmail, setNewAdminEmail] = useState('');
   const [emailError, setEmailError] = useState('');

@@ -4,6 +4,8 @@ import { createOpenAI } from "npm:@ai-sdk/openai@2";
 import { z } from "npm:zod@3.23.8";
 import { getShopifyAdminToken, SHOPIFY_SHOP_DOMAIN } from "../_shared/shopify-token.ts";
 import { ADMIN_GUIDE } from "./guide.ts";
+import { ADMIN_ROUTE_LIST, findAdminRoutes } from "./routes.ts";
+
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -24,9 +26,16 @@ async function shopify(path: string): Promise<any> {
   return JSON.parse(text);
 }
 
+function orderAdminUrl(name: unknown): string {
+  const safe = String(name ?? "").trim();
+  if (!/^[A-Za-z0-9#-]{3,32}$/.test(safe)) return "/admin/orders";
+  return `/admin/orders?order=${encodeURIComponent(safe)}`;
+}
+
 function summariseOrder(o: any) {
   return {
     order_number: o.name,
+    adminUrl: orderAdminUrl(o.name),
     placed: o.created_at,
     customer: [o.customer?.first_name, o.customer?.last_name].filter(Boolean).join(" ") || null,
     email: o.email ?? null,
@@ -46,6 +55,7 @@ function summariseOrder(o: any) {
     ),
   };
 }
+
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -102,7 +112,11 @@ Deno.serve(async (req) => {
 
     const result = streamText({
       model: lovable.responses("openai/gpt-6-astra"),
-      system: `${ADMIN_GUIDE}\n\nToday is ${new Date().toISOString().slice(0, 10)}. Currency is CAD.`,
+      system:
+        `${ADMIN_GUIDE}\n\nAPPROVED ADMIN PAGES (id | title | route | description):\n${ADMIN_ROUTE_LIST}\n\n` +
+        `Never write these routes as text or markdown links. Call find_admin_page instead; the app turns the tool result into a button.\n\n` +
+        `Today is ${new Date().toISOString().slice(0, 10)}. Currency is CAD.`,
+
       messages: await convertToModelMessages(messages),
       stopWhen: stepCountIs(50),
       tools: {
@@ -157,28 +171,81 @@ Deno.serve(async (req) => {
         }),
 
         lookup_product: tool({
-          description: "Find products by name and return price and stock on hand.",
+          description:
+            "Find products by name and return price, stock on hand and a direct admin link to that product.",
           inputSchema: z.object({
             name: z.string().describe("Part of the product title"),
           }),
           execute: async ({ name }) => {
             const d = await shopify(`products.json?limit=250`);
             const needle = name.toLowerCase();
-            const matches = (d.products ?? [])
+            const shopifyMatches = (d.products ?? [])
               .filter((p: any) => String(p.title).toLowerCase().includes(needle))
-              .slice(0, 10)
-              .map((p: any) => ({
+              .slice(0, 10);
+
+            const { data: localProducts } = await db
+              .from("woocommerce_products")
+              .select("id, name")
+              .ilike("name", `%${name}%`)
+              .limit(25);
+
+            const findLocalId = (title: string) => {
+              const t = title.toLowerCase().trim();
+              const exact = (localProducts ?? []).find(
+                (p: any) => String(p.name).toLowerCase().trim() === t,
+              );
+              const partial = (localProducts ?? []).find(
+                (p: any) =>
+                  String(p.name).toLowerCase().includes(t) ||
+                  t.includes(String(p.name).toLowerCase()),
+              );
+              const id = (exact ?? partial)?.id;
+              return id !== undefined && /^[A-Za-z0-9._-]+$/.test(String(id))
+                ? String(id)
+                : null;
+            };
+
+            const matches = shopifyMatches.map((p: any) => {
+              const localId = findLocalId(String(p.title));
+              return {
                 title: p.title,
                 status: p.status,
+                adminRecordId: localId,
+                adminUrl: localId
+                  ? `/admin/products/${localId}?focus=inventory`
+                  : "/admin/products",
                 variants: (p.variants ?? []).map((v: any) => ({
                   name: v.title,
                   price: `$${v.price}`,
                   stock: v.inventory_quantity,
                 })),
-              }));
+              };
+            });
             return { matches, found: matches.length };
           },
         }),
+
+        find_admin_page: tool({
+          description:
+            "Find the admin page where a setting or task lives. Call this for every 'where do I change X' question so the admin gets a real button. Returns up to 3 approved admin pages.",
+          inputSchema: z.object({
+            query: z
+              .string()
+              .describe("What the admin wants to change, in their own words"),
+          }),
+          execute: async ({ query }) => {
+            const pages = findAdminRoutes(query, 3).map((r) => ({
+              id: r.id,
+              title: r.title,
+              description: r.description,
+              route: r.route,
+            }));
+            return pages.length
+              ? { pages }
+              : { pages: [], note: "No matching admin page. Suggest the closest section by name." };
+          },
+        }),
+
       },
       providerOptions: {
         openai: {

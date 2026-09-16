@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { supabase } from '@/integrations/supabase/client';
@@ -39,10 +39,31 @@ type VersionHistory = {
 
 export const ProductForm = () => {
   const { id } = useParams();
+  const [productSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const isEdit = id !== 'new';
+
+  // Deep link: /admin/products/:id?focus=inventory highlights the stock controls
+  const [highlightInventory, setHighlightInventory] = useState(
+    productSearchParams.get('focus') === 'inventory',
+  );
+  useEffect(() => {
+    if (!highlightInventory) return;
+    const timer = window.setTimeout(() => {
+      document.getElementById('inventory-section')?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    }, 400);
+    const clear = window.setTimeout(() => setHighlightInventory(false), 4000);
+    return () => {
+      window.clearTimeout(timer);
+      window.clearTimeout(clear);
+    };
+  }, [highlightInventory]);
+
   
   const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'unsaved'>('saved');
   const [versionHistory, setVersionHistory] = useState<VersionHistory[]>([]);
@@ -705,7 +726,13 @@ export const ProductForm = () => {
                 </div>
               </div>
 
-              <div className="space-y-4">
+              <div
+                id="inventory-section"
+                className={`space-y-4 rounded-lg transition-all ${
+                  highlightInventory ? 'ring-2 ring-primary ring-offset-2 p-3' : ''
+                }`}
+              >
+
                 <div className="space-y-2">
                   <div className="flex items-center space-x-2">
                     <Switch
