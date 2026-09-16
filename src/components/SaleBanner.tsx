@@ -9,12 +9,12 @@ interface SaleBannerProps {}
 const REGION_MESSAGES = {
   'toronto-gta': {
     icon: BadgePercent,
-    text: 'Toronto & GTA Shipping Available',
+    text: 'FREE SHIPPING IN GTA OVER $60',
     iconColor: 'text-brand-pink'
   },
   'canada-wide': {
     icon: Truck,
-    text: 'Canada Wide Shipping Available • $15 Flat Rate',
+    text: '$15 Shipping Anywhere in Canada',
     iconColor: 'text-brand-pink'
   },
   'us-standard': {
