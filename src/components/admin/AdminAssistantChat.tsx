@@ -110,7 +110,7 @@ interface AdminAssistantChatProps {
 }
 
 
-export function AdminAssistantChat({ className }: AdminAssistantChatProps) {
+export function AdminAssistantChat({ className, onNavigate }: AdminAssistantChatProps) {
   const [input, setInput] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
