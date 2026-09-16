@@ -39,10 +39,31 @@ type VersionHistory = {
 
 export const ProductForm = () => {
   const { id } = useParams();
+  const [productSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const isEdit = id !== 'new';
+
+  // Deep link: /admin/products/:id?focus=inventory highlights the stock controls
+  const [highlightInventory, setHighlightInventory] = useState(
+    productSearchParams.get('focus') === 'inventory',
+  );
+  useEffect(() => {
+    if (!highlightInventory) return;
+    const timer = window.setTimeout(() => {
+      document.getElementById('inventory-section')?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    }, 400);
+    const clear = window.setTimeout(() => setHighlightInventory(false), 4000);
+    return () => {
+      window.clearTimeout(timer);
+      window.clearTimeout(clear);
+    };
+  }, [highlightInventory]);
+
   
   const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'unsaved'>('saved');
   const [versionHistory, setVersionHistory] = useState<VersionHistory[]>([]);
