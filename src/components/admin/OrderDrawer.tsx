@@ -167,7 +167,46 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
     setNewStatus(order.status);
     setEditableTracking(order.tracking_number || '');
     setEditableCarrier(order.carrier_name || 'Canada Post');
+    setPulledTrackingUrl(null);
+    hasAutoPulled.current = false;
   }, [order.id, order.total, order.status, order.stripe_payment_intent_id, order.tracking_number, order.carrier_name]);
+
+  // Auto-pull tracking from Shopify once when opening an order that has no tracking yet.
+  useEffect(() => {
+    if (!open || order.tracking_number || isPullingShopify || hasAutoPulled.current) return;
+    hasAutoPulled.current = true;
+    handlePullShopify(true);
+  }, [open, order.tracking_number]);
+
+  const handlePullShopify = async (silent = false) => {
+    if (isPullingShopify) return;
+    setIsPullingShopify(true);
+    try {
+      const result = await applyShopifyFulfillmentToOrder({
+        id: order.id,
+        source: typeof order.id === 'string' ? 'stripe' : 'woocommerce',
+        order_number: order.order_number,
+      });
+
+      if (result.success && result.trackingNumber) {
+        setEditableTracking(result.trackingNumber);
+        setEditableCarrier(result.carrier || 'Other');
+        if (result.trackingUrl) setPulledTrackingUrl(result.trackingUrl);
+        if (!silent) toast.success('Tracking synced from Shopify');
+      } else if (result.notFound) {
+        if (!silent) toast.info('No matching Shopify order found');
+      } else if (result.noTracking) {
+        if (!silent) toast.info('Shopify order exists but has no tracking yet');
+      } else if (result.error) {
+        console.error('Shopify pull failed:', result.error);
+        if (!silent) toast.error(result.error);
+      }
+    } finally {
+      setIsPullingShopify(false);
+    }
+  };
+
+  const trackingUrl = pulledTrackingUrl || getCarrierTrackingUrl(editableCarrier, editableTracking);
 
   const handleStatusUpdate = () => {
     // Phase 3: Check if trying to mark as fulfilled without tracking
