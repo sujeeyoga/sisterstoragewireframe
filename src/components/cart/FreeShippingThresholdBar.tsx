@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Progress } from '@/components/ui/progress';
 import { useShippingZones } from '@/hooks/useShippingZones';
 import { CartItem } from '@/contexts/CartContext';
@@ -33,6 +33,12 @@ const FreeShippingThresholdBar = ({
   const progressPercent = threshold ? Math.min(100, (cartSubtotal / threshold) * 100) : 0;
   const hasReachedThreshold = threshold ? cartSubtotal >= threshold : false;
 
+  // Stable signature so re-renders don't retrigger the quote
+  const itemsKey = useMemo(
+    () => cartItems.map((i: any) => `${i.id}:${i.quantity}`).join('|'),
+    [cartItems]
+  );
+
   // Calculate shipping estimate and free shipping threshold
   useEffect(() => {
     if (cartItems.length === 0) {
@@ -48,38 +54,42 @@ const FreeShippingThresholdBar = ({
       return;
     }
 
+    let cancelled = false;
+
     const calculate = async () => {
       setIsCalculating(true);
-      setThreshold(null);
       try {
         const result = await calculateShipping(
           { city, province: region, country, postalCode },
           cartSubtotal,
           cartItems
         );
-        
+
+        if (cancelled) return;
+
         if (result?.appliedRate) {
           setEstimatedShipping(result.appliedRate.rate_amount);
         }
 
         // Extract free shipping threshold from the matched zone's rates
-        if (result?.rates && result.rates.length > 0) {
-          const rateWithThreshold = result.rates.find((r: any) => r.free_threshold !== null);
-          if (rateWithThreshold?.free_threshold) {
-            setThreshold(rateWithThreshold.free_threshold);
-          }
-        }
+        const rateWithThreshold = result?.rates?.find((r: any) => r.free_threshold !== null);
+        setThreshold(rateWithThreshold?.free_threshold ?? null);
       } catch (error) {
+        if (cancelled) return;
         console.error('Failed to calculate shipping:', error);
         setEstimatedShipping(null);
       } finally {
-        setIsCalculating(false);
+        if (!cancelled) setIsCalculating(false);
       }
     };
 
     const debounceTimer = setTimeout(calculate, 500);
-    return () => clearTimeout(debounceTimer);
-  }, [cartSubtotal, cartItems, city, region, country, postalCode, calculateShipping]);
+    return () => {
+      cancelled = true;
+      clearTimeout(debounceTimer);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cartSubtotal, itemsKey, city, region, country, postalCode, calculateShipping]);
 
   useEffect(() => {
     // Trigger confetti animation when threshold is crossed
