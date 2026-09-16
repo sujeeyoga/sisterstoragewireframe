@@ -142,9 +142,14 @@ export function AdminAssistantChat({ className }: AdminAssistantChatProps) {
                     }
                     return null;
                   })}
+
+                  {message.role === 'assistant' && (
+                    <AssistantActions parts={message.parts} onNavigate={onNavigate} />
+                  )}
                 </MessageContent>
               </Message>
             ))
+
           )}
 
           {status === 'submitted' && (
