@@ -24,7 +24,7 @@ export async function pullShopifyFulfillment(
   orderNumber: string
 ): Promise<PullShopifyResult> {
   try {
-    const { data, error } = await supabase.functions.invoke('shopify-pull-fulfillment', {
+    const { data, error } = await functionsClient.functions.invoke('shopify-pull-fulfillment', {
       body: { orderNumber },
     });
 
