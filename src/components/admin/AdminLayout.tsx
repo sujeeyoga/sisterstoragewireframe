@@ -28,6 +28,7 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
             {children}
           </main>
         </div>
+        <AdminAssistantBubble />
       </div>
     </SidebarProvider>
   );
