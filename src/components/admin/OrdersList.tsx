@@ -920,7 +920,9 @@ export function OrdersList() {
           toast.success(`Archived ${count} orders`);
         }}
         onCancel={() => setSelectedOrderIds(new Set())}
+        onPullShopify={handleBulkPullShopify}
         isPrinting={isPrintingLabels}
+        isPullingShopify={isPullingShopify}
       />
       
       <OrderFilters
