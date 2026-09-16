@@ -1001,6 +1001,25 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
                     </>
                   )}
                 </Button>
+
+                <Button
+                  onClick={() => handlePullShopify(false)}
+                  disabled={isPullingShopify}
+                  className="w-full"
+                  variant="outline"
+                >
+                  {isPullingShopify ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Pulling from Shopify…
+                    </>
+                  ) : (
+                    <>
+                      <RefreshCw className="h-4 w-4 mr-2" />
+                      Pull tracking from Shopify
+                    </>
+                  )}
+                </Button>
               </div>
             </div>
 
