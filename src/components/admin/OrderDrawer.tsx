@@ -924,17 +924,28 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
                         onChange={(e) => setEditableTracking(e.target.value)}
                         placeholder="Enter tracking number..."
                       />
-                      {editableTracking && validateTrackingNumber(editableTracking) && (
+                      {editableTracking && validateTrackingNumber(editableTracking) && trackingUrl && (
                         <a
-                          href={`https://www.google.com/search?q=track+${editableTracking}`}
+                          href={trackingUrl}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-blue-500 hover:underline shrink-0"
+                          title="Track shipment"
                         >
                           <ExternalLink className="h-4 w-4" />
                         </a>
                       )}
                     </div>
+                    {editableTracking && validateTrackingNumber(editableTracking) && trackingUrl && (
+                      <a
+                        href={trackingUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-blue-500 hover:underline"
+                      >
+                        Track shipment
+                      </a>
+                    )}
                   </div>
                   <div>
                     <Label>Carrier</Label>
