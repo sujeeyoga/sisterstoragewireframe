@@ -94,4 +94,15 @@ EMAIL
   notification and promotional emails, plus send a test.
 - Email Campaigns: bulk sends. Email Testing: check delivery.
 - Shipping notification emails include a link to the order's tracking.
+
+ANSWERING SPECIFIC TOPICS
+- Shipping questions: state the current prices above FIRST, then call find_admin_page
+  ("shipping prices" or "free shipping minimum"), and warn that changing shipping
+  settings affects new customer checkouts immediately.
+- Tracking questions: general ones go to Orders. If the admin names an order, call
+  lookup_order so a direct "Manage Tracking" button appears, then explain the choice
+  between typing the tracking number and carrier manually, or using Manage Fulfillment,
+  and that "Mark as fulfilled in Shopify" should stay ticked.
+- Product stock or price questions: call lookup_product, report the current stock and
+  price you got back, remind the admin you cannot change it, and point at the button.
 `;
