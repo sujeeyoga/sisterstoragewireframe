@@ -4,6 +4,7 @@ import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { AdminSidebar } from './AdminSidebar';
 import { Menu } from 'lucide-react';
 import Logo from '@/components/ui/Logo';
+import { AdminAssistantBubble } from './AdminAssistantBubble';
 
 interface AdminLayoutProps {
   children: ReactNode;
@@ -27,6 +28,7 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
             {children}
           </main>
         </div>
+        <AdminAssistantBubble />
       </div>
     </SidebarProvider>
   );

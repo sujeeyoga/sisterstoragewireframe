@@ -51,6 +51,7 @@ import { PageContentManager } from '@/components/admin/PageContentManager';
 import { ShopifyPush } from '@/components/admin/ShopifyPush';
 import { ShopifyPushBreakdown } from '@/components/admin/ShopifyPushBreakdown';
 import { BrandingPage } from '@/components/admin/BrandingPage';
+import AdminAssistant from '@/pages/AdminAssistant';
 
 const Admin = () => {
   const { notification, clearNotification } = useOrderNotifications();
@@ -76,6 +77,7 @@ const Admin = () => {
       <AdminLayout>
         <Routes>
         <Route index element={<AdminDashboard />} />
+        <Route path="assistant" element={<AdminAssistant />} />
         <Route path="analytics" element={<AdminAnalytics />} />
         <Route path="analytics/conversion" element={<AdminConversionAnalytics />} />
         <Route path="analytics/visitors" element={<AdminVisitorAnalytics />} />
