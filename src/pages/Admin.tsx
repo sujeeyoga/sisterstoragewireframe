@@ -77,6 +77,7 @@ const Admin = () => {
       <AdminLayout>
         <Routes>
         <Route index element={<AdminDashboard />} />
+        <Route path="assistant" element={<AdminAssistant />} />
         <Route path="analytics" element={<AdminAnalytics />} />
         <Route path="analytics/conversion" element={<AdminConversionAnalytics />} />
         <Route path="analytics/visitors" element={<AdminVisitorAnalytics />} />
