@@ -82,19 +82,28 @@ Deno.serve(async (req) => {
       });
     }
 
-    const { data: roleData } = await db
+    const { data: roleRows, error: roleError } = await db
       .from("user_roles")
       .select("role")
-      .eq("user_id", user.id)
-      .eq("role", "admin")
-      .maybeSingle();
+      .eq("user_id", user.id);
 
-    if (!roleData) {
+    const isAdmin = (roleRows ?? []).some(
+      (r: any) => String(r.role).toLowerCase() === "admin",
+    );
+
+    if (!isAdmin) {
+      console.error("admin-assistant denied", {
+        userId: user.id,
+        email: user.email,
+        roles: roleRows,
+        roleError: roleError?.message,
+      });
       return new Response(JSON.stringify({ error: "Admin access required." }), {
         status: 403,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+
 
     const lovableApiKey = Deno.env.get("LOVABLE_API_KEY");
     if (!lovableApiKey) throw new Error("Assistant is not configured");
