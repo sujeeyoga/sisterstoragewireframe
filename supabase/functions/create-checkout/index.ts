@@ -116,7 +116,7 @@ serve(async (req) => {
       .filter((id: number) => !isNaN(id));
     
     if (itemIds.length > 0) {
-      const { data: availableProducts, error: productError } = await supabaseClient
+      const { data: availableProducts, error: productError } = await storeDb
         .from('woocommerce_products')
         .select('id, slug, name, visible, in_stock')
         .in('id', itemIds);
@@ -150,7 +150,7 @@ serve(async (req) => {
     }
 
     // Fetch store-wide discount
-    const { data: discountData } = await supabaseClient
+    const { data: discountData } = await storeDb
       .from('store_settings')
       .select('*')
       .eq('setting_key', 'store_wide_discount')
@@ -161,7 +161,7 @@ serve(async (req) => {
 
     // Fetch active flash sales
     const now = new Date().toISOString();
-    const { data: flashSales } = await supabaseClient
+    const { data: flashSales } = await storeDb
       .from('flash_sales')
       .select('*')
       .eq('enabled', true)
