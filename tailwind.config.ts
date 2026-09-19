@@ -48,6 +48,18 @@ export default {
 					DEFAULT: 'hsl(var(--accent))',
 					foreground: 'hsl(var(--accent-foreground))'
 				},
+				success: {
+					DEFAULT: 'hsl(var(--success))',
+					foreground: 'hsl(var(--success-foreground))',
+					soft: 'hsl(var(--success-soft))',
+					'soft-foreground': 'hsl(var(--success-soft-foreground))'
+				},
+				caution: {
+					DEFAULT: 'hsl(var(--caution))',
+					foreground: 'hsl(var(--caution-foreground))',
+					soft: 'hsl(var(--caution-soft))'
+				},
+				'assistant-surface': 'hsl(var(--assistant-surface))',
 				popover: {
 					DEFAULT: 'hsl(var(--popover))',
 					foreground: 'hsl(var(--popover-foreground))'

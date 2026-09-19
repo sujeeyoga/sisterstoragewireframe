@@ -263,6 +263,46 @@ Deno.serve(async (req) => {
           },
         }),
 
+        answer_card: tool({
+          description:
+            "Render the answer as a structured card in the chat. Use for diagnoses, status checks and step-by-step how-tos. Call once, last, and do not repeat its content as plain text.",
+          inputSchema: z.object({
+            title: z.string().describe("Short headline, plain text"),
+            summary: z.string().nullable().describe("One sentence under the title, or null"),
+            stats: z
+              .array(
+                z.object({
+                  label: z.string(),
+                  value: z.string(),
+                  note: z.string().nullable(),
+                }),
+              )
+              .nullable()
+              .describe("Up to 3 small figures, or null"),
+            checks: z
+              .array(
+                z.object({
+                  label: z.string(),
+                  status: z.enum(["ok", "warn", "fail"]),
+                  detail: z.string().nullable(),
+                }),
+              )
+              .nullable()
+              .describe("What you verified, or null"),
+            steps: z.array(z.string()).nullable().describe("Numbered instructions, or null"),
+            caution: z.string().nullable().describe("One-sentence warning, or null"),
+            actions: z
+              .array(
+                z.object({
+                  label: z.string(),
+                  href: z.string().describe("An approved admin route, or / for the storefront"),
+                }),
+              )
+              .nullable()
+              .describe("Buttons, first one is the primary action, or null"),
+          }),
+          execute: async (card) => card,
+        }),
       },
       providerOptions: {
         openai: {

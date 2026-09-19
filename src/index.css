@@ -71,6 +71,20 @@
     --sidebar-accent-foreground: 331 100% 20%;
     --sidebar-ring: 331 100% 49%;
 
+    /* Success (assistant checklist ticks & pills) */
+    --success: 152 76% 33%;
+    --success-foreground: 0 0% 100%;
+    --success-soft: 150 60% 94%;
+    --success-soft-foreground: 152 76% 26%;
+
+    /* Caution (assistant warning notes) */
+    --caution: 36 100% 45%;
+    --caution-foreground: 30 80% 24%;
+    --caution-soft: 45 100% 95%;
+
+    /* Assistant surface tint */
+    --assistant-surface: 340 100% 98%;
+
     --radius: 0.5rem;
   }
 
@@ -107,6 +121,15 @@
     --sidebar-accent: 331 100% 20%;
     --sidebar-accent-foreground: 0 0% 98%;
     --sidebar-ring: 331 100% 49%;
+
+    --success: 152 60% 40%;
+    --success-foreground: 0 0% 100%;
+    --success-soft: 152 40% 18%;
+    --success-soft-foreground: 150 60% 80%;
+    --caution: 36 100% 55%;
+    --caution-foreground: 45 100% 88%;
+    --caution-soft: 36 40% 16%;
+    --assistant-surface: 331 30% 8%;
   }
 }
 
