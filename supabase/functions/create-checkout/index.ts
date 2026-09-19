@@ -88,11 +88,22 @@ serve(async (req) => {
       apiVersion: "2025-08-27.basil",
     });
 
-    // Initialize Supabase client to check for store discounts
+    // Two clients on purpose:
+    // - `supabaseClient` runs in this project and is used to invoke sibling edge
+    //   functions (the live, current shipping calculator).
+    // - `storeDb` points at the store's data project, where products, discounts
+    //   and flash sales actually live.
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? ""
     );
+
+    const STORE_DB_URL = "https://attczdhexkpxpyqyasgz.supabase.co";
+    const storeServiceKey = Deno.env.get("LEGACY_SUPABASE_SERVICE_ROLE_KEY");
+    const storeDb = storeServiceKey
+      ? createClient(STORE_DB_URL, storeServiceKey, { auth: { persistSession: false } })
+      : supabaseClient;
+
 
     // Validate all cart items are still visible and in stock
     const itemIds = items
@@ -105,7 +116,7 @@ serve(async (req) => {
       .filter((id: number) => !isNaN(id));
     
     if (itemIds.length > 0) {
-      const { data: availableProducts, error: productError } = await supabaseClient
+      const { data: availableProducts, error: productError } = await storeDb
         .from('woocommerce_products')
         .select('id, slug, name, visible, in_stock')
         .in('id', itemIds);
@@ -139,7 +150,7 @@ serve(async (req) => {
     }
 
     // Fetch store-wide discount
-    const { data: discountData } = await supabaseClient
+    const { data: discountData } = await storeDb
       .from('store_settings')
       .select('*')
       .eq('setting_key', 'store_wide_discount')
@@ -150,7 +161,7 @@ serve(async (req) => {
 
     // Fetch active flash sales
     const now = new Date().toISOString();
-    const { data: flashSales } = await supabaseClient
+    const { data: flashSales } = await storeDb
       .from('flash_sales')
       .select('*')
       .eq('enabled', true)
@@ -443,6 +454,28 @@ serve(async (req) => {
 
     console.log('Creating Stripe checkout session');
 
+    // Stripe rejects any metadata value longer than 500 characters and fails the
+    // whole session. The shipping payload carries a verbose `debug` block, so we
+    // strip it and hard-truncate every value before sending.
+    const compactShippingMetadata = shippingMetadata
+      ? (() => {
+          const { debug: _debug, ...rest } = shippingMetadata as Record<string, unknown>;
+          return rest;
+        })()
+      : null;
+
+    const safeMetadata = (obj: Record<string, unknown>) => {
+      const out: Record<string, string> = {};
+      for (const [key, raw] of Object.entries(obj)) {
+        const value = raw === undefined || raw === null ? '' : String(raw);
+        if (value.length > 500) {
+          console.warn(`Metadata "${key}" truncated from ${value.length} characters`);
+        }
+        out[key] = value.slice(0, 500);
+      }
+      return out;
+    };
+
     // Prepare session parameters
     const sessionParams: any = {
       customer: customerId,
@@ -451,17 +484,18 @@ serve(async (req) => {
       mode: "payment",
       success_url: `${origin}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/checkout`,
-      metadata: {
+      metadata: safeMetadata({
         shippingAddress: shippingAddress ? JSON.stringify(shippingAddress) : '',
         shippingMethod: shippingMethod || '',
-        shippingMetadata: shippingMetadata ? JSON.stringify(shippingMetadata) : '',
+        shippingMetadata: compactShippingMetadata ? JSON.stringify(compactShippingMetadata) : '',
         customerPhone: customerPhone || '',
         giftWrapping: giftWrapping?.enabled ? 'Yes' : 'No',
         giftMessage: giftWrapping?.message || '',
         subscribeNewsletter: subscribeNewsletter ? 'Yes' : 'No',
         discountApplied: discountPercentage > 0 ? `${discountPercentage}%` : 'None',
-      },
+      }),
     };
+
 
     // Note: Discount is already applied to line item prices above, no need for Stripe coupons
     // This prevents double discount application

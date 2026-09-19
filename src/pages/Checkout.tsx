@@ -11,6 +11,7 @@ import { useShippingSettings } from '@/hooks/useShippingSettings';
 import { useShippingZones } from '@/hooks/useShippingZones';
 import { useFreeGiftPromotion } from '@/hooks/useFreeGiftPromotion';
 import { supabase } from '@/integrations/supabase/client';
+import { functionsClient } from '@/integrations/supabase/functionsClient';
 import { useToast } from '@/hooks/use-toast';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Button } from '@/components/ui/button';
@@ -606,7 +607,8 @@ const Checkout = () => {
       ];
 
       // Call Stripe checkout edge function
-      const { data, error } = await supabase.functions.invoke('create-checkout', {
+      // Use functionsClient so the current, deployed checkout function answers
+      const { data, error } = await functionsClient.functions.invoke('create-checkout', {
         body: {
           items: checkoutItems,
           customerEmail: formData.email,
