@@ -5,7 +5,6 @@ import { supabase } from '@/integrations/supabase/client';
 import {
   Conversation,
   ConversationContent,
-  ConversationEmptyState,
   ConversationScrollButton,
 } from '@/components/ai-elements/conversation';
 import { Message, MessageContent, MessageResponse } from '@/components/ai-elements/message';
@@ -22,6 +21,10 @@ import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { isApprovedAdminRoute, labelForAdminRoute } from '@/config/adminAssistantRoutes';
 import assistantMark from '@/assets/admin-assistant-mark.png';
+import { AssistantHeader } from './assistant/AssistantHeader';
+import { AssistantAnswerCard, type AnswerCardData } from './assistant/AssistantAnswerCard';
+import { QuickReplies } from './assistant/QuickReplies';
+import { MessageMeta } from './assistant/MessageMeta';
 
 const ENDPOINT = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/admin-assistant`;
 
@@ -32,11 +35,17 @@ const TOOL_LABELS: Record<string, string> = {
   'tool-find_admin_page': 'Found the right admin page',
 };
 
-const SUGGESTIONS = [
+const STARTER_SUGGESTIONS = [
   'How do I fulfill an order?',
   'What are our shipping prices right now?',
   'Where do I change the homepage banner?',
   'How do I turn the announcement banner on?',
+];
+
+const FOLLOW_UP_SUGGESTIONS = [
+  'Check recent orders',
+  'Update shipping',
+  'View product stock',
 ];
 
 /** Collect approved internal admin links from this message's tool results only. */
@@ -57,7 +66,7 @@ function collectActions(parts: any[]): string[] {
   };
 
   for (const part of parts) {
-    if (typeof part?.type === 'string' && part.type.startsWith('tool-')) {
+    if (typeof part?.type === 'string' && part.type.startsWith('tool-') && part.type !== 'tool-answer_card') {
       walk(part.output);
     }
   }
@@ -107,15 +116,24 @@ interface AdminAssistantChatProps {
   className?: string;
   /** Called when the admin clicks a navigation button (used to close the bubble). */
   onNavigate?: () => void;
+  /** Close button in the header (bubble only). */
+  onClose?: () => void;
+  /** Show "Open full page" in the header menu (bubble only). */
+  fullPageLink?: boolean;
 }
 
-
-export function AdminAssistantChat({ className, onNavigate }: AdminAssistantChatProps) {
+export function AdminAssistantChat({
+  className,
+  onNavigate,
+  onClose,
+  fullPageLink,
+}: AdminAssistantChatProps) {
   const [input, setInput] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const timesRef = useRef<Map<string, Date>>(new Map());
 
-  const { messages, sendMessage, status } = useChat({
+  const { messages, sendMessage, status, setMessages } = useChat({
     transport: new DefaultChatTransport({ api: ENDPOINT, fetch: authedFetch }),
     onError: (error) => {
       const raw = error?.message || '';
@@ -133,6 +151,15 @@ export function AdminAssistantChat({ className, onNavigate }: AdminAssistantChat
     if (!isBusy) textareaRef.current?.focus();
   }, [isBusy]);
 
+  const timeFor = (id: string) => {
+    let t = timesRef.current.get(id);
+    if (!t) {
+      t = new Date();
+      timesRef.current.set(id, t);
+    }
+    return t;
+  };
+
   const submit = (text: string) => {
     const trimmed = text.trim();
     if (!trimmed || isBusy) return;
@@ -141,15 +168,33 @@ export function AdminAssistantChat({ className, onNavigate }: AdminAssistantChat
     sendMessage({ text: trimmed });
   };
 
+  const clearConversation = () => {
+    timesRef.current.clear();
+    setErrorMessage(null);
+    setMessages([]);
+    setInput('');
+  };
+
+  const quickReplies = messages.length === 0 ? STARTER_SUGGESTIONS : FOLLOW_UP_SUGGESTIONS;
+
   return (
-    <div className={`flex h-full min-h-0 flex-col ${className ?? ''}`}>
+    <div
+      className={`flex h-full min-h-0 flex-col overflow-hidden rounded-xl border bg-assistant-surface ${className ?? ''}`}
+    >
+      <AssistantHeader
+        onClear={messages.length > 0 ? clearConversation : undefined}
+        onClose={onClose}
+        fullPageLink={fullPageLink}
+        onNavigate={onNavigate}
+      />
+
       <Conversation className="flex-1 min-h-0">
         <ConversationContent className="mx-auto w-full max-w-3xl">
           {messages.length === 0 ? (
             <div className="flex flex-col items-center gap-4 py-10 text-center">
               <img
                 src={assistantMark}
-                alt="Sister Storage admin assistant"
+                alt="Sister Storage store assistant"
                 width={64}
                 height={64}
                 loading="lazy"
@@ -161,57 +206,71 @@ export function AdminAssistantChat({ className, onNavigate }: AdminAssistantChat
                   How things work, where to click, and live order or product info.
                 </p>
               </div>
-              <div className="flex flex-wrap justify-center gap-2">
-                {SUGGESTIONS.map((s) => (
-                  <Button
-                    key={s}
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="rounded-full text-xs"
-                    onClick={() => submit(s)}
-                  >
-                    {s}
-                  </Button>
-                ))}
-              </div>
             </div>
           ) : (
-            messages.map((message) => (
-              <Message from={message.role} key={message.id}>
-                <MessageContent
-                  className={message.role === 'assistant' ? 'bg-transparent p-0' : undefined}
-                >
-                  {message.parts.map((part, index) => {
-                    if (part.type === 'text') {
-                      return <MessageResponse key={index}>{part.text}</MessageResponse>;
-                    }
-                    if (part.type.startsWith('tool-')) {
-                      const toolPart = part as any;
-                      return (
-                        <Tool key={index} defaultOpen={false} className="my-2">
-                          <ToolHeader
-                            type={toolPart.type}
-                            title={TOOL_LABELS[part.type] ?? 'Checked the store'}
-                            state={toolPart.state}
-                          />
-                          <ToolContent>
-                            <ToolInput input={toolPart.input} />
-                            <ToolOutput output={toolPart.output} errorText={toolPart.errorText} />
-                          </ToolContent>
-                        </Tool>
-                      );
-                    }
-                    return null;
-                  })}
+            messages.map((message) => {
+              const hasCard = message.parts.some((p: any) => p.type === 'tool-answer_card');
+              return (
+                <div key={message.id}>
+                  <Message from={message.role}>
+                    {message.role === 'assistant' && (
+                      <img
+                        src={assistantMark}
+                        alt=""
+                        width={28}
+                        height={28}
+                        className="mt-1 h-7 w-7 shrink-0 rounded-full"
+                      />
+                    )}
+                    <MessageContent
+                      className={message.role === 'assistant' ? 'bg-transparent p-0' : undefined}
+                    >
+                      {message.parts.map((part: any, index: number) => {
+                        if (part.type === 'text') {
+                          if (hasCard && message.role === 'assistant') return null;
+                          return <MessageResponse key={index}>{part.text}</MessageResponse>;
+                        }
+                        if (part.type === 'tool-answer_card') {
+                          const card = (part.output ?? part.input) as AnswerCardData | undefined;
+                          if (!card || !card.title) return null;
+                          return (
+                            <AssistantAnswerCard
+                              key={index}
+                              card={card}
+                              onNavigate={onNavigate}
+                            />
+                          );
+                        }
+                        if (typeof part.type === 'string' && part.type.startsWith('tool-')) {
+                          return (
+                            <Tool key={index} defaultOpen={false} className="my-2">
+                              <ToolHeader
+                                type={part.type}
+                                title={TOOL_LABELS[part.type] ?? 'Checked the store'}
+                                state={part.state}
+                              />
+                              <ToolContent>
+                                <ToolInput input={part.input} />
+                                <ToolOutput output={part.output} errorText={part.errorText} />
+                              </ToolContent>
+                            </Tool>
+                          );
+                        }
+                        return null;
+                      })}
 
-                  {message.role === 'assistant' && (
-                    <AssistantActions parts={message.parts} onNavigate={onNavigate} />
-                  )}
-                </MessageContent>
-              </Message>
-            ))
-
+                      {message.role === 'assistant' && (
+                        <AssistantActions parts={message.parts} onNavigate={onNavigate} />
+                      )}
+                    </MessageContent>
+                  </Message>
+                  <MessageMeta
+                    time={timeFor(message.id)}
+                    align={message.role === 'user' ? 'right' : 'left'}
+                  />
+                </div>
+              );
+            })
           )}
 
           {status === 'submitted' && (
@@ -229,8 +288,15 @@ export function AdminAssistantChat({ className, onNavigate }: AdminAssistantChat
         <ConversationScrollButton />
       </Conversation>
 
-      <div className="mx-auto w-full max-w-3xl shrink-0 px-1 pb-1 pt-2">
+      <div className="mx-auto w-full max-w-3xl shrink-0 px-3 pb-3 pt-2">
+        <QuickReplies
+          items={quickReplies}
+          onPick={submit}
+          disabled={isBusy}
+          className="mb-2 justify-start"
+        />
         <PromptInput
+          className="rounded-2xl"
           onSubmit={(_message, event) => {
             event.preventDefault();
             submit(input);
@@ -240,10 +306,14 @@ export function AdminAssistantChat({ className, onNavigate }: AdminAssistantChat
             ref={textareaRef}
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask how something works, or about an order..."
+            placeholder="Ask about an order or store setting..."
           />
           <PromptInputFooter className="justify-end">
-            <PromptInputSubmit status={status} disabled={!input.trim() && !isBusy} />
+            <PromptInputSubmit
+              className="rounded-full"
+              status={status}
+              disabled={!input.trim() && !isBusy}
+            />
           </PromptInputFooter>
         </PromptInput>
         <p className="mt-2 text-center text-[11px] text-muted-foreground">
