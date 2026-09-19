@@ -61,9 +61,8 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
-    const serviceKey = Deno.env.get("LEGACY_SUPABASE_SERVICE_ROLE_KEY");
-    if (!serviceKey) throw new Error("Assistant is not configured");
-    const db = createClient(LEGACY_URL, serviceKey, { auth: { persistSession: false } });
+    const LEGACY_ANON_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF0dGN6ZGhleGtweHB5cXlhc2d6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ2NjA5MzYsImV4cCI6MjA3MDIzNjkzNn0.eg1HRoC7BbRyCnbnUUYEphub_h-rf2f3iXspgE7oy2c";
 
     const authHeader = req.headers.get("Authorization");
     const token = authHeader?.replace("Bearer ", "").trim();
@@ -74,7 +73,16 @@ Deno.serve(async (req) => {
       });
     }
 
+    // Run as the signed-in admin so the store's own access rules apply. The
+    // service key is not usable against the store project, so a user-scoped
+    // client is the reliable path.
+    const db = createClient(LEGACY_URL, LEGACY_ANON_KEY, {
+      auth: { persistSession: false },
+      global: { headers: { Authorization: `Bearer ${token}` } },
+    });
+
     const { data: { user }, error: userError } = await db.auth.getUser(token);
+
     if (userError || !user) {
       return new Response(JSON.stringify({ error: "Please sign in to the admin first." }), {
         status: 401,
