@@ -88,11 +88,22 @@ serve(async (req) => {
       apiVersion: "2025-08-27.basil",
     });
 
-    // Initialize Supabase client to check for store discounts
+    // Two clients on purpose:
+    // - `supabaseClient` runs in this project and is used to invoke sibling edge
+    //   functions (the live, current shipping calculator).
+    // - `storeDb` points at the store's data project, where products, discounts
+    //   and flash sales actually live.
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? ""
     );
+
+    const STORE_DB_URL = "https://attczdhexkpxpyqyasgz.supabase.co";
+    const storeServiceKey = Deno.env.get("LEGACY_SUPABASE_SERVICE_ROLE_KEY");
+    const storeDb = storeServiceKey
+      ? createClient(STORE_DB_URL, storeServiceKey, { auth: { persistSession: false } })
+      : supabaseClient;
+
 
     // Validate all cart items are still visible and in stock
     const itemIds = items
