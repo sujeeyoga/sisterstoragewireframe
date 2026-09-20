@@ -63,6 +63,9 @@ Deno.serve(async (req) => {
     .limit(1)
     .maybeSingle();
 
+  const { data: roles } = await supabase.from("user_roles").select("*");
+  const { data: refundsSample } = await supabase.from("refunds").select("refund_type").limit(20);
+
   const sampleColumns = sample ? Object.keys(sample) : null;
 
   return new Response(
