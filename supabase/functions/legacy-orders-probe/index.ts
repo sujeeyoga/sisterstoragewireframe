@@ -37,12 +37,34 @@ Deno.serve(async (req) => {
     .from("woocommerce_orders")
     .select("id", { count: "exact", head: true });
 
+  // Full schema inventory via the REST OpenAPI spec
+  let tables: Record<string, Record<string, string>> = {};
+  try {
+    const specRes = await fetch(`${LEGACY_URL}/rest/v1/`, {
+      headers: { apikey: key, Authorization: `Bearer ${key}` },
+    });
+    const spec = await specRes.json();
+    const defs = spec.definitions ?? {};
+    for (const [name, def] of Object.entries<any>(defs)) {
+      const cols: Record<string, string> = {};
+      for (const [col, meta] of Object.entries<any>(def.properties ?? {})) {
+        cols[col] = [meta.type, meta.format].filter(Boolean).join(":");
+      }
+      tables[name] = cols;
+    }
+  } catch (e) {
+    tables = { _error: { err: String(e) } };
+  }
+
   const { data: sample } = await supabase
     .from("orders")
     .select("*")
     .order("created_at", { ascending: false })
     .limit(1)
     .maybeSingle();
+
+  const { data: roles } = await supabase.from("user_roles").select("*");
+  const { data: refundsSample } = await supabase.from("refunds").select("refund_type").limit(20);
 
   const sampleColumns = sample ? Object.keys(sample) : null;
 
@@ -57,6 +79,9 @@ Deno.serve(async (req) => {
       woocommerceOrdersError: wooError?.message ?? null,
       sampleColumns,
       sampleRow: sample ?? null,
+      tables,
+      userRoles: roles ?? null,
+      refundTypes: refundsSample ?? null,
     }),
     { headers: { ...corsHeaders, "Content-Type": "application/json" } },
   );
