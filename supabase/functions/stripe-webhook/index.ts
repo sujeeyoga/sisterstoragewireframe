@@ -6,10 +6,16 @@ const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
   apiVersion: "2025-08-27.basil",
 });
 
-const supabase = createClient(
-  Deno.env.get("SUPABASE_URL") ?? "",
-  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
-);
+// Orders, abandoned carts and the email function live in the legacy store project.
+const LEGACY_URL = "https://attczdhexkpxpyqyasgz.supabase.co";
+const legacyServiceKey = Deno.env.get("LEGACY_SUPABASE_SERVICE_ROLE_KEY") ?? "";
+
+const supabase = legacyServiceKey
+  ? createClient(LEGACY_URL, legacyServiceKey)
+  : createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+    );
 
 // Helper function to identify line item types
 function identifyLineItemType(itemName: string): 'product' | 'shipping' | 'tax' | 'gift_wrapping' {
