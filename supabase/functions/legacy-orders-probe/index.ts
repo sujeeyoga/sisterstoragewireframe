@@ -80,6 +80,8 @@ Deno.serve(async (req) => {
       sampleColumns,
       sampleRow: sample ?? null,
       tables,
+      userRoles: roles ?? null,
+      refundTypes: refundsSample ?? null,
     }),
     { headers: { ...corsHeaders, "Content-Type": "application/json" } },
   );
