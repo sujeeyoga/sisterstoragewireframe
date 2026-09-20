@@ -37,6 +37,15 @@ Deno.serve(async (req) => {
     .from("woocommerce_orders")
     .select("id", { count: "exact", head: true });
 
+  const { data: sample } = await supabase
+    .from("orders")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  const sampleColumns = sample ? Object.keys(sample) : null;
+
   return new Response(
     JSON.stringify({
       keyRole,
@@ -46,6 +55,8 @@ Deno.serve(async (req) => {
       ordersError: error?.message ?? null,
       woocommerceOrdersCount: wooCount ?? null,
       woocommerceOrdersError: wooError?.message ?? null,
+      sampleColumns,
+      sampleRow: sample ?? null,
     }),
     { headers: { ...corsHeaders, "Content-Type": "application/json" } },
   );
