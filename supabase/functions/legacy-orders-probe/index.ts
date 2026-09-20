@@ -1,4 +1,4 @@
-// Read-only diagnostic: lists the most recent orders in the legacy store database.
+// Read-only diagnostic: reports what the legacy store database key can do.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
@@ -19,15 +19,34 @@ Deno.serve(async (req) => {
     });
   }
 
-  const supabase = createClient(LEGACY_URL, key);
-  const { data, error } = await supabase
-    .from("orders")
-    .select("order_number, created_at, total, customer_email, payment_status, status, stripe_session_id")
-    .order("created_at", { ascending: false })
-    .limit(10);
+  let keyRole = "unknown";
+  let keyShape = key.startsWith("sb_") ? "publishable/secret style" : "jwt style";
+  try {
+    if (keyShape === "jwt style") {
+      const payload = JSON.parse(atob(key.split(".")[1]));
+      keyRole = payload.role ?? "unknown";
+    }
+  } catch (_e) { /* ignore */ }
 
-  return new Response(JSON.stringify({ ok: !error, error: error?.message ?? null, orders: data ?? [] }), {
-    status: error ? 500 : 200,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
+  const supabase = createClient(LEGACY_URL, key);
+  const { count, error } = await supabase
+    .from("orders")
+    .select("id", { count: "exact", head: true });
+
+  const { count: wooCount, error: wooError } = await supabase
+    .from("woocommerce_orders")
+    .select("id", { count: "exact", head: true });
+
+  return new Response(
+    JSON.stringify({
+      keyRole,
+      keyShape,
+      keyPrefix: key.slice(0, 6),
+      ordersCount: count ?? null,
+      ordersError: error?.message ?? null,
+      woocommerceOrdersCount: wooCount ?? null,
+      woocommerceOrdersError: wooError?.message ?? null,
+    }),
+    { headers: { ...corsHeaders, "Content-Type": "application/json" } },
+  );
 });
