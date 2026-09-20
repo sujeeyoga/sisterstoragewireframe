@@ -72,6 +72,7 @@ Deno.serve(async (req) => {
       woocommerceOrdersError: wooError?.message ?? null,
       sampleColumns,
       sampleRow: sample ?? null,
+      tables,
     }),
     { headers: { ...corsHeaders, "Content-Type": "application/json" } },
   );
