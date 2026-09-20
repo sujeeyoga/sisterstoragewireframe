@@ -38,7 +38,7 @@ Deno.serve(async (req) => {
     .select("id", { count: "exact", head: true });
 
   // Full schema inventory via the REST OpenAPI spec
-  let tables: Record<string, string[]> = {};
+  let tables: Record<string, Record<string, string>> = {};
   try {
     const specRes = await fetch(`${LEGACY_URL}/rest/v1/`, {
       headers: { apikey: key, Authorization: `Bearer ${key}` },
@@ -46,10 +46,14 @@ Deno.serve(async (req) => {
     const spec = await specRes.json();
     const defs = spec.definitions ?? {};
     for (const [name, def] of Object.entries<any>(defs)) {
-      tables[name] = Object.keys(def.properties ?? {});
+      const cols: Record<string, string> = {};
+      for (const [col, meta] of Object.entries<any>(def.properties ?? {})) {
+        cols[col] = [meta.type, meta.format].filter(Boolean).join(":");
+      }
+      tables[name] = cols;
     }
   } catch (e) {
-    tables = { _error: [String(e)] };
+    tables = { _error: { err: String(e) } };
   }
 
   const { data: sample } = await supabase
