@@ -122,3 +122,6 @@ verify_jwt = false
 
 [functions.shopify-delete-test-order]
 verify_jwt = false
+
+[functions.apply-orders-schema]
+verify_jwt = false
