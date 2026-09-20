@@ -317,8 +317,17 @@ serve(async (req) => {
 
         // Sync order to Shopify (fire-and-forget)
         console.log("🛍️ Syncing order to Shopify...");
-        supabase.functions.invoke('shopify-create-order', {
-          body: {
+        // shopify-create-order lives in the Lovable Cloud project, not this one
+        const SHOPIFY_FN_URL = "https://zkmxforzmhpzftbvnixi.supabase.co/functions/v1/shopify-create-order";
+        const SHOPIFY_FN_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InprbXhmb3J6bWhwemZ0YnZuaXhpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1MDA4OTAsImV4cCI6MjA5NDA3Njg5MH0.RUmXUYhyA5FXspWI7XDX82LLcVdpFFzQxpVB4wqLO9A";
+        fetch(SHOPIFY_FN_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            apikey: SHOPIFY_FN_ANON,
+            Authorization: `Bearer ${SHOPIFY_FN_ANON}`,
+          },
+          body: JSON.stringify({
             orderNumber: emailData.orderNumber,
             customerEmail,
             customerName: emailData.customerName,
@@ -330,12 +339,13 @@ serve(async (req) => {
             total: emailData.total,
             shippingAddress: emailData.shippingAddress,
             stripeSessionId: session.id,
-          },
-        }).then(({ data: shopRes, error: shopErr }) => {
-          if (shopErr) {
-            console.error("❌ Shopify sync failed:", shopErr);
+          }),
+        }).then(async (res) => {
+          const text = await res.text();
+          if (!res.ok) {
+            console.error(`❌ Shopify sync failed (${res.status}):`, text);
           } else {
-            console.log("✅ Shopify sync result:", shopRes);
+            console.log("✅ Shopify sync result:", text);
           }
         }).catch((err) => {
           console.error("❌ Shopify sync exception:", err);
