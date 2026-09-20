@@ -1,5 +1,7 @@
 // One-off maintenance helper: deletes a Shopify order created by the pipeline test.
 // Only order names starting with SS-PIPELINE-TEST can be deleted.
+import { getShopifyAdminToken } from "../_shared/shopify-token.ts";
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -11,7 +13,7 @@ const API_VERSION = "2025-07";
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
-  const token = Deno.env.get("SHOPIFY_ACCESS_TOKEN");
+  const token = await getShopifyAdminToken();
   if (!token) {
     return new Response(JSON.stringify({ error: "Shopify token not configured" }), {
       status: 500,
