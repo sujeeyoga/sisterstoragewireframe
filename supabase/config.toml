@@ -125,3 +125,6 @@ verify_jwt = false
 
 [functions.apply-orders-schema]
 verify_jwt = false
+
+[functions.cloud-ddl-runner]
+verify_jwt = false
