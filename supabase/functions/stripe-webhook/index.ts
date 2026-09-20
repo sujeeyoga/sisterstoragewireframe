@@ -6,10 +6,16 @@ const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
   apiVersion: "2025-08-27.basil",
 });
 
-const supabase = createClient(
-  Deno.env.get("SUPABASE_URL") ?? "",
-  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
-);
+// Orders, abandoned carts and the email function live in the legacy store project.
+const LEGACY_URL = "https://attczdhexkpxpyqyasgz.supabase.co";
+const legacyServiceKey = Deno.env.get("LEGACY_SUPABASE_SERVICE_ROLE_KEY") ?? "";
+
+const supabase = legacyServiceKey
+  ? createClient(LEGACY_URL, legacyServiceKey)
+  : createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+    );
 
 // Helper function to identify line item types
 function identifyLineItemType(itemName: string): 'product' | 'shipping' | 'tax' | 'gift_wrapping' {
@@ -317,8 +323,17 @@ serve(async (req) => {
 
         // Sync order to Shopify (fire-and-forget)
         console.log("🛍️ Syncing order to Shopify...");
-        supabase.functions.invoke('shopify-create-order', {
-          body: {
+        // shopify-create-order lives in the Lovable Cloud project, not this one
+        const SHOPIFY_FN_URL = "https://zkmxforzmhpzftbvnixi.supabase.co/functions/v1/shopify-create-order";
+        const SHOPIFY_FN_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InprbXhmb3J6bWhwemZ0YnZuaXhpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1MDA4OTAsImV4cCI6MjA5NDA3Njg5MH0.RUmXUYhyA5FXspWI7XDX82LLcVdpFFzQxpVB4wqLO9A";
+        fetch(SHOPIFY_FN_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            apikey: SHOPIFY_FN_ANON,
+            Authorization: `Bearer ${SHOPIFY_FN_ANON}`,
+          },
+          body: JSON.stringify({
             orderNumber: emailData.orderNumber,
             customerEmail,
             customerName: emailData.customerName,
@@ -330,12 +345,13 @@ serve(async (req) => {
             total: emailData.total,
             shippingAddress: emailData.shippingAddress,
             stripeSessionId: session.id,
-          },
-        }).then(({ data: shopRes, error: shopErr }) => {
-          if (shopErr) {
-            console.error("❌ Shopify sync failed:", shopErr);
+          }),
+        }).then(async (res) => {
+          const text = await res.text();
+          if (!res.ok) {
+            console.error(`❌ Shopify sync failed (${res.status}):`, text);
           } else {
-            console.log("✅ Shopify sync result:", shopRes);
+            console.log("✅ Shopify sync result:", text);
           }
         }).catch((err) => {
           console.error("❌ Shopify sync exception:", err);
