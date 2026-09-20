@@ -37,6 +37,21 @@ Deno.serve(async (req) => {
     .from("woocommerce_orders")
     .select("id", { count: "exact", head: true });
 
+  // Full schema inventory via the REST OpenAPI spec
+  let tables: Record<string, string[]> = {};
+  try {
+    const specRes = await fetch(`${LEGACY_URL}/rest/v1/`, {
+      headers: { apikey: key, Authorization: `Bearer ${key}` },
+    });
+    const spec = await specRes.json();
+    const defs = spec.definitions ?? {};
+    for (const [name, def] of Object.entries<any>(defs)) {
+      tables[name] = Object.keys(def.properties ?? {});
+    }
+  } catch (e) {
+    tables = { _error: [String(e)] };
+  }
+
   const { data: sample } = await supabase
     .from("orders")
     .select("*")
