@@ -3,6 +3,7 @@
 // request — the SQL is fixed at deploy time.
 import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors'
 import { Client } from 'https://deno.land/x/postgres@v0.17.0/mod.ts'
+import SCHEMA_SQL from './schema.ts'
 
 const RUN_TOKEN = 'ddl-bootstrap-7f3a9c1e'
 
@@ -37,7 +38,7 @@ Deno.serve(async (req) => {
     const dbUrl = Deno.env.get('SUPABASE_DB_URL')
     if (!dbUrl) throw new Error('SUPABASE_DB_URL not set')
 
-    const sql = await Deno.readTextFile(new URL('./schema.sql', import.meta.url))
+    const sql = SCHEMA_SQL
     const statements = splitStatements(sql).filter(s => s && !s.startsWith('--'))
 
     const client = new Client(dbUrl)
