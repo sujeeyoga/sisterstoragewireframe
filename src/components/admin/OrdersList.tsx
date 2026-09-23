@@ -506,6 +506,23 @@ export function OrdersList() {
     (filters.dateRange !== 'all' ? 1 : 0) + 
     filters.statuses.length + 
     (filters.sortBy !== 'newest' ? 1 : 0);
+
+  // Deep link: /admin/orders?order=SS-XXXX opens that order automatically
+  useEffect(() => {
+    if (!deepLinkOrder || deepLinkHandled.current) return;
+    const list = (orders as any)?.orders as Order[] | undefined;
+    if (!list?.length) return;
+    const needle = deepLinkOrder.replace(/^#/, '').toLowerCase();
+    const match = list.find(
+      (o) => String((o as any).order_number ?? '').replace(/^#/, '').toLowerCase() === needle,
+    );
+    if (match) {
+      deepLinkHandled.current = true;
+      setSelectedOrder(match);
+    }
+  }, [deepLinkOrder, orders]);
+  
+
   
   if (isLoading) {
     return (
@@ -564,20 +581,6 @@ export function OrdersList() {
     );
   }
   
-  // Deep link: /admin/orders?order=SS-XXXX opens that order automatically
-  useEffect(() => {
-    if (!deepLinkOrder || deepLinkHandled.current) return;
-    const list = (orders as any)?.orders as Order[] | undefined;
-    if (!list?.length) return;
-    const needle = deepLinkOrder.replace(/^#/, '').toLowerCase();
-    const match = list.find(
-      (o) => String((o as any).order_number ?? '').replace(/^#/, '').toLowerCase() === needle,
-    );
-    if (match) {
-      deepLinkHandled.current = true;
-      setSelectedOrder(match);
-    }
-  }, [deepLinkOrder, orders]);
 
   return (
 
