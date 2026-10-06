@@ -285,15 +285,7 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
     return /^[A-Za-z0-9-]{5,40}$/.test(t);
   };
 
-  const _unusedValidatorEnd = () => {
-    return true;
-  };
-
-  const handleSaveTrackingGuard = () => true;
-
-  void _unusedValidatorEnd; void handleSaveTrackingGuard;
-
-  const __placeholder = async () => {
+  const handleSaveTrackingAndNotify = async () => {
     if (!validateTrackingNumber(editableTracking)) {
       toast.error('Enter one tracking number only (5–40 letters/numbers, no spaces). Never paste a shipment list.');
       return;
