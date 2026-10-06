@@ -145,7 +145,7 @@ const handler = async (req: Request): Promise<Response> => {
     // Privacy guard: never email anything that isn't a single tracking number
     // (blocks pasted shipment lists containing other customers' details).
     const tn = (data as any)?.trackingNumber;
-    if (typeof tn === "string" && tn.trim() && !/^[A-Za-z0-9-]{5,40}$/.test(tn.trim())) {
+    if (body.preview !== true && typeof tn === "string" && tn.trim() && !/^[A-Za-z0-9-]{5,40}$/.test(tn.trim())) {
       console.error("Blocked email: invalid tracking number content");
       return new Response(JSON.stringify({ error: "Invalid tracking number — email blocked." }), {
         status: 400,
