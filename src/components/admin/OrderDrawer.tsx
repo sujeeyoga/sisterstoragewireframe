@@ -279,22 +279,15 @@ export function OrderDrawer({ order, open, onClose, onStatusUpdate }: OrderDrawe
   };
   
   const validateTrackingNumber = (trackingNum: string): boolean => {
-    // Basic validation - not empty and reasonable length
-    if (!trackingNum || trackingNum.trim().length < 5) {
-      return false;
-    }
-    // Could add more specific validation based on carrier format
-    return true;
+    // A single tracking number only: letters/digits/dashes, no spaces or pasted lists.
+    // Prevents accidentally emailing other customers' shipment details.
+    const t = (trackingNum || '').trim();
+    return /^[A-Za-z0-9-]{5,40}$/.test(t);
   };
 
   const handleSaveTrackingAndNotify = async () => {
-    if (!editableTracking.trim()) {
-      toast.error('Please enter a tracking number');
-      return;
-    }
-
     if (!validateTrackingNumber(editableTracking)) {
-      toast.error('Please enter a valid tracking number (at least 5 characters)');
+      toast.error('Enter one tracking number only (5–40 letters/numbers, no spaces). Never paste a shipment list.');
       return;
     }
 
