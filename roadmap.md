@@ -1,3 +1,13 @@
+# Checkout price safeguards
+
+- [x] Enforce current catalog prices in checkout; reject unresolved products and pricing lookup failures.
+- [x] Refresh saved cart prices on load without losing quantities or sleeve choices.
+- [x] Test stale $24 and tampered prices against the current $30 Large Bangle Box; deploy checkout and verify.
+
+Verified: 9 regression tests; real Stripe session for three boxes shows CAD $101.70 including $11.70 tax (no payment submitted); forged gift and unknown product rejected live; 390px and desktop saved carts show $30 each/$90 subtotal. Storefront cart refresh awaits user-approved publication.
+
+Constraints: preserve existing promotion priority, shipping configuration, product prices, and completed orders; do not publish without approval.
+
 # Migration: legacy store DB → Lovable Cloud
 
 Approved: move EVERYTHING off legacy, maintenance window OK now.

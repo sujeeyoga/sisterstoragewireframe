@@ -1,8 +1,10 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { refreshCartPrices } from '@/lib/cartCatalog';
 
-// Increment this version to clear all existing carts (useful after product image updates)
-const CART_VERSION = 2;
+// Versions migrate saved items rather than clearing customers’ carts.
+const CART_VERSION = 3;
 
 export type CartItem = {
   id: string;
@@ -40,6 +42,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
   
   // Calculate total items and subtotal
   const totalItems = items.reduce((total, item) => total + item.quantity, 0);
@@ -47,17 +50,8 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   
   // Load cart from localStorage on mount
   useEffect(() => {
-    // Check cart version
-    const savedVersion = localStorage.getItem('cart_version');
-    const currentVersion = CART_VERSION.toString();
-    
-    if (savedVersion !== currentVersion) {
-      // Clear old cart data when version changes
-      localStorage.removeItem('cart');
-      localStorage.setItem('cart_version', currentVersion);
-      return;
-    }
-    
+    localStorage.setItem('cart_version', CART_VERSION.toString());
+
     const savedCart = localStorage.getItem('cart');
     if (savedCart) {
       try {
@@ -72,12 +66,35 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         localStorage.removeItem('cart');
       }
     }
+    setHydrated(true);
+  }, []);
+
+  // Refresh on load and when shoppers return to their tab; do not overwrite edits in flight.
+  useEffect(() => {
+    let cancelled = false;
+    const refresh = async () => {
+      const { data, error } = await supabase
+        .from('woocommerce_products')
+        .select('id, slug, name, price, regular_price, sale_price');
+      if (!cancelled && !error && data) {
+        setItems(current => refreshCartPrices(current, data));
+      }
+    };
+    const onVisible = () => { if (document.visibilityState === 'visible') void refresh(); };
+    void refresh();
+    window.addEventListener('focus', refresh);
+    document.addEventListener('visibilitychange', onVisible);
+    return () => {
+      cancelled = true;
+      window.removeEventListener('focus', refresh);
+      document.removeEventListener('visibilitychange', onVisible);
+    };
   }, []);
   
   // Save cart to localStorage when it changes
   useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(items));
-  }, [items]);
+    if (hydrated) localStorage.setItem('cart', JSON.stringify(items));
+  }, [items, hydrated]);
   
   const addItem = (newItem: Omit<CartItem, 'quantity'>) => {
     try {

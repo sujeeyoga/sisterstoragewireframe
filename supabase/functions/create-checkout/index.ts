@@ -2,10 +2,8 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
+import { productKey, resolveCatalogItem, discountedCatalogPrice, validateGiftItems } from "../_shared/catalog-pricing.ts";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -35,10 +33,10 @@ serve(async (req) => {
     console.log('Using origin for checkout URLs:', origin);
 
     const requestBody = await req.json();
-    console.log('Raw checkout request body:', JSON.stringify(requestBody, null, 2));
+
 
     const { 
-      items, 
+      items: submittedItems,
       customerEmail, 
       customerPhone,
       shippingAddress, 
@@ -53,6 +51,8 @@ serve(async (req) => {
       subscribeNewsletter
     } = requestBody;
     
+    let items = submittedItems;
+
     console.log('Parsed checkout request:', { 
       items: items?.length, 
       customerEmail, 
@@ -105,48 +105,32 @@ serve(async (req) => {
       : supabaseClient;
 
 
-    // Validate all cart items are still visible and in stock
-    const itemIds = items
-      .filter((item: any) => !item.isFreeGift)
-      .map((item: any) => {
-        // Handle both numeric IDs and string slugs
-        const id = item.productId || item.id;
-        return typeof id === 'number' ? id : parseInt(id, 10);
-      })
-      .filter((id: number) => !isNaN(id));
-    
-    if (itemIds.length > 0) {
-      const { data: availableProducts, error: productError } = await storeDb
-        .from('woocommerce_products')
-        .select('id, slug, name, visible, in_stock')
-        .in('id', itemIds);
+    // Fail closed: every item, including gift requests, must resolve to the live catalog.
+    const keys = items.map((item: any) => productKey(item));
+    const numericIds = keys.filter((key: string) => /^\d+$/.test(key));
+    const slugs = keys.filter((key: string) => !/^\d+$/.test(key));
+    const filters = [
+      numericIds.length ? `id.in.(${numericIds.join(',')})` : '',
+      slugs.length ? `slug.in.(${slugs.join(',')})` : '',
+    ].filter(Boolean).join(',');
+    const { data: products, error: productError } = await storeDb
+      .from('woocommerce_products')
+      .select('id, slug, name, visible, in_stock, price, regular_price, sale_price')
+      .or(filters);
+    if (productError || !products) {
+      throw new Error('Unable to confirm current product prices. Please try again.');
+    }
+    items = items.map((item: any) => resolveCatalogItem(item, products));
 
-      if (productError) {
-        console.error('Error checking product availability:', productError);
-      } else if (availableProducts) {
-        const availableIdSet = new Set(
-          availableProducts
-            .filter((p: any) => p.visible && p.in_stock)
-            .map((p: any) => p.id)
-        );
-
-        for (const item of items) {
-          if (item.isFreeGift) continue;
-          
-          const itemId = item.productId || item.id;
-          const numericId = typeof itemId === 'number' ? itemId : parseInt(itemId, 10);
-          
-          if (!isNaN(numericId) && !availableIdSet.has(numericId)) {
-            const product = availableProducts.find((p: any) => p.id === numericId);
-            const reason = product 
-              ? (!product.visible ? 'no longer available' : 'out of stock')
-              : 'not found';
-            console.error(`Product unavailable: ${item.name} (${numericId}) - ${reason}`);
-            throw new Error(`"${item.name}" is ${reason}. Please remove it from your cart and try again.`);
-          }
-        }
-        console.log('✅ All cart items validated as available');
-      }
+    // A browser-supplied gift flag never overrides the configured promotion.
+    if (items.some((item: any) => item.isFreeGift)) {
+      const { data: promotion, error: giftError } = await storeDb
+        .from('store_settings').select('enabled, setting_value')
+        .eq('setting_key', 'us_free_gift_promotion').maybeSingle();
+      if (giftError) throw new Error('Unable to confirm gift eligibility. Please try again.');
+      const qualifyingSubtotal = items.reduce((sum: number, item: any) =>
+        sum + (item.isFreeGift ? 0 : item.price * item.quantity), 0);
+      validateGiftItems(items, promotion, shippingAddress.country, qualifyingSubtotal);
     }
 
     // Fetch store-wide discount
@@ -200,20 +184,10 @@ serve(async (req) => {
       return null;
     };
 
-    // Helper function to calculate flash sale discount
-    const calculateFlashDiscount = (price: number, sale: any) => {
-      if (sale.discount_type === 'percentage') {
-        return price * (sale.discount_value / 100);
-      } else if (sale.discount_type === 'fixed_amount') {
-        return Math.min(sale.discount_value, price);
-      }
-      return 0; // BOGO handled elsewhere
-    };
-
     // Build line items for Stripe from cart items with discount already applied
     const lineItems = items.map((item: any) => {
       // Handle free gift items - always $0, no discount applied
-      if (item.isFreeGift || item.price === 0) {
+      if (item.isFreeGift) {
         const freeItemData: any = {
           price_data: {
             currency: 'cad',
@@ -239,28 +213,11 @@ serve(async (req) => {
 
       // Check for flash sale on this product (takes priority)
       const flashSale = getFlashSaleForProduct(item.id);
-      let discountedPrice = item.price;
-      let appliedDiscount = 'none';
+      const discountedPrice = discountedCatalogPrice(item, flashSale, discountPercentage);
+      const appliedDiscount = flashSale ? `flash-${flashSale.id}`
+        : item.salePrice !== undefined ? 'sale'
+        : discountPercentage > 0 ? 'store-wide' : 'none';
 
-      // Determine if item is already on sale
-      const hasExistingSale = item.salePrice && item.regularPrice && item.salePrice < item.regularPrice;
-
-      if (flashSale) {
-        const flashDiscount = calculateFlashDiscount(item.price, flashSale);
-        discountedPrice = item.price - flashDiscount;
-        appliedDiscount = `flash-${flashSale.id}`;
-        console.log(`Flash sale applied to ${item.name}:`, flashSale.name, discountedPrice);
-      } else if (discountPercentage > 0 && !hasExistingSale) {
-        // Only apply store-wide discount if item is NOT already on sale
-        // This prevents double discounting
-        discountedPrice = item.price * (1 - discountPercentage / 100);
-        appliedDiscount = 'store-wide';
-        console.log(`Store-wide discount applied to ${item.name}: ${item.price} → ${discountedPrice}`);
-      } else if (hasExistingSale) {
-        // Item already has sale price, don't apply additional discounts
-        console.log(`Item ${item.name} already on sale - skipping store-wide discount`);
-      }
-      
       const itemData: any = {
         price_data: {
           currency: 'cad',
@@ -309,24 +266,13 @@ serve(async (req) => {
     // Calculate product subtotal (excluding gift wrapping)
     const productSubtotal = items.reduce((sum: number, item: any) => {
       // Skip free gift items from subtotal calculation
-      if (item.isFreeGift || item.price === 0) {
+      if (item.isFreeGift) {
         return sum;
       }
 
       // Check for flash sale
       const flashSale = getFlashSaleForProduct(item.id);
-      let discountedPrice = item.price;
-      
-      // Determine if item is already on sale
-      const hasExistingSale = item.salePrice && item.regularPrice && item.salePrice < item.regularPrice;
-
-      if (flashSale) {
-        const flashDiscount = calculateFlashDiscount(item.price, flashSale);
-        discountedPrice = item.price - flashDiscount;
-      } else if (discountPercentage > 0 && !hasExistingSale) {
-        // Only apply store-wide discount if item is NOT already on sale
-        discountedPrice = item.price * (1 - discountPercentage / 100);
-      }
+      const discountedPrice = discountedCatalogPrice(item, flashSale, discountPercentage);
 
       return sum + (discountedPrice * item.quantity);
     }, 0);
@@ -437,8 +383,15 @@ serve(async (req) => {
       console.log('✅ FREE SHIPPING - No shipping charge added to Stripe checkout');
     }
 
+    // Do not carry an old-cart tax amount into the corrected checkout.
+    const validTaxRate = Number(taxRate);
+    if (!Number.isFinite(validTaxRate) || validTaxRate < 0 || validTaxRate > 1) {
+      throw new Error("A valid tax rate is required. Please try again.");
+    }
+    const finalTaxAmount = Math.round((productSubtotal +
+      (giftWrapping?.enabled ? Number(giftWrapping.fee) || 0 : 0)) * validTaxRate * 100) / 100;
     // Add tax as a line item
-    if (taxAmount && taxAmount > 0) {
+    if (finalTaxAmount > 0) {
       const taxLabel = province ? `Tax (${province} - ${(taxRate * 100).toFixed(2)}%)` : 'Tax';
       lineItems.push({
         price_data: {
@@ -446,7 +399,7 @@ serve(async (req) => {
           product_data: {
             name: taxLabel,
           },
-          unit_amount: Math.round(taxAmount * 100),
+          unit_amount: Math.round(finalTaxAmount * 100),
         },
         quantity: 1,
       });
